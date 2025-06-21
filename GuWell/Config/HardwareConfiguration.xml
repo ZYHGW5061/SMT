@@ -1,0 +1,273 @@
+﻿<HardwareConfiguration>
+	<IsBondDirectLightMultiColor>true</IsBondDirectLightMultiColor>
+	<IsBondRingLightMultiColor>false</IsBondRingLightMultiColor>
+	<IsWaferDirectLightMultiColor>false</IsWaferDirectLightMultiColor>
+	<IsWaferRingLightMultiColor>false</IsWaferRingLightMultiColor>
+	<IsUplookDirectLightMultiColor>false</IsUplookDirectLightMultiColor>
+	<IsUplookRingLightMultiColor>false</IsUplookRingLightMultiColor>
+	<Stage RunningType="Actual">
+		<RemoteAddress>192.168.88.100</RemoteAddress>
+		<LoadWaferPosition X="50" Y="0" />
+		<MovingSpeed X="200" Y="200" />
+		<ReviewSpeed X="200" Y="200" />
+		<AreaCaptureFPS>110</AreaCaptureFPS>
+		<DriftSpeed>0.1</DriftSpeed>
+		<PreProcessPositionY>0</PreProcessPositionY>
+		<Axises>
+			<Axis RunningType="Actual" Type="BondX" Index="2" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="50" MaxAxisSpeed="800" Deceleration="3000" Acceleration="3000" SoftRightLimit="460" SoftLeftLimit="50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="1" />
+			<Axis RunningType="Actual" Type="BondY" Index="1" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="50" MaxAxisSpeed="800" Deceleration="3000" Acceleration="3000" SoftRightLimit="364" SoftLeftLimit="72" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="1" />
+			<Axis RunningType="Actual" Type="BondZ" Index="3" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="20" MaxAxisSpeed="210" Deceleration="2000" Acceleration="2000" SoftRightLimit="149" SoftLeftLimit="25" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="1" />
+			<Axis RunningType="Actual" Type="ChipPPT" Index="6" LowAxisSpeed="10" MediumAxisSpeed="20" HighAxisSpeed="40" AxisSpeed="20" MaxAxisSpeed="100" Deceleration="3000" Acceleration="3000" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="131072" Lead="360" />
+			<Axis RunningType="Simulated" Type="PPtoolBankTheta" Index="5" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="5" />
+			<Axis RunningType="Simulated" Type="DippingGlue" Index="6" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="5" />
+			<Axis RunningType="Actual" Type="TransportTrack1" Index="12" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="4000" Lead="5" />
+			<Axis RunningType="Actual" Type="TransportTrack2" Index="11" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="4000" Lead="5" />
+			<Axis RunningType="Actual" Type="TransportTrack3" Index="10" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="4000" Lead="5" />
+			<Axis RunningType="Actual" Type="WaferTableX" Index="9" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="20" AxisSpeed="50" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="210" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="5" />
+			<Axis RunningType="Actual" Type="WaferTableY" Index="7" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="20" AxisSpeed="50" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="260" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="5" />
+			<Axis RunningType="Actual" Type="WaferTableZ" Index="4" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="20" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="1" SoftLeftLimit="-50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="2" />
+			<Axis RunningType="Simulated" Type="WaferFilm" Index="13" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="1" SoftLeftLimit="-50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="5" />
+			<Axis RunningType="Simulated" Type="WaferFinger" Index="14" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="1" SoftLeftLimit="-50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="2" />
+			<Axis RunningType="Simulated" Type="WaferCassetteLift" Index="15" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="1" SoftLeftLimit="-50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="2" />
+			<Axis RunningType="Actual" Type="ESZ" Index="8" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="50" Deceleration="1" Acceleration="1" SoftRightLimit="1" SoftLeftLimit="-50" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="2" />
+			<Axis RunningType="Actual" Type="NeedleZ" Index="5" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="10" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="0" SoftLeftLimit="-340" Smooth="0.5" SmoothTime="20" CirclePulse="4000" Lead="360" />
+			<Axis RunningType="Simulated" Type="NeedleSwitch" Index="18" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="20" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="361" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="360" />
+			<Axis RunningType="Simulated" Type="FilpToolTheta" Index="19" LowAxisSpeed="40" MediumAxisSpeed="60" HighAxisSpeed="80" AxisSpeed="20" MaxAxisSpeed="100" Deceleration="1" Acceleration="1" SoftRightLimit="361" SoftLeftLimit="-1" Smooth="0.5" SmoothTime="20" CirclePulse="10000" Lead="360" />
+		</Axises>
+	</Stage>
+	<Cameras>
+		<Camera RunningType="Actual" IP="192.168.0.102" Port="20000" CameraPort="20000">
+			<CameraProducer>HIK</CameraProducer>
+			<CameraName>BondCamera</CameraName>
+			<CameraType>BondCamera</CameraType>
+			<ImageType>Grey</ImageType>
+			<DMAIndex>0</DMAIndex>
+			<TapGeometry>Geometry1X10_1Y</TapGeometry>
+			<SerialNumber>23155173</SerialNumber>
+			<WidthPixelSize>0.00171882</WidthPixelSize>
+			<HeightPixelSize>0.00172718137</HeightPixelSize>
+			<Angle>4.61597156E-05</Angle>
+			<CameraInstallationAngle>0</CameraInstallationAngle>
+			<ImageSizeWidth>2048</ImageSizeWidth>
+			<ImageSizeHeight>1536</ImageSizeHeight>
+			<ExposureTime>20000</ExposureTime>
+			<Gain>10</Gain>
+			<FPS>38</FPS>
+		</Camera>
+		<Camera RunningType="Actual" IP="192.168.0.101" Port="20000" CameraPort="20000">
+			<CameraProducer>HIK</CameraProducer>
+			<CameraName>UplookingCamera</CameraName>
+			<CameraType>UplookingCamera</CameraType>
+			<ImageType>Grey</ImageType>
+			<DMAIndex>0</DMAIndex>
+			<TapGeometry>Geometry1X10_1Y</TapGeometry>
+			<SerialNumber>23155173</SerialNumber>
+			<WidthPixelSize>0.00172465388</WidthPixelSize>
+			<HeightPixelSize>0.00172483246</HeightPixelSize>
+			<Angle>0.0018061325</Angle>
+			<CameraInstallationAngle>0</CameraInstallationAngle>
+			<ImageSizeWidth>2048</ImageSizeWidth>
+			<ImageSizeHeight>1536</ImageSizeHeight>
+			<ExposureTime>25000</ExposureTime>
+			<Gain>15</Gain>
+			<FPS>32</FPS>
+		</Camera>
+		<Camera RunningType="Actual" IP="192.168.0.100" Port="20000" CameraPort="20000">
+			<CameraProducer>HIK</CameraProducer>
+			<CameraName>WaferCamera</CameraName>
+			<CameraType>WaferCamera</CameraType>
+			<ImageType>Grey</ImageType>
+			<DMAIndex>0</DMAIndex>
+			<TapGeometry>Geometry1X10_1Y</TapGeometry>
+			<SerialNumber>23155173</SerialNumber>
+			<WidthPixelSize>0.003559191</WidthPixelSize>
+			<HeightPixelSize>0.00346523873</HeightPixelSize>
+			<Angle>0.00518674729</Angle>
+			<CameraInstallationAngle>0</CameraInstallationAngle>
+			<ImageSizeWidth>2048</ImageSizeWidth>
+			<ImageSizeHeight>1536</ImageSizeHeight>
+			<ExposureTime>20000</ExposureTime>
+			<Gain>10</Gain>
+			<FPS>38</FPS>
+		</Camera>
+	</Cameras>
+	<RingLightControllers>
+		<LEDController RunningType="Simulated">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>WaferRingField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="5" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>2</CommunicatorID>
+			<ChannelNumber>1</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>BondRingField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="5" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>2</CommunicatorID>
+			<ChannelNumber>2</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>LookupRingField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="5" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>2</CommunicatorID>
+			<ChannelNumber>3</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+	</RingLightControllers>
+	<DirectLightControllers>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>WaferDirectField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="5" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>2</CommunicatorID>
+			<ChannelNumber>1</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>WaferDirectRedField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>1</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>WaferDirectGreenField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>2</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>WaferDirectBlueField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>3</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Simulated">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>BondDirectField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>3</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>BondDirectRedField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>4</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>BondDirectGreenField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>5</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>BondDirectBlueField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>1</CommunicatorID>
+			<ChannelNumber>6</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+		<LEDController RunningType="Actual">
+			<LightProducer>KOMA</LightProducer>
+			<LightFieldPosition>LookupDirectField</LightFieldPosition>
+			<CommunicationType>SerialPort</CommunicationType>
+			<IPAddress>10.0.1.168</IPAddress>
+			<Port>5001</Port>
+			<SerialCommunicator Port="2" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="0" />
+			<CommunicatorID>2</CommunicatorID>
+			<ChannelNumber>4</ChannelNumber>
+			<MinIntensity>0</MinIntensity>
+			<MaxIntensity>240</MaxIntensity>
+			<ExposureMonitor ExposureThreshold="10000" CurExposureCounter="0" Enabled="true" />
+		</LEDController>
+	</DirectLightControllers>
+	<Lenses>
+		<Lens UserCamera="BondCamera" CoarseFocusValue="0.838" CalibratedMag="0.0035962" StandardCalibratedMag="0.003" />
+		<Lens UserCamera="UplookingCamera" CoarseFocusValue="0.838" CalibratedMag="0.00306" StandardCalibratedMag="0.003" />
+	</Lenses>
+	<PowerController RunningType="Simulated">
+		<ControllerProducer>Default</ControllerProducer>
+		<SerialCommunicator Port="3" StopBits="One" Parity="None" DataBits="8" BaudRate="38400" DeviceAddress="0" />
+	</PowerController>
+	<DispensingMachineController RunningType="Actual">
+		<SerialCommunicator Port="6" StopBits="One" Parity="None" DataBits="8" BaudRate="38400" DeviceAddress="1" />
+	</DispensingMachineController>
+	<LaserSensorController RunningType="Actual">
+		<LaserProducer>PHOSKEY</LaserProducer>
+		<SerialCommunicator Port="9" StopBits="One" Parity="None" DataBits="8" BaudRate="38400" DeviceAddress="1" />
+	</LaserSensorController>
+	<DynamometerController RunningType="Actual">
+		<DynamometerProducer>RLD</DynamometerProducer>
+		<SerialCommunicator Port="8" StopBits="One" Parity="None" DataBits="8" BaudRate="9600" DeviceAddress="1" />
+	</DynamometerController>
+</HardwareConfiguration>

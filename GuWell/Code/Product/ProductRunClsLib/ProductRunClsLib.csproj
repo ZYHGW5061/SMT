@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1AEB9A48-A62E-4957-9EE2-163617631EDA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProductRunClsLib</RootNamespace>
+    <AssemblyName>ProductRunClsLib</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Utils.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WestDragon.Framework.BaseLoggerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.BaseLoggerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.Log4netLoggerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.Log4netLoggerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.LoggerManagerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.LoggerManagerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.UserOperationLogClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.UserOperationLogClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.UtilityHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\Framework\WestDragon.Framework.UtilityHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbandonMaterialUtility.cs" />
+    <Compile Include="ProductStepAction.cs" />
+    <Compile Include="ProductExecutor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Algorithm\Vision\VisionClsLib\VisionClsLib.csproj">
+      <Project>{13D295AA-B633-4622-8B1A-D5FC2D1523B3}</Project>
+      <Name>VisionClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Calibration\SystemCalibrationClsLib\SystemCalibrationClsLib.csproj">
+      <Project>{8a97db83-a47b-4bd8-a22d-7d9cd3a2273b}</Project>
+      <Name>SystemCalibrationClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Position\PositioningSystemClsLib\PositioningSystemClsLib.csproj">
+      <Project>{b80d9f07-da4d-437f-90f1-67722b0883fa}</Project>
+      <Name>PositioningSystemClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Power\PowerClsLib\PowerClsLib.csproj">
+      <Project>{16700D44-FA4D-4277-944C-E1A8962DE346}</Project>
+      <Name>PowerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Process\JobClsLib\JobClsLib.csproj">
+      <Project>{51aff9bf-777e-4f50-8406-c4c334f3710f}</Project>
+      <Name>JobClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Process\RecipeClsLib\RecipeClsLib.csproj">
+      <Project>{633b7024-d607-496e-9800-84284c801d06}</Project>
+      <Name>RecipeClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Vision\VisionControlAppClsLib\VisionControlAppClsLib.csproj">
+      <Project>{711b610c-1195-4191-b240-e28a39f27a42}</Project>
+      <Name>VisionControlAppClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
+      <Project>{6cbe338a-1abb-4397-bba8-bc8477b1a21d}</Project>
+      <Name>ConfigurationClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\GlobalDataDefineClsLib\GlobalDataDefineClsLib.csproj">
+      <Project>{B0F0BD56-7EFF-414B-9D41-F4E7ACA2A8B2}</Project>
+      <Name>GlobalDataDefineClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\GlobalToolClsLib\GlobalToolClsLib.csproj">
+      <Project>{a22451fa-03c2-45c7-b2ea-39e9c9792925}</Project>
+      <Name>GlobalToolClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GUI\CommonPanelClsLib\CommonPanelClsLib.csproj">
+      <Project>{377c6c14-f0d1-4b37-ac89-1d3716369b00}</Project>
+      <Name>CommonPanelClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GUI\VisionGUI\VisionGUI.csproj">
+      <Project>{5a415076-754d-4525-b9b6-808af1b3e6fb}</Project>
+      <Name>VisionGUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\Camera\CameraControllerClsLib\CameraControllerClsLib.csproj">
+      <Project>{ee038ed1-7a96-4075-a51c-ea53a4d026df}</Project>
+      <Name>CameraControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\IO\IOUtilityClsLib\IOUtilityClsLib.csproj">
+      <Project>{da64843c-df4e-45fd-940b-23aff39fc8e3}</Project>
+      <Name>IOUtilityClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LightSource\LightControllerManagerClsLib\LightControllerManagerClsLib.csproj">
+      <Project>{7C3A5CFD-D90A-4317-A596-12261EAF2D10}</Project>
+      <Name>LightControllerManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\Stage\IStageControllerClsLib\StageControllerClsLib.csproj">
+      <Project>{1653a6d9-6ae3-4d6c-9a40-2b1b6730edb8}</Project>
+      <Name>StageControllerClsLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

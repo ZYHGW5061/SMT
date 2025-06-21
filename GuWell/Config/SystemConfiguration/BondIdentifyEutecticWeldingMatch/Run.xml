@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AlgorithmRoot>
+    <Category Name="AlgorithmKeyParam" NameSpace="Standard">
+        <Float Name="MinScore" NameSpace="Standard">
+            <Description>金字塔模板匹配最小匹配分数</Description>
+            <DisplayName>金字塔模板匹配最小匹配分数</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F01</AlgorithmIndex>
+            <CurValue>0.5</CurValue>
+            <DefaultValue>0.5</DefaultValue>
+            <MinValue>0</MinValue>
+            <MaxValue>1</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Integer Name="MaxMatchNum" NameSpace="Standard">
+            <Description>金字塔模板匹配最大匹配个数</Description>
+            <DisplayName>金字塔模板匹配最大匹配个数</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F02</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0x3E8</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Enumeration Name="Polarity" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配极性(是否考虑极性)</Description>
+            <DisplayName>金字塔模板匹配匹配极性(是否考虑极性)</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F03</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="No" NameSpace="Standard">
+                <Description>否</Description>
+                <DisplayName>否</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x0</Value>
+            </EnumEntry>
+            <EnumEntry Name="Yes" NameSpace="Standard">
+                <Description>是</Description>
+                <DisplayName>是</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Integer Name="AngleStart" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配起始角度</Description>
+            <DisplayName>金字塔模板匹配匹配起始角度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F04</AlgorithmIndex>
+            <CurValue>0xFFFFFF4C</CurValue>
+            <DefaultValue>0xFFFFFF4C</DefaultValue>
+            <MinValue>0xFFFFFF4C</MinValue>
+            <MaxValue>0xB4</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="AngleEnd" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配终止角度</Description>
+            <DisplayName>金字塔模板匹配匹配终止角度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F05</AlgorithmIndex>
+            <CurValue>0xB4</CurValue>
+            <DefaultValue>0xB4</DefaultValue>
+            <MinValue>0xFFFFFF4C</MinValue>
+            <MaxValue>0xB4</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Float Name="ScaleStart" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配起始尺度</Description>
+            <DisplayName>金字塔模板匹配匹配起始尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F06</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Float Name="ScaleEnd" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配终止尺度</Description>
+            <DisplayName>金字塔模板匹配匹配终止尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F07</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Integer Name="SpotterFlag" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配噪点标记(是否考虑噪点)</Description>
+            <DisplayName>金字塔模板匹配匹配噪点标记(是否考虑噪点)</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F08</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="MaxOverlap" NameSpace="Standard">
+            <Description>金字塔模板匹配最大重叠率</Description>
+            <DisplayName>金字塔模板匹配最大重叠率</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F09</AlgorithmIndex>
+            <CurValue>0x28</CurValue>
+            <DefaultValue>0x28</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x64</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Float Name="ScaleXStart" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配起始尺度</Description>
+            <DisplayName>金字塔模板匹配匹配起始尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0A</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Float Name="ScaleXEnd" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配终止尺度</Description>
+            <DisplayName>金字塔模板匹配匹配终止尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0B</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Float Name="ScaleYStart" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配起始尺度</Description>
+            <DisplayName>金字塔模板匹配匹配起始尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0C</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Float Name="ScaleYEnd" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配终止尺度</Description>
+            <DisplayName>金字塔模板匹配匹配终止尺度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0D</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>0.1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0.01</IncValue>
+        </Float>
+        <Integer Name="MatchExtentRate" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配延拓阈值</Description>
+            <DisplayName>金字塔模板匹配匹配延拓阈值</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0E</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x5A</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="RoughFlag" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配速度阈值开关</Description>
+            <DisplayName>金字塔模板匹配匹配速度阈值开关</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F0F</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="RoughThreshold" NameSpace="Standard">
+            <Description>金字塔模板匹配匹配速度阈值</Description>
+            <DisplayName>金字塔模板匹配匹配速度阈值</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F10</AlgorithmIndex>
+            <CurValue>0x32</CurValue>
+            <DefaultValue>0x32</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x64</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Enumeration Name="SortType" NameSpace="Standard">
+            <Description>金字塔模板匹配排序类型</Description>
+            <DisplayName>金字塔模板匹配排序类型</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F11</AlgorithmIndex>
+            <CurValue>0x2</CurValue>
+            <DefaultValue>0x2</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="None" NameSpace="Standard">
+                <Description>不进行排序</Description>
+                <DisplayName>不进行排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="Score" NameSpace="Standard">
+                <Description>按分数降序排序</Description>
+                <DisplayName>按分数降序排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+            <EnumEntry Name="Angle" NameSpace="Standard">
+                <Description>按角度降序排序</Description>
+                <DisplayName>按角度降序排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x3</Value>
+            </EnumEntry>
+            <EnumEntry Name="X" NameSpace="Standard">
+                <Description>按X由小到大排序</Description>
+                <DisplayName>按X由小到大排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x4</Value>
+            </EnumEntry>
+            <EnumEntry Name="Y" NameSpace="Standard">
+                <Description>按Y由小到大排序</Description>
+                <DisplayName>按Y由小到大排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x5</Value>
+            </EnumEntry>
+            <EnumEntry Name="XY" NameSpace="Standard">
+                <Description>先按X由小到大排序,再按Y由小到大排序</Description>
+                <DisplayName>先按X由小到大排序,再按Y由小到大排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x6</Value>
+            </EnumEntry>
+            <EnumEntry Name="YX" NameSpace="Standard">
+                <Description>先按Y由小到大排序,再按X由小到大排序</Description>
+                <DisplayName>先按Y由小到大排序,再按X由小到大排序</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x7</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Integer Name="TimeOut" NameSpace="Standard">
+            <Description>金字塔模板匹配超时控制</Description>
+            <DisplayName>金字塔模板匹配超时控制</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F12</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x2710</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Enumeration Name="MatchThresholdFlag" NameSpace="Standard">
+            <Description>金字塔模板匹配边缘阈值标志</Description>
+            <DisplayName>金字塔模板匹配边缘阈值标志</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F13</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="Auto" NameSpace="Standard">
+                <Description>自适应阈值</Description>
+                <DisplayName>自适应阈值</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x0</Value>
+            </EnumEntry>
+            <EnumEntry Name="Model" NameSpace="Standard">
+                <Description>模板阈值</Description>
+                <DisplayName>模板阈值</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="Manual" NameSpace="Standard">
+                <Description>手动阈值</Description>
+                <DisplayName>手动阈值</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Integer Name="MatchThresholdHigh" NameSpace="Standard">
+            <Description>金字塔模板匹配边缘阈值</Description>
+            <DisplayName>金字塔模板匹配边缘阈值</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F14</AlgorithmIndex>
+            <CurValue>0x28</CurValue>
+            <DefaultValue>0x28</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0xFF</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="ImportantScoreThreshold" NameSpace="Standard">
+            <Description>金字塔模板匹配重要点得分阈值</Description>
+            <DisplayName>金字塔模板匹配重要点得分阈值</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10F15</AlgorithmIndex>
+            <CurValue>0x32</CurValue>
+            <DefaultValue>0x32</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x64</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+    </Category>
+</AlgorithmRoot>

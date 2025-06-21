@@ -1,0 +1,290 @@
+﻿<ArrayOfIOChannel>
+	<IOChannel>
+		<Category>GloveBox</Category>
+		<ChannelName>GloveBox.Pressure</ChannelName>
+		<Description>手套箱压力</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>GloveBox</Category>
+		<ChannelName>GloveBox.DewPoint</ChannelName>
+		<Description>手套箱露点</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>BondXLeftLimitStatus</ChannelName>
+		<Description>BondX左限位状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.OuterDoorCompactStatus</ChannelName>
+		<Description>烘箱外门压紧状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.InnerDoorOpenStatus</ChannelName>
+		<Description>烘箱内门打开状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.InnerDoorCompactStatus</ChannelName>
+		<Description>烘箱内门压紧状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.Pressure</ChannelName>
+		<Description>烘箱压力</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.VacuumDegree</ChannelName>
+		<Description>烘箱真空度</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.TopTemp</ChannelName>
+		<Description>烘箱上层温度</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.BottomTemp</ChannelName>
+		<Description>烘箱下层温度</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.HeatTargetTemperature</ChannelName>
+		<Description>烘箱烘烤目标温度</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.HeatPreservationMinute</ChannelName>
+		<Description>烘箱保温时间</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.OverTemperatureThreshold</ChannelName>
+		<Description>烘箱超温阈值</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.HeatPreservationResidueTime_Minute</ChannelName>
+		<Description>烘箱保温剩余时间</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.PurgeTimes</ChannelName>
+		<Description>烘箱清洗抽充次数</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.PurgeInterval</ChannelName>
+		<Description>烘箱清洗抽充时间间隔</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.ResiduePurgeTimes</ChannelName>
+		<Description>烘箱清洗抽充剩余次数</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.PurgePressureUpperLimit</ChannelName>
+		<Description>烘箱抽充压力上限</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.PurgePressureLowerLimit</ChannelName>
+		<Description>烘箱抽充压力下限</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.OverPressureThreshold</ChannelName>
+		<Description>烘箱超压阈值</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.ExtractionValveStatus</ChannelName>
+		<Description>烘箱抽气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.MakeupValveStatus</ChannelName>
+		<Description>烘箱补气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>OvenBox</Category>
+		<ChannelName>OvenBox.ExhaustValveStatus</ChannelName>
+		<Description>烘箱排气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.OuterDoorOpenStatus</ChannelName>
+		<Description>交换箱外门打开状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.OuterDoorCompactStatus</ChannelName>
+		<Description>交换箱外门压紧状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.Pressure</ChannelName>
+		<Description>交换箱压力</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.OverPressureThreshold</ChannelName>
+		<Description>交换箱超压阈值</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.VacuumDegree</ChannelName>
+		<Description>交换箱真空度</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.PurgeTimes</ChannelName>
+		<Description>交换箱清洗抽充次数</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.PurgeInternal</ChannelName>
+		<Description>交换箱清洗抽充时间间隔</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.ResiduePurgeTimes</ChannelName>
+		<Description>交换箱清洗抽充剩余次数</Description>
+		<ChannelValue xmlns:q2="http://www.w3.org/2001/XMLSchema" p4:type="q2:int" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">1</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>Read_Write</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.PurgePressureUpperLimit</ChannelName>
+		<Description>交换箱抽充压力上限</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.PurgePressureLowerLimit</ChannelName>
+		<Description>交换箱抽充压力下限</Description>
+		<ChannelValue xmlns:q3="http://www.w3.org/2001/XMLSchema" p4:type="q3:float" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">0</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.ExtractionValveStatus</ChannelName>
+		<Description>交换箱抽气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.MakeupValveStatus</ChannelName>
+		<Description>交换箱补气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+	<IOChannel>
+		<Category>ExchangeBox</Category>
+		<ChannelName>ExchangeBox.ExhaustValveStatus</ChannelName>
+		<Description>交换箱排气阀状态</Description>
+		<ChannelValue xmlns:q5="http://www.w3.org/2001/XMLSchema" p4:type="q5:boolean" xmlns:p4="http://www.w3.org/2001/XMLSchema-instance">false</ChannelValue>
+		<Switch>true</Switch>
+		<Direction>OnlyReadable</Direction>
+	</IOChannel>
+</ArrayOfIOChannel>

@@ -1,0 +1,576 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{233912CB-6628-496B-A996-82A242556D8D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ControlPanelClsLib</RootNamespace>
+    <AssemblyName>ControlPanelClsLib</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Output\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CameraControllerClsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="DevExpress.Charts.v21.2.Core, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Charts.v21.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.Desktop.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Data.Desktop.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Data.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Utils.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraBars.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraCharts.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v21.2.UI, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraCharts.v21.2.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraEditors.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraGrid.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraGrid.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraLayout.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraLayout.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeList.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.XtraTreeList.v21.2.dll</HintPath>
+    </Reference>
+    <Reference Include="GWVision.HardwareManagerClsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="LightControllerClsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="LightSourceCtrlPanelLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Output\LightSourceCtrlPanelLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VisionClsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="VisionControlAppClsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="VisionGUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Output\VisionGUI.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.BaseLoggerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.BaseLoggerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.Log4netLoggerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.Log4netLoggerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.LoggerManagerClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.LoggerManagerClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.UserOperationLogClsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\log\WestDragon.Framework.UserOperationLogClsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="WestDragon.Framework.UtilityHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assembly\Framework\WestDragon.Framework.UtilityHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="FrmIOMaintain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmIOMaintain.designer.cs">
+      <DependentUpon>FrmIOMaintain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmCheck.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmCheck.designer.cs">
+      <DependentUpon>FrmCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSingleStepRun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSingleStepRun.designer.cs">
+      <DependentUpon>FrmSingleStepRun.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmExecuteRecipe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmExecuteRecipe.designer.cs">
+      <DependentUpon>FrmExecuteRecipe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAlarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmAlarm.designer.cs">
+      <DependentUpon>FrmAlarm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IOMaintainPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IOMaintainPanel.designer.cs">
+      <DependentUpon>IOMaintainPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmCalibrationTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmCalibrationTable.designer.cs">
+      <DependentUpon>FrmCalibrationTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmEpoxtTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmEpoxtTool.Designer.cs">
+      <DependentUpon>FrmEpoxtTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmMaterialBoxTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmMaterialBoxTool.designer.cs">
+      <DependentUpon>FrmMaterialBoxTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\PPToolAlignmentStepBasePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PPToolAlignmentStep_PositionCenterAfterR180.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PPToolAlignmentStep_PositionCenterAfterR180.designer.cs">
+      <DependentUpon>PPToolAlignmentStep_PositionCenterAfterR180.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\PPToolAlignmentStep_PositionCenter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PPToolAlignmentStep_PositionCenter.designer.cs">
+      <DependentUpon>PPToolAlignmentStep_PositionCenter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\PPTool_Alignment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PPTool_Alignment.designer.cs">
+      <DependentUpon>PPTool_Alignment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmAddPPTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmAddPPTool.Designer.cs">
+      <DependentUpon>FrmAddPPTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\PPTool_Height.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PPTool_Height.designer.cs">
+      <DependentUpon>PPTool_Height.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmAddESTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmAddESTool.Designer.cs">
+      <DependentUpon>FrmAddESTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmPPTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmPPTool.designer.cs">
+      <DependentUpon>FrmPPTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmEjectionSystemTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmEjectionSystemTool.designer.cs">
+      <DependentUpon>FrmEjectionSystemTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\PP-ESHeight.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\PP-ESHeight.designer.cs">
+      <DependentUpon>PP-ESHeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\EjectionSystemTool_NeedleZero.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\EjectionSystemTool_NeedleZero.designer.cs">
+      <DependentUpon>EjectionSystemTool_NeedleZero.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\EjectionSystemTool_XYMeasuring.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tools\EjectionSystemTool_XYMeasuring.designer.cs">
+      <DependentUpon>EjectionSystemTool_XYMeasuring.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\pickupsettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Algorithm\MathHelperClsLib\MathHelperClsLib.csproj">
+      <Project>{561e693a-7cab-4fb2-aec1-f4aea753d37f}</Project>
+      <Name>MathHelperClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Calibration\SystemCalibrationClsLib\SystemCalibrationClsLib.csproj">
+      <Project>{8A97DB83-A47B-4BD8-A22D-7D9CD3A2273B}</Project>
+      <Name>SystemCalibrationClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Position\PositioningSystemClsLib\PositioningSystemClsLib.csproj">
+      <Project>{b80d9f07-da4d-437f-90f1-67722b0883fa}</Project>
+      <Name>PositioningSystemClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Power\PowerClsLib\PowerClsLib.csproj">
+      <Project>{16700d44-fa4d-4277-944c-e1a8962de346}</Project>
+      <Name>PowerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Process\JobClsLib\JobClsLib.csproj">
+      <Project>{51aff9bf-777e-4f50-8406-c4c334f3710f}</Project>
+      <Name>JobClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\Process\RecipeClsLib\RecipeClsLib.csproj">
+      <Project>{633b7024-d607-496e-9800-84284c801d06}</Project>
+      <Name>RecipeClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
+      <Project>{6cbe338a-1abb-4397-bba8-bc8477b1a21d}</Project>
+      <Name>ConfigurationClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\GlobalDataDefineClsLib\GlobalDataDefineClsLib.csproj">
+      <Project>{b0f0bd56-7eff-414b-9d41-f4e7aca2a8b2}</Project>
+      <Name>GlobalDataDefineClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Global\GlobalToolClsLib\GlobalToolClsLib.csproj">
+      <Project>{a22451fa-03c2-45c7-b2ea-39e9c9792925}</Project>
+      <Name>GlobalToolClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\BoardCard\BoardCardControllerClsLib\BoardCardControllerClsLib.csproj">
+      <Project>{BEC297A8-3688-414C-92DE-60B7E3355E4A}</Project>
+      <Name>BoardCardControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\DispensingMachine\DispensingMachineControllerClsLib\DispensingMachineControllerClsLib.csproj">
+      <Project>{CC883785-57AF-47E9-A607-1E9AF227727B}</Project>
+      <Name>DispensingMachineControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\Dynamometer\DynamometerControllerClsLib\DynamometerControllerClsLib.csproj">
+      <Project>{FD65B6B1-69A7-4A94-8B7A-33D3EDD70162}</Project>
+      <Name>DynamometerControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\Dynamometer\DynamometerManagerClsLib\DynamometerManagerClsLib.csproj">
+      <Project>{7201F770-650A-45E8-93DF-C7FBEE592CE6}</Project>
+      <Name>DynamometerManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\HardwareManagerClsLib\HardwareManagerClsLib.csproj">
+      <Project>{1a0094c5-5e09-4867-8757-62f308de62ac}</Project>
+      <Name>HardwareManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\IO\IOUtilityClsLib\IOUtilityClsLib.csproj">
+      <Project>{da64843c-df4e-45fd-940b-23aff39fc8e3}</Project>
+      <Name>IOUtilityClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LaserSensor\LaserSensorControllerClsLib\LaserSensorControllerClsLib.csproj">
+      <Project>{ca11f95c-d9f8-4ba1-8971-2c0251d689ed}</Project>
+      <Name>LaserSensorControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LaserSensor\LaserSensorManagerClsLib\LaserSensorManagerClsLib.csproj">
+      <Project>{1D36CD4F-2598-43E3-B268-BF7A0842416F}</Project>
+      <Name>LaserSensorManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LightSource\LightControllerManagerClsLib\LightControllerManagerClsLib.csproj">
+      <Project>{7C3A5CFD-D90A-4317-A596-12261EAF2D10}</Project>
+      <Name>LightControllerManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\Stage\IStageControllerClsLib\StageControllerClsLib.csproj">
+      <Project>{1653a6d9-6ae3-4d6c-9a40-2b1b6730edb8}</Project>
+      <Name>StageControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Product\ProductRunClsLib\ProductRunClsLib.csproj">
+      <Project>{1aeb9a48-a62e-4957-9ee2-163617631eda}</Project>
+      <Name>ProductRunClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonPanelClsLib\CommonPanelClsLib.csproj">
+      <Project>{377c6c14-f0d1-4b37-ac89-1d3716369b00}</Project>
+      <Name>CommonPanelClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MainGUI\MainGUI.csproj">
+      <Project>{f950f81a-b501-4126-8f2a-91f2c86538ad}</Project>
+      <Name>MainGUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StageCtrlPanelLib\StageCtrlPanelLib.csproj">
+      <Project>{f0d61c4f-2bbc-4af2-bc39-a79ad118758d}</Project>
+      <Name>StageCtrlPanelLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FrmIOMaintain.resx">
+      <DependentUpon>FrmIOMaintain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmCheck.resx">
+      <DependentUpon>FrmCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSingleStepRun.resx">
+      <DependentUpon>FrmSingleStepRun.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmExecuteRecipe.resx">
+      <DependentUpon>FrmExecuteRecipe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmAlarm.resx">
+      <DependentUpon>FrmAlarm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IOMaintainPanel.resx">
+      <DependentUpon>IOMaintainPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmCalibrationTable.resx">
+      <DependentUpon>FrmCalibrationTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmEpoxtTool.resx">
+      <DependentUpon>FrmEpoxtTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmMaterialBoxTool.resx">
+      <DependentUpon>FrmMaterialBoxTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PPToolAlignmentStepBasePage.resx">
+      <DependentUpon>PPToolAlignmentStepBasePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PPToolAlignmentStep_PositionCenterAfterR180.resx">
+      <DependentUpon>PPToolAlignmentStep_PositionCenterAfterR180.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PPToolAlignmentStep_PositionCenter.resx">
+      <DependentUpon>PPToolAlignmentStep_PositionCenter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PPTool_Alignment.resx">
+      <DependentUpon>PPTool_Alignment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmAddPPTool.resx">
+      <DependentUpon>FrmAddPPTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PPTool_Height.resx">
+      <DependentUpon>PPTool_Height.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmAddESTool.resx">
+      <DependentUpon>FrmAddESTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmPPTool.resx">
+      <DependentUpon>FrmPPTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmEjectionSystemTool.resx">
+      <DependentUpon>FrmEjectionSystemTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\PP-ESHeight.resx">
+      <DependentUpon>PP-ESHeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\EjectionSystemTool_NeedleZero.resx">
+      <DependentUpon>EjectionSystemTool_NeedleZero.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\EjectionSystemTool_XYMeasuring.resx">
+      <DependentUpon>EjectionSystemTool_XYMeasuring.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_top_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_top_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_bottom_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_bottom_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_top_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_right_top_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\recognize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\recognize_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\recognize_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\col_num.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\col_num_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\col_num_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\height.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\height_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\height_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_first.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_first_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_first_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_last.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_last_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\line_last_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row_num.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row_num_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\row_num_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\the_last.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\the_last_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\the_last_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_bottom_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loc_left_bottom_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bondpos_left_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bondpos_left_top_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bondpos_left_top_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_0_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_0_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_180.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_180_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sucker_180_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_left_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_left_top_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_left_top_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_bottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_bottom_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_bottom_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_top.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_top_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\wafer_right_top_undo.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

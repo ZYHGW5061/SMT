@@ -1,0 +1,11 @@
+diff a/Global/GlobalDataDefineClsLib/GlobalDataDefine.cs b/Global/GlobalDataDefineClsLib/GlobalDataDefine.cs	(rejected hunks)
+@@ -2508,7 +2508,8 @@
+ 
+         [XmlElement("TearOffSpeedMM")]
+         public float TearOffSpeedMM { get; set; }
+-
++        [XmlElement("DispenserRecipeName")]
++        public string DispenserRecipeName { get; set; }
+         public EpoxyApplication()
+         {
+ 

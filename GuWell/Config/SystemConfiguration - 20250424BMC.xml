@@ -1,0 +1,666 @@
+﻿<SystemConfiguration>
+	<SystemDefaultDirectory>C:\GW\</SystemDefaultDirectory>
+	<SystemGUIType>
+		<CameraWindowHeight>0</CameraWindowHeight>
+		<CameraWindowWidth>0</CameraWindowWidth>
+	</SystemGUIType>
+	<SystemRunningType>Actual</SystemRunningType>
+	<SystemRole>System_Master</SystemRole>
+	<SystemMode>Attach</SystemMode>
+	<JobConfig>
+		<RunningType>Actual</RunningType>
+		<RawDataSavingPath>D:\GuWell\</RawDataSavingPath>
+		<EnableMarathon>false</EnableMarathon>
+		<RecogniseResulSaveOption>NotSave</RecogniseResulSaveOption>
+		<EnableVaccumConfirm>false</EnableVaccumConfirm>
+		<IsSlowSpeedRun>false</IsSlowSpeedRun>
+		<BreakVaccumDelayMsAfterEutectic>0</BreakVaccumDelayMsAfterEutectic>
+	</JobConfig>
+	<PositioningConfig>
+		<BondOrigion X="144.1365" Y="116.2382" Z="132.9797" Theta="0" />
+		<TrackOrigion X="144.1382" Y="116.2356" Z="133.0777" Theta="0" />
+		<TrackLaserSensorOrigion X="49.969300000000004" Y="97.549900000000008" Z="133.0778" Theta="0" />
+		<TrackChipPPOrigion X="96.8739" Y="107.051" Z="119.82260000000001" Theta="0" />
+		<TrackSubmountPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<TrackEpoxtOrigion X="0" Y="0" Z="0" Theta="0" />
+		<TrackEpoxtSpotCoordinate X="196.50990000000002" Y="134.7601" Z="130.50820000000002" Theta="0" />
+		<TrackBondCameraToEpoxtSpotCoordinate X="147.0565" Y="110.708" Z="133.0489" Theta="0" />
+		<TrackLaserSensorZ>82.1252</TrackLaserSensorZ>
+		<WaferCameraOrigion X="265.50800000000004" Y="85.4427" Z="33.0001" Theta="0" />
+		<WaferLaserSensorOrigion X="0" Y="0" Z="0" Theta="0" />
+		<WaferChipPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<WaferSubmountPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<WaferLaserSensorZ>0</WaferLaserSensorZ>
+		<LookupCameraOrigion X="457.658" Y="97.759" Z="142.4734" Theta="0" />
+		<LookupChipPPOrigion X="410.326" Y="88.563" Z="129.1808" Theta="0" />
+		<LookupSubmountPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<LookupLaserSensorOrigion X="360.587" Y="79.0801" Z="129.844" Theta="0" />
+		<BondPosition4LoadPP X="0" Y="0" Z="0" Theta="0" />
+		<WaferOrigion X="15.4265" Y="-2.9905" Z="-15.564400000000001" Theta="0" />
+		<BondSafeLocation X="279.902" Y="178.50670000000002" Z="148.5324" Theta="0" />
+		<EutecticWeldingLocation X="0" Y="0" Z="0" Theta="0" />
+		<EutecticWeldingChipPPLocation X="0" Y="0" Z="0" Theta="0" />
+		<EutecticWeldingSubmountPPLocation X="0" Y="0" Z="0" Theta="0" />
+		<EutecticWeldingLaserSensorLocation X="0" Y="0" Z="0" Theta="0" />
+		<SubmountPPFreeZ>0</SubmountPPFreeZ>
+		<SubmountPPWorkZ>0</SubmountPPWorkZ>
+		<ChipPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<SubmountPPOrigion X="0" Y="0" Z="0" Theta="0" />
+		<BondChipOrigion X="0" Y="0" Z="0" Theta="0" />
+		<BondSubmountOrigion X="0" Y="0" Z="0" Theta="0" />
+		<BondPosition X="0" Y="0" Z="0" Theta="0" />
+		<CuttingPosition X="0" Y="0" Z="0" Theta="0" />
+		<AbandonMaterialPosition X="0" Y="0" Z="0" Theta="0" />
+		<ESZSafeZoneofWaferTablePoint1>
+			<X>1</X>
+			<Y>2</Y>
+		</ESZSafeZoneofWaferTablePoint1>
+		<ESZSafeZoneofWaferTablePoint2>
+			<X>3</X>
+			<Y>4</Y>
+		</ESZSafeZoneofWaferTablePoint2>
+		<ESZSafeZoneofWaferTablePoint3>
+			<X>5</X>
+			<Y>6</Y>
+		</ESZSafeZoneofWaferTablePoint3>
+		<ESZWariningPos>0.004</ESZWariningPos>
+		<BondZWariningPos>138.193</BondZWariningPos>
+		<BondXYSafeRangeForBondZ>
+			<X>5</X>
+			<Y>5</Y>
+		</BondXYSafeRangeForBondZ>
+	</PositioningConfig>
+	<SystemCalibrationConfig>
+		<BMCtimes>10</BMCtimes>
+		<BMCdelaytime>10</BMCdelaytime>
+		<BondIdentifyBMCSpotNum>1</BondIdentifyBMCSpotNum>
+		<BondIdentifyBMCNum>0</BondIdentifyBMCNum>
+		<BondIdentifyBMCMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>8</DirectRedLightintensity>
+			<DirectGreenLightintensity>8</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBMCMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBMCMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="778" Y="512" Width="522" Height="512" />
+			<SearchRoi X="26" Y="80" Width="1994" Height="1376" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="256.53673805568889" Y="179.9191351976514" Z="102.83030000000001" Theta="0.019553219899535179" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBMCMatch>
+		<BondIdentifyBMCMatch2>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>4</DirectRedLightintensity>
+			<DirectGreenLightintensity>8</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBMCMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBMCMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="778" Y="528" Width="490" Height="480" />
+			<SearchRoi X="106" Y="128" Width="1834" Height="1280" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="300.56416342925991" Y="167.61215786438629" Z="102.81110000000001" Theta="0.11029961705207825" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBMCMatch2>
+		<BondIdentifyBMCMatchoffset X="0" Y="0" Z="0" Theta="0" />
+		<UplookingIdentifyBMCSpotNum>1</UplookingIdentifyBMCSpotNum>
+		<UplookingIdentifyBMCNum>0</UplookingIdentifyBMCNum>
+		<UplookingIdentifyBMCMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>254</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyBMCMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyBMCMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="762" Y="512" Width="522" Height="512" />
+			<SearchRoi X="26" Y="80" Width="1994" Height="1376" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="410.34912145235745" Y="88.318777864169334" Z="132.7304" Theta="-0.080532371997833252" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyBMCMatch>
+		<UplookingIdentifyBMCMatch2>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>254</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyBMCMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyBMCMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="762" Y="512" Width="522" Height="512" />
+			<SearchRoi X="74" Y="96" Width="1898" Height="1344" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="413.50079026797135" Y="92.473331900015438" Z="132.7301" Theta="-0.019723571836948395" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyBMCMatch2>
+		<UplookingIdentifyBMCLineFind>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightintensity>0</DirectLightintensity>
+			<UpEdgeScore>0</UpEdgeScore>
+			<DownEdgeScore>0</DownEdgeScore>
+			<LeftEdgeScore>0</LeftEdgeScore>
+			<RightEdgeScore>0</RightEdgeScore>
+			<UpEdgeRoi X="0" Y="0" Width="0" Height="0" />
+			<DownEdgeRoi X="0" Y="0" Width="0" Height="0" />
+			<LeftEdgeRoi X="0" Y="0" Width="0" Height="0" />
+			<RightEdgeRoi X="0" Y="0" Width="0" Height="0" />
+			<BondTablePosition X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePosition X="0" Y="0" Z="0" Theta="0" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<MaskSetting />
+		</UplookingIdentifyBMCLineFind>
+		<UplookingIdentifyBMCMatchoffset X="409.48074662558969" Y="88.496121118925828" Z="132.7301" Theta="45.289817334066527" />
+		<BondIdentifyBMCSubstrateSpotNum>1</BondIdentifyBMCSubstrateSpotNum>
+		<BondIdentifyBMCSubstrateNum>0</BondIdentifyBMCSubstrateNum>
+		<BondIdentifyBMCSubstrateMatch>
+			<RingLightintensity>254</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBMCSubstrateMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBMCSubstrateMatch/Run.xml</Runxml>
+			<Score>0.38</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="714" Y="464" Width="618" Height="608" />
+			<SearchRoi X="42" Y="80" Width="1962" Height="1376" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="256.54018908690944" Y="179.91207935270967" Z="101.83030000000001" Theta="0.028027638792991638" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBMCSubstrateMatch>
+		<BondIdentifyBMCSubstrateMatch2>
+			<RingLightintensity>254</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBMCSubstrateMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBMCSubstrateMatch/Run.xml</Runxml>
+			<Score>0.38</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="714" Y="464" Width="618" Height="608" />
+			<SearchRoi X="106" Y="96" Width="1834" Height="1344" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="300.57750404813254" Y="167.55378439636218" Z="102.0115" Theta="0.002020941348746419" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBMCSubstrateMatch2>
+		<BondIdentifyBMCSubstrateMatchoffset X="0" Y="0" Z="0" Theta="0" />
+		<BondIdentifyTrackOrigionArrayRowNum>3</BondIdentifyTrackOrigionArrayRowNum>
+		<BondIdentifyTrackOrigionArrayColNum>3</BondIdentifyTrackOrigionArrayColNum>
+		<BondIdentifyTrackOrigionArrayWidthRange>1.8</BondIdentifyTrackOrigionArrayWidthRange>
+		<BondIdentifyTrackOrigionArrayHeightRange>1</BondIdentifyTrackOrigionArrayHeightRange>
+		<BondIdentifyBondOrigionNum>0</BondIdentifyBondOrigionNum>
+		<BondIdentifyBondOrigionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>11</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBondOrigionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBondOrigionMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="826" Y="576" Width="394" Height="384" />
+			<SearchRoi X="42" Y="32" Width="1962" Height="1440" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBondOrigionMatch>
+		<BondIdentifyTrackOrigionNum>0</BondIdentifyTrackOrigionNum>
+		<BondIdentifyTrackOrigionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>13</DirectRedLightintensity>
+			<DirectGreenLightintensity>10</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyTrackOrigionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyTrackOrigionMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-90</MinAngle>
+			<MaxAngle>90</MaxAngle>
+			<TemplateRoi X="826" Y="576" Width="394" Height="384" />
+			<SearchRoi X="26" Y="32" Width="1994" Height="1472" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyTrackOrigionMatch>
+		<BondIdentifyWaferCameraOrigionNum>0</BondIdentifyWaferCameraOrigionNum>
+		<BondIdentifyWaferCameraOrigionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>15</DirectRedLightintensity>
+			<DirectGreenLightintensity>10</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyWaferCameraOrigionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyWaferCameraOrigionMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="794" Y="544" Width="458" Height="448" />
+			<SearchRoi X="42" Y="48" Width="1962" Height="1440" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyWaferCameraOrigionMatch>
+		<BondIdentifyLookupCameraOrigionNum>0</BondIdentifyLookupCameraOrigionNum>
+		<BondIdentifyLookupCameraOrigionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>20</DirectRedLightintensity>
+			<DirectGreenLightintensity>10</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyLookupCameraOrigionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyLookupCameraOrigionMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="826" Y="576" Width="394" Height="384" />
+			<SearchRoi X="42" Y="64" Width="1962" Height="1408" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyLookupCameraOrigionMatch>
+		<WaferIdentifyWaferOrigionArrayRowNum>3</WaferIdentifyWaferOrigionArrayRowNum>
+		<WaferIdentifyWaferOrigionArrayColNum>3</WaferIdentifyWaferOrigionArrayColNum>
+		<WaferIdentifyWaferOrigionArrayWidthRange>3</WaferIdentifyWaferOrigionArrayWidthRange>
+		<WaferIdentifyWaferOrigionArrayHeightRange>2</WaferIdentifyWaferOrigionArrayHeightRange>
+		<WaferIdentifyWaferOrigionNum>0</WaferIdentifyWaferOrigionNum>
+		<WaferIdentifyWaferOrigionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>220</DirectLightintensity>
+			<DirectRedLightintensity>220</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/WaferIdentifyWaferOrigionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/WaferIdentifyWaferOrigionMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-90</MinAngle>
+			<MaxAngle>90</MaxAngle>
+			<TemplateRoi X="906" Y="640" Width="234" Height="256" />
+			<SearchRoi X="42" Y="32" Width="1962" Height="1472" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</WaferIdentifyWaferOrigionMatch>
+		<UplookingIdentifyBond1Num>0</UplookingIdentifyBond1Num>
+		<UplookingIdentifyBond1Match>
+			<RingLightintensity>240</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyBond1Match/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyBond1Match/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-143</MinAngle>
+			<MaxAngle>143</MaxAngle>
+			<TemplateRoi X="714" Y="448" Width="618" Height="640" />
+			<SearchRoi X="26" Y="64" Width="1994" Height="1408" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyBond1Match>
+		<UplookingIdentifyBondArrayRowNum>3</UplookingIdentifyBondArrayRowNum>
+		<UplookingIdentifyBondArrayColNum>3</UplookingIdentifyBondArrayColNum>
+		<UplookingIdentifyBondArrayWidthRange>1.8</UplookingIdentifyBondArrayWidthRange>
+		<UplookingIdentifyBondArrayHeightRange>1</UplookingIdentifyBondArrayHeightRange>
+		<UplookingIdentifyBond2Num>0</UplookingIdentifyBond2Num>
+		<UplookingIdentifyBond2Match>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyBond2Match/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyBond2Match/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyBond2Match>
+		<UplookingIdentifyLaserSensorMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyLaserSensorMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyLaserSensorMatch/Run.xml</Runxml>
+			<Score>0.4</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="362" Y="224" Width="1322" Height="1088" />
+			<SearchRoi X="26" Y="64" Width="1994" Height="1408" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyLaserSensorMatch>
+		<BondIdentifyEutecticWeldingNum>0</BondIdentifyEutecticWeldingNum>
+		<BondIdentifyEutecticWeldingMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyEutecticWeldingMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyEutecticWeldingMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyEutecticWeldingMatch>
+		<BondIdentifySubmountMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifySubmountMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifySubmountMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifySubmountMatch>
+		<BondIdentifyChipMatch>
+			<RingLightintensity>240</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyChipMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyChipMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyChipMatch>
+		<UplookingIdentifySubmountMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifySubmountMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifySubmountMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifySubmountMatch>
+		<UplookingIdentifyChipMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>SingleR</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/UplookingIdentifyChipMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/UplookingIdentifyChipMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</UplookingIdentifyChipMatch>
+		<BondIdentifyBondPositionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyBondPositionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyBondPositionMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyBondPositionMatch>
+		<BondIdentifyCuttingPositionMatch>
+			<RingLightintensity>0</RingLightintensity>
+			<DirectLightType>RGB</DirectLightType>
+			<DirectLightintensity>0</DirectLightintensity>
+			<DirectRedLightintensity>0</DirectRedLightintensity>
+			<DirectGreenLightintensity>0</DirectGreenLightintensity>
+			<DirectBlueLightintensity>0</DirectBlueLightintensity>
+			<Templatexml>Config/SystemConfiguration/BondIdentifyCuttingPositionMatch/Template.contourmxml</Templatexml>
+			<Runxml>Config/SystemConfiguration/BondIdentifyCuttingPositionMatch/Run.xml</Runxml>
+			<Score>0.5</Score>
+			<MinAngle>-45</MinAngle>
+			<MaxAngle>45</MaxAngle>
+			<TemplateRoi X="682" Y="512" Width="682" Height="512" />
+			<SearchRoi X="24" Y="18" Width="2000" Height="1500" />
+			<CameraZWorkPosition>0</CameraZWorkPosition>
+			<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+			<OrigionAngle>0</OrigionAngle>
+			<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+			<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+			<MaskSetting />
+		</BondIdentifyCuttingPositionMatch>
+	</SystemCalibrationConfig>
+	<CalibrationConfig>
+		<ChipPPPosCompensateCoordinate1 X="410.34860000000003" Y="88.5708" Z="129.1808" Theta="0" />
+		<ChipPPPosCompensateCoordinate2 X="409.79900000000004" Y="88.035000000000011" Z="129.1808" Theta="0" />
+		<SubmountPPPosCompensateCoordinate1 X="0" Y="0" Z="0" Theta="0" />
+		<SubmountPPPosCompensateCoordinate2 X="0" Y="0" Z="0" Theta="0" />
+	</CalibrationConfig>
+	<ESUpPosition>0</ESUpPosition>
+	<BondZPos2ActiveXYSafeProtect>0</BondZPos2ActiveXYSafeProtect>
+	<ESZPos2ActiveXYSafeProtect>0</ESZPos2ActiveXYSafeProtect>
+	<ESDownPosition>0</ESDownPosition>
+	<PPToolSettings>
+		<PPToolSettings>
+			<Name>test1</Name>
+			<AltimetryOnMark>119.4322</AltimetryOnMark>
+			<UplookingIdentifyPPtoolMatch>
+				<RingLightintensity>254</RingLightintensity>
+				<DirectLightType>SingleR</DirectLightType>
+				<DirectLightintensity>33</DirectLightintensity>
+				<DirectRedLightintensity>0</DirectRedLightintensity>
+				<DirectGreenLightintensity>0</DirectGreenLightintensity>
+				<DirectBlueLightintensity>0</DirectBlueLightintensity>
+				<Score>0.4</Score>
+				<MinAngle>-45</MinAngle>
+				<MaxAngle>45</MaxAngle>
+				<TemplateRoi X="714" Y="464" Width="618" Height="608" />
+				<SearchRoi X="26" Y="32" Width="1994" Height="1408" />
+				<CameraZWorkPosition>0</CameraZWorkPosition>
+				<CameraZChipSystemWorkPosition>0</CameraZChipSystemWorkPosition>
+				<OrigionAngle>0</OrigionAngle>
+				<BondTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+				<PositionOfMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+				<PatternOffsetWithMaterialCenter X="0" Y="0" Z="0" Theta="0" />
+				<WaferTablePositionOfCreatePattern X="0" Y="0" Z="0" Theta="0" />
+				<MaskSetting />
+			</UplookingIdentifyPPtoolMatch>
+			<PPAndUCtoolOffset X="0" Y="0" Z="0" Theta="0" />
+			<PPosCompensateCoordinate1 X="410.3143" Y="88.4148" Z="129.7516" Theta="0" />
+			<PPosCompensateCoordinate2 X="409.92780000000005" Y="88.067100000000011" Z="129.7516" Theta="0" />
+			<PPESAltimetryParameter>
+				<PPSystemPosition>0</PPSystemPosition>
+				<ESStagePosition>0</ESStagePosition>
+			</PPESAltimetryParameter>
+			<RotationTablePos4LoadPP>0</RotationTablePos4LoadPP>
+		</PPToolSettings>
+	</PPToolSettings>
+	<ESToolSettings>
+		<ESToolSettings>
+			<Name>20250415</Name>
+			<ESBasePosition>0</ESBasePosition>
+			<NeedleZeorPosition>17.136</NeedleZeorPosition>
+			<NeedleCenter X="-1.5352499485015869" Y="-0.34154999256134033" Z="0" Theta="0" />
+			<ESZStagePosWhenMeasureHeight>-26.5218</ESZStagePosWhenMeasureHeight>
+			<ESZToplateHigherValueThanMarkTopplateWhenMeasureESZHeight>-55.4239</ESZToplateHigherValueThanMarkTopplateWhenMeasureESZHeight>
+			<LaserSensorValueWhenMeasureESZHeight>0</LaserSensorValueWhenMeasureESZHeight>
+		</ESToolSettings>
+	</ESToolSettings>
+	<TuningTimeMS>200</TuningTimeMS>
+	<OpenCoolAirDelayMS>0</OpenCoolAirDelayMS>
+	<WaferSlotCount>8</WaferSlotCount>
+</SystemConfiguration>

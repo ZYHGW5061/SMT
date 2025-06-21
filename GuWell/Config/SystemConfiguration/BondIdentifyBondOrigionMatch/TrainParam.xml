@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AlgorithmRoot>
+    <Category Name="AlgorithmKeyParam" NameSpace="Standard">
+        <Integer Name="PyramidScaleFlag" NameSpace="Standard">
+            <Description>金字塔模板模型特征尺度标记</Description>
+            <DisplayName>金字塔模板模型特征尺度标记</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E01</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="PyramidScaleLevel" NameSpace="Standard">
+            <Description>金字塔模板模型层数</Description>
+            <DisplayName>金字塔模板模型层数</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E02</AlgorithmIndex>
+            <CurValue>5</CurValue>
+            <DefaultValue>5</DefaultValue>
+            <MinValue>1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="PyramidScaleRLevel" NameSpace="Standard">
+            <Description>金字塔模板模型返回层</Description>
+            <DisplayName>金字塔模板模型返回层</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E03</AlgorithmIndex>
+            <CurValue>1</CurValue>
+            <DefaultValue>1</DefaultValue>
+            <MinValue>1</MinValue>
+            <MaxValue>10</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="EdgeThresholdFlag" NameSpace="Standard">
+            <Description>金字塔模板模型边缘阈值标记</Description>
+            <DisplayName>金字塔模板模型边缘阈值标记</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E04</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="EdgeThreshold" NameSpace="Standard">
+            <Description>金字塔模板模型边缘阈值</Description>
+            <DisplayName>金字塔模板模型边缘阈值</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E05</AlgorithmIndex>
+            <CurValue>0xF</CurValue>
+            <DefaultValue>0xF</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0xFF</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="WeightMaskFlag" NameSpace="Standard">
+            <Description>权重掩膜使能标记</Description>
+            <DisplayName>权重掩膜使能标记</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E08</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="ChainFlag" NameSpace="Standard">
+            <Description>链长使能标记</Description>
+            <DisplayName>链长使能标记</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E09</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x1</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="MinChainLen" NameSpace="Standard">
+            <Description>最小链长长度</Description>
+            <DisplayName>最小链长长度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E0A</AlgorithmIndex>
+            <CurValue>0x4</CurValue>
+            <DefaultValue>0x4</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0x3E8</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Enumeration Name="IncludeImageFlag" NameSpace="Standard">
+            <Description>轮廓模板是否包含图像标记（4.2.0后废弃）</Description>
+            <DisplayName>轮廓模板是否包含图像标记（4.2.0后废弃）</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x10E07</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="Exclude" NameSpace="Standard">
+                <Description>不包含</Description>
+                <DisplayName>不包含</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x0</Value>
+            </EnumEntry>
+            <EnumEntry Name="Include" NameSpace="Standard">
+                <Description>包含</Description>
+                <DisplayName>包含</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+        </Enumeration>
+    </Category>
+</AlgorithmRoot>

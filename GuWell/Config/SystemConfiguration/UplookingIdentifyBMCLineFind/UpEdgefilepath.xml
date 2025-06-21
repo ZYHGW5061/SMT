@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AlgorithmRoot>
+    <Category Name="AlgorithmKeyParam" NameSpace="Standard">
+        <Enumeration Name="EdgePolarity" NameSpace="Standard">
+            <Description>边缘极性</Description>
+            <DisplayName>边缘极性</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20101</AlgorithmIndex>
+            <CurValue>0x3</CurValue>
+            <DefaultValue>0x3</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="BlackToWhite" NameSpace="Standard">
+                <Description>由黑到白</Description>
+                <DisplayName>由黑到白</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="WhiteToBlack" NameSpace="Standard">
+                <Description>由白到黑</Description>
+                <DisplayName>由白到黑</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+            <EnumEntry Name="Both" NameSpace="Standard">
+                <Description>两种类型</Description>
+                <DisplayName>两种类型</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x3</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Enumeration Name="LineFindMode" NameSpace="Standard">
+            <Description>查找模式</Description>
+            <DisplayName>查找模式</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20102</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="Best" NameSpace="Standard">
+                <Description>查找最佳边缘</Description>
+                <DisplayName>查找最佳边缘</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="First" NameSpace="Standard">
+                <Description>查找第一条边缘</Description>
+                <DisplayName>查找第一条边缘</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+            <EnumEntry Name="Last" NameSpace="Standard">
+                <Description>查找最后一条边缘</Description>
+                <DisplayName>查找最后一条边缘</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x3</Value>
+            </EnumEntry>
+            <EnumEntry Name="Manual" NameSpace="Standard">
+                <Description>手动模式（自动设置ROI高度的一半）</Description>
+                <DisplayName>手动模式（自动设置ROI高度的一半）</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x4</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Enumeration Name="FindOrient" NameSpace="Standard">
+            <Description>搜索方向</Description>
+            <DisplayName>搜索方向</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20103</AlgorithmIndex>
+            <CurValue>0x1</CurValue>
+            <DefaultValue>0x1</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="UpToDown" NameSpace="Standard">
+                <Description>四边形从上到下或扇环形由内向外搜索</Description>
+                <DisplayName>四边形从上到下或扇环形由内向外搜索</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="LeftToRight" NameSpace="Standard">
+                <Description>四边形从左到右或扇环形逆时针搜索</Description>
+                <DisplayName>四边形从左到右或扇环形逆时针搜索</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Integer Name="EdgeStrength" NameSpace="Standard">
+            <Description>边缘阈值</Description>
+            <DisplayName>边缘阈值</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20104</AlgorithmIndex>
+            <CurValue>0x5</CurValue>
+            <DefaultValue>0x5</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0xFF</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="RayNum" NameSpace="Standard">
+            <Description>卡尺数量</Description>
+            <DisplayName>卡尺数量</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20105</AlgorithmIndex>
+            <CurValue>0x1E</CurValue>
+            <DefaultValue>0x1E</DefaultValue>
+            <MinValue>0x2</MinValue>
+            <MaxValue>0x3E8</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="RegionWidth" NameSpace="Standard">
+            <Description>卡尺宽度(参数范围同时和能力集有关,即Min(AbilityWidth/Height, Value))</Description>
+            <DisplayName>卡尺宽度</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20107</AlgorithmIndex>
+            <CurValue>0x5</CurValue>
+            <DefaultValue>0x5</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0x1F4</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="RejectDist" NameSpace="Standard">
+            <Description>剔除距离</Description>
+            <DisplayName>剔除距离</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20109</AlgorithmIndex>
+            <CurValue>0x5</CurValue>
+            <DefaultValue>0x5</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0x3E8</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="KernelSize" NameSpace="Standard">
+            <Description>滤波核半宽</Description>
+            <DisplayName>滤波核半宽</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x2010B</AlgorithmIndex>
+            <CurValue>0x2</CurValue>
+            <DefaultValue>0x2</DefaultValue>
+            <MinValue>0x1</MinValue>
+            <MaxValue>0x32</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Enumeration Name="FitFun" NameSpace="Standard">
+            <Description>拟合方式</Description>
+            <DisplayName>拟合方式</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x2010C</AlgorithmIndex>
+            <CurValue>0x2</CurValue>
+            <DefaultValue>0x2</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="LS" NameSpace="Standard">
+                <Description>最小二乘</Description>
+                <DisplayName>最小二乘</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="Huber" NameSpace="Standard">
+                <Description>Huber函数</Description>
+                <DisplayName>Huber函数</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+            <EnumEntry Name="Tukey" NameSpace="Standard">
+                <Description>Tukey函数</Description>
+                <DisplayName>Tukey函数</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x3</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Enumeration Name="FitInitType" NameSpace="Standard">
+            <Description>初始拟合类型</Description>
+            <DisplayName>初始拟合类型</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x2010E</AlgorithmIndex>
+            <CurValue>0x2</CurValue>
+            <DefaultValue>0x2</DefaultValue>
+            <EnumValueType>0x0</EnumValueType>
+            <EnumEntry Name="ALS" NameSpace="Standard">
+                <Description>一次全局最小二乘</Description>
+                <DisplayName>一次全局最小二乘</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x1</Value>
+            </EnumEntry>
+            <EnumEntry Name="LLS" NameSpace="Standard">
+                <Description>穷举局部最小二乘,取最佳</Description>
+                <DisplayName>穷举局部最小二乘,取最佳</DisplayName>
+                <IsImplemented>0x1</IsImplemented>
+                <Value>0x2</Value>
+            </EnumEntry>
+        </Enumeration>
+        <Integer Name="RejectNum" NameSpace="Standard">
+            <Description>忽略点数</Description>
+            <DisplayName>忽略点数</DisplayName>
+            <Visibility>Expert</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x2010F</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x3E6</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="P2BoxDist" NameSpace="Standard">
+            <Description>点边距离</Description>
+            <DisplayName>点边距离</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20110</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x64</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+        <Integer Name="LineRate" NameSpace="Standard">
+            <Description>直线度</Description>
+            <DisplayName>直线度</DisplayName>
+            <Visibility>Beginner</Visibility>
+            <AccessMode>RW</AccessMode>
+            <AlgorithmIndex>0x20111</AlgorithmIndex>
+            <CurValue>0x0</CurValue>
+            <DefaultValue>0x0</DefaultValue>
+            <MinValue>0x0</MinValue>
+            <MaxValue>0x64</MaxValue>
+            <IncValue>0x1</IncValue>
+        </Integer>
+    </Category>
+</AlgorithmRoot>
