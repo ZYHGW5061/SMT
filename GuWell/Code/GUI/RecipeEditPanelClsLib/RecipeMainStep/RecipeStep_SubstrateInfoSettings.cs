@@ -35,6 +35,8 @@ namespace RecipeEditPanelClsLib
             //cmbRelatedPPTool.Text = _editRecipe.SubmonutInfos.RelatedPPToolName;
             //cmbRelatedESTool.Text = _editRecipe.SubmonutInfos.RelatedESToolName;
 
+            teSubstrateName.Text = _editRecipe.SubstrateInfos.Name;
+
             ckeMultiSubstrate.Checked = _editRecipe.SubstrateInfos.IsMultiSubstrates;
             ckbMultiModule.Checked = _editRecipe.SubstrateInfos.IsMultiModules;
             ckbAlignModule.Checked = _editRecipe.SubstrateInfos.IsPositionModules;
@@ -112,6 +114,8 @@ namespace RecipeEditPanelClsLib
             //_editRecipe.BlankingParameters.BlankingMethod = (EnumBlankingMethod)Enum.Parse(typeof(EnumBlankingMethod), cmbBlankingMethod.Text);
             //_editRecipe.SubmonutInfos.RelatedPPToolName = cmbRelatedPPTool.Text;
             //_editRecipe.SubmonutInfos.RelatedESToolName = cmbRelatedESTool.Text;
+
+            _editRecipe.SubstrateInfos.Name = teSubstrateName.Text;
 
             _editRecipe.SubstrateInfos.IsMultiSubstrates= ckeMultiSubstrate.Checked;
             _editRecipe.SubstrateInfos.IsMultiModules= ckbMultiModule.Checked;

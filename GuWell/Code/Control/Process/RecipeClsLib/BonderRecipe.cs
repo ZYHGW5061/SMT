@@ -35,6 +35,9 @@ namespace RecipeClsLib
         [XmlIgnore]
         public List<ProgramComponentSettings> StepComponentList { get; set; }
 
+        [XmlIgnore]
+        public ProgramComponentSettings SubmonutInfos { get; set; }
+
         [XmlElement("SubstrateInfos")]
         public ProgramSubstrateSettings SubstrateInfos { get; set; }
         [XmlElement("DispenserSettings")]
@@ -44,6 +47,9 @@ namespace RecipeClsLib
         public List<BondingPositionSettings> StepBondingPositionList { get; set; }
         [XmlIgnore]
         public List<EpoxyApplication> StepEpoxyApplicationList { get; set; }
+
+        [XmlIgnore]
+        public List<EutecticParameters> EutecticParameters = new List<EutecticParameters>();
 
 
         [XmlArray("ProductSteps"), XmlArrayItem(typeof(ProductStep))]
@@ -57,10 +63,15 @@ namespace RecipeClsLib
         [XmlIgnore]
         private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
         [XmlIgnore]
-        private static string _componentsSavePath = string.Format(@"{0}Recipes\{1}\Components\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
+        private static string _SubmonutSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
         [XmlIgnore]
-        private static string _bondPositionSavePath = string.Format(@"{0}Recipes\{1}\BondPositions\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
-        private static string _epoxyApplicationSavePath = string.Format(@"{0}Recipes\{1}\EpoxyApplication\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
+        private static string _SubstrateSavePath = string.Format(@"{0}Recipes\Substrate\", SystemDefaultDirectory);
+        [XmlIgnore]
+        private static string _componentsSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
+        [XmlIgnore]
+        private static string _bondPositionSavePath = string.Format(@"{0}Recipes\BondPositions\", SystemDefaultDirectory);
+        private static string _epoxyApplicationSavePath = string.Format(@"{0}Recipes\EpoxyApplication\", SystemDefaultDirectory);
+        private static string _EutecticSavePath = string.Format(@"{0}Recipes\Eutectic\", SystemDefaultDirectory);
         /// <summary>
         /// Recipe xml完整的路径
         /// </summary>
@@ -90,7 +101,9 @@ namespace RecipeClsLib
         public string CurrentComponentInfosName { get; set; }
         [XmlIgnore]
         public string CurrentEpoxyApplicationName { get; set; }
-        
+        [XmlIgnore]
+        public string CurrentEutecticName { get; set; }
+
         [XmlIgnore]
         public ProgramComponentSettings CurrentComponent
         {
@@ -130,6 +143,19 @@ namespace RecipeClsLib
                 return ret;
             }
         }
+        [XmlIgnore]
+        public EutecticParameters CurrentEutecticParameter
+        {
+            get
+            {
+                EutecticParameters ret = null;
+                if (!string.IsNullOrEmpty(CurrentEutecticName))
+                {
+                    ret = EutecticParameters.FirstOrDefault(i => i.Name == CurrentEutecticName);
+                }
+                return ret;
+            }
+        }
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -137,9 +163,11 @@ namespace RecipeClsLib
         {
             RecipeName = string.Empty;
             StepComponentList = new List<ProgramComponentSettings>();
+            SubmonutInfos = new ProgramComponentSettings();
             SubstrateInfos = new ProgramSubstrateSettings();
             SubstrateInfos.CarrierType = EnumCarrierType.WafflePack;
             StepBondingPositionList = new List<BondingPositionSettings>();
+            EutecticParameters = new List<EutecticParameters>();
             ProductSteps = new List<ProductStep>();
             DispenserSettings = new DispenserSettings();
             StepEpoxyApplicationList = new List<EpoxyApplication>();
@@ -198,21 +226,27 @@ namespace RecipeClsLib
                 loadedRecipe = LoadMainParameters(_recipeFullName);
                 //此处需根据ProcessList加载Component和BondPosition
                 //loadedRecipe.ComponentInfos.ComponentMapInfos = LoadComponentMap();
-                loadedRecipe.SubstrateInfos.SubstrateMapInfos = LoadSubstrateMap();
+                
 
                 if (loadedRecipe.ProductSteps.Count > 0)
                 {
+                    loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.ProductSteps)[0];
+                    loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
                 }
                 else
                 {
+                    loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
+                    loadedRecipe.SubstrateInfos = LoadSubstrates(loadedRecipe.RecipeName)[0];
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
                 }
-                loadedRecipe.SubstrateInfos.ModuleMapInfos = LoadModuleMap();
+                //loadedRecipe.SubstrateInfos.SubstrateMapInfos = LoadSubstrateMap();
+                //loadedRecipe.SubstrateInfos.ModuleMapInfos = LoadModuleMap();
+
                 //foreach (var item in loadedRecipe.SubstrateInfos.ModuleMapInfos)
                 //{
                 //    for (int i = 0; i < item.Count; i++)
@@ -256,15 +290,19 @@ namespace RecipeClsLib
                 case EnumRecipeStep.Configuration:
                     break;
                 case EnumRecipeStep.Substrate_InformationSettings:
+                    SaveSubstrate();
                     break;
                 case EnumRecipeStep.Substrate_PositionSettings:
+                    SaveSubstrate();
                     break;
                 case EnumRecipeStep.Substrate_MaterialMap:
-                    SaveSubstrateMap();
+                    SaveSubstrate();
                     break;
                 case EnumRecipeStep.Substrate_PPSettings:
+                    SaveSubstrate();
                     break;
                 case EnumRecipeStep.Substrate_Accuracy:
+                    SaveSubstrate();
                     break;
                 case EnumRecipeStep.BondPosition:
                     SaveBondPosition();
@@ -285,6 +323,7 @@ namespace RecipeClsLib
                     SaveComponent();
                     break;
                 case EnumRecipeStep.EutecticSettings:
+                    SaveEutectic();
                     break;
                 case EnumRecipeStep.ProductStepList:
                     break;
@@ -316,6 +355,31 @@ namespace RecipeClsLib
 
             return ret;
         }
+
+        public static List<ProgramSubstrateSettings> LoadSubstrate(List<ProductStep> ProcessingList)
+        {
+            var ret = new List<ProgramSubstrateSettings>();
+            try
+            {
+                foreach (var item in ProcessingList)
+                {
+                    var xmlFile = $@"{_SubstrateSavePath}{item.SubstrateName}\{item.SubstrateName}.xml";
+                    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+                    comp.SubstrateMapInfos = LoadSubstrateMap(item.SubstrateName);
+                    comp.ModuleMapInfos = LoadModuleMap(item.SubstrateName);
+                    if (!ret.Any(i => i.Name == comp.Name))
+                    {
+                        ret.Add(comp);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "LoadSubstrate，Error.", ex);
+            }
+            return ret;
+        }
+
         public static List<ProgramComponentSettings> LoadComponents(List<ProductStep> ProcessingList)
         {
             var ret = new List<ProgramComponentSettings>();
@@ -404,6 +468,60 @@ namespace RecipeClsLib
             }
             return ret;
         }
+
+        public static List<EutecticParameters> LoadEutectics(List<ProductStep> ProcessingList)
+        {
+            var ret = new List<EutecticParameters>();
+            try
+            {
+                foreach (var item in ProcessingList)
+                {
+                    var xmlFile = $@"{_EutecticSavePath}{item.EutecticName}\{item.EutecticName}.xml";
+                    var bp = XmlSerializeHelper.XmlDeserializeFromFile<EutecticParameters>(xmlFile, Encoding.UTF8);
+                    if (!ret.Any(i => i.Name == bp.Name))
+                    {
+                        ret.Add(bp);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "LoadEpoxyApplications，Error.", ex);
+            }
+            return ret;
+        }
+
+
+        /// <summary>
+        /// 根据物料名获取物料对象
+        /// </summary>
+        public static ProgramSubstrateSettings LoadSubstrateByName(string substrateName)
+        {
+            var ret = new ProgramSubstrateSettings();
+            var xmlFile = $@"{_SubstrateSavePath}{substrateName}\{substrateName}.xml";
+            ret = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+            ret.SubstrateMapInfos = LoadSubstrateMap(substrateName);
+            return ret;
+        }
+        public static List<ProgramSubstrateSettings> LoadSubstrates(string substrateName)
+        {
+            var ret = new List<ProgramSubstrateSettings>();
+            var childFiles = Directory.GetDirectories(_SubstrateSavePath);
+            for (int index = 0; index < childFiles.Length; index++)
+            {
+                var fileName = Path.GetFileName(childFiles[index]);
+                if (fileName.EndsWith($"_{substrateName}"))
+                {
+                    var xmlFile = $@"{_SubstrateSavePath}\{fileName}\{fileName}.xml";
+                    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+                    comp.SubstrateMapInfos = LoadSubstrateMap(fileName);
+                    ret.Add(comp);
+                }
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// 根据物料名获取物料对象
         /// </summary>
@@ -485,6 +603,44 @@ namespace RecipeClsLib
 
             return ret;
         }
+
+        public static EutecticParameters LoadEutecticByName(string name)
+        {
+            var ret = new EutecticParameters();
+            var xmlFile = $@"{_EutecticSavePath}{name}\{name}.xml";
+            ret = XmlSerializeHelper.XmlDeserializeFromFile<EutecticParameters>(xmlFile, Encoding.UTF8);
+            return ret;
+        }
+        public static List<EutecticParameters> LoadEutectics(string recipeName)
+        {
+            var ret = new List<EutecticParameters>();
+            var childDir = Directory.GetDirectories(_EutecticSavePath);
+            for (int index = 0; index < childDir.Length; index++)
+            {
+                var fileName = Path.GetFileName(childDir[index]);
+                if (fileName.EndsWith($"_{recipeName}"))
+                {
+
+                    var xmlFile = $@"{_EutecticSavePath}{fileName}\{fileName}.xml";
+                    var bp = XmlSerializeHelper.XmlDeserializeFromFile<EutecticParameters>(xmlFile, Encoding.UTF8);
+                    ret.Add(bp);
+                }
+
+            }
+
+            return ret;
+        }
+
+        private void SaveSubstrate()
+        {
+            if (SubstrateInfos != null)
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{SubstrateInfos.Name}\{SubstrateInfos.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(SubstrateInfos, xmlFile, Encoding.UTF8);
+                SaveSubstrateMap();
+            }
+        }
+
         private void SaveComponent()
         {
             if (CurrentComponent != null)
@@ -511,6 +667,17 @@ namespace RecipeClsLib
                 XmlSerializeHelper.XmlSerializeToFile(CurrentEpoxyApplication, xmlFile, Encoding.UTF8);
             }
         }
+
+        private void SaveEutectic()
+        {
+            if (CurrentEutecticParameter != null)
+            {
+                var xmlFile = $@"{_EutecticSavePath}{CurrentEutecticParameter.Name}\{CurrentEutecticParameter.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(CurrentEutecticParameter, xmlFile, Encoding.UTF8);
+            }
+        }
+
+
         private void SaveComponentMap()
         {
             if (CurrentComponent != null)
@@ -538,9 +705,14 @@ namespace RecipeClsLib
         }
         private void SaveSubstrateMap()
         {
-            var substrateXmlFile = $@"{_recipeFolderFullName}\SubstrateMap.xml";
+            //var substrateXmlFile = $@"{_recipeFolderFullName}\SubstrateMap.xml";
+            //XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.SubstrateMapInfos, substrateXmlFile, Encoding.UTF8);
+            //var moduleXmlFile = $@"{_recipeFolderFullName}\ModuleMap.xml";
+            //XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
+
+            var substrateXmlFile = $@"{_SubstrateSavePath}{SubstrateInfos.Name}\SubstrateMap.xml";
             XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.SubstrateMapInfos, substrateXmlFile, Encoding.UTF8);
-            var moduleXmlFile = $@"{_recipeFolderFullName}\ModuleMap.xml";
+            var moduleXmlFile = $@"{_SubstrateSavePath}{SubstrateInfos.Name}\ModuleMap.xml";
             XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
         }
         private static List<MaterialMapInformation> LoadSubstrateMap()
@@ -577,6 +749,43 @@ namespace RecipeClsLib
             }
             return materialMapData;
         }
+
+        private static List<MaterialMapInformation> LoadSubstrateMap(string substrateName)
+        {
+            var materialMapData = new List<MaterialMapInformation>();
+            try
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{substrateName}\SubstrateMap.xml";
+                if (File.Exists(xmlFile))
+                {
+                    materialMapData = XmlSerializeHelper.XmlDeserializeFromFile<List<MaterialMapInformation>>(xmlFile, Encoding.UTF8);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, string.Format("Load Recipe {0} LoadSubstrateMap 信息异常", _recipeFullName), ex);
+            }
+            return materialMapData;
+        }
+        private static List<List<MaterialMapInformation>> LoadModuleMap(string substrateName)
+        {
+            var materialMapData = new List<List<MaterialMapInformation>>();
+            try
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{substrateName}\ModuleMap.xml";
+                if (File.Exists(xmlFile))
+                {
+                    materialMapData = XmlSerializeHelper.XmlDeserializeFromFile<List<List<MaterialMapInformation>>>(xmlFile, Encoding.UTF8);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, string.Format("Load Recipe {0} LoadModuleMap 信息异常", _recipeFullName), ex);
+            }
+            return materialMapData;
+        }
+
+
         public bool IsStepComplete_Substrate()
         {
             var ret = false;

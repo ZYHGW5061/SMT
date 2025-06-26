@@ -99,9 +99,9 @@ namespace RecipeEditPanelClsLib
             {
                 string recipeDir = _systemConfig.SystemDefaultDirectory + @"Recipes\Bonder";
                 CommonProcess.EnsureFolderExist(recipeDir);
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\{1}\Components\", _systemConfig.SystemDefaultDirectory, EnumRecipeType.Bonder.ToString()));
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\{1}\BondPositions\", _systemConfig.SystemDefaultDirectory, EnumRecipeType.Bonder.ToString()));
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\{1}\EpoxyApplication\", _systemConfig.SystemDefaultDirectory, EnumRecipeType.Bonder.ToString()));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\Components\", _systemConfig.SystemDefaultDirectory));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\BondPositions\", _systemConfig.SystemDefaultDirectory));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\EpoxyApplication\", _systemConfig.SystemDefaultDirectory));
                 var recipeFiles = Directory.GetDirectories(recipeDir);
                 for (int recipeIndex = 0; recipeIndex < recipeFiles.Length; recipeIndex++)
                 {

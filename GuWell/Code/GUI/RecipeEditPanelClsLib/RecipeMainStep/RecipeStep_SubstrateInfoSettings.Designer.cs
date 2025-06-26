@@ -48,6 +48,8 @@ namespace RecipeEditPanelClsLib
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.ckbMultiModule = new System.Windows.Forms.CheckBox();
             this.ckbAlignModule = new System.Windows.Forms.CheckBox();
+            this.teSubstrateName = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -259,10 +261,28 @@ namespace RecipeEditPanelClsLib
             this.ckbAlignModule.Text = "模块位置校正";
             this.ckbAlignModule.UseVisualStyleBackColor = true;
             // 
+            // teSubstrateName
+            // 
+            this.teSubstrateName.Location = new System.Drawing.Point(778, 3);
+            this.teSubstrateName.Name = "teSubstrateName";
+            this.teSubstrateName.Size = new System.Drawing.Size(100, 22);
+            this.teSubstrateName.TabIndex = 15;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(717, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 14);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "基板名称";
+            // 
             // RecipeStep_SubstrateInfoSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.teSubstrateName);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
             this.Name = "RecipeStep_SubstrateInfoSettings";
@@ -279,6 +299,7 @@ namespace RecipeEditPanelClsLib
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -303,5 +324,7 @@ namespace RecipeEditPanelClsLib
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cmbPositionSubstrateMehtod;
         private System.Windows.Forms.CheckBox ckbMultiModule;
+        private System.Windows.Forms.TextBox teSubstrateName;
+        private System.Windows.Forms.Label label3;
     }
 }

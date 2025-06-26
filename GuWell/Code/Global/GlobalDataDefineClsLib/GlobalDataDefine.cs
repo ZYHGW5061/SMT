@@ -1863,17 +1863,45 @@ namespace GlobalDataDefineClsLib
         [XmlElement("StepName")]
         public string StepName { get; set; }
 
+        /// <summary>
+        /// 步骤类型
+        /// </summary>
         [XmlElement("ProductStepType")]
         public EnumProductStepType productStepType { get; set; }
 
+        /// <summary>
+        /// 基板名称
+        /// </summary>
+        [XmlElement("SubstrateName")]
+        public string SubstrateName { get; set; }
+
+        /// <summary>
+        /// 热沉名称
+        /// </summary>
+        [XmlElement("SubmonutName")]
+        public string SubmonutName { get; set; }
+
+        /// <summary>
+        /// 芯片名称
+        /// </summary>
         [XmlElement("ComponentName")]
         public string ComponentName { get; set; }
 
+        /// <summary>
+        /// 贴装位置名称
+        /// </summary>
         [XmlElement("BondingPositionName")]
         public string BondingPositionName { get; set; }
 
+        /// <summary>
+        /// 共晶名称
+        /// </summary>
         [XmlElement("EutecticName")]
         public string EutecticName { get; set; }
+
+        /// <summary>
+        /// 点胶工具名称
+        /// </summary>
         [XmlElement("EpoxyApplicationName")]
         public string EpoxyApplicationName { get; set; }
     }
@@ -2619,6 +2647,10 @@ namespace GlobalDataDefineClsLib
 
         [XmlElement("EutecticPress")]
         public float EutecticPress { get; set; }
+
+        [XmlElement("Name")]
+        public string Name { get; set; }
+
         [XmlElement("HeatSegmentParam")]
         public List<HeatSegmentParam> HeatSegmentParam { get; set; }
         public EutecticParameters()

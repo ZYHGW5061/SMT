@@ -103,6 +103,8 @@ namespace RecipeEditPanelClsLib
             this.cbComponentList = new System.Windows.Forms.ComboBox();
             this.rbTypeEutectic = new System.Windows.Forms.RadioButton();
             this.rbTypeMaterial = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbSubstrateList = new System.Windows.Forms.ComboBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tabPane1)).BeginInit();
             this.tabPane1.SuspendLayout();
@@ -750,6 +752,8 @@ namespace RecipeEditPanelClsLib
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.cbSubstrateList);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.cbBlankType);
             this.groupBox1.Controls.Add(this.label6);
@@ -781,7 +785,7 @@ namespace RecipeEditPanelClsLib
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(18, 238);
+            this.label9.Location = new System.Drawing.Point(18, 298);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(55, 14);
             this.label9.TabIndex = 54;
@@ -792,7 +796,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cbBlankType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBlankType.FormattingEnabled = true;
-            this.cbBlankType.Location = new System.Drawing.Point(91, 235);
+            this.cbBlankType.Location = new System.Drawing.Point(91, 295);
             this.cbBlankType.Name = "cbBlankType";
             this.cbBlankType.Size = new System.Drawing.Size(189, 22);
             this.cbBlankType.TabIndex = 53;
@@ -801,7 +805,7 @@ namespace RecipeEditPanelClsLib
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(18, 203);
+            this.label6.Location = new System.Drawing.Point(18, 263);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 14);
             this.label6.TabIndex = 52;
@@ -812,7 +816,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cbPickupOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPickupOrder.FormattingEnabled = true;
-            this.cbPickupOrder.Location = new System.Drawing.Point(91, 200);
+            this.cbPickupOrder.Location = new System.Drawing.Point(91, 260);
             this.cbPickupOrder.Name = "cbPickupOrder";
             this.cbPickupOrder.Size = new System.Drawing.Size(189, 22);
             this.cbPickupOrder.TabIndex = 51;
@@ -877,7 +881,7 @@ namespace RecipeEditPanelClsLib
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(18, 167);
+            this.label10.Location = new System.Drawing.Point(18, 227);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(55, 14);
             this.label10.TabIndex = 39;
@@ -886,7 +890,7 @@ namespace RecipeEditPanelClsLib
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(18, 133);
+            this.label7.Location = new System.Drawing.Point(18, 193);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(55, 14);
             this.label7.TabIndex = 39;
@@ -896,7 +900,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cmbSelEpoxyApplication.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSelEpoxyApplication.FormattingEnabled = true;
-            this.cmbSelEpoxyApplication.Location = new System.Drawing.Point(91, 164);
+            this.cmbSelEpoxyApplication.Location = new System.Drawing.Point(91, 224);
             this.cmbSelEpoxyApplication.Name = "cmbSelEpoxyApplication";
             this.cmbSelEpoxyApplication.Size = new System.Drawing.Size(189, 22);
             this.cmbSelEpoxyApplication.TabIndex = 38;
@@ -905,7 +909,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cbBondPositionList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBondPositionList.FormattingEnabled = true;
-            this.cbBondPositionList.Location = new System.Drawing.Point(91, 130);
+            this.cbBondPositionList.Location = new System.Drawing.Point(91, 190);
             this.cbBondPositionList.Name = "cbBondPositionList";
             this.cbBondPositionList.Size = new System.Drawing.Size(189, 22);
             this.cbBondPositionList.TabIndex = 38;
@@ -962,15 +966,15 @@ namespace RecipeEditPanelClsLib
             // 
             this.lbSteps.FormattingEnabled = true;
             this.lbSteps.ItemHeight = 14;
-            this.lbSteps.Location = new System.Drawing.Point(21, 359);
+            this.lbSteps.Location = new System.Drawing.Point(21, 419);
             this.lbSteps.Name = "lbSteps";
-            this.lbSteps.Size = new System.Drawing.Size(259, 270);
+            this.lbSteps.Size = new System.Drawing.Size(259, 200);
             this.lbSteps.TabIndex = 20;
             this.lbSteps.DoubleClick += new System.EventHandler(this.lbSteps_DoubleClick);
             // 
             // btnCreateProduct
             // 
-            this.btnCreateProduct.Location = new System.Drawing.Point(205, 273);
+            this.btnCreateProduct.Location = new System.Drawing.Point(205, 334);
             this.btnCreateProduct.Name = "btnCreateProduct";
             this.btnCreateProduct.Size = new System.Drawing.Size(75, 36);
             this.btnCreateProduct.TabIndex = 19;
@@ -980,7 +984,7 @@ namespace RecipeEditPanelClsLib
             // separatorControl1
             // 
             this.separatorControl1.LineColor = System.Drawing.Color.Gainsboro;
-            this.separatorControl1.Location = new System.Drawing.Point(21, 323);
+            this.separatorControl1.Location = new System.Drawing.Point(21, 383);
             this.separatorControl1.Name = "separatorControl1";
             this.separatorControl1.Size = new System.Drawing.Size(259, 23);
             this.separatorControl1.TabIndex = 5;
@@ -988,7 +992,7 @@ namespace RecipeEditPanelClsLib
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 96);
+            this.label2.Location = new System.Drawing.Point(18, 156);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 14);
             this.label2.TabIndex = 3;
@@ -998,7 +1002,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cbComponentList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbComponentList.FormattingEnabled = true;
-            this.cbComponentList.Location = new System.Drawing.Point(91, 93);
+            this.cbComponentList.Location = new System.Drawing.Point(91, 153);
             this.cbComponentList.Name = "cbComponentList";
             this.cbComponentList.Size = new System.Drawing.Size(189, 22);
             this.cbComponentList.TabIndex = 2;
@@ -1028,6 +1032,24 @@ namespace RecipeEditPanelClsLib
             this.rbTypeMaterial.UseVisualStyleBackColor = true;
             this.rbTypeMaterial.Visible = false;
             this.rbTypeMaterial.CheckedChanged += new System.EventHandler(this.rbTypeTrans_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(18, 119);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 14);
+            this.label1.TabIndex = 56;
+            this.label1.Text = "基板选择";
+            // 
+            // cbSubstrateList
+            // 
+            this.cbSubstrateList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbSubstrateList.FormattingEnabled = true;
+            this.cbSubstrateList.Location = new System.Drawing.Point(91, 116);
+            this.cbSubstrateList.Name = "cbSubstrateList";
+            this.cbSubstrateList.Size = new System.Drawing.Size(189, 22);
+            this.cbSubstrateList.TabIndex = 55;
             // 
             // RecipeStep_ProductStep
             // 
@@ -1152,5 +1174,7 @@ namespace RecipeEditPanelClsLib
         private DevExpress.XtraEditors.LabelControl labelControl13;
         private DevExpress.XtraEditors.LabelControl labelControl14;
         private System.Windows.Forms.ComboBox cmbPredispensingMode;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cbSubstrateList;
     }
 }

@@ -88,7 +88,7 @@ namespace RecipeEditPanelClsLib
                     throw new Exception("Recipe is null when execute BondPositionStep_VisionPosition LoadEditedRecipe.");
                 }
                 EditRecipe = recipe;
-                var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\{EnumRecipeType.Bonder.ToString()}\BondPositions\{EditRecipe.CurrentBondPosition.Name}\TemplateConfig\";
+                var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\BondPositions\{EditRecipe.CurrentBondPosition.Name}\TemplateConfig\";
                 CommonProcess.EnsureFolderExist(templateFolderName);
 
                 //if (recipe.CurrentComponent.PositionComponentVisionParameters.FirstOrDefault().VisionPositionUsedCamera == EnumCameraType.BondCamera)

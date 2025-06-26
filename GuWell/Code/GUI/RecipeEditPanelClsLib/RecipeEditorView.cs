@@ -75,6 +75,7 @@ namespace RecipeEditPanelClsLib
 
         private void RefreshRecipeNode()
         {
+            ParentTreeListAddSubstrateListNode(_editRecipe.SubstrateInfos.Name);
             foreach (var item in _editRecipe.StepComponentList)
             {
                 ParentTreeListAddComponentListNode(item.Name);
@@ -421,6 +422,7 @@ namespace RecipeEditPanelClsLib
                     {
                         node.Tag = isActive;
                         isCompleted = _editRecipe.IsStepComplete_Substrate();
+                        this.RefreshSecondaryNodeStatus(node, "基板");
                     }
                     else if (funncType == "贴装位置")
                     {
@@ -500,6 +502,10 @@ namespace RecipeEditPanelClsLib
                 else if (parentNodeName == "胶水设置")
                 {
                     isCompleted = _editRecipe.IsStepComplete_EpoxyApplication(funncType);
+                }
+                else if (parentNodeName == "基板")
+                {
+                    isCompleted = _editRecipe.IsStepComplete_Substrate();
                 }
                 if (isCompleted)
                     childNode.ImageIndex = 3;
@@ -865,7 +871,7 @@ namespace RecipeEditPanelClsLib
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 node.SelectImageIndex = node.ImageIndex;
-                if (node.GetDisplayText(0) != "芯片" && node.GetDisplayText(0) != "贴装位置" && node.GetDisplayText(0) != "胶水设置")
+                if (node.GetDisplayText(0) != "基板" && node.GetDisplayText(0) != "芯片" && node.GetDisplayText(0) != "贴装位置" && node.GetDisplayText(0) != "胶水设置")
                 {
                     if (node.ParentNode != null)
                     {
@@ -878,6 +884,19 @@ namespace RecipeEditPanelClsLib
                                 node.SelectImageIndex = node.ImageIndex;
                                 return;
                             
+
+
+
+                        }
+                        // 选中基板的子节点时，子节点树显示内容，并更新当前基板模组名称
+                        else if (node.ParentNode.GetDisplayText(0) == "基板")
+                        {
+                            RefreshChildNodesTree();
+                            _editRecipe.SubstrateInfos.Name = _mainTreeCurNodeCaption;
+
+                            node.SelectImageIndex = node.ImageIndex;
+                            return;
+
 
 
 
@@ -934,11 +953,11 @@ namespace RecipeEditPanelClsLib
             {
                 this.barbtnAdd.Visibility = BarItemVisibility.Always;
                 this.barbtnDelete.Visibility = BarItemVisibility.Always;
-                if (node.GetDisplayText(0) == "芯片" || node.GetDisplayText(0) == "贴装位置" || node.GetDisplayText(0) == "胶水设置")
+                if (node.GetDisplayText(0) == "基板" || node.GetDisplayText(0) == "芯片" || node.GetDisplayText(0) == "贴装位置" || node.GetDisplayText(0) == "胶水设置")
                 {
                     popupMenu1.ShowPopup(this.PointToScreen(e.Location));
                 }
-                else if(node.ParentNode!=null&&(node.ParentNode.GetDisplayText(0) == "芯片"|| node.ParentNode.GetDisplayText(0) == "贴装位置" || node.ParentNode.GetDisplayText(0) == "胶水设置"))
+                else if(node.ParentNode!=null&&(node.ParentNode.GetDisplayText(0) == "基板" || node.ParentNode.GetDisplayText(0) == "芯片"|| node.ParentNode.GetDisplayText(0) == "贴装位置" || node.ParentNode.GetDisplayText(0) == "胶水设置"))
                 {
                     popupMenu2.ShowPopup(this.PointToScreen(e.Location));
                 }
@@ -952,19 +971,19 @@ namespace RecipeEditPanelClsLib
         /// <param name="e"></param>
         private void barbtnAdd_ItemClick(object sender, ItemClickEventArgs e)
         {
-            //if (_mainTreeCurNodeCaption == "基板")
-            //{
-            //    FrmNew frm = new FrmNew();
-            //    frm.SetFormTitle("新建基板");
-            //    if (frm.ShowDialog() == DialogResult.OK)
-            //    {
-            //        ParentTreeListAddNode(frm.NewName);
-            //        RefreshChildNodesTree();
-            //        RefreshSubNodeStatus();
-            //    }
-            //}
-            //else 
-            if (_mainTreeCurNodeCaption == "芯片")
+            if (_mainTreeCurNodeCaption == "基板")
+            {
+                FrmNew frm = new FrmNew();
+                frm.SetFormTitle("新建基板");
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    ParentTreeListAddNode(frm.NewName);
+                    RefreshChildNodesTree();
+                    //RefreshSubNodeStatus();
+                    RefreshParentTreeNodeStatus();
+                }
+            }
+            else if (_mainTreeCurNodeCaption == "芯片")
             {
                 FrmNewComponent frm = new FrmNewComponent();
                 frm.SetFormTitle("新建芯片");
@@ -1031,6 +1050,21 @@ namespace RecipeEditPanelClsLib
                 }
             }
             //treeRecipeNodes.MoveNext();
+        }
+        private void ParentTreeListAddSubstrateListNode(string nodeName)
+        {
+            foreach (TreeListNode node in treeRecipeNodes.Nodes)
+            {
+                if (node.GetDisplayText(0) == "基板")
+                {
+                    var newNode = node.Nodes.Add();
+                    newNode.SetValue(0, nodeName);
+                    newNode.StateImageIndex = -1;
+                    newNode.ImageIndex = 4;
+                    newNode.SelectImageIndex = 4;
+                    break;
+                }
+            }
         }
         private void ParentTreeListAddComponentListNode(string nodeName)
         {
@@ -1137,7 +1171,7 @@ namespace RecipeEditPanelClsLib
             treeChildNodes.Nodes.Clear();
             if (!isClear)
             {
-                if (_mainTreeCurNodeCaption == "基板")
+                if (_mainTreeCurNodeParentNodeCaption == "基板")
                 {
                     var node = treeChildNodes.Nodes.Add();
                     node.SetValue(0, "基本设置");

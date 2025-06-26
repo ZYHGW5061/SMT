@@ -411,610 +411,610 @@ namespace ProductRunClsLib
             _positionSystem.StageMovetoPrepareLocationForJob();
         }
 
-        public void Transpotmothed()
-        {
-            IOUtilityHelper.Instance.TurnonTowerGreenLight();
-            IOUtilityHelper.Instance.TurnoffTowerYellowLight();
-            if (_positionSystem.BondMovetoSafeLocation())
-            {
-                curSubstrateNum = 1;
-                curModuleNum = 1;
-                BondDieCounter = 0;
-                ProductExecutor.Instance.CurChipNum = 1;
-                Task.Factory.StartNew(new Action(() =>
-                {
-                    EnumJobRunStatus currentJobStatus = EnumJobRunStatus.Initial;
-                    //while (true)
-                    //{
+        //public void Transpotmothed()
+        //{
+        //    IOUtilityHelper.Instance.TurnonTowerGreenLight();
+        //    IOUtilityHelper.Instance.TurnoffTowerYellowLight();
+        //    if (_positionSystem.BondMovetoSafeLocation())
+        //    {
+        //        curSubstrateNum = 1;
+        //        curModuleNum = 1;
+        //        BondDieCounter = 0;
+        //        ProductExecutor.Instance.CurChipNum = 1;
+        //        Task.Factory.StartNew(new Action(() =>
+        //        {
+        //            EnumJobRunStatus currentJobStatus = EnumJobRunStatus.Initial;
+        //            //while (true)
+        //            //{
 
-                    //填充 芯片相关的动作 （有可能是多芯片）
-                    foreach (ProductStep step in ProductSteps)
-                    {
-                        ProductRecipe.CurrentComponentInfosName = step.ComponentName;
-                        ProductRecipe.CurrentBondPositionSettingsName = step.BondingPositionName;
-                        if (step.productStepType == EnumProductStepType.Dispense)
-                        {
-                            while (true && RunStat != EnumProductRunStat.Stop && RunStat != EnumProductRunStat.UserAbort)
-                            {
-                                var ret = GlobalGWResultDefine.RET_SUCCESS;
-                                if (currentJobStatus == EnumJobRunStatus.DispenseAllPosSuccess || currentJobStatus == EnumJobRunStatus.DispenseAllPosFail)
-                                {
-                                    break;
-                                }
+        //            //填充 芯片相关的动作 （有可能是多芯片）
+        //            foreach (ProductStep step in ProductSteps)
+        //            {
+        //                ProductRecipe.CurrentComponentInfosName = step.ComponentName;
+        //                ProductRecipe.CurrentBondPositionSettingsName = step.BondingPositionName;
+        //                if (step.productStepType == EnumProductStepType.Dispense)
+        //                {
+        //                    while (true && RunStat != EnumProductRunStat.Stop && RunStat != EnumProductRunStat.UserAbort)
+        //                    {
+        //                        var ret = GlobalGWResultDefine.RET_SUCCESS;
+        //                        if (currentJobStatus == EnumJobRunStatus.DispenseAllPosSuccess || currentJobStatus == EnumJobRunStatus.DispenseAllPosFail)
+        //                        {
+        //                            break;
+        //                        }
 
-                                switch (currentJobStatus)
-                                {
+        //                        switch (currentJobStatus)
+        //                        {
 
-                                    case EnumJobRunStatus.Initial:
-                                        StepAction_PositionSubstrate stepAction_PositionSubstrate = new StepAction_PositionSubstrate(step, EnumActionNo.Action_PositionSubstrate, "基板定位");
-                                        ret = stepAction_PositionSubstrate.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllSubstrateSuccess : EnumJobRunStatus.PositionAllSubstrateFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.PositionAllSubstrateSuccess:
-                                        if (ProductRecipe.SubstrateInfos.IsPositionModules)
-                                        {
-                                            ResetEventWaitForNext();
-                                            StepAction_PositionModule stepAction_PositionModule = new StepAction_PositionModule(step, EnumActionNo.Action_PositionModule, "芯片定位");
-                                            ret = stepAction_PositionModule.Run();
-                                            currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllModuleSuccess : EnumJobRunStatus.PositionAllModuleFail;
-                                            WaitForNext();
-                                        }
-                                        else
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
-                                        }
-                                        break;
-                                    case EnumJobRunStatus.PositionAllSubstrateFail:
-                                        //弹窗提示
-                                        if (WarningBox.FormShow("异常发生！", "基板对位失败！", "警报") == 1)
-                                        {
-                                            //重试
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        else
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        break;
-                                    case EnumJobRunStatus.PositionOneModuleSuccess:
-                                        break;
-                                    case EnumJobRunStatus.PositionOneModuleFail:
-                                        break;
-                                    case EnumJobRunStatus.PositionAllModuleSuccess:
-                                        ResetEventWaitForNext();
-                                        StepAction_PositionBondPos stepAction_PositionBP = new StepAction_PositionBondPos(step, EnumActionNo.Action_RecognizeBondPos, "定位贴装位置");
-                                        ret = stepAction_PositionBP.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllBondPosSuccess : EnumJobRunStatus.PositionAllBondPosFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.PositionAllModuleFail:
-                                        //弹窗提示
-                                        if (WarningBox.FormShow("异常发生！", "模组对位失败！", "警报") == 1)
-                                        {
-                                            //重试
-                                            currentJobStatus = EnumJobRunStatus.PositionAllSubstrateSuccess;
-                                        }
-                                        else
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        break;
-                                    case EnumJobRunStatus.PositionOneBondPosSuccess:
-                                        break;
-                                    case EnumJobRunStatus.PositionOneBondPosFail:
-                                        break;
-                                    case EnumJobRunStatus.PositionAllBondPosSuccess:
-                                        this.CompletedJob();
-                                        WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
-                                        return;
+        //                            case EnumJobRunStatus.Initial:
+        //                                StepAction_PositionSubstrate stepAction_PositionSubstrate = new StepAction_PositionSubstrate(step, EnumActionNo.Action_PositionSubstrate, "基板定位");
+        //                                ret = stepAction_PositionSubstrate.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllSubstrateSuccess : EnumJobRunStatus.PositionAllSubstrateFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.PositionAllSubstrateSuccess:
+        //                                if (ProductRecipe.SubstrateInfos.IsPositionModules)
+        //                                {
+        //                                    ResetEventWaitForNext();
+        //                                    StepAction_PositionModule stepAction_PositionModule = new StepAction_PositionModule(step, EnumActionNo.Action_PositionModule, "芯片定位");
+        //                                    ret = stepAction_PositionModule.Run();
+        //                                    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllModuleSuccess : EnumJobRunStatus.PositionAllModuleFail;
+        //                                    WaitForNext();
+        //                                }
+        //                                else
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
+        //                                }
+        //                                break;
+        //                            case EnumJobRunStatus.PositionAllSubstrateFail:
+        //                                //弹窗提示
+        //                                if (WarningBox.FormShow("异常发生！", "基板对位失败！", "警报") == 1)
+        //                                {
+        //                                    //重试
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                else
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                break;
+        //                            case EnumJobRunStatus.PositionOneModuleSuccess:
+        //                                break;
+        //                            case EnumJobRunStatus.PositionOneModuleFail:
+        //                                break;
+        //                            case EnumJobRunStatus.PositionAllModuleSuccess:
+        //                                ResetEventWaitForNext();
+        //                                StepAction_PositionBondPos stepAction_PositionBP = new StepAction_PositionBondPos(step, EnumActionNo.Action_RecognizeBondPos, "定位贴装位置");
+        //                                ret = stepAction_PositionBP.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllBondPosSuccess : EnumJobRunStatus.PositionAllBondPosFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.PositionAllModuleFail:
+        //                                //弹窗提示
+        //                                if (WarningBox.FormShow("异常发生！", "模组对位失败！", "警报") == 1)
+        //                                {
+        //                                    //重试
+        //                                    currentJobStatus = EnumJobRunStatus.PositionAllSubstrateSuccess;
+        //                                }
+        //                                else
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                break;
+        //                            case EnumJobRunStatus.PositionOneBondPosSuccess:
+        //                                break;
+        //                            case EnumJobRunStatus.PositionOneBondPosFail:
+        //                                break;
+        //                            case EnumJobRunStatus.PositionAllBondPosSuccess:
+        //                                this.CompletedJob();
+        //                                WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
+        //                                return;
 
-                                        //ResetEventWaitForNext();
-                                        //StepAction_Dispense stepAction_Dispense = new StepAction_Dispense(step, EnumActionNo.Action_Dispense, "划胶");
-                                        //ret = stepAction_Dispense.Run();
-                                        //currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.DispenseAllPosSuccess : EnumJobRunStatus.DispenseAllPosFail;
-                                        //WaitForNext();
-                                        //break;
-                                    case EnumJobRunStatus.PositionAllBondPosFail:
-                                        //弹窗提示
-                                        if (WarningBox.FormShow("异常发生！", "贴装位置对位失败！", "警报") == 1)
-                                        {
-                                            //重试
-                                            currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
-                                        }
-                                        else
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        break;
-                                    case EnumJobRunStatus.DispenseOnePosSuccess:
-                                        break;
-                                    case EnumJobRunStatus.DispenseOnePosFail:
-                                        break;
-                                    case EnumJobRunStatus.Aborted:
-                                        this.AbortJob();
-                                        WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
-                                        return;
-                                        //case EnumJobRunStatus.DispenseAllPosSuccess:
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_PositionComponent stepAction_PositionChip = new StepAction_PositionComponent(null, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        //    ret = stepAction_PositionChip.Run();
-                                        //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
-                                        //    WaitForNext();
-                                        //    break;
-                                        //case EnumJobRunStatus.DispenseAllPosFail:
-                                        //    //弹窗提示
-                                        //    if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
-                                        //    {
-                                        //        //重试
-                                        //        currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        currentJobStatus = EnumJobRunStatus.Aborted;
-                                        //    }
-                                        //    break;
-                                        //case EnumJobRunStatus.PositionChipSuccess:
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_PickUpChip stepAction_PickChip = new StepAction_PickUpChip(null, EnumActionNo.Action_PositionChip, "拾取芯片");
-                                        //    ret = stepAction_PickChip.Run();
-                                        //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
-                                        //    ProductExecutor.Instance.CurChipNum++;
-                                        //    WaitForNext();
-                                        //    break;
-                                        //case EnumJobRunStatus.PositionChipFail:
-                                        //    //芯片对位失败时自动跳到下一颗
-                                        //    ProductExecutor.Instance.CurChipNum++;
-                                        //    break;
-                                        //case EnumJobRunStatus.PickupChipSuccess:
-                                        //    //进行二次校准同时识别下一颗芯片
-                                        //    Task.Factory.StartNew(() => {
-                                        //        _eventWaitAsysncPositionChipSignal.WaitOne();
-                                        //        ResetEventWaitForNext();
-                                        //        StepAction_PositionComponent stepAction_AsyncPositionChip = new StepAction_PositionComponent(null, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        //        ret = stepAction_AsyncPositionChip.Run();
-                                        //        WaitForNext();
-                                        //        _eventWaitAsysncPositionChipComplete.Set();
+        //                                //ResetEventWaitForNext();
+        //                                //StepAction_Dispense stepAction_Dispense = new StepAction_Dispense(step, EnumActionNo.Action_Dispense, "划胶");
+        //                                //ret = stepAction_Dispense.Run();
+        //                                //currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.DispenseAllPosSuccess : EnumJobRunStatus.DispenseAllPosFail;
+        //                                //WaitForNext();
+        //                                //break;
+        //                            case EnumJobRunStatus.PositionAllBondPosFail:
+        //                                //弹窗提示
+        //                                if (WarningBox.FormShow("异常发生！", "贴装位置对位失败！", "警报") == 1)
+        //                                {
+        //                                    //重试
+        //                                    currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
+        //                                }
+        //                                else
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                break;
+        //                            case EnumJobRunStatus.DispenseOnePosSuccess:
+        //                                break;
+        //                            case EnumJobRunStatus.DispenseOnePosFail:
+        //                                break;
+        //                            case EnumJobRunStatus.Aborted:
+        //                                this.AbortJob();
+        //                                WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
+        //                                return;
+        //                                //case EnumJobRunStatus.DispenseAllPosSuccess:
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_PositionComponent stepAction_PositionChip = new StepAction_PositionComponent(null, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                //    ret = stepAction_PositionChip.Run();
+        //                                //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
+        //                                //    WaitForNext();
+        //                                //    break;
+        //                                //case EnumJobRunStatus.DispenseAllPosFail:
+        //                                //    //弹窗提示
+        //                                //    if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
+        //                                //    {
+        //                                //        //重试
+        //                                //        currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
+        //                                //    }
+        //                                //    else
+        //                                //    {
+        //                                //        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                //    }
+        //                                //    break;
+        //                                //case EnumJobRunStatus.PositionChipSuccess:
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_PickUpChip stepAction_PickChip = new StepAction_PickUpChip(null, EnumActionNo.Action_PositionChip, "拾取芯片");
+        //                                //    ret = stepAction_PickChip.Run();
+        //                                //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
+        //                                //    ProductExecutor.Instance.CurChipNum++;
+        //                                //    WaitForNext();
+        //                                //    break;
+        //                                //case EnumJobRunStatus.PositionChipFail:
+        //                                //    //芯片对位失败时自动跳到下一颗
+        //                                //    ProductExecutor.Instance.CurChipNum++;
+        //                                //    break;
+        //                                //case EnumJobRunStatus.PickupChipSuccess:
+        //                                //    //进行二次校准同时识别下一颗芯片
+        //                                //    Task.Factory.StartNew(() => {
+        //                                //        _eventWaitAsysncPositionChipSignal.WaitOne();
+        //                                //        ResetEventWaitForNext();
+        //                                //        StepAction_PositionComponent stepAction_AsyncPositionChip = new StepAction_PositionComponent(null, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                //        ret = stepAction_AsyncPositionChip.Run();
+        //                                //        WaitForNext();
+        //                                //        _eventWaitAsysncPositionChipComplete.Set();
 
-                                        //    });
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_AccuracyPositionChip stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionChip(null, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
-                                        //    ret = stepAction_AccuracyCalibrationChip.Run();
-                                        //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AccuracyCalibrationChipSuccess : EnumJobRunStatus.AccuracyCalibrationChipFail;
-                                        //    WaitForNext();
-                                        //    break;
-                                        //case EnumJobRunStatus.PickupChipFail:
-                                        //    break;
-                                        //case EnumJobRunStatus.AccuracyCalibrationChipSuccess:
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_BondChip stepAction_BondChip = new StepAction_BondChip(null, EnumActionNo.Action_BondChip, "固晶");
-                                        //    ret = stepAction_BondChip.Run();
-                                        //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.BondChipSuccess : EnumJobRunStatus.BondChipFail;
-                                        //    WaitForNext();
-                                        //    break;
-                                        //case EnumJobRunStatus.AccuracyCalibrationChipFail:
-                                        //    break;
-                                        //case EnumJobRunStatus.BondChipSuccess:
-                                        //    _eventWaitAsysncPositionChipComplete.WaitOne();
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_PickUpChip stepAction_PickChip2 = new StepAction_PickUpChip(null, EnumActionNo.Action_PositionChip, "拾取芯片");
-                                        //    ret = stepAction_PickChip2.Run();
-                                        //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
-                                        //    WaitForNext();
-                                        //    break;
-                                        //case EnumJobRunStatus.BondChipFail:
-                                        //    //弹窗提示
-                                        //    if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
-                                        //    {
-                                        //        //抛料
-                                        //        currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        currentJobStatus = EnumJobRunStatus.Aborted;
-                                        //    }
-                                        //    break;
-                                        //case EnumJobRunStatus.AbandonChipSuccess:
-                                        //    break;
-                                        //case EnumJobRunStatus.AbandonChipFail:
-                                        //    break;
-                                        //case EnumJobRunStatus.Aborted:
-                                        //    WarningBox.FormShow("流程终止！","流程异常终止！","提示");
-                                        //    return;
-                                        //case EnumJobRunStatus.Completed:
-                                        //    WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
-                                        //    return;
-                                        //default:
-                                        //    break;
-                                }
-                            }
+        //                                //    });
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_AccuracyPositionChip stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionChip(null, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
+        //                                //    ret = stepAction_AccuracyCalibrationChip.Run();
+        //                                //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AccuracyCalibrationChipSuccess : EnumJobRunStatus.AccuracyCalibrationChipFail;
+        //                                //    WaitForNext();
+        //                                //    break;
+        //                                //case EnumJobRunStatus.PickupChipFail:
+        //                                //    break;
+        //                                //case EnumJobRunStatus.AccuracyCalibrationChipSuccess:
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_BondChip stepAction_BondChip = new StepAction_BondChip(null, EnumActionNo.Action_BondChip, "固晶");
+        //                                //    ret = stepAction_BondChip.Run();
+        //                                //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.BondChipSuccess : EnumJobRunStatus.BondChipFail;
+        //                                //    WaitForNext();
+        //                                //    break;
+        //                                //case EnumJobRunStatus.AccuracyCalibrationChipFail:
+        //                                //    break;
+        //                                //case EnumJobRunStatus.BondChipSuccess:
+        //                                //    _eventWaitAsysncPositionChipComplete.WaitOne();
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_PickUpChip stepAction_PickChip2 = new StepAction_PickUpChip(null, EnumActionNo.Action_PositionChip, "拾取芯片");
+        //                                //    ret = stepAction_PickChip2.Run();
+        //                                //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
+        //                                //    WaitForNext();
+        //                                //    break;
+        //                                //case EnumJobRunStatus.BondChipFail:
+        //                                //    //弹窗提示
+        //                                //    if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
+        //                                //    {
+        //                                //        //抛料
+        //                                //        currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
+        //                                //    }
+        //                                //    else
+        //                                //    {
+        //                                //        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                //    }
+        //                                //    break;
+        //                                //case EnumJobRunStatus.AbandonChipSuccess:
+        //                                //    break;
+        //                                //case EnumJobRunStatus.AbandonChipFail:
+        //                                //    break;
+        //                                //case EnumJobRunStatus.Aborted:
+        //                                //    WarningBox.FormShow("流程终止！","流程异常终止！","提示");
+        //                                //    return;
+        //                                //case EnumJobRunStatus.Completed:
+        //                                //    WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
+        //                                //    return;
+        //                                //default:
+        //                                //    break;
+        //                        }
+        //                    }
 
-                        }
-                        else if (step.productStepType == EnumProductStepType.BondDie)
-                        {
-                            while (true && RunStat != EnumProductRunStat.Stop && RunStat != EnumProductRunStat.UserAbort)
-                            {
-                                //if (currentJobStatus == EnumJobRunStatus.Completed || currentJobStatus == EnumJobRunStatus.Aborted)
-                                //{
-                                //    break;
-                                //}
-                                var ret = GlobalGWResultDefine.RET_SUCCESS;
-                                switch (currentJobStatus)
-                                {
+        //                }
+        //                else if (step.productStepType == EnumProductStepType.BondDie)
+        //                {
+        //                    while (true && RunStat != EnumProductRunStat.Stop && RunStat != EnumProductRunStat.UserAbort)
+        //                    {
+        //                        //if (currentJobStatus == EnumJobRunStatus.Completed || currentJobStatus == EnumJobRunStatus.Aborted)
+        //                        //{
+        //                        //    break;
+        //                        //}
+        //                        var ret = GlobalGWResultDefine.RET_SUCCESS;
+        //                        switch (currentJobStatus)
+        //                        {
 
-                                    //case EnumJobRunStatus.Initial:
-                                    //    StepAction_PositionSubstrate stepAction_PositionSubstrate = new StepAction_PositionSubstrate(null, EnumActionNo.Action_PositionSubstrate, "基板定位");
-                                    //    ret = stepAction_PositionSubstrate.Run();
-                                    //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllSubstrateSuccess : EnumJobRunStatus.PositionAllSubstrateFail;
-                                    //    WaitForNext();
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllSubstrateSuccess:
-                                    //    if (ProductRecipe.SubstrateInfos.IsPositionModules)
-                                    //    {
-                                    //        ResetEventWaitForNext();
-                                    //        StepAction_PositionModule stepAction_PositionModule = new StepAction_PositionModule(null, EnumActionNo.Action_PositionModule, "芯片定位");
-                                    //        ret = stepAction_PositionModule.Run();
-                                    //        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllModuleSuccess : EnumJobRunStatus.PositionAllModuleFail;
-                                    //        WaitForNext();
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
-                                    //    }
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllSubstrateFail:
-                                    //    //弹窗提示
-                                    //    if (WarningBox.FormShow("异常发生！", "基板对位失败！", "警报") == 1)
-                                    //    {
-                                    //        //重试
-                                    //        currentJobStatus = EnumJobRunStatus.Initial;
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        currentJobStatus = EnumJobRunStatus.Aborted;
-                                    //    }
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionOneModuleSuccess:
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionOneModuleFail:
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllModuleSuccess:
-                                    //    ResetEventWaitForNext();
-                                    //    StepAction_PositionBondPos stepAction_PositionBP = new StepAction_PositionBondPos(null, EnumActionNo.Action_RecognizeBondPos, "定位贴装位置");
-                                    //    ret = stepAction_PositionBP.Run();
-                                    //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllBondPosSuccess : EnumJobRunStatus.PositionAllBondPosFail;
-                                    //    WaitForNext();
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllModuleFail:
-                                    //    //弹窗提示
-                                    //    if (WarningBox.FormShow("异常发生！", "模组对位失败！", "警报") == 1)
-                                    //    {
-                                    //        //重试
-                                    //        currentJobStatus = EnumJobRunStatus.PositionAllSubstrateSuccess;
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        currentJobStatus = EnumJobRunStatus.Aborted;
-                                    //    }
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionOneBondPosSuccess:
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionOneBondPosFail:
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllBondPosSuccess:
-                                    //    ResetEventWaitForNext();
-                                    //    StepAction_Dispense stepAction_Dispense = new StepAction_Dispense(null, EnumActionNo.Action_Dispense, "划胶");
-                                    //    ret = stepAction_Dispense.Run();
-                                    //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.DispenseAllPosSuccess : EnumJobRunStatus.DispenseAllPosFail;
-                                    //    WaitForNext();
-                                    //    break;
-                                    //case EnumJobRunStatus.PositionAllBondPosFail:
-                                    //    //弹窗提示
-                                    //    if (WarningBox.FormShow("异常发生！", "贴装位置对位失败！", "警报") == 1)
-                                    //    {
-                                    //        //重试
-                                    //        currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        currentJobStatus = EnumJobRunStatus.Aborted;
-                                    //    }
-                                    //    break;
-                                    case EnumJobRunStatus.DispenseOnePosSuccess:
-                                        break;
-                                    case EnumJobRunStatus.DispenseOnePosFail:
-                                        break;
-                                    case EnumJobRunStatus.DispenseAllPosSuccess:
-                                        ResetEventWaitForNext();
+        //                            //case EnumJobRunStatus.Initial:
+        //                            //    StepAction_PositionSubstrate stepAction_PositionSubstrate = new StepAction_PositionSubstrate(null, EnumActionNo.Action_PositionSubstrate, "基板定位");
+        //                            //    ret = stepAction_PositionSubstrate.Run();
+        //                            //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllSubstrateSuccess : EnumJobRunStatus.PositionAllSubstrateFail;
+        //                            //    WaitForNext();
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllSubstrateSuccess:
+        //                            //    if (ProductRecipe.SubstrateInfos.IsPositionModules)
+        //                            //    {
+        //                            //        ResetEventWaitForNext();
+        //                            //        StepAction_PositionModule stepAction_PositionModule = new StepAction_PositionModule(null, EnumActionNo.Action_PositionModule, "芯片定位");
+        //                            //        ret = stepAction_PositionModule.Run();
+        //                            //        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllModuleSuccess : EnumJobRunStatus.PositionAllModuleFail;
+        //                            //        WaitForNext();
+        //                            //    }
+        //                            //    else
+        //                            //    {
+        //                            //        currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
+        //                            //    }
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllSubstrateFail:
+        //                            //    //弹窗提示
+        //                            //    if (WarningBox.FormShow("异常发生！", "基板对位失败！", "警报") == 1)
+        //                            //    {
+        //                            //        //重试
+        //                            //        currentJobStatus = EnumJobRunStatus.Initial;
+        //                            //    }
+        //                            //    else
+        //                            //    {
+        //                            //        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                            //    }
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionOneModuleSuccess:
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionOneModuleFail:
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllModuleSuccess:
+        //                            //    ResetEventWaitForNext();
+        //                            //    StepAction_PositionBondPos stepAction_PositionBP = new StepAction_PositionBondPos(null, EnumActionNo.Action_RecognizeBondPos, "定位贴装位置");
+        //                            //    ret = stepAction_PositionBP.Run();
+        //                            //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionAllBondPosSuccess : EnumJobRunStatus.PositionAllBondPosFail;
+        //                            //    WaitForNext();
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllModuleFail:
+        //                            //    //弹窗提示
+        //                            //    if (WarningBox.FormShow("异常发生！", "模组对位失败！", "警报") == 1)
+        //                            //    {
+        //                            //        //重试
+        //                            //        currentJobStatus = EnumJobRunStatus.PositionAllSubstrateSuccess;
+        //                            //    }
+        //                            //    else
+        //                            //    {
+        //                            //        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                            //    }
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionOneBondPosSuccess:
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionOneBondPosFail:
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllBondPosSuccess:
+        //                            //    ResetEventWaitForNext();
+        //                            //    StepAction_Dispense stepAction_Dispense = new StepAction_Dispense(null, EnumActionNo.Action_Dispense, "划胶");
+        //                            //    ret = stepAction_Dispense.Run();
+        //                            //    currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.DispenseAllPosSuccess : EnumJobRunStatus.DispenseAllPosFail;
+        //                            //    WaitForNext();
+        //                            //    break;
+        //                            //case EnumJobRunStatus.PositionAllBondPosFail:
+        //                            //    //弹窗提示
+        //                            //    if (WarningBox.FormShow("异常发生！", "贴装位置对位失败！", "警报") == 1)
+        //                            //    {
+        //                            //        //重试
+        //                            //        currentJobStatus = EnumJobRunStatus.PositionAllModuleSuccess;
+        //                            //    }
+        //                            //    else
+        //                            //    {
+        //                            //        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                            //    }
+        //                            //    break;
+        //                            case EnumJobRunStatus.DispenseOnePosSuccess:
+        //                                break;
+        //                            case EnumJobRunStatus.DispenseOnePosFail:
+        //                                break;
+        //                            case EnumJobRunStatus.DispenseAllPosSuccess:
+        //                                ResetEventWaitForNext();
 
-                                        StepAction_PositionComponent stepAction_PositionChip = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        ret = stepAction_PositionChip.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.DispenseAllPosFail:
-                                        //弹窗提示
-                                        if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
-                                        {
-                                            //重试
-                                            //currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        else
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Aborted;
-                                        }
-                                        break;
-                                    case EnumJobRunStatus.PositionChipSuccess:
-                                        ResetEventWaitForNext();
-                                        StepAction_PickUpChipWithRotate stepAction_PickChip = new StepAction_PickUpChipWithRotate(step, EnumActionNo.Action_PositionChip, "拾取芯片");
-                                        ret = stepAction_PickChip.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
-                                        ProductExecutor.Instance.CurChipNum++;
-                                        ProductExecutor.Instance.CurChipNGNum = 0;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.PositionChipFail:
-                                        //芯片对位失败时自动跳到下一颗
-                                        ProductExecutor.Instance.CurChipNum++;
+        //                                StepAction_PositionComponent stepAction_PositionChip = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                ret = stepAction_PositionChip.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.DispenseAllPosFail:
+        //                                //弹窗提示
+        //                                if (WarningBox.FormShow("异常发生！", "点胶失败！", "警报") == 1)
+        //                                {
+        //                                    //重试
+        //                                    //currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                else
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                }
+        //                                break;
+        //                            case EnumJobRunStatus.PositionChipSuccess:
+        //                                ResetEventWaitForNext();
+        //                                StepAction_PickUpChipWithRotate stepAction_PickChip = new StepAction_PickUpChipWithRotate(step, EnumActionNo.Action_PositionChip, "拾取芯片");
+        //                                ret = stepAction_PickChip.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
+        //                                ProductExecutor.Instance.CurChipNum++;
+        //                                ProductExecutor.Instance.CurChipNGNum = 0;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.PositionChipFail:
+        //                                //芯片对位失败时自动跳到下一颗
+        //                                ProductExecutor.Instance.CurChipNum++;
 
-                                        if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Completed;
-                                            break;
-                                        }
-                                        ProductExecutor.Instance.CurChipNGNum++;
-                                        if (ProductExecutor.Instance.CurChipNGNum > SystemConfiguration.Instance.JobConfig.CurChipNGNumMax)
-                                        {
-                                            if (CameraWindowGUI.Instance != null)
-                                            {
-                                                CameraWindowGUI.Instance.SelectCamera(2);
-                                                CameraWindowGUI.Instance.ClearGraphicDraw();
-                                            }
-                                            if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
-                                            {
-                                                CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
-                                                CameraWindowForm.Instance.Show();
-                                            }
-                                            //弹窗提示
-                                            if (ShowMessage2("异常发生！", "搜寻芯片失败，请重新确定搜寻芯片起点位置！", "警报") == 1)
-                                            {
-                                                ProductExecutor.Instance.CurChipNum = 1;
-                                                ProductExecutor.Instance.CurChipNGNum = 0;
-                                                double X = _positionSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableX);
-                                                double Y = _positionSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableY);
-                                                ProductExecutor.Instance.MaterialLocationOffsetX = X - ProductRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.X;
-                                                ProductExecutor.Instance.MaterialLocationOffsetY = Y - ProductRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.Y;
-                                            }
-                                            else
-                                            {
-                                                currentJobStatus = EnumJobRunStatus.Aborted;
-                                            }
-                                        }
-                                        ResetEventWaitForNext();
-                                        StepAction_PositionComponent stepAction_PositionChip3 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        ret = stepAction_PositionChip3.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.PickupChipSuccess:
-                                        //进行二次校准同时识别下一颗芯片
-                                        //Task.Factory.StartNew(() =>
-                                        //{
-                                        //    _eventWaitAsysncPositionChipSignal.WaitOne();
-                                        //    ResetEventWaitForNext();
-                                        //    StepAction_PositionComponent stepAction_AsyncPositionChip = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        //    ret = stepAction_AsyncPositionChip.Run();
-                                        //    WaitForNext();
-                                        //    _eventWaitAsysncPositionChipComplete.Set();
+        //                                if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Completed;
+        //                                    break;
+        //                                }
+        //                                ProductExecutor.Instance.CurChipNGNum++;
+        //                                if (ProductExecutor.Instance.CurChipNGNum > SystemConfiguration.Instance.JobConfig.CurChipNGNumMax)
+        //                                {
+        //                                    if (CameraWindowGUI.Instance != null)
+        //                                    {
+        //                                        CameraWindowGUI.Instance.SelectCamera(2);
+        //                                        CameraWindowGUI.Instance.ClearGraphicDraw();
+        //                                    }
+        //                                    if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+        //                                    {
+        //                                        CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
+        //                                        CameraWindowForm.Instance.Show();
+        //                                    }
+        //                                    //弹窗提示
+        //                                    if (ShowMessage2("异常发生！", "搜寻芯片失败，请重新确定搜寻芯片起点位置！", "警报") == 1)
+        //                                    {
+        //                                        ProductExecutor.Instance.CurChipNum = 1;
+        //                                        ProductExecutor.Instance.CurChipNGNum = 0;
+        //                                        double X = _positionSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableX);
+        //                                        double Y = _positionSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableY);
+        //                                        ProductExecutor.Instance.MaterialLocationOffsetX = X - ProductRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.X;
+        //                                        ProductExecutor.Instance.MaterialLocationOffsetY = Y - ProductRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.Y;
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                    }
+        //                                }
+        //                                ResetEventWaitForNext();
+        //                                StepAction_PositionComponent stepAction_PositionChip3 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                ret = stepAction_PositionChip3.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.PickupChipSuccess:
+        //                                //进行二次校准同时识别下一颗芯片
+        //                                //Task.Factory.StartNew(() =>
+        //                                //{
+        //                                //    _eventWaitAsysncPositionChipSignal.WaitOne();
+        //                                //    ResetEventWaitForNext();
+        //                                //    StepAction_PositionComponent stepAction_AsyncPositionChip = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                //    ret = stepAction_AsyncPositionChip.Run();
+        //                                //    WaitForNext();
+        //                                //    _eventWaitAsysncPositionChipComplete.Set();
 
-                                        //});
-                                        ResetEventWaitForNext();
-                                        if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
-                                        {
-                                            StepAction_AccuracyPositionWithUplookCamera stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionWithUplookCamera(step, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
-                                            ret = stepAction_AccuracyCalibrationChip.Run();
-                                        }
-                                        else if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
-                                        {
-                                            StepAction_AccuracyPositionChipInCalibrationTable stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionChipInCalibrationTable(step, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
-                                            ret = stepAction_AccuracyCalibrationChip.Run();
-                                        }
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AccuracyCalibrationChipSuccess : EnumJobRunStatus.AccuracyCalibrationChipFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.PickupChipFail:
-                                        //芯片拾取失败时自动抛料跳到下一颗TBD需增加自动抛料
-                                        //ProductExecutor.Instance.CurChipNum++;
-                                        if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Completed;
-                                            break;
-                                        }
-                                        currentJobStatus = EnumJobRunStatus.BondChipSuccess;
-                                        break;
-                                    case EnumJobRunStatus.AccuracyCalibrationChipSuccess:
-                                        ResetEventWaitForNext();
-                                        //StepAction_BondChip stepAction_BondChip = new StepAction_BondChip(step, EnumActionNo.Action_BondChip, "固晶");
-                                        StepAction_OnlyBondChip stepAction_BondChip = new StepAction_OnlyBondChip(step, EnumActionNo.Action_BondChip, "固晶");
-                                        ret = stepAction_BondChip.Run();
-                                        if (ret == GlobalGWResultDefine.RET_BPInvalid)
-                                        {
-                                            _isBPInvalid = true;
-                                        }
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.BondChipSuccess : EnumJobRunStatus.BondChipFail;
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.AccuracyCalibrationChipFail:
-                                        //芯片二次对位失败时自动抛料跳到下一颗TBD需增加自动抛料
-                                        //ProductExecutor.Instance.CurChipNum++;
-                                        if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Completed;
-                                            break;
-                                        }
-                                        if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
-                                        {
-                                            StepAction_MaterialThrowingAction stepAction_MaterialThrowingAction = new StepAction_MaterialThrowingAction(step, EnumActionNo.Action_AbondonChip, "抛料");
-                                            ret = stepAction_MaterialThrowingAction.Run();
-                                        }
-                                        else if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
-                                        {
-                                            StepAction_CalibrationTableMaterialThrowingAction stepAction_MaterialThrowingAction = new StepAction_CalibrationTableMaterialThrowingAction(step, EnumActionNo.Action_AbondonChip, "抛料");
-                                            ret = stepAction_MaterialThrowingAction.Run();
-                                        }
+        //                                //});
+        //                                ResetEventWaitForNext();
+        //                                if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+        //                                {
+        //                                    StepAction_AccuracyPositionWithUplookCamera stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionWithUplookCamera(step, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
+        //                                    ret = stepAction_AccuracyCalibrationChip.Run();
+        //                                }
+        //                                else if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
+        //                                {
+        //                                    StepAction_AccuracyPositionChipInCalibrationTable stepAction_AccuracyCalibrationChip = new StepAction_AccuracyPositionChipInCalibrationTable(step, EnumActionNo.Action_AccuracyPositionChip, "二次校准芯片");
+        //                                    ret = stepAction_AccuracyCalibrationChip.Run();
+        //                                }
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AccuracyCalibrationChipSuccess : EnumJobRunStatus.AccuracyCalibrationChipFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.PickupChipFail:
+        //                                //芯片拾取失败时自动抛料跳到下一颗TBD需增加自动抛料
+        //                                //ProductExecutor.Instance.CurChipNum++;
+        //                                if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Completed;
+        //                                    break;
+        //                                }
+        //                                currentJobStatus = EnumJobRunStatus.BondChipSuccess;
+        //                                break;
+        //                            case EnumJobRunStatus.AccuracyCalibrationChipSuccess:
+        //                                ResetEventWaitForNext();
+        //                                //StepAction_BondChip stepAction_BondChip = new StepAction_BondChip(step, EnumActionNo.Action_BondChip, "固晶");
+        //                                StepAction_OnlyBondChip stepAction_BondChip = new StepAction_OnlyBondChip(step, EnumActionNo.Action_BondChip, "固晶");
+        //                                ret = stepAction_BondChip.Run();
+        //                                if (ret == GlobalGWResultDefine.RET_BPInvalid)
+        //                                {
+        //                                    _isBPInvalid = true;
+        //                                }
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.BondChipSuccess : EnumJobRunStatus.BondChipFail;
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.AccuracyCalibrationChipFail:
+        //                                //芯片二次对位失败时自动抛料跳到下一颗TBD需增加自动抛料
+        //                                //ProductExecutor.Instance.CurChipNum++;
+        //                                if (curChipNum > ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Completed;
+        //                                    break;
+        //                                }
+        //                                if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+        //                                {
+        //                                    StepAction_MaterialThrowingAction stepAction_MaterialThrowingAction = new StepAction_MaterialThrowingAction(step, EnumActionNo.Action_AbondonChip, "抛料");
+        //                                    ret = stepAction_MaterialThrowingAction.Run();
+        //                                }
+        //                                else if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
+        //                                {
+        //                                    StepAction_CalibrationTableMaterialThrowingAction stepAction_MaterialThrowingAction = new StepAction_CalibrationTableMaterialThrowingAction(step, EnumActionNo.Action_AbondonChip, "抛料");
+        //                                    ret = stepAction_MaterialThrowingAction.Run();
+        //                                }
 
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AbandonChipSuccess : EnumJobRunStatus.AbandonChipFail;
-                                        if (currentJobStatus == EnumJobRunStatus.AbandonChipFail)
-                                        {
-                                            if (ShowMessage2("异常发生！", "抛料失败，请手动去除吸嘴上的芯片！清除无误后点击<确认>按钮后流程继续。", "警报") == 1)
-                                            {
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AbandonChipSuccess : EnumJobRunStatus.AbandonChipFail;
+        //                                if (currentJobStatus == EnumJobRunStatus.AbandonChipFail)
+        //                                {
+        //                                    if (ShowMessage2("异常发生！", "抛料失败，请手动去除吸嘴上的芯片！清除无误后点击<确认>按钮后流程继续。", "警报") == 1)
+        //                                    {
 
-                                            }
-                                            else
-                                            {
-                                                currentJobStatus = EnumJobRunStatus.Aborted;
-                                            }
-                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                    }
+        //                                }
 
-                                        //抛料成功后
-                                        StepAction_PositionComponent stepAction_PositionChip2 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        ret = stepAction_PositionChip2.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
-                                        //currentJobStatus = EnumJobRunStatus.BondChipSuccess;
-                                        break;
-                                    case EnumJobRunStatus.BondChipSuccess:
-                                        //_eventWaitAsysncPositionChipComplete.WaitOne();
-                                        //成功之后更新当前SubstrateNumber和ModuleNumber
-                                        BondDieCounter++;
-                                        var moudleCountInOneSubstrate = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count;
-                                        var bpCountInOneModule = ProductRecipe.StepBondingPositionList.Count;
-                                        var allMoudleCounts = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count;
-                                        var allBPCounts = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
-                                        curModuleNum = _bondDieCounter % moudleCountInOneSubstrate + 1;
-                                        curSubstrateNum = _bondDieCounter / moudleCountInOneSubstrate + 1;
+        //                                //抛料成功后
+        //                                StepAction_PositionComponent stepAction_PositionChip2 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                ret = stepAction_PositionChip2.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
+        //                                //currentJobStatus = EnumJobRunStatus.BondChipSuccess;
+        //                                break;
+        //                            case EnumJobRunStatus.BondChipSuccess:
+        //                                //_eventWaitAsysncPositionChipComplete.WaitOne();
+        //                                //成功之后更新当前SubstrateNumber和ModuleNumber
+        //                                BondDieCounter++;
+        //                                var moudleCountInOneSubstrate = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count;
+        //                                var bpCountInOneModule = ProductRecipe.StepBondingPositionList.Count;
+        //                                var allMoudleCounts = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count;
+        //                                var allBPCounts = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
+        //                                curModuleNum = _bondDieCounter % moudleCountInOneSubstrate + 1;
+        //                                curSubstrateNum = _bondDieCounter / moudleCountInOneSubstrate + 1;
 
-                                        if (_bondDieCounter >= allBPCounts)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Completed;
-                                            break;
-                                        }
-                                        //多芯片场景
-                                        if (_bondDieCounter == allMoudleCounts && ProductRecipe.StepBondingPositionList.Count > 1)
-                                        {
-                                            _bondDieCounter = 0;
-                                            curModuleNum = 1;
-                                            curSubstrateNum = 1;
-                                        }
-                                        ResetEventWaitForNext();
-                                        //StepAction_PickUpChip stepAction_PickChip2 = new StepAction_PickUpChip(step, EnumActionNo.Action_PositionChip, "拾取芯片");
-                                        //ret = stepAction_PickChip2.Run();
-                                        //currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
-                                        if (curChipNum >= ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.Completed;
-                                            break;
-                                        }
-                                        if (ProductExecutor.Instance.IsProcessPart)
-                                        {
-                                            if (_bondDieCounter >= ProductExecutor.Instance.ManualSettedProcessCount)
-                                            {
-                                                currentJobStatus = EnumJobRunStatus.Completed;
-                                                break;
-                                            }
-                                        }
-                                        StepAction_PositionComponent stepAction_PositionChip4 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
-                                        ret = stepAction_PositionChip4.Run();
-                                        currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
+        //                                if (_bondDieCounter >= allBPCounts)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Completed;
+        //                                    break;
+        //                                }
+        //                                //多芯片场景
+        //                                if (_bondDieCounter == allMoudleCounts && ProductRecipe.StepBondingPositionList.Count > 1)
+        //                                {
+        //                                    _bondDieCounter = 0;
+        //                                    curModuleNum = 1;
+        //                                    curSubstrateNum = 1;
+        //                                }
+        //                                ResetEventWaitForNext();
+        //                                //StepAction_PickUpChip stepAction_PickChip2 = new StepAction_PickUpChip(step, EnumActionNo.Action_PositionChip, "拾取芯片");
+        //                                //ret = stepAction_PickChip2.Run();
+        //                                //currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupChipSuccess : EnumJobRunStatus.PickupChipFail;
+        //                                if (curChipNum >= ProductRecipe.CurrentComponent.ComponentMapInfos.Count)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.Completed;
+        //                                    break;
+        //                                }
+        //                                if (ProductExecutor.Instance.IsProcessPart)
+        //                                {
+        //                                    if (_bondDieCounter >= ProductExecutor.Instance.ManualSettedProcessCount)
+        //                                    {
+        //                                        currentJobStatus = EnumJobRunStatus.Completed;
+        //                                        break;
+        //                                    }
+        //                                }
+        //                                StepAction_PositionComponent stepAction_PositionChip4 = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionChip, "定位芯片");
+        //                                ret = stepAction_PositionChip4.Run();
+        //                                currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionChipSuccess : EnumJobRunStatus.PositionChipFail;
 
-                                        WaitForNext();
-                                        break;
-                                    case EnumJobRunStatus.BondChipFail:
+        //                                WaitForNext();
+        //                                break;
+        //                            case EnumJobRunStatus.BondChipFail:
 
-                                        BondDieCounter++;
-                                        var moudleCountInOneSubstrate1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count;
-                                        var bpCountInOneModule1 = ProductRecipe.StepBondingPositionList.Count;
-                                        var allMoudleCounts1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count;
-                                        var allBPCounts1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count + bpCountInOneModule1;
-                                        curModuleNum = _bondDieCounter % moudleCountInOneSubstrate1 + 1;
-                                        curSubstrateNum = _bondDieCounter / moudleCountInOneSubstrate1 + 1;
-                                        if (_bondDieCounter == allMoudleCounts1)
-                                        {
-                                            _bondDieCounter = 0;
-                                            curModuleNum = 1;
-                                            curSubstrateNum = 1;
-                                        }
-                                        if (IsProcessPart)
-                                        {
-                                            if (_bondDieCounter >= ManualSettedProcessCount)
-                                            {
-                                                currentJobStatus = EnumJobRunStatus.Completed;
-                                                break;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (_bondDieCounter >= allBPCounts1)
-                                            {
-                                                currentJobStatus = EnumJobRunStatus.Completed;
-                                                break;
-                                            }
-                                        }
-                                        if (_isBPInvalid)
-                                        {
-                                            currentJobStatus = EnumJobRunStatus.AccuracyCalibrationChipSuccess;
-                                            _isBPInvalid = false;
-                                        }
-                                        else
-                                        {
-                                            //抛料后识别下一颗芯片
-                                            currentJobStatus = EnumJobRunStatus.BondChipSuccess;
-                                        }
-                                        //弹窗提示
-                                        //if (WarningBox.FormShow("异常发生！", "贴装失败！", "警报") == 1)
-                                        //{
-                                        //    //抛料
-                                        //    currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
-                                        //}
-                                        //else
-                                        //{
-                                        //    currentJobStatus = EnumJobRunStatus.Aborted;
-                                        //}
-                                        break;
-                                    case EnumJobRunStatus.AbandonChipSuccess:
-                                        break;
-                                    case EnumJobRunStatus.AbandonChipFail:
-                                        break;
-                                    case EnumJobRunStatus.Aborted:
-                                        this.AbortJob();
-                                        WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
-                                        return;
-                                    case EnumJobRunStatus.Completed:
-                                        this.CompletedJob();
-                                        WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
-                                        return;
-                                    default:
-                                        break;
-                                }
-                            }
+        //                                BondDieCounter++;
+        //                                var moudleCountInOneSubstrate1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count;
+        //                                var bpCountInOneModule1 = ProductRecipe.StepBondingPositionList.Count;
+        //                                var allMoudleCounts1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count;
+        //                                var allBPCounts1 = ProductRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * ProductRecipe.SubstrateInfos.SubstrateMapInfos.Count + bpCountInOneModule1;
+        //                                curModuleNum = _bondDieCounter % moudleCountInOneSubstrate1 + 1;
+        //                                curSubstrateNum = _bondDieCounter / moudleCountInOneSubstrate1 + 1;
+        //                                if (_bondDieCounter == allMoudleCounts1)
+        //                                {
+        //                                    _bondDieCounter = 0;
+        //                                    curModuleNum = 1;
+        //                                    curSubstrateNum = 1;
+        //                                }
+        //                                if (IsProcessPart)
+        //                                {
+        //                                    if (_bondDieCounter >= ManualSettedProcessCount)
+        //                                    {
+        //                                        currentJobStatus = EnumJobRunStatus.Completed;
+        //                                        break;
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    if (_bondDieCounter >= allBPCounts1)
+        //                                    {
+        //                                        currentJobStatus = EnumJobRunStatus.Completed;
+        //                                        break;
+        //                                    }
+        //                                }
+        //                                if (_isBPInvalid)
+        //                                {
+        //                                    currentJobStatus = EnumJobRunStatus.AccuracyCalibrationChipSuccess;
+        //                                    _isBPInvalid = false;
+        //                                }
+        //                                else
+        //                                {
+        //                                    //抛料后识别下一颗芯片
+        //                                    currentJobStatus = EnumJobRunStatus.BondChipSuccess;
+        //                                }
+        //                                //弹窗提示
+        //                                //if (WarningBox.FormShow("异常发生！", "贴装失败！", "警报") == 1)
+        //                                //{
+        //                                //    //抛料
+        //                                //    currentJobStatus = EnumJobRunStatus.PositionAllBondPosSuccess;
+        //                                //}
+        //                                //else
+        //                                //{
+        //                                //    currentJobStatus = EnumJobRunStatus.Aborted;
+        //                                //}
+        //                                break;
+        //                            case EnumJobRunStatus.AbandonChipSuccess:
+        //                                break;
+        //                            case EnumJobRunStatus.AbandonChipFail:
+        //                                break;
+        //                            case EnumJobRunStatus.Aborted:
+        //                                this.AbortJob();
+        //                                WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
+        //                                return;
+        //                            case EnumJobRunStatus.Completed:
+        //                                this.CompletedJob();
+        //                                WarningBox.FormShow("流程完成！", "流程正常结束！", "提示");
+        //                                return;
+        //                            default:
+        //                                break;
+        //                        }
+        //                    }
 
-                        }
-                    }
-                    if (RunStat == EnumProductRunStat.UserAbort)
-                    {
-                        ResetAction();
-                        WarningBox.FormShow("流程异常结束！", "用户终止流程！", "提示");
-                    }
-                    //}
-                }));
-            }
-            else
-            {
-                LogRecorder.RecordLog(EnumLogContentType.Error, "Bond Move to Safe Position Failed.");
-                this.AbortJob();
-                WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
-            }
-        }
+        //                }
+        //            }
+        //            if (RunStat == EnumProductRunStat.UserAbort)
+        //            {
+        //                ResetAction();
+        //                WarningBox.FormShow("流程异常结束！", "用户终止流程！", "提示");
+        //            }
+        //            //}
+        //        }));
+        //    }
+        //    else
+        //    {
+        //        LogRecorder.RecordLog(EnumLogContentType.Error, "Bond Move to Safe Position Failed.");
+        //        this.AbortJob();
+        //        WarningBox.FormShow("流程终止！", "流程异常终止！", "提示");
+        //    }
+        //}
 
         public void Execute()
         {

@@ -98,7 +98,7 @@ namespace RecipeEditPanelClsLib
                     throw new Exception("Recipe is null when execute ComponentPositionStep_VisionPosition LoadEditedRecipe.");
                 }
                 EditRecipe = recipe;
-                var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\{EnumRecipeType.Bonder.ToString()}\Components\{EditRecipe.CurrentComponent.Name}\TemplateConfig\";
+                var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\Components\{EditRecipe.CurrentComponent.Name}\TemplateConfig\";
                 CommonProcess.EnsureFolderExist(templateFolderName);
 
                 if (recipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)

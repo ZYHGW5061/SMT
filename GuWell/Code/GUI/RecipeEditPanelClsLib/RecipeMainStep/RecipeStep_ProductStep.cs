@@ -25,6 +25,7 @@ namespace RecipeEditPanelClsLib
         //ConfigService configService = new ConfigService();
         //ProductConfig curProdConfig;
         //List<ProductStep> productSteps;
+        List<ProgramSubstrateSettings> substrateList;
         List<ProgramComponentSettings> componentsList;
         List<BondingPositionSettings> bondPosList;
         List<EpoxyApplication> _epoxyApplicationList;
@@ -35,9 +36,10 @@ namespace RecipeEditPanelClsLib
         BondingPositionSettings curStepBondingPos;
         //EutecticParameters curStepEutectic;
         private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
-        private static string _componentsSavePath = string.Format(@"{0}Recipes\{1}\Components\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
-        private static string _bondPositionSavePath = string.Format(@"{0}Recipes\{1}\BondPositions\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
-        private static string _epoxyApplicationSavePath = string.Format(@"{0}Recipes\{1}\EpoxyApplication\", SystemDefaultDirectory, EnumRecipeType.Bonder.ToString());
+        private static string _substrateSavePath = string.Format(@"{0}Recipes\Substrate\", SystemDefaultDirectory);
+        private static string _componentsSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
+        private static string _bondPositionSavePath = string.Format(@"{0}Recipes\BondPositions\", SystemDefaultDirectory);
+        private static string _epoxyApplicationSavePath = string.Format(@"{0}Recipes\EpoxyApplication\", SystemDefaultDirectory);
 
         public RecipeStep_ProductStep()
         {
@@ -72,6 +74,24 @@ namespace RecipeEditPanelClsLib
             cbComponentList.Enabled = true;
 
             //teProductName.Text = curProdConfig.ProductName;
+        }
+
+        private void LoadSubstrateList()
+        {
+
+            substrateList = new List<ProgramSubstrateSettings>();
+            cbSubstrateList.Items.Clear();
+            //cbComponentList.Items.Add(_editRecipe.SubstrateInfos.Name);
+            var childs = Directory.GetDirectories(_substrateSavePath);
+            for (int index = 0; index < childs.Length; index++)
+            {
+                var childName = Path.GetFileName(childs[index]);
+                cbSubstrateList.Items.Add(childName);
+                var xmlFile = $@"{_substrateSavePath}\{childName}\{childName}.xml";
+                var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+                substrateList.Add(comp);
+            }
+            cbSubstrateList.SelectedIndex = -1;
         }
 
         private void LoadComponentList()
@@ -133,6 +153,7 @@ namespace RecipeEditPanelClsLib
             try
             {
                 base.LoadEditedRecipe(recipe);
+                LoadSubstrateList();
                 LoadComponentList();
                 LoadBondPositionList();
                 LoadEpoxyApplicationList();
@@ -311,7 +332,11 @@ namespace RecipeEditPanelClsLib
                 step.productStepType = EnumProductStepType.BondDie;
             }
 
-            
+            if (cbSubstrateList.SelectedItem != null)
+            {
+                //step.ComponentName = ((ComponentConfig)cbComponentList.SelectedItem).ConfigName;
+                step.SubstrateName = cbSubstrateList.SelectedItem.ToString();
+            }
 
             if (cbComponentList.SelectedItem != null)
             {
