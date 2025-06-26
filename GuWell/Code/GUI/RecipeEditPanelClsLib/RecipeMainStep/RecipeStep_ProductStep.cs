@@ -27,11 +27,13 @@ namespace RecipeEditPanelClsLib
         //List<ProductStep> productSteps;
         List<ProgramSubstrateSettings> substrateList;
         List<ProgramComponentSettings> componentsList;
+        List<ProgramComponentSettings> submonutList;
         List<BondingPositionSettings> bondPosList;
         List<EpoxyApplication> _epoxyApplicationList;
         //List<EutecticParameters> eutecticList;
         ProductStep curStep;
         List<ProductStep> productSteps;
+        ProgramComponentSettings curStepSubmonut;
         ProgramComponentSettings curStepComp;
         BondingPositionSettings curStepBondingPos;
         //EutecticParameters curStepEutectic;
@@ -112,6 +114,24 @@ namespace RecipeEditPanelClsLib
             cbComponentList.SelectedIndex = -1;
         }
 
+        private void LoadSubmonutList()
+        {
+
+            submonutList = new List<ProgramComponentSettings>();
+            cbSubmonutList.Items.Clear();
+            //cbComponentList.Items.Add(_editRecipe.SubstrateInfos.Name);
+            var childs = Directory.GetDirectories(_componentsSavePath);
+            for (int index = 0; index < childs.Length; index++)
+            {
+                var childName = Path.GetFileName(childs[index]);
+                cbSubmonutList.Items.Add(childName);
+                var xmlFile = $@"{_componentsSavePath}\{childName}\{childName}.xml";
+                var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramComponentSettings>(xmlFile, Encoding.UTF8);
+                submonutList.Add(comp);
+            }
+            cbSubmonutList.SelectedIndex = -1;
+        }
+
         private void LoadBondPositionList()
         {
 
@@ -154,6 +174,7 @@ namespace RecipeEditPanelClsLib
             {
                 base.LoadEditedRecipe(recipe);
                 LoadSubstrateList();
+                LoadSubmonutList();
                 LoadComponentList();
                 LoadBondPositionList();
                 LoadEpoxyApplicationList();
@@ -199,6 +220,7 @@ namespace RecipeEditPanelClsLib
         {
             //清空
             curComponentDetail.FillComponentDetail(null);
+            cursubmonutDetail.FillComponentDetail(null);
             //curEuticticDetail.fillEutecticDetail(null);
 
             //取当前
@@ -214,6 +236,17 @@ namespace RecipeEditPanelClsLib
 
             try
             {
+                if (!string.IsNullOrWhiteSpace(curStep.SubmonutName))
+                {
+                    //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
+                    curStepSubmonut = submonutList.Find(t => t.Name == curStep.SubmonutName);
+                    cursubmonutDetail.FillComponentDetail(curStepSubmonut, _editRecipe.SubstrateInfos);
+                }
+                else
+                {
+                    cursubmonutDetail.FillComponentDetail(null);
+                }
+
                 if (!string.IsNullOrWhiteSpace(curStep.ComponentName))
                 {
                     //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
@@ -338,6 +371,12 @@ namespace RecipeEditPanelClsLib
                 step.SubstrateName = cbSubstrateList.SelectedItem.ToString();
             }
 
+            if (cbSubmonutList.SelectedItem != null)
+            {
+                //step.ComponentName = ((ComponentConfig)cbComponentList.SelectedItem).ConfigName;
+                step.SubmonutName = cbSubmonutList.SelectedItem.ToString();
+            }
+
             if (cbComponentList.SelectedItem != null)
             {
                 //step.ComponentName = ((ComponentConfig)cbComponentList.SelectedItem).ConfigName;
@@ -422,6 +461,7 @@ namespace RecipeEditPanelClsLib
         {
             if (WarningBox.FormShow("即将保存修改？", "是否保存配方参数？") == 1)
             {
+                SaveCurrentSubmonut();
                 SaveCurrentComponent();
                 SaveBondPositionInfo();
                 //_editRecipe.EutecticParameters.ParameterIndex = int.Parse(cmbEutecticParamIndex.Text);
@@ -460,6 +500,43 @@ namespace RecipeEditPanelClsLib
             catch (Exception ex)
             {
                 LogRecorder.RecordLog(EnumLogContentType.Error, "RecipeStep_ProductStep-SaveCurrentComponent,Error.", ex);
+            }
+
+        }
+
+
+        /// <summary>
+        /// 保存芯片信息
+        /// </summary>
+        private void SaveCurrentSubmonut()
+        {
+
+            try
+            {
+                curStepSubmonut.ChipPPPickSystemPos = cursubmonutDetail.CurrentChipPPPickPos;
+                //curStepComp.ChipPPPlacePos = cursubmonutDetail.CurrentChipPPPlacePos;
+                curStepSubmonut.PPSettings.PickupStress = cursubmonutDetail.CurrentChipPPPress;
+                curStepSubmonut.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
+                curStepSubmonut.PPSettings.NeedleUpHeight = cursubmonutDetail.CurrentNeedleUpHeight;
+
+                curStepSubmonut.PPSettings.PlaceStress = cursubmonutDetail.CurrentPlaceStress;
+                curStepSubmonut.PPSettings.DelayMSForPlace = cursubmonutDetail.CurrentDelayMSForPlace;
+                curStepSubmonut.PPSettings.BreakVaccumTimespanMS = cursubmonutDetail.CurrentBreakVaccumTimespanMS;
+
+                //_editRecipe.SubstrateInfos.SubmountPPPickPos = cursubmonutDetail.CurrentSubmountPPPickPos;
+                //_editRecipe.SubstrateInfos.SubmountPPPlacePos = cursubmonutDetail.CurrentSubmountPPPlacePos;
+                //_editRecipe.SubstrateInfos.PPSettings.PickupStress = cursubmonutDetail.CurrentSubmountPPPress;
+
+                //_editRecipe.SubstrateInfos.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
+
+
+                var xmlFile = $@"{_componentsSavePath}\{curStepSubmonut.Name}\{curStepSubmonut.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(curStepSubmonut, xmlFile, Encoding.UTF8);
+                _editRecipe.SaveRecipe();
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "RecipeStep_ProductStep-SaveCurrentSubmonut,Error.", ex);
             }
 
         }
