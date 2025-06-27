@@ -196,11 +196,18 @@ namespace ProductRunClsLib
         [Description("7 吸取衬底")]
         Action_PickUpSubmonut = 16,
 
+        [Description("9 衬底二次校准")]
+        Action_AccuracyPositionSubmonut = 17,
+
         [Description("ex1 基底抛料")]
         Action_AbondonSubstrate = 101,
 
         [Description("ex2 芯片抛料")]
-        Action_AbondonChip = 102
+        Action_AbondonChip = 102,
+
+        [Description("ex3 衬底抛料")]
+        Action_AbondonSubmonut = 103
+
     }
 
     /*
@@ -1951,16 +1958,36 @@ namespace ProductRunClsLib
     /// </summary>
     public class StepAction_MaterialThrowingAction : StepActionBase
     {
-        public StepAction_MaterialThrowingAction(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_MaterialThrowingAction(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        {
+            if (actionNo == EnumActionNo.Action_AbondonChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_AbondonSubmonut)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
             try
             {
-                
+                if(componentType == EnumComponentType.Component)
+                {
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    return AbandonMaterialUtility.Instance.Abandon(pptool);
+                }
+                else
+                {
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    return AbandonMaterialUtility.Instance.Abandon(pptool);
+                }
 
 
-                return AbandonMaterialUtility.Instance.Abandon(EnumUsedPP.ChipPP);
+                //return AbandonMaterialUtility.Instance.Abandon(EnumUsedPP.ChipPP);
             }
             catch (Exception)
             {
@@ -1977,28 +2004,69 @@ namespace ProductRunClsLib
     /// </summary>
     public class StepAction_CalibrationTableMaterialThrowingAction : StepActionBase
     {
-        public StepAction_CalibrationTableMaterialThrowingAction(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_CalibrationTableMaterialThrowingAction(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        {
+            if (actionNo == EnumActionNo.Action_AbondonChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_AbondonSubmonut)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
             try
             {
-                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
+                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
                 var ppParam = CurChipParam.PPSettings;
+
+                if (componentType == EnumComponentType.Component)
+                {
+                    pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    ppParam = CurChipParam.PPSettings;
+                }
+                else
+                {
+                    pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    ppParam = CurSubmonutParam.PPSettings;
+                }
+
+                
 
                 if (pptool != null)
                 {
                     var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                    if (componentType == EnumComponentType.Component)
+                    {
+                        systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                    }
+                    else
+                    {
+                        systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurSubmonutParam.ThicknessMM;
+                    }
+                        
                     ppParam.PPToolZero = pptool.AltimetryOnMark;
                     ppParam.WorkHeight = (float)systemPos;
                 }
                 else
                 {
                     var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                    if (componentType == EnumComponentType.Component)
+                    {
+                        systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                    }
+                    else
+                    {
+                        systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurSubmonutParam.ThicknessMM;
+                    }
                     ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
                     ppParam.WorkHeight = (float)systemPos;
                 }
-                if (_positioningSystem.BondZMovetoSafeLocation() && _positioningSystem.ChipPPMovetoCalibrationTableCenter(_systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName)))
+                if (_positioningSystem.BondZMovetoSafeLocation() && _positioningSystem.PPtoolMovetoCalibrationTableCenter(pptool))
                 {
                     //拾取芯片
                     if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromCalibrationTable))
@@ -2008,7 +2076,8 @@ namespace ProductRunClsLib
                         //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);  
 
 
-                        return AbandonMaterialUtility.Instance.Abandon(EnumUsedPP.ChipPP);
+                        //return AbandonMaterialUtility.Instance.Abandon(EnumUsedPP.ChipPP);
+                        return AbandonMaterialUtility.Instance.Abandon(pptool);
                     }
                     else
                     {
@@ -2489,78 +2558,102 @@ namespace ProductRunClsLib
    */
     public class StepAction_PickUpChipWithRotate : StepActionBase
     {
-        public StepAction_PickUpChipWithRotate(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_PickUpChipWithRotate(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
             try
             {
-                BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
-                var curDealBP = CurBondPosition;
-                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
-                if (CurChipParam.CarrierType == EnumCarrierType.WafflePack)
+                if(componentType == EnumComponentType.Component)
                 {
-                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpChip-Start.");
-                    //BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
-
-                    var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                    var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
-                    //安全位
-                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPT, 0, EnumCoordSetType.Absolute);
-                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
-                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
-
-                    //吸嘴移动到芯片中心上方
-
-                    var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
-                    if (pptool != null)
+                    BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                    var curDealBP = CurBondPosition;
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    if (CurChipParam.CarrierType == EnumCarrierType.WafflePack)
                     {
-                        var usedPPandBondCameraOffsetX = pptool.ChipPPPosCompensateCoordinate1.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
-                        var usedPPandBondCameraOffsetY = pptool.ChipPPPosCompensateCoordinate1.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
-                        offset.X= usedPPandBondCameraOffsetX;
-                        offset.Y = usedPPandBondCameraOffsetY;
-                    }
-                    if (_positioningSystem.BondZMovetoSafeLocation()
-                    //芯片吸嘴T复位
-                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupChip.X + offset.X
-                        , ProductExecutor.Instance.OffsetBeforePickupChip.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
-                    {
-                        //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
-                        var pp = CurChipParam.PPSettings;
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpChip-Start.");
+                        //BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
 
+                        var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
+                        //安全位
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPT, 0, EnumCoordSetType.Absolute);
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
 
+                        //吸嘴移动到芯片中心上方
+
+                        var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                        offset = pptool.PP1AndBondCameraOffset;
                         if (pptool != null)
                         {
-                            var systemPos = CurChipParam.ChipPPPickSystemPos;
-                            pp.PPToolZero = pptool.AltimetryOnMark;
-                            pp.WorkHeight = systemPos;
+                            var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                            var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                            offset.X = usedPPandBondCameraOffsetX;
+                            offset.Y = usedPPandBondCameraOffsetY;
                         }
-                        else
+                        if (_positioningSystem.BondZMovetoSafeLocation()
+                        //芯片吸嘴T复位
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupChip.X + offset.X
+                            , ProductExecutor.Instance.OffsetBeforePickupChip.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
                         {
-                            var systemPos = CurChipParam.ChipPPPickSystemPos;
-                            pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
-                            pp.WorkHeight = systemPos;
-                        }
-
-                        if (PPUtility.Instance.PickViaSystemCoor(pp))
-                        {
-                            //double CurrA = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT);
-                            _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                            //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                            var pp = CurChipParam.PPSettings;
 
 
+                            if (pptool != null)
+                            {
+                                var systemPos = CurChipParam.ChipPPPickSystemPos;
+                                pp.PPToolZero = pptool.AltimetryOnMark;
+                                pp.WorkHeight = systemPos;
+                            }
+                            else
+                            {
+                                var systemPos = CurChipParam.ChipPPPickSystemPos;
+                                pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                pp.WorkHeight = systemPos;
+                            }
 
-                            //CalibrationAlgorithms PPCalibration = new CalibrationAlgorithms();
-                            //PointF point1 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.Y);
-                            //PointF point2 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.Y);
-                            //PPCalibration.PPRotateXYDeviationParamCal(point1, point2, 0, 180);
+                            if (PPUtility.Instance.PickViaSystemCoor(pp))
+                            {
+                                //double CurrA = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT);
+                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
 
-                            //double angle0 = CurrA;
-                            //double angle = CurrA+ targetA;
-                            //PointF point3 = PPCalibration.PPXYDeviationCal((float)angle0, (float)angle);
-                            //ProductExecutor.Instance.CompensateXAfterPickupChip = point3.X;
-                            //ProductExecutor.Instance.CompensateYAfterPickupChip = point3.Y;
-                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpChip-End.");
+                                _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -targetA, EnumCoordSetType.Relative);
+
+
+
+                                //CalibrationAlgorithms PPCalibration = new CalibrationAlgorithms();
+                                //PointF point1 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.Y);
+                                //PointF point2 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.Y);
+                                //PPCalibration.PPRotateXYDeviationParamCal(point1, point2, 0, 180);
+
+                                //double angle0 = CurrA;
+                                //double angle = CurrA+ targetA;
+                                //PointF point3 = PPCalibration.PPXYDeviationCal((float)angle0, (float)angle);
+                                //ProductExecutor.Instance.CompensateXAfterPickupChip = point3.X;
+                                //ProductExecutor.Instance.CompensateYAfterPickupChip = point3.Y;
+                                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpChip-End.");
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                WarningBox.FormShow("错误", "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
                         }
                         else
                         {
@@ -2569,52 +2662,151 @@ namespace ProductRunClsLib
                             return GlobalGWResultDefine.RET_FAILED;
                         }
                     }
-                    else
+                    else if (CurChipParam.CarrierType == EnumCarrierType.Wafer)
                     {
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
-                        WarningBox.FormShow("错误", "拾取芯片失败！");
-                        return GlobalGWResultDefine.RET_FAILED;
+                        var usedESTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedESToolName);
+                        if (usedESTool != null)
+                        {
+                            var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                            offset = pptool.PP1AndBondCameraOffset;
+                            if (pptool != null)
+                            {
+                                var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                                offset.X = usedPPandBondCameraOffsetX;
+                                offset.Y = usedPPandBondCameraOffsetY;
+                            }
+                            var offsetBCAndWC = _systemConfig.PositioningConfig.WaferCameraOrigion;
+                            var offsetBCAndWC2 = usedESTool.BondIdentifyNeedleCenter;
+                            if (_positioningSystem.BondZMovetoSafeLocation()
+                            //顶针移动到零点
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //物料中心移动到顶针上方
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableX, usedESTool.NeedleCenter.X, EnumCoordSetType.Relative) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableY, -usedESTool.NeedleCenter.Y, EnumCoordSetType.Relative) == StageMotionResult.Success
+                            //芯片吸嘴物料中心上方
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC.X - usedESTool.NeedleCenter.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC.Y - usedESTool.NeedleCenter.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC2.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC2.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //顶针座升起
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, CurChipParam.ESBaseWorkPos, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //拾取芯片
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            )
+                            {
+                                //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                                var pp = CurChipParam.PPSettings;
+                                pp.WorkHeight = CurChipParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z; ;
+                                //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
+                                if (pptool != null)
+                                {
+                                    pp.PPToolZero = pptool.AltimetryOnMark;
+                                }
+                                else
+                                {
+                                    //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
+                                    //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
+                                    //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
+                                    //var ppWorkSystemPos = 0f;
+                                    pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                    //pp.WorkHeight = ppWorkSystemPos;
+                                }
+
+                                IOUtilityClsLib.IOUtilityHelper.Instance.OpenESBaseVaccum();
+                                //Thread.Sleep(3000);
+                                var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
+                                if (PPUtility.Instance.PickViaSystemCoor(pp))
+                                {
+                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                                    _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -targetA, EnumCoordSetType.Relative);
+                                }
+                                else
+                                {
+                                    IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                    WarningBox.FormShow("错误", "拾取芯片失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                            }
+                            else
+                            {
+                                IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                WarningBox.FormShow("错误", "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                        }
+                        else
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Error, "芯片绑定的顶针工具无效！");
+                            WarningBox.FormShow("错误", "拾取芯片失败！");
+                            return GlobalGWResultDefine.RET_FAILED;
+                        }
                     }
-                }
-                else if (CurChipParam.CarrierType == EnumCarrierType.Wafer)
-                {
-                    var usedESTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedESToolName);
-                    if (usedESTool != null)
+                    else if (CurChipParam.CarrierType == EnumCarrierType.WaferWafflePack)
                     {
-                        var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                        //芯片吸嘴物料中心上方
+                        var ppSystemOffset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                        ppSystemOffset = pptool.PP1AndBondCameraOffset;
                         if (pptool != null)
                         {
-                            var usedPPandBondCameraOffsetX = pptool.ChipPPPosCompensateCoordinate1.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
-                            var usedPPandBondCameraOffsetY = pptool.ChipPPPosCompensateCoordinate1.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
-                            offset.X = usedPPandBondCameraOffsetX;
-                            offset.Y = usedPPandBondCameraOffsetY;
+                            var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                            var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                            ppSystemOffset.X = usedPPandBondCameraOffsetX;
+                            ppSystemOffset.Y = usedPPandBondCameraOffsetY;
                         }
-                        var offsetBCAndWC = _systemConfig.PositioningConfig.WaferCameraOrigion;
-                        var offsetBCAndWC2 = usedESTool.BondIdentifyNeedleCenter;
+                        var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
+
+
+
                         if (_positioningSystem.BondZMovetoSafeLocation()
-                        //顶针移动到零点
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        //物料中心移动到顶针上方
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableX, usedESTool.NeedleCenter.X, EnumCoordSetType.Relative) == StageMotionResult.Success
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableY, -usedESTool.NeedleCenter.Y, EnumCoordSetType.Relative) == StageMotionResult.Success
                         //芯片吸嘴物料中心上方
-                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC.X - usedESTool.NeedleCenter.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC.Y - usedESTool.NeedleCenter.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC2.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC2.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        //顶针座升起
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, CurChipParam.ESBaseWorkPos, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        //拾取芯片
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X+ ProductExecutor.Instance.OffsetBeforePickupChip.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y- ProductExecutor.Instance.OffsetBeforePickupChip.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        ////拾取芯片
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        )
                         {
+                            //XY联动移动到物料上方
+                            EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                            multiAxis[0] = EnumStageAxis.BondX;
+                            multiAxis[1] = EnumStageAxis.BondY;
+                            //multiAxis[2] = EnumStageAxis.ChipPPT;
+                            multiAxis[2] = pptool.StageAxisTheta;
+                            double[] targets = new double[3];
+                            targets[0] = ppSystemOffset.X + bondcamera2wafercamera.X + curDealBP.chipPositionCompensation.X;
+                            targets[1] = ppSystemOffset.Y + bondcamera2wafercamera.Y + curDealBP.chipPositionCompensation.Y;
+                            targets[2] = 0;
+                            StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, targets, EnumCoordSetType.Absolute);
+                            if (result == StageMotionResult.Success)
+                            {
+
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,BondXTarget:{ppSystemOffset.X + bondcamera2wafercamera.X}");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,BondXCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX)}");
                             //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
                             var pp = CurChipParam.PPSettings;
-                            pp.WorkHeight = CurChipParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z; ;
+                            pp.WorkHeight = CurChipParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z;
+
                             //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
                             if (pptool != null)
                             {
+                                //吸嘴工具原点
                                 pp.PPToolZero = pptool.AltimetryOnMark;
+
                             }
                             else
                             {
@@ -2626,13 +2818,187 @@ namespace ProductRunClsLib
                                 //pp.WorkHeight = ppWorkSystemPos;
                             }
 
-                            IOUtilityClsLib.IOUtilityHelper.Instance.OpenESBaseVaccum();
-                            //Thread.Sleep(3000);
-                            var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                            var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
+
+                            //var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            //var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
+                            //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupChip.Theta}");
+                            //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-targetAngle:{targetA}");
                             if (PPUtility.Instance.PickViaSystemCoor(pp))
                             {
-                                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                                //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                                //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                        }
+                        else
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                            return GlobalGWResultDefine.RET_FAILED;
+                        }
+                    }
+
+                }
+                else
+                {
+                    BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                    var curDealBP = CurBondPosition;
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    if (CurSubmonutParam.CarrierType == EnumCarrierType.WafflePack)
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpSubmonut-Start.");
+                        //BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+
+                        var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                        //安全位
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPT, 0, EnumCoordSetType.Absolute);
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+
+                        //吸嘴移动到芯片中心上方
+
+                        var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                        offset = pptool.PP1AndBondCameraOffset;
+                        if (pptool != null)
+                        {
+                            var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                            var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                            offset.X = usedPPandBondCameraOffsetX;
+                            offset.Y = usedPPandBondCameraOffsetY;
+                        }
+                        if (_positioningSystem.BondZMovetoSafeLocation()
+                        //芯片吸嘴T复位
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupSubmonut.X + offset.X
+                            , ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        {
+                            //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                            var pp = CurSubmonutParam.PPSettings;
+
+
+                            if (pptool != null)
+                            {
+                                var systemPos = CurSubmonutParam.ChipPPPickSystemPos;
+                                pp.PPToolZero = pptool.AltimetryOnMark;
+                                pp.WorkHeight = systemPos;
+                            }
+                            else
+                            {
+                                var systemPos = CurSubmonutParam.ChipPPPickSystemPos;
+                                pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                pp.WorkHeight = systemPos;
+                            }
+
+                            if (PPUtility.Instance.PickViaSystemCoor(pp))
+                            {
+                                //double CurrA = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT);
+                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -targetA, EnumCoordSetType.Relative);
+
+                                _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -targetA, EnumCoordSetType.Relative);
+
+
+
+                                //CalibrationAlgorithms PPCalibration = new CalibrationAlgorithms();
+                                //PointF point1 = new PointF((float)_systemConfig.CalibrationConfig.SubmonutPPPosCompensateCoordinate1.X, (float)_systemConfig.CalibrationConfig.SubmonutPPPosCompensateCoordinate1.Y);
+                                //PointF point2 = new PointF((float)_systemConfig.CalibrationConfig.SubmonutPPPosCompensateCoordinate2.X, (float)_systemConfig.CalibrationConfig.SubmonutPPPosCompensateCoordinate2.Y);
+                                //PPCalibration.PPRotateXYDeviationParamCal(point1, point2, 0, 180);
+
+                                //double angle0 = CurrA;
+                                //double angle = CurrA+ targetA;
+                                //PointF point3 = PPCalibration.PPXYDeviationCal((float)angle0, (float)angle);
+                                //ProductExecutor.Instance.CompensateXAfterPickupSubmonut = point3.X;
+                                //ProductExecutor.Instance.CompensateYAfterPickupSubmonut = point3.Y;
+                                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpSubmonut-End.");
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                WarningBox.FormShow("错误", "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                        }
+                        else
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                            WarningBox.FormShow("错误", "拾取芯片失败！");
+                            return GlobalGWResultDefine.RET_FAILED;
+                        }
+                    }
+                    else if (CurSubmonutParam.CarrierType == EnumCarrierType.Wafer)
+                    {
+                        var usedESTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedESToolName);
+                        if (usedESTool != null)
+                        {
+                            var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                            offset = pptool.PP1AndBondCameraOffset;
+                            if (pptool != null)
+                            {
+                                var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                                offset.X = usedPPandBondCameraOffsetX;
+                                offset.Y = usedPPandBondCameraOffsetY;
+                            }
+                            var offsetBCAndWC = _systemConfig.PositioningConfig.WaferCameraOrigion;
+                            var offsetBCAndWC2 = usedESTool.BondIdentifyNeedleCenter;
+                            if (_positioningSystem.BondZMovetoSafeLocation()
+                            //顶针移动到零点
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //物料中心移动到顶针上方
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableX, usedESTool.NeedleCenter.X, EnumCoordSetType.Relative) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableY, -usedESTool.NeedleCenter.Y, EnumCoordSetType.Relative) == StageMotionResult.Success
+                            //芯片吸嘴物料中心上方
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC.X - usedESTool.NeedleCenter.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC.Y - usedESTool.NeedleCenter.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC2.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC2.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //顶针座升起
+                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, CurSubmonutParam.ESBaseWorkPos, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //拾取芯片
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            )
+                            {
+                                //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                                var pp = CurSubmonutParam.PPSettings;
+                                pp.WorkHeight = CurSubmonutParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z; ;
+                                //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedPPToolName);
+                                if (pptool != null)
+                                {
+                                    pp.PPToolZero = pptool.AltimetryOnMark;
+                                }
+                                else
+                                {
+                                    //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
+                                    //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
+                                    //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
+                                    //var ppWorkSystemPos = 0f;
+                                    pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                    //pp.WorkHeight = ppWorkSystemPos;
+                                }
+
+                                IOUtilityClsLib.IOUtilityHelper.Instance.OpenESBaseVaccum();
+                                //Thread.Sleep(3000);
+                                var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                                if (PPUtility.Instance.PickViaSystemCoor(pp))
+                                {
+                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -targetA, EnumCoordSetType.Relative);
+                                    _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -targetA, EnumCoordSetType.Relative);
+                                }
+                                else
+                                {
+                                    IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                    WarningBox.FormShow("错误", "拾取芯片失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
                             }
                             else
                             {
@@ -2641,102 +3007,101 @@ namespace ProductRunClsLib
                                 WarningBox.FormShow("错误", "拾取芯片失败！");
                                 return GlobalGWResultDefine.RET_FAILED;
                             }
+
                         }
                         else
                         {
-                            IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
-                            LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, "芯片绑定的顶针工具无效！");
                             WarningBox.FormShow("错误", "拾取芯片失败！");
                             return GlobalGWResultDefine.RET_FAILED;
                         }
-
                     }
-                    else
+                    else if (CurSubmonutParam.CarrierType == EnumCarrierType.WaferWafflePack)
                     {
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "芯片绑定的顶针工具无效！");
-                        WarningBox.FormShow("错误", "拾取芯片失败！");
-                        return GlobalGWResultDefine.RET_FAILED;
-                    }
-                }
-                else if (CurChipParam.CarrierType == EnumCarrierType.WaferWafflePack)
-                {     
-                    //芯片吸嘴物料中心上方
-                    var ppSystemOffset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
-
-                    if (pptool != null)
-                    {
-                        var usedPPandBondCameraOffsetX = pptool.ChipPPPosCompensateCoordinate1.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
-                        var usedPPandBondCameraOffsetY = pptool.ChipPPPosCompensateCoordinate1.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
-                        ppSystemOffset.X = usedPPandBondCameraOffsetX;
-                        ppSystemOffset.Y = usedPPandBondCameraOffsetY;
-                    }
-                    var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
-
-
-
-                    if (_positioningSystem.BondZMovetoSafeLocation()
-                    //芯片吸嘴物料中心上方
-                    //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X+ ProductExecutor.Instance.OffsetBeforePickupChip.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y- ProductExecutor.Instance.OffsetBeforePickupChip.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    ////拾取芯片
-                    //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                    )
-                    {
-                        //XY联动移动到物料上方
-                        EnumStageAxis[] multiAxis = new EnumStageAxis[3];
-                        multiAxis[0] = EnumStageAxis.BondX;
-                        multiAxis[1] = EnumStageAxis.BondY;
-                        multiAxis[2] = EnumStageAxis.ChipPPT;
-                        double[] targets = new double[3];
-                        targets[0] = ppSystemOffset.X + bondcamera2wafercamera.X + curDealBP.chipPositionCompensation.X;
-                        targets[1] = ppSystemOffset.Y + bondcamera2wafercamera.Y + curDealBP.chipPositionCompensation.Y;
-                        targets[2] = 0;
-                        StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, targets, EnumCoordSetType.Absolute);
-                        if(result == StageMotionResult.Success)
-                        {
-
-                        }
-                        else
-                        {
-                            LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
-                            return GlobalGWResultDefine.RET_FAILED;
-                        }
-
-                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,BondXTarget:{ppSystemOffset.X + bondcamera2wafercamera.X}");
-                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,BondXCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX)}");
-                        //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
-                        var pp = CurChipParam.PPSettings;
-                        pp.WorkHeight = CurChipParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z;
-
-                        //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
+                        //芯片吸嘴物料中心上方
+                        var ppSystemOffset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                        ppSystemOffset = pptool.PP1AndBondCameraOffset;
                         if (pptool != null)
                         {
-                            //吸嘴工具原点
-                            pp.PPToolZero = pptool.AltimetryOnMark;
-
+                            var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                            var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                            ppSystemOffset.X = usedPPandBondCameraOffsetX;
+                            ppSystemOffset.Y = usedPPandBondCameraOffsetY;
                         }
-                        else
-                        {
-                            //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
-                            //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
-                            //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
-                            //var ppWorkSystemPos = 0f;
-                            pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
-                            //pp.WorkHeight = ppWorkSystemPos;
-                        }
+                        var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
 
 
-                        //var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                        //var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
-                        //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupChip.Theta}");
-                        //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-targetAngle:{targetA}");
-                        if (PPUtility.Instance.PickViaSystemCoor(pp))
+
+                        if (_positioningSystem.BondZMovetoSafeLocation()
+                        //芯片吸嘴物料中心上方
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X+ ProductExecutor.Instance.OffsetBeforePickupSubmonut.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y- ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        ////拾取芯片
+                        //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        )
                         {
-                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
-                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
-                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                            //XY联动移动到物料上方
+                            EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                            multiAxis[0] = EnumStageAxis.BondX;
+                            multiAxis[1] = EnumStageAxis.BondY;
+                            //multiAxis[2] = EnumStageAxis.SubmonutPPT;
+                            multiAxis[2] = pptool.StageAxisTheta;
+                            double[] targets = new double[3];
+                            targets[0] = ppSystemOffset.X + bondcamera2wafercamera.X + curDealBP.chipPositionCompensation.X;
+                            targets[1] = ppSystemOffset.Y + bondcamera2wafercamera.Y + curDealBP.chipPositionCompensation.Y;
+                            targets[2] = 0;
+                            StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, targets, EnumCoordSetType.Absolute);
+                            if (result == StageMotionResult.Success)
+                            {
+
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,BondXTarget:{ppSystemOffset.X + bondcamera2wafercamera.X}");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,BondXCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX)}");
+                            //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                            var pp = CurSubmonutParam.PPSettings;
+                            pp.WorkHeight = CurSubmonutParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z;
+
+                            //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedPPToolName);
+                            if (pptool != null)
+                            {
+                                //吸嘴工具原点
+                                pp.PPToolZero = pptool.AltimetryOnMark;
+
+                            }
+                            else
+                            {
+                                //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
+                                //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
+                                //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
+                                //var ppWorkSystemPos = 0f;
+                                pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                //pp.WorkHeight = ppWorkSystemPos;
+                            }
+
+
+                            //var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            //var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                            //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta}");
+                            //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-targetAngle:{targetA}");
+                            if (PPUtility.Instance.PickViaSystemCoor(pp))
+                            {
+                                //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -targetA, EnumCoordSetType.Relative);
+                                //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
                         }
                         else
                         {
@@ -2744,12 +3109,10 @@ namespace ProductRunClsLib
                             return GlobalGWResultDefine.RET_FAILED;
                         }
                     }
-                    else
-                    {
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
-                        return GlobalGWResultDefine.RET_FAILED;
-                    }
+
                 }
+
+                
 
                 return GlobalGWResultDefine.RET_SUCCESS;
 
