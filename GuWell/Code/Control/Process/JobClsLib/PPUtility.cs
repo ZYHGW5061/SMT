@@ -74,11 +74,15 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
-                        //衬底PPZ移动到工作位
-                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                        if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
                         {
-                            return false;
+                            //衬底PPZ移动到工作位
+                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                            {
+                                return false;
+                            }
                         }
+                           
                         return true;
                     })))
                     {
@@ -253,10 +257,13 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
-                        //衬底PPZ移动到工作位
-                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                        if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
                         {
-                            return false;
+                            //衬底PPZ移动到工作位
+                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                            {
+                                return false;
+                            }
                         }
                         return true;
                     })))
@@ -353,11 +360,15 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
-                        //衬底PPZ移动到空闲位
-                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                        if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
                         {
-                            return false;
+                            //衬底PPZ移动到空闲位
+                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                            {
+                                return false;
+                            }
                         }
+                            
                         return true;
                     })))
                     {
@@ -395,37 +406,68 @@ namespace JobClsLib
             try
             {
                 var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
-                //SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
-                if (param.UsedPP == EnumUsedPP.SubmountPP)
+                ////SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
+                //if (param.UsedPP == EnumUsedPP.SubmountPP)
+                //{
+                //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                //    {
+                //        //衬底PPZ移动到工作位
+                //        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                //        //{
+                //        //    return false;
+                //        //}
+                //        return true;
+                //    })))
+                //    {
+                //        return false;
+                //    }
+                //}
+                //else
+                //{
+                //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                //    {
+                //        //衬底PPZ移动到空闲位
+                //        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                //        //{
+                //        //    return false;
+                //        //}
+                //        return true;
+                //    })))
+                //    {
+                //        return false;
+                //    }
+                //}
+
+                if (param.PPtoolName != null)
                 {
-                    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                    if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
-                        //衬底PPZ移动到工作位
-                        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                        //{
-                        //    return false;
-                        //}
-                        return true;
-                    })))
-                    {
-                        return false;
+                        if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                        {
+                            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                            {
+                                //衬底PPZ移动到工作位
+                                if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                                {
+                                    return false;
+                                }
+                            }
+                               
+                            return true;
+                        })))
+                        {
+                            return false;
+                        }
                     }
+
                 }
                 else
                 {
-                    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
-                    {
-                        //衬底PPZ移动到空闲位
-                        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                        //{
-                        //    return false;
-                        //}
-                        return true;
-                    })))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
+
+               
                 //if (param.IsUseNeedle)
                 //{
                 //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
@@ -476,23 +518,31 @@ namespace JobClsLib
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
                      LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-开真空-Start.");
-                     if (param.UsedPP == EnumUsedPP.ChipPP)
+                     //if (param.UsedPP == EnumUsedPP.ChipPP)
+                     //{
+                     //    //开真空
+                     //    if (!IOUtilityHelper.Instance.OpenChipPPVaccum()&& _systemConfig.JobConfig.EnableVaccumConfirm)
+                     //    {
+                     //        return false;
+                     //    }
+                     //}
+                     //else if (param.UsedPP == EnumUsedPP.SubmountPP)
+                     //{
+                     //    //开真空
+                     //    if (!IOUtilityHelper.Instance.OpenSubmountPPVaccum()&& _systemConfig.JobConfig.EnableVaccumConfirm)
+                     //    {
+                     //        return false;
+                     //    }
+                     //}
+
+                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                     //开真空
+                     if (!IOUtilityHelper.Instance.OpenPPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally) && _systemConfig.JobConfig.EnableVaccumConfirm)
                      {
-                         //开真空
-                         if (!IOUtilityHelper.Instance.OpenChipPPVaccum()&& _systemConfig.JobConfig.EnableVaccumConfirm)
-                         {
-                             return false;
-                         }
+                         return false;
                      }
-                     else if (param.UsedPP == EnumUsedPP.SubmountPP)
-                     {
-                         //开真空
-                         if (!IOUtilityHelper.Instance.OpenSubmountPPVaccum()&& _systemConfig.JobConfig.EnableVaccumConfirm)
-                         {
-                             return false;
-                         }
-                     }
-                     
+
+
                      LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-开真空-End.");
                      return true;
                  })))
@@ -546,20 +596,26 @@ namespace JobClsLib
                      }
                      //快速抬升
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)axisConfig.AxisSpeed);
-                     if (param.UsedPP == EnumUsedPP.SubmountPP)
+                     //if (param.UsedPP == EnumUsedPP.SubmountPP)
+                     //{
+                     //    if(_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
+                     //    {
+                     //        return false;
+                     //    }
+                     //}
+                     //else
+                     //{
+                     //    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                     //    {
+                     //        return false;
+                     //    }
+                     //}
+
+                     if (_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
                      {
-                         if(_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
-                         {
-                             return false;
-                         }
+                         return false;
                      }
-                     else
-                     {
-                         if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                         {
-                             return false;
-                         }
-                     }
+
                      LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-上升-End.");
                      return true;
                  })))
@@ -635,41 +691,72 @@ namespace JobClsLib
                 LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-Start.");
                 var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
 
-                //SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
-                if (param.UsedPP == EnumUsedPP.SubmountPP)
+                ////SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
+                //if (param.UsedPP == EnumUsedPP.SubmountPP)
+                //{
+                //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                //     {
+                //         //衬底PPZ移动到工作位
+                //         //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                //         //{
+                //         //    return false;
+                //         //}
+
+                //         return true;
+
+                //     })))
+                //    {
+                //        return false;
+                //    }
+                //}
+                //else
+                //{
+                //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                //    {
+                //        //衬底PPZ移动到空闲位
+                //        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                //        //{
+                //        //    return false;
+                //        //}
+
+                //        return true;
+
+                //    })))
+                //    {
+                //        return false;
+                //    }
+                //}
+
+                if (param.PPtoolName != null)
                 {
-                    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
-                     {
-                         //衬底PPZ移动到工作位
-                         //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                         //{
-                         //    return false;
-                         //}
-
-                         return true;
-
-                     })))
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                    if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
-                        return false;
+                        if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
+                        {
+                            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                            {
+                                //衬底PPZ移动到工作位
+                                if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                                {
+                                    return false;
+                                }
+                            }
+                               
+                            return true;
+                        })))
+                        {
+                            return false;
+                        }
                     }
+
                 }
                 else
                 {
-                    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
-                    {
-                        //衬底PPZ移动到空闲位
-                        //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                        //{
-                        //    return false;
-                        //}
-
-                        return true;
-
-                    })))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
+
+
                 var terminal = param.WorkHeight - param.PickupStress; ;
                 var quickTravelTarget = terminal + param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
@@ -703,24 +790,34 @@ namespace JobClsLib
                      {
                          LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-VuccumOperate-Start.");
                          Thread.Sleep((int)param.DelayMSForPlace);
-                         if (param.UsedPP == EnumUsedPP.ChipPP)
-                         {
-                             //关真空
-                             IOUtilityHelper.Instance.CloseChipPPVaccum();
-                             Thread.Sleep(10);
-                             IOUtilityHelper.Instance.OpenChipPPBlow();
-                             Thread.Sleep((int)param.BreakVaccumTimespanMS);
-                             IOUtilityHelper.Instance.CloseChipPPBlow();
-                         }
-                         else if (param.UsedPP == EnumUsedPP.SubmountPP)
-                         {
-                             //关真空
-                             IOUtilityHelper.Instance.CloseSubmountPPVaccum();
-                             Thread.Sleep(10);
-                             IOUtilityHelper.Instance.OpenSubmountPPBlow();
-                             Thread.Sleep((int)param.BreakVaccumTimespanMS);
-                             IOUtilityHelper.Instance.CloseSubmountPPBlow();
-                         }
+                         //if (param.UsedPP == EnumUsedPP.ChipPP)
+                         //{
+                         //    //关真空
+                         //    IOUtilityHelper.Instance.CloseChipPPVaccum();
+                         //    Thread.Sleep(10);
+                         //    IOUtilityHelper.Instance.OpenChipPPBlow();
+                         //    Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         //    IOUtilityHelper.Instance.CloseChipPPBlow();
+                         //}
+                         //else if (param.UsedPP == EnumUsedPP.SubmountPP)
+                         //{
+                         //    //关真空
+                         //    IOUtilityHelper.Instance.CloseSubmountPPVaccum();
+                         //    Thread.Sleep(10);
+                         //    IOUtilityHelper.Instance.OpenSubmountPPBlow();
+                         //    Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         //    IOUtilityHelper.Instance.CloseSubmountPPBlow();
+                         //}
+
+
+                         var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                         //关真空
+                         IOUtilityHelper.Instance.ClosePPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally);
+                         Thread.Sleep(10);
+                         IOUtilityHelper.Instance.OpenPPtoolBlow(pptool.PPBlowSwitch);
+                         Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         IOUtilityHelper.Instance.ClosePPtoolBlow(pptool.PPBlowSwitch);
+
                          //Thread.Sleep((int)param.DelayMSForVaccum);
                          LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-VuccumOperate-End.");
                          return true;
@@ -749,20 +846,26 @@ namespace JobClsLib
                         }
                         //快速上升
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)axisConfig.AxisSpeed);
-                        if (param.UsedPP == EnumUsedPP.SubmountPP)
+                        //if (param.UsedPP == EnumUsedPP.SubmountPP)
+                        //{
+                        //    if (_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
+                        //    {
+                        //        return false;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
+                        //    {
+                        //        return false;
+                        //    }
+                        //}
+
+                        if (_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
                         {
-                            if (_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
-                            {
-                                return false;
-                            }
+                            return false;
                         }
-                        else
-                        {
-                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
-                            {
-                                return false;
-                            }
-                        }
+
                         LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-上升-End.");
                         return true;
                     })))

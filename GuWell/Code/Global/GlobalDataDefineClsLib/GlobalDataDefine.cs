@@ -407,6 +407,14 @@ namespace GlobalDataDefineClsLib
         WaferWafflePack
     }
 
+    public enum EnumComponentType
+    {
+        [Description("芯片")]
+        Component,
+        [Description("衬底")]
+        Submonut,
+    }
+
     [Serializable]
     public enum EnumYesOrNo
     {
@@ -442,6 +450,15 @@ namespace GlobalDataDefineClsLib
 
         [Description("基底吸嘴")]
         SubmountPP
+    }
+    [Serializable]
+    public enum EnumPPtool
+    {
+        [Description("芯片吸嘴")]
+        PPtool1,
+
+        [Description("基底吸嘴")]
+        PPtool2
     }
     [Serializable]
     public enum EnumVisionPositioningMethod
@@ -1079,8 +1096,17 @@ namespace GlobalDataDefineClsLib
     {
         public PPToolSettings()
         {
+            EnumPPtool = EnumPPtool.PPtool1;
+
+            StageAxisTheta = EnumStageAxis.ChipPPT;
+            StageAxisZ = EnumStageAxis.None;
+
             UplookingIdentifyPPtoolMatch = new MatchIdentificationParam();
             PPAndUCtoolOffset = new XYZTCoordinateConfig();
+
+            LookupCameraOrigion = new XYZTCoordinateConfig();
+            LookuptoPPOrigion = new XYZTCoordinateConfig();
+            PP1AndBondCameraOffset = new XYZTCoordinateConfig();
             ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig();
             ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig();
             PPESAltimetryParameter = new PPESAltimetryParameters();
@@ -1088,6 +1114,10 @@ namespace GlobalDataDefineClsLib
         }
         [XmlElement("Name")]
         public string Name { get; set; }
+
+        [XmlElement("EnumPPtool")]
+        public EnumPPtool EnumPPtool { get; set; }
+
         [XmlElement("PPName")]
         public string PPName { get; set; }
         /// <summary>
@@ -1095,6 +1125,38 @@ namespace GlobalDataDefineClsLib
         /// </summary>
         [XmlElement("AltimetryOnMark")]
         public float AltimetryOnMark { get; set; }
+
+        /// <summary>
+        ///吸嘴工具旋转轴
+        /// </summary>
+        [XmlElement("StageAxisTheta")]
+        public EnumStageAxis StageAxisTheta { get; set; }
+
+        /// <summary>
+        ///吸嘴工具独立Z轴
+        /// </summary>
+        [XmlElement("StageAxisZ")]
+        public EnumStageAxis StageAxisZ { get; set; }
+
+        /// <summary>
+        /// 吸嘴独立Z空闲位置
+        /// </summary>
+        [XmlElement("PPFreeZ")]
+        public double PPFreeZ { get; set; }
+        /// <summary>
+        /// 吸嘴独立Z工作位置
+        /// </summary>
+        [XmlElement("PPWorkZ")]
+        public double PPWorkZ { get; set; }
+
+        [XmlElement("PPVaccumSwitch")]
+        public EnumBoardcardDefineOutputIO PPVaccumSwitch { get; set; }
+
+        [XmlElement("PPBlowSwitch")]
+        public EnumBoardcardDefineOutputIO PPBlowSwitch { get; set; }
+
+        [XmlElement("PPVaccumNormally")]
+        public EnumBoardcardDefineInputIO PPVaccumNormally { get; set; }
 
 
         /// <summary>
@@ -1109,6 +1171,18 @@ namespace GlobalDataDefineClsLib
         public XYZTCoordinateConfig PPAndUCtoolOffset { get; set; }
 
         /// <summary>
+        /// 榜头相机对准仰视相机原点坐标
+        /// </summary>
+        [XmlElement("LookupCameraOrigion")]
+        public XYZTCoordinateConfig LookupCameraOrigion { get; set; }
+
+        /// <summary>
+        /// 榜头在仰视相机中心的坐标
+        /// </summary>
+        [XmlElement("LookuptoPPOrigion")]
+        public XYZTCoordinateConfig LookuptoPPOrigion { get; set; }
+
+        /// <summary>
         /// 计算吸嘴旋转补偿XY公式的坐标1，一般在T0度纪录
         /// </summary>
         [XmlElement("PPosCompensateCoordinate1")]
@@ -1118,6 +1192,26 @@ namespace GlobalDataDefineClsLib
         /// </summary>
         [XmlElement("PPosCompensateCoordinate2")]
         public XYZTCoordinateConfig ChipPPPosCompensateCoordinate2 { get; set; }
+
+        /// <summary>
+        /// 榜头与榜头相机中心的偏移
+        /// </summary>
+        [XmlIgnore]
+        public XYZTCoordinateConfig PP1AndBondCameraOffset
+        {
+            get
+            {
+                XYZTCoordinateConfig Offset = new XYZTCoordinateConfig();
+                Offset.X = LookuptoPPOrigion.X - LookupCameraOrigion.X;
+                Offset.Y = LookuptoPPOrigion.Y - LookupCameraOrigion.Y;
+                return Offset;
+            }
+            set
+            {
+
+            }
+        }
+
         /// <summary>
         /// 吸嘴和ES测高时的参数
         /// </summary>
@@ -1766,6 +1860,13 @@ namespace GlobalDataDefineClsLib
         /// </summary>
         [XmlElement("UsedPP")]
         public EnumUsedPP UsedPP;
+
+        /// <summary>
+        /// 使用的吸嘴
+        /// </summary>
+        [XmlElement("PPtoolName")]
+        public string PPtoolName;
+
         /// <summary>
         /// 工作高度，不包括压力偏移和其他偏移
         /// </summary>

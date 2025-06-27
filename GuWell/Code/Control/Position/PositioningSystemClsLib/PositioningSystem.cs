@@ -953,6 +953,51 @@ namespace PositioningSystemClsLib
         }
 
         /// <summary>
+        /// PPtool吸嘴移动到仰视相机中心（只移XY）
+        /// </summary>
+        public bool PPtoolMovetoUplookingCameraCenter(PPToolSettings ppTool = null)
+        {
+            double[] Target = new double[2];
+            if(ppTool != null)
+            {
+                Target[0] = ppTool.LookuptoPPOrigion.X;
+                Target[1] = ppTool.LookuptoPPOrigion.Y;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+                var ret = false;
+                if (_stageMotionControl.AbsoluteMovingSync(multiAxis, Target) == StageMotionResult.Success)
+                {
+                    ret = true;
+                }
+                return ret;
+            }
+            else
+            {
+                Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+                var ret = false;
+                if (_stageMotionControl.AbsoluteMovingSync(multiAxis, Target) == StageMotionResult.Success)
+                {
+                    ret = true;
+                }
+                return ret;
+            }
+            
+            //var ret = false;
+            //if(_stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondX, _systemConfig.PositioningConfig.LookupChipPPOrigion.X)==StageMotionResult.Success
+            //&&_stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondY, _systemConfig.PositioningConfig.LookupChipPPOrigion.Y) == StageMotionResult.Success)
+            //{
+            //    ret = true;
+            //}
+            //return ret;
+        }
+
+
+        /// <summary>
         /// 芯片吸嘴移动到仰视相机中心（只移XY）
         /// </summary>
         public bool ChipPPMovetoUplookingCameraCenter()
@@ -977,6 +1022,36 @@ namespace PositioningSystemClsLib
             //}
             //return ret;
         }
+
+        /// <summary>
+        /// 芯片吸嘴移动到仰视相机中心（只移XY）
+        /// </summary>
+        public bool PPtoolMovetoCalibrationTableCenter(PPToolSettings ppTool = null)
+        {
+            double[] Target = new double[2];
+            Target[0] = _systemConfig.PositioningConfig.CalibrationTableOrigion.X;
+            Target[1] = _systemConfig.PositioningConfig.CalibrationTableOrigion.Y;
+            if (ppTool != null)
+            {
+                Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - ppTool.LookuptoPPOrigion.X);
+                Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - ppTool.LookuptoPPOrigion.Y);
+            }
+            else
+            {
+                Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - _systemConfig.PositioningConfig.LookupChipPPOrigion.X);
+                Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - _systemConfig.PositioningConfig.LookupChipPPOrigion.Y);
+            }
+            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+            multiAxis[0] = EnumStageAxis.BondX;
+            multiAxis[1] = EnumStageAxis.BondY;
+            var ret = false;
+            if (_stageMotionControl.AbsoluteMovingSync(multiAxis, Target) == StageMotionResult.Success)
+            {
+                ret = true;
+            }
+            return ret;
+        }
+
 
         /// <summary>
         /// 芯片吸嘴移动到仰视相机中心（只移XY）
@@ -1101,7 +1176,15 @@ namespace PositioningSystemClsLib
 
             var ret = false;
             var safePos = _systemConfig.PositioningConfig.BondSafeLocation;
-            IOUtilityHelper.Instance.UpDispenserCylinder();
+            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+            {
+                _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ);
+            }
+            else
+            {
+                IOUtilityHelper.Instance.UpDispenserCylinder();
+            }
+                
             if (_stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, safePos.Z) == StageMotionResult.Success)
             {
                 double[] Target = new double[2];
@@ -1125,7 +1208,15 @@ namespace PositioningSystemClsLib
         {
             var ret = false;
             var offset = _systemConfig.PositioningConfig.BondSafeLocation;
-            IOUtilityHelper.Instance.UpDispenserCylinder();
+
+            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+            {
+                _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ);
+            }
+            else
+            {
+                IOUtilityHelper.Instance.UpDispenserCylinder();
+            }
             ret = _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, offset.Z) == StageMotionResult.Success ? true : false;
             return ret;
         }
@@ -1144,7 +1235,17 @@ namespace PositioningSystemClsLib
                 //targets[1] = _systemConfig.PositioningConfig.BondSafeLocation.Z;
                 //return MoveAixsToStageCoord(multiAxis, targets, EnumCoordSetType.Absolute);
 
-                IOUtilityHelper.Instance.UpDispenserCylinder();
+                if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                {
+                    _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ);
+                }
+                else
+                {
+                    IOUtilityHelper.Instance.UpDispenserCylinder();
+                }
+                   
+
+                
                 return _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z);
             }
             catch (Exception)

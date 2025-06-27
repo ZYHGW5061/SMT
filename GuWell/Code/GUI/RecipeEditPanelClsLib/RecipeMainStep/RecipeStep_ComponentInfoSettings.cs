@@ -146,6 +146,7 @@ namespace RecipeEditPanelClsLib
             _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbVisionPosUsedCamera.Text);
 
             _editRecipe.CurrentComponent.RelatedPPToolName = cmbRelatedPPTool.Text;
+            _editRecipe.CurrentComponent.PPSettings.PPtoolName = cmbRelatedPPTool.Text;
             _editRecipe.CurrentComponent.RelatedESToolName = cmbRelatedESTool.Text;
             _editRecipe.CurrentComponent.RelatedMaterialBoxToolName = cmbMaterialBoxTool.Text;
             _editRecipe.CurrentComponent.ProcessWafers = _materialBox.GetSelectedWafers();

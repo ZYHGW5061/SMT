@@ -136,6 +136,74 @@ namespace IOUtilityClsLib
             ret = status == 1;
             return ret;
         }
+
+
+        /// <summary>
+        /// 打开PPtool吸嘴真空
+        /// </summary>
+        public bool OpenPPtoolVaccum(EnumBoardcardDefineOutputIO PPVaccumSwitch, EnumBoardcardDefineInputIO PPVaccumNormally)
+        {
+            _retryMechanismOperation = new RetryMechanismOperation()
+            {
+                MaxRetryCount = 10,
+                ProcessFunc = () =>
+                {
+                    if (GetChipPPVaccumStatus(PPVaccumNormally) == 0)
+                    {
+                        Thread.Sleep(300);
+                        return false;
+                    }
+                    return true;
+                }
+            };
+            _boardCardController.IO_WriteOutPut_2(11, (short)PPVaccumSwitch, 1);
+            if (SystemConfiguration.Instance.JobConfig.EnableVaccumConfirm)
+            {
+                _retryMechanismOperation.Run();
+                if (_retryMechanismOperation.IsSuccess)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// 关闭PPtool吸嘴真空
+        /// </summary>
+        public bool ClosePPtoolVaccum(EnumBoardcardDefineOutputIO PPVaccumSwitch, EnumBoardcardDefineInputIO PPVaccumNormally)
+        {
+            _retryMechanismOperation = new RetryMechanismOperation()
+            {
+                MaxRetryCount = 10,
+                ProcessFunc = () =>
+                {
+                    if (GetChipPPVaccumStatus(PPVaccumNormally) == 1)
+                    {
+                        Thread.Sleep(300);
+                        return false;
+                    }
+                    return true;
+                }
+            };
+            _boardCardController.IO_WriteOutPut_2(11, (short)PPVaccumSwitch, 0);
+            _retryMechanismOperation.Run();
+            if (_retryMechanismOperation.IsSuccess)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 打开芯片吸嘴真空
         /// </summary>
@@ -409,6 +477,17 @@ namespace IOUtilityClsLib
         }
 
         /// <summary>
+        /// 获取PPtool真空状态
+        /// </summary>
+        /// <returns>0：关闭，1：打开</returns>
+        public int GetChipPPVaccumStatus(EnumBoardcardDefineInputIO PPVaccumNormally)
+        {
+            int isOpen = 0;
+            _boardCardController.IO_ReadInput_2(11, (int)PPVaccumNormally, out isOpen);
+            return isOpen;
+        }
+
+        /// <summary>
         /// 获取衬底真空状态
         /// </summary>
         /// <returns>0：关闭，1：打开</returns>
@@ -426,6 +505,22 @@ namespace IOUtilityClsLib
             ret = status == 1;
             return ret;
         }
+
+        /// <summary>
+        /// 打开PPtool吹气
+        /// </summary>
+        public void OpenPPtoolBlow(EnumBoardcardDefineOutputIO PPBlowSwitch)
+        {
+            _boardCardController.IO_WriteOutPut_2(11, (short)PPBlowSwitch, 1);
+        }
+        /// <summary>
+        /// 关闭PPtool吹气
+        /// </summary>
+        public void ClosePPtoolBlow(EnumBoardcardDefineOutputIO PPBlowSwitch)
+        {
+            _boardCardController.IO_WriteOutPut_2(11, (short)PPBlowSwitch, 0);
+        }
+
         /// <summary>
         /// 打开芯片吹气
         /// </summary>

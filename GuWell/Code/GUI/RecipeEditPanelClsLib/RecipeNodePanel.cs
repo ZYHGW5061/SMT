@@ -330,17 +330,27 @@ namespace RecipeEditPanelClsLib
                                             {
                                                 var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
 
-                                                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, visionRet.X + offset.X, EnumCoordSetType.Relative);
-                                                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, visionRet.Y + offset.Y, EnumCoordSetType.Relative);
+                                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, visionRet.X + offset.X, EnumCoordSetType.Relative);
+                                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, visionRet.Y + offset.Y, EnumCoordSetType.Relative);
 
-                                                //吸嘴移动到相机中心（此时也是物料中心）(只移XY)
-                                                //_positioningSystem.ChipPPMovetoBondCameraCenter();
-                                                //拾取芯片
-                                                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                                ////吸嘴移动到相机中心（此时也是物料中心）(只移XY)
+                                                ////_positioningSystem.ChipPPMovetoBondCameraCenter();
+                                                ////拾取芯片
+                                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
 
-                                                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedPPToolName);
+                                                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.PPSettings.PPtoolName);
                                                 if (pptool != null)
                                                 {
+                                                    offset = pptool.PP1AndBondCameraOffset;
+
+                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, visionRet.X + offset.X, EnumCoordSetType.Relative);
+                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, visionRet.Y + offset.Y, EnumCoordSetType.Relative);
+
+                                                    //吸嘴移动到相机中心（此时也是物料中心）(只移XY)
+                                                    //_positioningSystem.ChipPPMovetoBondCameraCenter();
+                                                    //拾取芯片
+                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+
                                                     _editRecipe.CurrentComponent.PPSettings.PPToolZero = pptool.AltimetryOnMark;
 
                                                 }
@@ -354,21 +364,104 @@ namespace RecipeEditPanelClsLib
                                                 _editRecipe.CurrentComponent.PPSettings.UpDistanceMMAfterPicked = 10;
                                                 if (PPUtility.Instance.PickViaSystemCoor(_editRecipe.CurrentComponent.PPSettings))
                                                 {
-                                                    //拾取完成之后进行角度补偿和旋转后的XY补偿
-                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, visionRet.Theta - visionParam.OrigionAngle, EnumCoordSetType.Relative);
-                                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
-                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
-                                                    //拾取之后移动到仰视相机上方
-                                                    _positioningSystem.ChipPPMovetoUplookingCameraCenter();
-                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ
-                                                        , _systemConfig.PositioningConfig.LookupChipPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute);
+                                                    if (_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+                                                    {
 
-                                                    JobInfosManager.Instance.CurrentComponentForProgramAccuracy.X = item.MaterialLocation.X;
-                                                    JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Y = item.MaterialLocation.Y;
-                                                    JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Z = _editRecipe.CurrentComponent.ChipPPPickSystemPos;
-                                                    CloseWaitDialog();
-                                                    WarningBox.FormShow("动作完成。", "已拾取芯片到仰视相机上方！");
-                                                    break;
+
+                                                        //拾取完成之后进行角度补偿和旋转后的XY补偿
+                                                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
+                                                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                                    //拾取之后移动到仰视相机上方
+                                                    && _positioningSystem.PPtoolMovetoUplookingCameraCenter(pptool)
+                                                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, pptool.LookuptoPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                                        {
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.X = item.MaterialLocation.X;
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Y = item.MaterialLocation.Y;
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Z = _editRecipe.CurrentComponent.ChipPPPickSystemPos;
+                                                            CloseWaitDialog();
+                                                            WarningBox.FormShow("动作完成。", "已拾取芯片到仰视相机上方！");
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            LogRecorder.RecordLog(EnumLogContentType.Error, "二次校准时拾取芯片失败！");
+                                                            CloseWaitDialog();
+                                                            WarningBox.FormShow("错误", "拾取芯片失败！");
+                                                            return;
+                                                        }
+                                                    }
+                                                    else if (_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
+                                                    {
+                                                        //移动到校准台上方并放芯片
+                                                        //拾取完成之后进行角度补偿和旋转后的XY补偿
+                                                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
+                                                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                                    && _positioningSystem.PPtoolMovetoCalibrationTableCenter(pptool))
+                                                        {
+
+                                                            //放芯片
+                                                            var ppParam = _editRecipe.CurrentComponent.PPSettings;
+
+                                                            if (pptool != null)
+                                                            {
+                                                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM;
+                                                                ppParam.PPToolZero = pptool.AltimetryOnMark;
+                                                                ppParam.WorkHeight = (float)systemPos;
+                                                            }
+                                                            else
+                                                            {
+                                                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM;
+                                                                ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                                                ppParam.WorkHeight = (float)systemPos;
+                                                            }
+
+                                                            if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, AfterPlaceChipOnCalibrationTable, true))
+                                                            {
+                                                                _positioningSystem.PPMovetoSafeLocation();
+                                                                LogRecorder.RecordLog(EnumLogContentType.Error, "放置芯片到校准台失败！");
+                                                                WarningBox.FormShow("错误", "放置芯片到校准台失败！");
+
+                                                            }
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.X = item.MaterialLocation.X;
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Y = item.MaterialLocation.Y;
+                                                            JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Z = _editRecipe.CurrentComponent.ChipPPPickSystemPos;
+                                                            CloseWaitDialog();
+                                                            WarningBox.FormShow("动作完成。", "已拾取芯片到校准台！");
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            LogRecorder.RecordLog(EnumLogContentType.Error, "二次校准时移动到校准台失败！");
+                                                            CloseWaitDialog();
+                                                            WarningBox.FormShow("错误", "移动到校准台失败！");
+                                                            return;
+                                                        }
+                                                    }
+
+
+
+                                                    ////拾取完成之后进行角度补偿和旋转后的XY补偿
+                                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, visionRet.Theta - visionParam.OrigionAngle, EnumCoordSetType.Relative);
+                                                    ////_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                                                    //////拾取之后移动到仰视相机上方
+                                                    ////_positioningSystem.ChipPPMovetoUplookingCameraCenter();
+                                                    ////_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ
+                                                    ////    , _systemConfig.PositioningConfig.LookupChipPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute);
+
+                                                    ////拾取之后移动到仰视相机上方
+                                                    //_positioningSystem.PPtoolMovetoUplookingCameraCenter(pptool);
+                                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ
+                                                    //    , pptool.LookuptoPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute);
+
+
+
+                                                    //JobInfosManager.Instance.CurrentComponentForProgramAccuracy.X = item.MaterialLocation.X;
+                                                    //JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Y = item.MaterialLocation.Y;
+                                                    //JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Z = _editRecipe.CurrentComponent.ChipPPPickSystemPos;
+                                                    //CloseWaitDialog();
+                                                    //WarningBox.FormShow("动作完成。", "已拾取芯片到仰视相机上方！");
+                                                    //break;
                                                 }
                                                 else
                                                 {
@@ -382,6 +475,7 @@ namespace RecipeEditPanelClsLib
                                         else if (_editRecipe.CurrentComponent.CarrierType == EnumCarrierType.Wafer)
                                         {
                                             var usedESTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedESToolName);
+                                            var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.PPSettings.PPtoolName);
                                             if (usedESTool != null)
                                             {
 
@@ -419,6 +513,9 @@ namespace RecipeEditPanelClsLib
                                                             return;
                                                         }
                                                         var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+
+                                                        offset = pptool.PP1AndBondCameraOffset;
+
                                                         var offsetBCAndWC = _systemConfig.PositioningConfig.WaferCameraOrigion;
 
 
@@ -432,7 +529,7 @@ namespace RecipeEditPanelClsLib
                                                         && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                         {
 
-                                                            var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedPPToolName);
+                                                            //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedPPToolName);
                                                             if (pptool != null)
                                                             {
                                                                 _editRecipe.CurrentComponent.PPSettings.PPToolZero = pptool.AltimetryOnMark;
@@ -452,12 +549,14 @@ namespace RecipeEditPanelClsLib
 
                                                                 if (_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
                                                                 {
+
+
                                                                     //拾取完成之后进行角度补偿和旋转后的XY补偿
                                                                     if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
                                                                 && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
                                                                 //拾取之后移动到仰视相机上方
-                                                                && _positioningSystem.ChipPPMovetoUplookingCameraCenter()
-                                                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.LookupChipPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                                                && _positioningSystem.PPtoolMovetoUplookingCameraCenter(pptool)
+                                                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, pptool.LookuptoPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                                     {
 
 
@@ -484,7 +583,7 @@ namespace RecipeEditPanelClsLib
                                                                     //拾取完成之后进行角度补偿和旋转后的XY补偿
                                                                     if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
                                                                 && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success   
-                                                                && _positioningSystem.ChipPPMovetoCalibrationTableCenter(pptool))
+                                                                && _positioningSystem.PPtoolMovetoCalibrationTableCenter(pptool))
                                                                     {
 
                                                                         //放芯片
@@ -579,6 +678,8 @@ namespace RecipeEditPanelClsLib
                                             var xx = 0f;
                                             var yy = 0f;
 
+                                            var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.PPSettings.PPtoolName);
+
                                             xx = item.MaterialLocation.X - _editRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.X;
                                             yy = item.MaterialLocation.Y - _editRecipe.CurrentComponent.ComponentMapInfos[0].MaterialLocation.Y;
                                             if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
@@ -591,6 +692,9 @@ namespace RecipeEditPanelClsLib
                                                 if (visionRet != null)
                                                 {
                                                     var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+
+                                                    offset = pptool.PP1AndBondCameraOffset;
+
                                                     var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
 
                                                     //物料移动到视野中心
@@ -612,7 +716,7 @@ namespace RecipeEditPanelClsLib
                                                     && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                     {
 
-                                                        var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedPPToolName);
+                                                        //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == _editRecipe.CurrentComponent.RelatedPPToolName);
                                                         if (pptool != null)
                                                         {
                                                             _editRecipe.CurrentComponent.PPSettings.PPToolZero = pptool.AltimetryOnMark;
@@ -635,7 +739,7 @@ namespace RecipeEditPanelClsLib
                                                                 if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
                                                             && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
                                                             //拾取之后移动到仰视相机上方
-                                                            && _positioningSystem.ChipPPMovetoUplookingCameraCenter()
+                                                            && _positioningSystem.PPtoolMovetoUplookingCameraCenter(pptool)
                                                             && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ
                                                                 , _systemConfig.PositioningConfig.LookupChipPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                                 {
@@ -662,7 +766,7 @@ namespace RecipeEditPanelClsLib
                                                                 //拾取完成之后进行角度补偿和旋转后的XY补偿
                                                                 if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
                                                             && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                                                            && _positioningSystem.ChipPPMovetoCalibrationTableCenter(pptool))
+                                                            && _positioningSystem.PPtoolMovetoCalibrationTableCenter(pptool))
                                                                 {
 
                                                                     //放芯片

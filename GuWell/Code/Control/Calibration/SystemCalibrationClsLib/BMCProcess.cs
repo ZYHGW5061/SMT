@@ -482,6 +482,7 @@ namespace SystemCalibrationClsLib
         /// </summary>
         private bool BondToSafeAsync(int Mode = 0)
         {
+            DeviceMode = _systemConfig.SystemMode == EnumSystemMode.Eutectic ? 0 : 1;
             bool Done = false;
             if (Mode == 0)
             {

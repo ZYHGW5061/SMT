@@ -173,6 +173,8 @@ namespace MainGUI.UserControls.Product
                 //后续需要去列表选吸嘴
                 cbPPName.Text = material.RelatedPPToolName;
 
+                cbPPName.Text = material.PPSettings.PPtoolName;
+
                 teChipPPPress.Text = material.PPSettings.PickupStress.ToString();
                 teChipPPPickPos.Text = material.ChipPPPickSystemPos.ToString();
                 //teChipPPPlacePos.Text = material.ChipPPPlacePos.ToString();
