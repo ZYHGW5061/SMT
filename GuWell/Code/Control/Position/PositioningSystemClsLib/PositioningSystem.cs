@@ -1054,6 +1054,36 @@ namespace PositioningSystemClsLib
 
 
         /// <summary>
+        /// 芯片吸嘴移动到共晶台中心（只移XY）
+        /// </summary>
+        public bool PPtoolMovetoEutecticTableCenter(PPToolSettings ppTool = null)
+        {
+            double[] Target = new double[2];
+            Target[0] = _systemConfig.PositioningConfig.EutecticWeldingLocation.X;
+            Target[1] = _systemConfig.PositioningConfig.EutecticWeldingLocation.Y;
+            if (ppTool != null)
+            {
+                Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - ppTool.LookuptoPPOrigion.X);
+                Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - ppTool.LookuptoPPOrigion.Y);
+            }
+            else
+            {
+                Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - _systemConfig.PositioningConfig.LookupChipPPOrigion.X);
+                Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - _systemConfig.PositioningConfig.LookupChipPPOrigion.Y);
+            }
+            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+            multiAxis[0] = EnumStageAxis.BondX;
+            multiAxis[1] = EnumStageAxis.BondY;
+            var ret = false;
+            if (_stageMotionControl.AbsoluteMovingSync(multiAxis, Target) == StageMotionResult.Success)
+            {
+                ret = true;
+            }
+            return ret;
+        }
+
+
+        /// <summary>
         /// 芯片吸嘴移动到仰视相机中心（只移XY）
         /// </summary>
         public bool ChipPPMovetoCalibrationTableCenter(PPToolSettings ppTool=null)
@@ -1329,6 +1359,9 @@ namespace PositioningSystemClsLib
             }
             return ret;
         }
+
+
+
     }
 
 }

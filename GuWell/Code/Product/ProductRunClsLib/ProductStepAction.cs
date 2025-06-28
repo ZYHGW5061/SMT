@@ -112,6 +112,14 @@ namespace ProductRunClsLib
         AccuracyCalibrationSubmonutFail,
         BondSubmonutSuccess,
         BondSubmonutFail,
+        BondSubmonutToEutecticSuccess,
+        BondSubmonutToEutecticFail,
+        PositionSubmonutToEutecticSuccess,
+        PositionSubmonutToEutecticFail,
+        EutecticSuccess,
+        EutecticFail,
+        BlankComponentSuccess,
+        BlankComponentFail,
         AbandonSubmonutSuccess,
         AbandonSubmonutFail,
         StepDispenseComplete,
@@ -198,6 +206,12 @@ namespace ProductRunClsLib
 
         [Description("9 衬底二次校准")]
         Action_AccuracyPositionSubmonut = 17,
+
+        [Description("9 衬底到共晶台")]
+        Action_PositionSubmonutToEutectic = 18,
+
+        [Description("9 芯片到共晶台")]
+        Action_PositionChipToEutectic = 19,
 
         [Description("ex1 基底抛料")]
         Action_AbondonSubstrate = 101,
@@ -406,12 +420,23 @@ namespace ProductRunClsLib
                 double BondX = _systemConfig.PositioningConfig.BondSafeLocation.X;
                 double BondY = _systemConfig.PositioningConfig.BondSafeLocation.Y;
                 double BondZ = _systemConfig.PositioningConfig.BondSafeLocation.Z;
-                IOUtilityHelper.Instance.UpDispenserCylinder();
+
+                if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                {
+                    AxisAbsoluteMove(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ);
+                    
+                }
+                else
+                {
+                    IOUtilityHelper.Instance.UpDispenserCylinder();
+                }
+                
                 AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
                 BondXYZAbsoluteMove(BondX, BondY, BondZ);
                 AxisAbsoluteMove(EnumStageAxis.ChipPPT, 0);
                 AxisAbsoluteMove(EnumStageAxis.ESZ, 0);
-                //AxisAbsoluteMove(EnumStageAxis.SubmountPPT, 0);
+                if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                    AxisAbsoluteMove(EnumStageAxis.SubmountPPT, 0);
 
                 return GlobalGWResultDefine.RET_SUCCESS;
             }
@@ -1049,7 +1074,10 @@ namespace ProductRunClsLib
     /// </summary>
     public class StepAction_AccuracyPositionChip : StepActionBase
     {
-        public StepAction_AccuracyPositionChip(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public StepAction_AccuracyPositionChip(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        { 
+
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
@@ -1149,10 +1177,19 @@ namespace ProductRunClsLib
                         {
                             PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
                         }
-                        if(_positioningSystem.ChipPPMovetoUplookingCameraCenter()
-                        &&_positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute)==StageMotionResult.Success)
+                        
+                        if(
+                            //_positioningSystem.ChipPPMovetoUplookingCameraCenter()
+                            _positioningSystem.PPtoolMovetoUplookingCameraCenter()
+                        && _positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute)==StageMotionResult.Success)
                         {
-
+                            if (pptool.EnumPPtool == EnumPPtool.PPtool2)
+                            {
+                                if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                                {
+                                    _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                                }
+                            }
                         }
                         else
                         {
@@ -1655,287 +1692,324 @@ namespace ProductRunClsLib
     /// </summary>
     public class StepAction_AccuracyPositionWithUplookCamera : StepActionBase
     {
-        public StepAction_AccuracyPositionWithUplookCamera(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_AccuracyPositionWithUplookCamera(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
             try
             {
-                CameraWindowGUI.Instance?.SelectCamera(1);
-                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-Start.");
-                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.RelatedPPToolName);
-                if (_positioningSystem.BondZMovetoSafeLocation())
+                if(componentType == EnumComponentType.Component)
                 {
-                    if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+                    CameraWindowGUI.Instance?.SelectCamera(1);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-Start.");
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    if (_positioningSystem.BondZMovetoSafeLocation())
                     {
-                        var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                        //var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
-
-                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
-                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
-                        //-----通过物料名取物料对象，取物料首位置 X Y Z  begin -----
-
-                        double X = 0d;
-                        double Y = 0d;
-                        double Z = 0d;
-
-                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
                         {
+                            var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            //var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
 
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                            //-----通过物料名取物料对象，取物料首位置 X Y Z  begin -----
 
-                            if (pptool != null)
+                            double X = 0d;
+                            double Y = 0d;
+                            double Z = 0d;
+
+                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
                             {
-                                X = pptool.ChipPPPosCompensateCoordinate1.X;
-                                Y = pptool.ChipPPPosCompensateCoordinate1.Y;
-                            }
-                            else
-                            {
-                                X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
-                                Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
-                            }
-                            //Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
-                            Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZChipSystemWorkPosition;
-                        }
-                        else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
-                        {
-                            if (pptool != null)
-                            {
-                                X = pptool.ChipPPPosCompensateCoordinate1.X;
-                                Y = pptool.ChipPPPosCompensateCoordinate1.Y;
-                            }
-                            else
-                            {
-                                X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
-                                Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
-                            }
-                            //Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
-                            Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZChipSystemWorkPosition;
-                        }
-
-                        var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                        var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA_init;
-                        LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupChip.Theta}");
-                        LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-targetAngle:{targetA}");
-                        //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
-                        //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
-                        //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
 
 
-                        //XY联动移动到物料上方
-                        EnumStageAxis[] multiAxis = new EnumStageAxis[3];
-                        multiAxis[0] = EnumStageAxis.BondX;
-                        multiAxis[1] = EnumStageAxis.BondY;
-                        multiAxis[2] = EnumStageAxis.ChipPPT;
-                        //_positioningSystem.MoveAxisToSystemCoord(multiAxis, targets, EnumCoordSetType.Absolute);
-                        //拾取之后移动到仰视相机上方
-
-                        //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute);
-
-
-                        double[] Target = new double[3];
-                        Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
-                        Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
-                        Target[2] = -targetA;
-                        StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
-
-                        //按芯片吸嘴的系统坐标系移动
-                        var PPToolZero = 0f;
-                        if (pptool != null)
-                        {
-                            PPToolZero = pptool.AltimetryOnMark;
-                        }
-                        else
-                        {
-                            PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
-                        }
-                        if (
-                            //_positioningSystem.ChipPPMovetoUplookingCameraCenter()
-                        result == StageMotionResult.Success
-                        && 
-                        _positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
-                        {
-
-                        }
-                        else
-                        {
-                            return GlobalGWResultDefine.RET_FAILED;
-                        }
-
-                    }
-
-                    if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
-                    {
-                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
-                        {
-                            var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
-
-                            ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
-                            if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
-                            {
-                                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyCalibrationChip-End.");
-                                return GlobalGWResultDefine.RET_SUCCESS;
-                            }
-                        }
-                        else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
-                        {
-                            var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
-                            //Thread.Sleep(10000);
-
-                            var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
-                            if (firstVisionResult == null)
-                            {
-                                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,First Vision Failed.");
-                                return GlobalGWResultDefine.RET_FAILED;
-                            }
-                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncFirst:{firstVisionResult.Theta}");
-                            ProductExecutor.Instance.OffsetAfterChipAccuracy = firstVisionResult;
-                            #region 计算最终的贴装角度
-                            BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
-                            var curSubstrate = _curRecipe.SubstrateInfos.ModuleMapInfosWithBondPositionInfos[ProductExecutor.Instance.CurSubstrateNum - 1];
-                            var curModule = curSubstrate[ProductExecutor.Instance.CurModuleNum - 1];
-                            var curDealBP = CurBondPosition;
-                            if (CurBondPosition != null)
-                            {
-                                curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
-
-                                var tempCounter = ProductExecutor.Instance.CurModuleNum - 1;
-                                while (!curDealBP.IsPositionSuccess)
+                                if (pptool != null)
                                 {
-                                    tempCounter++;
-                                    if (tempCounter >= curSubstrate.Count)
-                                    {
-                                        LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera Failed.");
-                                        return GlobalGWResultDefine.RET_FAILED;
-                                    }
-                                    curModule = curSubstrate[tempCounter];
-                                    curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
-                                }
-                            }
-                            var bondPosOffsetTheta = curDealBP.BondPositionWithPatternOffset.Theta;
-                            var bondPosOrigionAngle = curDealBP.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                            //二次校准时模板初始角度
-                            var angleofChipAccuracyPattern = 0f;
-                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
-                            {
-                                angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
-                            }
-                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
-                            {
-                                angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
-                            }
-                            //贴装补偿的角度
-                            var compensateT = curDealBP.BondPositionCompensation.Theta;
-                            //Theta轴移动贴装角度
-                            //var finalAngle = ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta - angleofChipAccuracyPattern+ bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta
-                            //               + compensateT + bondPosOffsetTheta;
-                            var finalAngle = bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta + compensateT + bondPosOffsetTheta;
-                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,FinalAngle:{finalAngle}");
-                            #endregion
-                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
-                            //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle + 50, EnumCoordSetType.Relative) == StageMotionResult.Success
-                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -50, EnumCoordSetType.Relative) == StageMotionResult.Success)
-                            //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta, EnumCoordSetType.Relative) == StageMotionResult.Success)
-                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
-                            {
-                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
-                                Thread.Sleep(500);
-                                ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
-
-                                if (_positioningSystem.BondZMovetoSafeLocation())
-                                {
-                                    if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
-                                    {
-                                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncSecond:{ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta}");
-
-                                        #region 二次识别完成之后，移动到贴装位置上方
-
-                                        //计算二次识别后芯片中心所处的位置的Stage位置(拾取芯片后没有补偿角度)
-                                        var curChipCenterStagePosX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX) + ProductExecutor.Instance.OffsetAfterChipAccuracy.X;
-                                        var curChipCenterStagePosY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY) + ProductExecutor.Instance.OffsetAfterChipAccuracy.Y;
-
-
-                                        //贴装补偿的XY,向右向上补偿为正
-                                        var compensateX = CurBondPosition.BondPositionCompensation.X;
-                                        var compensateY = CurBondPosition.BondPositionCompensation.Y;
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.X: {compensateX}");
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.Y: {compensateY}");
-                                        float thetaRadians = -(float)((-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta) * Math.PI / 180.0);
-                                        //float thetaRadians = (float)((bondPosOrigionAngle) * Math.PI / 180.0);
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"VisionParametersForFindBondPosition_.OrigionAngle: {bondPosOrigionAngle}");
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"PositionBondChipResult.Theta: {curDealBP.PositionBondChipResult.Theta}");
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetAngle: {(-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta)}");
-
-
-                                        //if (thetaRadians > 0)
-                                        //{
-                                        //    compensateX = Math.Cos(thetaRadians) * compensateX;
-                                        //    compensateY = Math.Cos(thetaRadians) * compensateY;
-                                        //}
-                                        //else
-                                        //{
-                                        //    compensateX = Math.Cos(-thetaRadians) * compensateX;
-                                        //    compensateY = Math.Cos(-thetaRadians) * compensateY;
-                                        //}
-
-                                        // 计算旋转后的坐标
-                                        double compensateX_1 = compensateX * Math.Cos(thetaRadians) - compensateY * Math.Sin(thetaRadians);
-                                        double compensateY_1 = compensateX * Math.Sin(thetaRadians) + compensateY * Math.Cos(thetaRadians);
-
-                                        compensateX = compensateX_1;
-                                        compensateY = compensateY_1;
-
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetX: {compensateX}");
-                                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetY: {compensateY}");
-
-                                        //将记录的贴装位置的系统坐标系转换为Stage坐标系
-                                        #region 计算贴装芯片时需要移动到的Stage位置
-                                        var baseStageCoor = _positioningSystem.ConvertBondCameraSystemCoordToStageCoord(new XYZTCoordinate
-                                        {
-                                            X = curDealBP.BondPositionSystemPosAfterVisionCalibration.X,
-                                            Y = curDealBP.BondPositionSystemPosAfterVisionCalibration.Y
-                                        });
-
-                                        #endregion
-
-                                        #region 计算贴装芯片时需要移动到的stage位置
-
-                                        var curChipStagePosXAfterCorrect = curChipCenterStagePosX - compensateX;
-                                        var curChipStagePosYAfterCorrect = curChipCenterStagePosY + compensateY;
-
-
-                                        //计算旋转、贴装补偿之后的芯片和榜头相机的偏移
-                                        var chipCentetAndBondCameraCenterOffsetX = curChipStagePosXAfterCorrect - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
-                                        var chipCentetAndBondCameraCenterOffsetY = curChipStagePosYAfterCorrect - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
-
-                                        var finalXOpt = baseStageCoor.X + chipCentetAndBondCameraCenterOffsetX;
-                                        var finalYOpt = baseStageCoor.Y + chipCentetAndBondCameraCenterOffsetY;
-                                        #endregion        
-                                        if (_positioningSystem.BondXYUnionMovetoStageCoor(finalXOpt, finalYOpt, EnumCoordSetType.Absolute) == StageMotionResult.Success)
-                                        {
-                                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-End.");
-                                            return GlobalGWResultDefine.RET_SUCCESS;
-                                        }
-                                        else
-                                        {
-                                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera,移动到贴装位失败.");
-                                            return GlobalGWResultDefine.RET_FAILED;
-                                        }
-                                        #endregion
-                                    }
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
                                 }
                                 else
                                 {
-                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Failed.");
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                if (pptool != null)
+                                {
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
+                                }
+                                else
+                                {
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+
+                            var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA_init;
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupChip.Theta}");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-targetAngle:{targetA}");
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+
+
+                            //XY联动移动到物料上方
+                            EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                            multiAxis[0] = EnumStageAxis.BondX;
+                            multiAxis[1] = EnumStageAxis.BondY;
+                            multiAxis[2] = pptool.StageAxisTheta;
+                            //_positioningSystem.MoveAxisToSystemCoord(multiAxis, targets, EnumCoordSetType.Absolute);
+                            //拾取之后移动到仰视相机上方
+
+                            //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute);
+
+
+                            double[] Target = new double[3];
+                            Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                            Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            if (pptool != null)
+                            {
+                                Target[0] = pptool.LookuptoPPOrigion.X;
+                                Target[1] = pptool.LookuptoPPOrigion.Y;
+                            }
+                            else
+                            {
+                                Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            }
+                            
+                            Target[2] = -targetA;
+                            StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+                            //按芯片吸嘴的系统坐标系移动
+                            var PPToolZero = 0f;
+                            if (pptool != null)
+                            {
+                                PPToolZero = pptool.AltimetryOnMark;
+                            }
+                            else
+                            {
+                                PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                            }
+                            if (
+                            //_positioningSystem.ChipPPMovetoUplookingCameraCenter()
+                            result == StageMotionResult.Success
+                            &&
+                            _positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                            {
+                                if (pptool.EnumPPtool == EnumPPtool.PPtool2)
+                                {
+                                    if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                                    {
+                                        _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                        }
+
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
+                        {
+                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+                                var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
+
+                                ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyCalibrationChip-End.");
+                                    return GlobalGWResultDefine.RET_SUCCESS;
+                                }
+                            }
+                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                                //Thread.Sleep(10000);
+
+                                var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (firstVisionResult == null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,First Vision Failed.");
                                     return GlobalGWResultDefine.RET_FAILED;
+                                }
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncFirst:{firstVisionResult.Theta}");
+                                ProductExecutor.Instance.OffsetAfterChipAccuracy = firstVisionResult;
+                                #region 计算最终的贴装角度
+                                BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                                var curSubstrate = _curRecipe.SubstrateInfos.ModuleMapInfosWithBondPositionInfos[ProductExecutor.Instance.CurSubstrateNum - 1];
+                                var curModule = curSubstrate[ProductExecutor.Instance.CurModuleNum - 1];
+                                var curDealBP = CurBondPosition;
+                                if (CurBondPosition != null)
+                                {
+                                    curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
+
+                                    var tempCounter = ProductExecutor.Instance.CurModuleNum - 1;
+                                    while (!curDealBP.IsPositionSuccess)
+                                    {
+                                        tempCounter++;
+                                        if (tempCounter >= curSubstrate.Count)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera Failed.");
+                                            return GlobalGWResultDefine.RET_FAILED;
+                                        }
+                                        curModule = curSubstrate[tempCounter];
+                                        curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
+                                    }
+                                }
+                                var bondPosOffsetTheta = curDealBP.BondPositionWithPatternOffset.Theta;
+                                var bondPosOrigionAngle = curDealBP.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                //二次校准时模板初始角度
+                                var angleofChipAccuracyPattern = 0f;
+                                if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                                {
+                                    angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                }
+                                else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                                {
+                                    angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                                }
+                                //贴装补偿的角度
+                                var compensateT = curDealBP.BondPositionCompensation.Theta;
+                                //Theta轴移动贴装角度
+                                //var finalAngle = ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta - angleofChipAccuracyPattern+ bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta
+                                //               + compensateT + bondPosOffsetTheta;
+                                var finalAngle = bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta + compensateT + bondPosOffsetTheta;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,FinalAngle:{finalAngle}");
+                                #endregion
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle + 50, EnumCoordSetType.Relative) == StageMotionResult.Success
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -50, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                                    Thread.Sleep(500);
+                                    ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+
+                                    if (_positioningSystem.BondZMovetoSafeLocation())
+                                    {
+                                        if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncSecond:{ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta}");
+
+                                            #region 二次识别完成之后，移动到贴装位置上方
+
+                                            //计算二次识别后芯片中心所处的位置的Stage位置(拾取芯片后没有补偿角度)
+                                            var curChipCenterStagePosX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX) + ProductExecutor.Instance.OffsetAfterChipAccuracy.X;
+                                            var curChipCenterStagePosY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY) + ProductExecutor.Instance.OffsetAfterChipAccuracy.Y;
+
+
+                                            //贴装补偿的XY,向右向上补偿为正
+                                            var compensateX = CurBondPosition.BondPositionCompensation.X;
+                                            var compensateY = CurBondPosition.BondPositionCompensation.Y;
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.X: {compensateX}");
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.Y: {compensateY}");
+                                            float thetaRadians = -(float)((-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta) * Math.PI / 180.0);
+                                            //float thetaRadians = (float)((bondPosOrigionAngle) * Math.PI / 180.0);
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"VisionParametersForFindBondPosition_.OrigionAngle: {bondPosOrigionAngle}");
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"PositionBondChipResult.Theta: {curDealBP.PositionBondChipResult.Theta}");
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetAngle: {(-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta)}");
+
+
+                                            //if (thetaRadians > 0)
+                                            //{
+                                            //    compensateX = Math.Cos(thetaRadians) * compensateX;
+                                            //    compensateY = Math.Cos(thetaRadians) * compensateY;
+                                            //}
+                                            //else
+                                            //{
+                                            //    compensateX = Math.Cos(-thetaRadians) * compensateX;
+                                            //    compensateY = Math.Cos(-thetaRadians) * compensateY;
+                                            //}
+
+                                            // 计算旋转后的坐标
+                                            double compensateX_1 = compensateX * Math.Cos(thetaRadians) - compensateY * Math.Sin(thetaRadians);
+                                            double compensateY_1 = compensateX * Math.Sin(thetaRadians) + compensateY * Math.Cos(thetaRadians);
+
+                                            compensateX = compensateX_1;
+                                            compensateY = compensateY_1;
+
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetX: {compensateX}");
+                                            LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetY: {compensateY}");
+
+                                            //将记录的贴装位置的系统坐标系转换为Stage坐标系
+                                            #region 计算贴装芯片时需要移动到的Stage位置
+                                            var baseStageCoor = _positioningSystem.ConvertBondCameraSystemCoordToStageCoord(new XYZTCoordinate
+                                            {
+                                                X = curDealBP.BondPositionSystemPosAfterVisionCalibration.X,
+                                                Y = curDealBP.BondPositionSystemPosAfterVisionCalibration.Y
+                                            });
+
+                                            #endregion
+
+                                            #region 计算贴装芯片时需要移动到的stage位置
+
+                                            var curChipStagePosXAfterCorrect = curChipCenterStagePosX - compensateX;
+                                            var curChipStagePosYAfterCorrect = curChipCenterStagePosY + compensateY;
+
+
+                                            //计算旋转、贴装补偿之后的芯片和榜头相机的偏移
+                                            var chipCentetAndBondCameraCenterOffsetX = curChipStagePosXAfterCorrect - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                            var chipCentetAndBondCameraCenterOffsetY = curChipStagePosYAfterCorrect - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+
+                                            var finalXOpt = baseStageCoor.X + chipCentetAndBondCameraCenterOffsetX;
+                                            var finalYOpt = baseStageCoor.Y + chipCentetAndBondCameraCenterOffsetY;
+                                            #endregion
+                                            if (_positioningSystem.BondXYUnionMovetoStageCoor(finalXOpt, finalYOpt, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                            {
+                                                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-End.");
+                                                return GlobalGWResultDefine.RET_SUCCESS;
+                                            }
+                                            else
+                                            {
+                                                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera,移动到贴装位失败.");
+                                                return GlobalGWResultDefine.RET_FAILED;
+                                            }
+                                            #endregion
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Failed.");
+                                        return GlobalGWResultDefine.RET_FAILED;
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        ProductExecutor.Instance.OffsetAfterChipAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                        else
+                        {
+                            ProductExecutor.Instance.OffsetAfterChipAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                        }
                     }
                 }
+                else
+                {
+
+                }
+
+                
 
                 return GlobalGWResultDefine.RET_FAILED;
             }
@@ -1952,6 +2026,463 @@ namespace ProductRunClsLib
             }
         }
     }
+
+    /// <summary>
+    /// 使用仰视相机二次校准时识别两次，一次补角度，另外一次找中心，没有使用旋转补偿
+    /// </summary>
+    public class StepAction_AccuracyPositionWithUplookCameraNoBond : StepActionBase
+    {
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_AccuracyPositionWithUplookCameraNoBond(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                if (componentType == EnumComponentType.Component)
+                {
+                    CameraWindowGUI.Instance?.SelectCamera(1);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-Start.");
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    if (_positioningSystem.BondZMovetoSafeLocation())
+                    {
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+                        {
+                            var materialOrigionA = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            //var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA;
+
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                            //-----通过物料名取物料对象，取物料首位置 X Y Z  begin -----
+
+                            double X = 0d;
+                            double Y = 0d;
+                            double Z = 0d;
+
+                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+
+
+                                if (pptool != null)
+                                {
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
+                                }
+                                else
+                                {
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                if (pptool != null)
+                                {
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
+                                }
+                                else
+                                {
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+
+                            var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA_init;
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupChip.Theta}");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpChipWithRotate-targetAngle:{targetA}");
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -targetA, EnumCoordSetType.Relative);
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpChipWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
+
+
+                            //XY联动移动到物料上方
+                            EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                            multiAxis[0] = EnumStageAxis.BondX;
+                            multiAxis[1] = EnumStageAxis.BondY;
+                            multiAxis[2] = pptool.StageAxisTheta;
+                            //_positioningSystem.MoveAxisToSystemCoord(multiAxis, targets, EnumCoordSetType.Absolute);
+                            //拾取之后移动到仰视相机上方
+
+                            //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute);
+
+
+                            double[] Target = new double[3];
+                            Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                            Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            if (pptool != null)
+                            {
+                                Target[0] = pptool.LookuptoPPOrigion.X;
+                                Target[1] = pptool.LookuptoPPOrigion.Y;
+                            }
+                            else
+                            {
+                                Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            }
+
+                            Target[2] = -targetA;
+                            StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+                            //按芯片吸嘴的系统坐标系移动
+                            var PPToolZero = 0f;
+                            if (pptool != null)
+                            {
+                                PPToolZero = pptool.AltimetryOnMark;
+                            }
+                            else
+                            {
+                                PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                            }
+                            if (
+                            //_positioningSystem.ChipPPMovetoUplookingCameraCenter()
+                            result == StageMotionResult.Success
+                            &&
+                            _positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                            {
+                                if (pptool.EnumPPtool == EnumPPtool.PPtool2)
+                                {
+                                    if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                                    {
+                                        _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                        }
+
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
+                        {
+                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+                                var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
+
+                                ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyCalibrationChip-End.");
+                                    return GlobalGWResultDefine.RET_SUCCESS;
+                                }
+                            }
+                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                                //Thread.Sleep(10000);
+
+                                var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (firstVisionResult == null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,First Vision Failed.");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncFirst:{firstVisionResult.Theta}");
+                                ProductExecutor.Instance.OffsetAfterChipAccuracy = firstVisionResult;
+                                #region 计算最终的贴装角度
+
+                                if (CurBondPosition != null)
+                                {
+                                    
+                                }
+                                var bondPosOffsetTheta = CurBondPosition.BondPositionWithPatternOffset.Theta;
+                                var bondPosOrigionAngle = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                //二次校准时模板初始角度
+                                var angleofChipAccuracyPattern = 0f;
+                                if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                                {
+                                    angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                }
+                                else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                                {
+                                    angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                                }
+                                //贴装补偿的角度
+                                var compensateT = CurBondPosition.BondPositionCompensation.Theta;
+                                //Theta轴移动贴装角度
+                                //var finalAngle = ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta - angleofChipAccuracyPattern+ bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta
+                                //               + compensateT + bondPosOffsetTheta;
+                                var finalAngle = bondPosOrigionAngle - CurBondPosition.PositionBondChipResult.Theta + compensateT + bondPosOffsetTheta;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,FinalAngle:{finalAngle}");
+                                #endregion
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle + 50, EnumCoordSetType.Relative) == StageMotionResult.Success
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -50, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                                    Thread.Sleep(500);
+                                    ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+
+                                    if (_positioningSystem.BondZMovetoSafeLocation())
+                                    {
+                                        if (ProductExecutor.Instance.OffsetAfterChipAccuracy != null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncSecond:{ProductExecutor.Instance.OffsetAfterChipAccuracy.Theta}");
+
+                                            return GlobalGWResultDefine.RET_SUCCESS;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Failed.");
+                                        return GlobalGWResultDefine.RET_FAILED;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ProductExecutor.Instance.OffsetAfterChipAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                        }
+                    }
+                }
+                else
+                {
+                    CameraWindowGUI.Instance?.SelectCamera(1);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionWithUplookCamera-Start.");
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    if (_positioningSystem.BondZMovetoSafeLocation())
+                    {
+                        if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
+                        {
+                            var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            //var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                            //-----通过物料名取物料对象，取物料首位置 X Y Z  begin -----
+
+                            double X = 0d;
+                            double Y = 0d;
+                            double Z = 0d;
+
+                            if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+
+
+                                if (pptool != null)
+                                {
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
+                                }
+                                else
+                                {
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+                            else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                if (pptool != null)
+                                {
+                                    X = pptool.LookuptoPPOrigion.X;
+                                    Y = pptool.LookuptoPPOrigion.Y;
+                                }
+                                else
+                                {
+                                    X = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                    Y = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                                }
+                                //Z = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
+                                Z = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZChipSystemWorkPosition;
+                            }
+
+                            var materialOrigionA_init = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA_init;
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta}");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-targetAngle:{targetA}");
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -targetA, EnumCoordSetType.Relative);
+                            //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+
+
+                            //XY联动移动到物料上方
+                            EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                            multiAxis[0] = EnumStageAxis.BondX;
+                            multiAxis[1] = EnumStageAxis.BondY;
+                            multiAxis[2] = pptool.StageAxisTheta;
+                            //_positioningSystem.MoveAxisToSystemCoord(multiAxis, targets, EnumCoordSetType.Absolute);
+                            //拾取之后移动到仰视相机上方
+
+                            //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute);
+
+
+                            double[] Target = new double[3];
+                            Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                            Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            if (pptool != null)
+                            {
+                                Target[0] = pptool.LookuptoPPOrigion.X;
+                                Target[1] = pptool.LookuptoPPOrigion.Y;
+                            }
+                            else
+                            {
+                                Target[0] = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                                Target[1] = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                            }
+
+                            Target[2] = -targetA;
+                            StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+                            //按芯片吸嘴的系统坐标系移动
+                            var PPToolZero = 0f;
+                            if (pptool != null)
+                            {
+                                PPToolZero = pptool.AltimetryOnMark;
+                            }
+                            else
+                            {
+                                PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                            }
+                            if (
+                            //_positioningSystem.SubmonutPPMovetoUplookingCameraCenter()
+                            result == StageMotionResult.Success
+                            &&
+                            _positioningSystem.MoveChipPPToSystemCoord(PPToolZero, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                            {
+                                if (pptool.EnumPPtool == EnumPPtool.PPtool2)
+                                {
+                                    if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                                    {
+                                        _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+
+                        }
+
+                        if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
+                        {
+                            if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+                                var visionParam = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
+
+                                ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (ProductExecutor.Instance.OffsetAfterSubmonutAccuracy != null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyCalibrationSubmonut-End.");
+                                    return GlobalGWResultDefine.RET_SUCCESS;
+                                }
+                            }
+                            else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                var visionParam = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                                //Thread.Sleep(10000);
+
+                                var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+                                if (firstVisionResult == null)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,First Vision Failed.");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncFirst:{firstVisionResult.Theta}");
+                                ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = firstVisionResult;
+                                #region 计算最终的贴装角度
+
+                                if (CurBondPosition != null)
+                                {
+
+                                }
+                                var bondPosOffsetTheta = CurBondPosition.BondPositionWithPatternOffset.Theta;
+                                var bondPosOrigionAngle = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                //二次校准时模板初始角度
+                                var angleofSubmonutAccuracyPattern = 0f;
+                                if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                                {
+                                    angleofSubmonutAccuracyPattern = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                }
+                                else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                                {
+                                    angleofSubmonutAccuracyPattern = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                                }
+                                //贴装补偿的角度
+                                var compensateT = CurBondPosition.BondPositionCompensation.Theta;
+                                //Theta轴移动贴装角度
+                                //var finalAngle = ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.Theta - angleofSubmonutAccuracyPattern+ bondPosOrigionAngle - curDealBP.PositionBondSubmonutResult.Theta
+                                //               + compensateT + bondPosOffsetTheta;
+                                var finalAngle = bondPosOrigionAngle - CurBondPosition.PositionBondChipResult.Theta + compensateT + bondPosOffsetTheta;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,FinalAngle:{finalAngle}");
+                                #endregion
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -finalAngle + 50, EnumCoordSetType.Relative) == StageMotionResult.Success
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -50, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.Theta, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                                    Thread.Sleep(500);
+                                    ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.UplookingCamera, visionParam);
+
+                                    if (_positioningSystem.BondZMovetoSafeLocation())
+                                    {
+                                        if (ProductExecutor.Instance.OffsetAfterSubmonutAccuracy != null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,IdentificationAsyncSecond:{ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.Theta}");
+
+                                            return GlobalGWResultDefine.RET_SUCCESS;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Failed.");
+                                        return GlobalGWResultDefine.RET_FAILED;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                        }
+                    }
+
+
+                }
+
+
+
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            finally
+            {
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                _positioningSystem.PPMovetoSafeLocation();
+            }
+        }
+    }
+
+
 
     /// <summary>
     /// 芯片吸嘴抛料
@@ -2108,10 +2639,131 @@ namespace ProductRunClsLib
         }
     }
 
+    /// <summary>
+    /// 共晶台芯片吸嘴抛料
+    /// </summary>
+    public class StepAction_EutecticTableMaterialThrowingAction : StepActionBase
+    {
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_EutecticTableMaterialThrowingAction(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
+        {
+            if (actionNo == EnumActionNo.Action_AbondonChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_AbondonSubmonut)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                var ppParam = CurChipParam.PPSettings;
+
+                if (componentType == EnumComponentType.Component)
+                {
+                    pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    ppParam = CurChipParam.PPSettings;
+                }
+                else
+                {
+                    pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    ppParam = CurSubmonutParam.PPSettings;
+                }
+
+
+
+                if (pptool != null)
+                {
+                    var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM;
+                    if (componentType == EnumComponentType.Component)
+                    {
+                        systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM;
+                    }
+                    else
+                    {
+                        systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                    }
+
+                    ppParam.PPToolZero = pptool.AltimetryOnMark;
+                    ppParam.WorkHeight = (float)systemPos;
+                }
+                else
+                {
+                    var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM;
+                    if (componentType == EnumComponentType.Component)
+                    {
+                        systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM;
+                    }
+                    else
+                    {
+                        systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                    }
+                    ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                    ppParam.WorkHeight = (float)systemPos;
+                }
+                if (_positioningSystem.BondZMovetoSafeLocation() && _positioningSystem.PPtoolMovetoEutecticTableCenter(pptool))
+                {
+                    //拾取芯片
+                    if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromEutecticTable))
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondChipOpt-Start.");
+                        //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                        //_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);  
+
+
+                        //return AbandonMaterialUtility.Instance.Abandon(EnumUsedPP.ChipPP);
+                        return AbandonMaterialUtility.Instance.Abandon(pptool);
+                    }
+                    else
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "从校准台拾取芯片失败！");
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
+            return GlobalGWResultDefine.RET_SUCCESS;
+        }
+
+        public void AfterPlaceChipOnEutecticTable()
+        {
+            IOUtilityHelper.Instance.OpenMaterailPlatformVaccum();
+        }
+        public void BeforePickChipFromEutecticTable()
+        {
+            IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
+        }
+    }
+
+
 
     public class StepAction_AccuracyPositionChipInCalibrationTable : StepActionBase
     {
-        public StepAction_AccuracyPositionChipInCalibrationTable(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_AccuracyPositionChipInCalibrationTable(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) 
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
 
         public override GWResult Run(RunParameter runParam = null)
         {
@@ -2453,6 +3105,360 @@ namespace ProductRunClsLib
             IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
         }
     }
+
+    public class StepAction_AccuracyPositionChipInCalibrationTableNoBond : StepActionBase
+    {
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_AccuracyPositionChipInCalibrationTableNoBond(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                if(componentType == EnumComponentType.Component)
+                {
+                    CameraWindowGUI.Instance?.SelectCamera(0);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionChipInCalibrationTable-Start.");
+                    var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                    var targetA = ProductExecutor.Instance.OffsetBeforePickupChip.Theta - materialOrigionA_init;
+                    var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                    if (_positioningSystem.BondZMovetoSafeLocation()
+                        && _positioningSystem.PPtoolMovetoCalibrationTableCenter(PPtool)
+                        && _positioningSystem.MoveAixsToStageCoord(PPtool.StageAxisTheta, -targetA, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                    {
+                        //使用的吸嘴工具
+                        var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                        //转动吸嘴直接到贴装角度
+                        #region 计算最终的贴装角度
+                        var bondPosOffsetTheta = CurBondPosition.BondPositionWithPatternOffset.Theta;
+                        var bondPosOrigionAngle = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        //二次校准时模板初始角度
+                        var angleofChipAccuracyPattern = 0f;
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                        {
+                            angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        }
+                        else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                        {
+                            angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                        }
+                        //贴装补偿的角度
+                        var compensateT = CurBondPosition.BondPositionCompensation.Theta;
+                        //Theta轴移动此角度后将chip转正
+                        var finalAngle = -CurBondPosition.PositionBondChipResult.Theta + bondPosOrigionAngle + compensateT + bondPosOffsetTheta;
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionChipInCalibrationTable,FinalAngle:{finalAngle}");
+                        #endregion
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionChipInCalibrationTable,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                        if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionChipInCalibrationTable,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                            //放芯片
+                            var ppParam = CurChipParam.PPSettings;
+
+                            if (pptool != null)
+                            {
+                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                                ppParam.PPToolZero = pptool.AltimetryOnMark;
+                                ppParam.WorkHeight = (float)systemPos;
+                            }
+                            else
+                            {
+                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurChipParam.ThicknessMM;
+                                ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                ppParam.WorkHeight = (float)systemPos;
+                            }
+
+                            if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, AfterPlaceChipOnCalibrationTable, true))
+                            {
+                                _positioningSystem.PPMovetoSafeLocation();
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "放置芯片到校准台失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                            var workZ = 0f;
+                            //移动榜头相机到校准台上方
+                            if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+                                workZ = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
+                            }
+                            else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                workZ = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
+                            }
+                            if (_positioningSystem.BondCameraMovetoCalibrationTableCenter()
+                                && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, workZ, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                            {
+
+                                if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
+                                {
+                                    if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                                    {
+                                        var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
+
+                                        ProductExecutor.Instance.OffsetAfterChipAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.BondCamera, visionParam);
+                                        if (ProductExecutor.Instance.OffsetAfterChipAccuracy == null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionChipInCalibrationTable,Vision Failed.");
+                                            return GlobalGWResultDefine.RET_FAILED;
+                                        }
+                                        else
+                                        {
+                                            //拾取芯片
+                                            if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromCalibrationTable))
+                                            {
+                                                _positioningSystem.PPMovetoSafeLocation();
+                                                return GlobalGWResultDefine.RET_SUCCESS;
+                                            }
+                                            else
+                                            {
+                                                _positioningSystem.PPMovetoSafeLocation();
+                                                LogRecorder.RecordLog(EnumLogContentType.Error, "从校准台拾取芯片失败！");
+                                                return GlobalGWResultDefine.RET_FAILED;
+                                            }
+                                        }
+                                    }
+                                    else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                                    {
+
+                                        var visionParam = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                                        //Thread.Sleep(10000);
+
+                                        var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.BondCamera, visionParam);
+                                        if (firstVisionResult == null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionChipInCalibrationTable,Vision Failed.");
+                                            return GlobalGWResultDefine.RET_FAILED;
+                                        }
+                                        else
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionChipInCalibrationTable,IdentificationAsyncFirst:{firstVisionResult.Theta}");
+                                            ProductExecutor.Instance.OffsetAfterChipAccuracy = firstVisionResult;
+                                            if (_positioningSystem.BondZMovetoSafeLocation()
+                                                && _positioningSystem.PPtoolMovetoCalibrationTableCenter(PPtool))
+                                            {
+                                                //拾取芯片
+                                                if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromCalibrationTable))
+                                                {
+                                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondChipOpt-Start.");
+
+                                                    _positioningSystem.PPMovetoSafeLocation();
+                                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionChipInCalibrationTable-End.");
+                                                    return GlobalGWResultDefine.RET_SUCCESS;
+                                                }
+                                                else
+                                                {
+                                                    _positioningSystem.PPMovetoSafeLocation();
+                                                    LogRecorder.RecordLog(EnumLogContentType.Error, "从校准台拾取芯片失败！");
+                                                    return GlobalGWResultDefine.RET_FAILED;
+                                                }
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+                                else
+                                {
+                                    ProductExecutor.Instance.OffsetAfterChipAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                                }
+                            }
+                        }
+
+
+
+                    }
+
+                }
+                else
+                {
+                    CameraWindowGUI.Instance?.SelectCamera(0);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionSubmonutInCalibrationTable-Start.");
+                    var materialOrigionA_init = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                    var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA_init;
+                    var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                    if (_positioningSystem.BondZMovetoSafeLocation()
+                        && _positioningSystem.PPtoolMovetoCalibrationTableCenter(PPtool)
+                        && _positioningSystem.MoveAixsToStageCoord(PPtool.StageAxisTheta, -targetA, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                    {
+                        //使用的吸嘴工具
+                        var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                        //转动吸嘴直接到贴装角度
+                        #region 计算最终的贴装角度
+                        var bondPosOffsetTheta = CurBondPosition.BondPositionWithPatternOffset.Theta;
+                        var bondPosOrigionAngle = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        //二次校准时模板初始角度
+                        var angleofSubmonutAccuracyPattern = 0f;
+                        if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                        {
+                            angleofSubmonutAccuracyPattern = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        }
+                        else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                        {
+                            angleofSubmonutAccuracyPattern = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                        }
+                        //贴装补偿的角度
+                        var compensateT = CurBondPosition.BondPositionCompensation.Theta;
+                        //Theta轴移动此角度后将chip转正
+                        var finalAngle = -CurBondPosition.PositionBondChipResult.Theta + bondPosOrigionAngle + compensateT + bondPosOffsetTheta;
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionSubmonutInCalibrationTable,FinalAngle:{finalAngle}");
+                        #endregion
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionSubmonutInCalibrationTable,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                        if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -finalAngle, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionSubmonutInCalibrationTable,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(pptool.StageAxisTheta)}");
+                            //放芯片
+                            var ppParam = CurSubmonutParam.PPSettings;
+
+                            if (pptool != null)
+                            {
+                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurSubmonutParam.ThicknessMM;
+                                ppParam.PPToolZero = pptool.AltimetryOnMark;
+                                ppParam.WorkHeight = (float)systemPos;
+                            }
+                            else
+                            {
+                                var systemPos = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + CurSubmonutParam.ThicknessMM;
+                                ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                ppParam.WorkHeight = (float)systemPos;
+                            }
+
+                            if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, AfterPlaceChipOnCalibrationTable, true))
+                            {
+                                _positioningSystem.PPMovetoSafeLocation();
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "放置芯片到校准台失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                            var workZ = 0f;
+                            //移动榜头相机到校准台上方
+                            if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                            {
+                                workZ = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().CameraZWorkPosition;
+                            }
+                            else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                            {
+                                workZ = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().CameraZWorkPosition;
+                            }
+                            if (_positioningSystem.BondCameraMovetoCalibrationTableCenter()
+                                && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, workZ, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                            {
+
+                                if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyMethod != EnumAccuracyMethod.None)
+                                {
+                                    if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                                    {
+                                        var visionParam = CurSubmonutParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault();
+
+                                        ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.BondCamera, visionParam);
+                                        if (ProductExecutor.Instance.OffsetAfterSubmonutAccuracy == null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionSubmonutInCalibrationTable,Vision Failed.");
+                                            return GlobalGWResultDefine.RET_FAILED;
+                                        }
+                                        else
+                                        {
+                                            //拾取芯片
+                                            if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromCalibrationTable))
+                                            {
+                                                _positioningSystem.PPMovetoSafeLocation();
+                                                return GlobalGWResultDefine.RET_SUCCESS;
+                                            }
+                                            else
+                                            {
+                                                _positioningSystem.PPMovetoSafeLocation();
+                                                LogRecorder.RecordLog(EnumLogContentType.Error, "从校准台拾取芯片失败！");
+                                                return GlobalGWResultDefine.RET_FAILED;
+                                            }
+                                        }
+                                    }
+                                    else if (CurSubmonutParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                                    {
+
+                                        var visionParam = CurSubmonutParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                                        //Thread.Sleep(10000);
+
+                                        var firstVisionResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.BondCamera, visionParam);
+                                        if (firstVisionResult == null)
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionSubmonutInCalibrationTable,Vision Failed.");
+                                            return GlobalGWResultDefine.RET_FAILED;
+                                        }
+                                        else
+                                        {
+                                            LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionSubmonutInCalibrationTable,IdentificationAsyncFirst:{firstVisionResult.Theta}");
+                                            ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = firstVisionResult;
+                                            if (_positioningSystem.BondZMovetoSafeLocation()
+                                                && _positioningSystem.PPtoolMovetoCalibrationTableCenter(PPtool))
+                                            {
+                                                //拾取芯片
+                                                if (PPUtility.Instance.PickViaSystemCoor(ppParam, BeforePickChipFromCalibrationTable))
+                                                {
+                                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondSubmonutOpt-Start.");
+
+                                                    _positioningSystem.PPMovetoSafeLocation();
+                                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionSubmonutInCalibrationTable-End.");
+                                                    return GlobalGWResultDefine.RET_SUCCESS;
+                                                }
+                                                else
+                                                {
+                                                    _positioningSystem.PPMovetoSafeLocation();
+                                                    LogRecorder.RecordLog(EnumLogContentType.Error, "从校准台拾取芯片失败！");
+                                                    return GlobalGWResultDefine.RET_FAILED;
+                                                }
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+                                else
+                                {
+                                    ProductExecutor.Instance.OffsetAfterSubmonutAccuracy = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                                }
+                            }
+                        }
+
+
+
+                    }
+
+                }
+
+
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionChipInCalibrationTable,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            finally
+            {
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                _positioningSystem.PPMovetoSafeLocation();
+            }
+        }
+        public void AfterPlaceChipOnCalibrationTable()
+        {
+            IOUtilityHelper.Instance.OpenMaterailPlatformVaccum();
+        }
+        public void BeforePickChipFromCalibrationTable()
+        {
+            IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
+        }
+    }
+
     /*
      * 物料Step 5 - 放置基底 步骤Action
      */
@@ -3520,6 +4526,65 @@ namespace ProductRunClsLib
             }
         }
     }
+
+    /*
+  * 相机移动至共晶位置识别贴装位置 步骤Action
+  */
+    class StepAction_CamMovToEutecnicVisionPositionPos : StepActionBase
+    {
+        public StepAction_CamMovToEutecnicVisionPositionPos(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_CamMovToEutecnicPos-Start.");
+                BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                if(_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Success)
+                {
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, _systemConfig.PositioningConfig.EutecticWeldingLocation.Y, EnumCoordSetType.Absolute);
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, _systemConfig.PositioningConfig.EutecticWeldingLocation.X, EnumCoordSetType.Absolute);
+                    //_positioningSystem.BondXYUnionMovetoStageCoor(_systemConfig.PositioningConfig.EutecticWeldingLocation.X, _systemConfig.PositioningConfig.EutecticWeldingLocation.Y, EnumCoordSetType.Absolute);
+
+                    //BondZ移动到相机识别位置
+                    var z = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + _curRecipe.SubmonutInfos.ThicknessMM;
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, z, EnumCoordSetType.Absolute);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_CamMovToEutecnicPos-End.");
+
+                    MatchIdentificationParam visionParam = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault();
+                    var PositionBondChipResult = SystemCalibration.Instance.IdentificationAsync2(EnumCameraType.BondCamera, visionParam);
+                    if (PositionBondChipResult != null)
+                    {
+                        ProductExecutor.Instance.OffsetBeforeEutecticChip = PositionBondChipResult;
+                    }
+                    else
+                    {
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+                }
+                else
+                {
+                    return GlobalGWResultDefine.RET_FAILED;
+                }
+
+
+                
+
+
+                return GlobalGWResultDefine.RET_SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_CalibrationBeforePickChip,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            finally
+            {
+
+            }
+        }
+    }
+
 
     /*
      * 物料Step 6 - 放置芯片前识别贴装位置 步骤Action
@@ -4971,6 +6036,198 @@ namespace ProductRunClsLib
 
         }
     }
+
+    /// <summary>
+    /// 贴衬底到共晶台位置 芯片二次识别后不再进行角度补偿，只找center,且芯贴装位置做XY位置补偿时，考虑角度
+    /// </summary>
+    public class StepAction_BondSubmonutToEutectic : StepActionBase
+    {
+        public StepAction_BondSubmonutToEutectic(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondSubmonutToEutectic-Start.");
+
+                CameraWindowGUI.Instance?.SelectCamera(0);
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionSubmonutInCalibrationTable-Start.");
+                var materialOrigionA_init = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA_init;
+                var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                if (_positioningSystem.BondZMovetoSafeLocation()
+                    //&& _positioningSystem.PPtoolMovetoEutecticTableCenter(PPtool)
+                    && _positioningSystem.MoveAixsToStageCoord(PPtool.StageAxisTheta, -targetA, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                {
+                    double[] Target = new double[2];
+                    Target[0] = _systemConfig.PositioningConfig.EutecticWeldingLocation.X + ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.X;
+                    Target[1] = _systemConfig.PositioningConfig.EutecticWeldingLocation.Y + ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.Y;
+                    if (PPtool != null)
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - PPtool.LookuptoPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - PPtool.LookuptoPPOrigion.Y);
+                    }
+                    else
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - _systemConfig.PositioningConfig.LookupChipPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - _systemConfig.PositioningConfig.LookupChipPPOrigion.Y);
+                    }
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+
+                    //放芯片
+                    var ppParam = CurSubmonutParam.PPSettings;
+
+                    if (PPtool != null)
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = PPtool.AltimetryOnMark;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+                    else
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+
+                    if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, AfterPlaceChipOnEutecticTable, true))
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到校准台失败！");
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+                    else
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+                    }
+
+
+                }
+
+
+
+                return GlobalGWResultDefine.RET_SUCCESS;
+
+            }
+            catch (Exception ex)
+            {
+                _positioningSystem.PPMovetoSafeLocation();
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_OnlyBondChip,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+
+        }
+
+        public void AfterPlaceChipOnEutecticTable()
+        {
+            IOUtilityHelper.Instance.OpenMaterailPlatformVaccum();
+        }
+        public void BeforePickChipFromEutecticTable()
+        {
+            IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
+        }
+    }
+
+    /// <summary>
+    /// 贴芯片到贴装位置 芯片二次识别后不再进行角度补偿，只找center,且芯贴装位置做XY位置补偿时，考虑角度
+    /// </summary>
+    public class StepAction_BondChipToEutectic : StepActionBase
+    {
+        public StepAction_BondChipToEutectic(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc) { }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondChipToEutectic-Start.");
+
+                CameraWindowGUI.Instance?.SelectCamera(0);
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionChipInCalibrationTable-Start.");
+                var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                var targetA = ProductExecutor.Instance.OffsetBeforeEutecticChip.Theta - materialOrigionA_init + CurBondPosition.BondPositionCompensation.Theta;
+                var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+                if (_positioningSystem.BondZMovetoSafeLocation()
+                    //&& _positioningSystem.PPtoolMovetoEutecticTableCenter(PPtool)
+                    && _positioningSystem.MoveAixsToStageCoord(PPtool.StageAxisTheta, -targetA, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                {
+                    double[] Target = new double[2];
+                    Target[0] = _systemConfig.PositioningConfig.EutecticWeldingLocation.X + ProductExecutor.Instance.OffsetBeforeEutecticChip.X;
+                    Target[1] = _systemConfig.PositioningConfig.EutecticWeldingLocation.Y + ProductExecutor.Instance.OffsetBeforeEutecticChip.Y;
+                    if (PPtool != null)
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - PPtool.LookuptoPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - PPtool.LookuptoPPOrigion.Y);
+                    }
+                    else
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - _systemConfig.PositioningConfig.LookupChipPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - _systemConfig.PositioningConfig.LookupChipPPOrigion.Y);
+                    }
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+
+                    //放芯片
+                    var ppParam = CurChipParam.PPSettings;
+
+                    if (PPtool != null)
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = PPtool.AltimetryOnMark;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+                    else
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurChipParam.ThicknessMM + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+
+                    if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, null, false))
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到校准台失败！");
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+                    else
+                    {
+                        //_positioningSystem.PPMovetoSafeLocation();
+                    }
+
+
+                }
+
+
+
+                return GlobalGWResultDefine.RET_SUCCESS;
+
+            }
+            catch (Exception ex)
+            {
+                _positioningSystem.PPMovetoSafeLocation();
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_OnlyBondChip,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+
+        }
+
+        public void AfterPlaceChipOnEutecticTable()
+        {
+            IOUtilityHelper.Instance.OpenMaterailPlatformVaccum();
+        }
+        public void BeforePickChipFromEutecticTable()
+        {
+            IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
+        }
+    }
+
+
     /*
      * 物料Step 8 - 共晶 步骤Action
      */
@@ -5026,6 +6283,13 @@ namespace ProductRunClsLib
                 ////Thread.Sleep(500);
                 ////IOUtilityHelper.Instance.CloseChipPPBlow();
                 //LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_Eutectic-End.");
+
+
+                BeforePickChipFromEutecticTable();
+
+                Thread.Sleep(5000);
+
+
                 return GlobalGWResultDefine.RET_SUCCESS;
 
             }
@@ -5041,6 +6305,15 @@ namespace ProductRunClsLib
             {
 
             }
+        }
+
+        public void AfterPlaceChipOnEutecticTable()
+        {
+            IOUtilityHelper.Instance.OpenMaterailPlatformVaccum();
+        }
+        public void BeforePickChipFromEutecticTable()
+        {
+            IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
         }
     }
 
@@ -5131,6 +6404,319 @@ namespace ProductRunClsLib
                 //    WarningBox.FormShow("错误", "放衬底失败！");
                 //    return GlobalGWResultDefine.RET_FAILED;
                 //}
+
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondSubmonutToEutectic-Start.");
+
+                CameraWindowGUI.Instance?.SelectCamera(0);
+                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionSubmonutInCalibrationTable-Start.");
+                //var materialOrigionA_init = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                //var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA_init;
+                var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                if (_positioningSystem.BondZMovetoSafeLocation()
+                    ////&& _positioningSystem.PPtoolMovetoEutecticTableCenter(PPtool)
+                    //&& _positioningSystem.MoveAixsToStageCoord(PPtool.StageAxisTheta, -targetA, EnumCoordSetType.Relative) == StageMotionResult.Success
+                    )
+                {
+                    double[] Target = new double[2];
+                    Target[0] = _systemConfig.PositioningConfig.EutecticWeldingLocation.X + ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.X;
+                    Target[1] = _systemConfig.PositioningConfig.EutecticWeldingLocation.Y + ProductExecutor.Instance.OffsetAfterSubmonutAccuracy.Y;
+                    if (PPtool != null)
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - PPtool.LookuptoPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - PPtool.LookuptoPPOrigion.Y);
+                    }
+                    else
+                    {
+                        Target[0] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.X - _systemConfig.PositioningConfig.LookupChipPPOrigion.X);
+                        Target[1] -= (_systemConfig.PositioningConfig.LookupCameraOrigion.Y - _systemConfig.PositioningConfig.LookupChipPPOrigion.Y);
+                    }
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    _positioningSystem.MoveAixsToStageCoord(multiAxis, Target, EnumCoordSetType.Absolute);
+
+
+                    //放芯片
+                    var ppParam = CurSubmonutParam.PPSettings;
+
+                    if (PPtool != null)
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = PPtool.AltimetryOnMark;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+                    else
+                    {
+                        var systemPos = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + CurSubmonutParam.ThicknessMM;
+                        ppParam.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                        ppParam.WorkHeight = (float)systemPos;
+                    }
+
+                    if (!PPUtility.Instance.PickViaSystemCoor(ppParam, BlankingSubmountAction))
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到校准台失败！");
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+                    else
+                    {
+                        _positioningSystem.PPMovetoSafeLocation();
+
+                        BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                        var curDealBP = CurBondPosition;
+                        var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
+                        if (CurSubmonutParam.CarrierType == EnumCarrierType.WafflePack)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickUpSubmonut-Start.");
+                            //BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+
+                            var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                            var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                            //安全位
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPT, 0, EnumCoordSetType.Absolute);
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+
+                            //吸嘴移动到芯片中心上方
+
+                            var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                            offset = pptool.PP1AndBondCameraOffset;
+                            if (pptool != null)
+                            {
+                                var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                                offset.X = usedPPandBondCameraOffsetX;
+                                offset.Y = usedPPandBondCameraOffsetY;
+                            }
+                            if (_positioningSystem.BondZMovetoSafeLocation()
+                            //芯片吸嘴T复位
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupSubmonut.X + offset.X
+                                , ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                            {
+                                //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                                var pp = CurSubmonutParam.PPSettings;
+
+
+                                if (pptool != null)
+                                {
+                                    var systemPos = CurSubmonutParam.ChipPPPickSystemPos;
+                                    pp.PPToolZero = pptool.AltimetryOnMark;
+                                    pp.WorkHeight = systemPos;
+                                }
+                                else
+                                {
+                                    var systemPos = CurSubmonutParam.ChipPPPickSystemPos;
+                                    pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                    pp.WorkHeight = systemPos;
+                                }
+
+                                if (PPUtility.Instance.PlaceViaSystemCoor(pp,null,null,true))
+                                {
+                                    
+                                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_PickDownSubmonut-End.");
+                                }
+                                else
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "放下衬底失败！");
+                                    WarningBox.FormShow("错误", "放下衬底失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "放下衬底失败！");
+                                WarningBox.FormShow("错误", "放下衬底失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                        }
+                        else if (CurSubmonutParam.CarrierType == EnumCarrierType.Wafer)
+                        {
+                            var usedESTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedESToolName);
+                            if (usedESTool != null)
+                            {
+                                var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                                offset = pptool.PP1AndBondCameraOffset;
+                                if (pptool != null)
+                                {
+                                    var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                    var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                                    offset.X = usedPPandBondCameraOffsetX;
+                                    offset.Y = usedPPandBondCameraOffsetY;
+                                }
+                                var offsetBCAndWC = _systemConfig.PositioningConfig.WaferCameraOrigion;
+                                var offsetBCAndWC2 = usedESTool.BondIdentifyNeedleCenter;
+                                if (_positioningSystem.BondZMovetoSafeLocation()
+                                //顶针移动到零点
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                //物料中心移动到顶针上方
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableX, usedESTool.NeedleCenter.X, EnumCoordSetType.Relative) == StageMotionResult.Success
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.WaferTableY, -usedESTool.NeedleCenter.Y, EnumCoordSetType.Relative) == StageMotionResult.Success
+                                //芯片吸嘴物料中心上方
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC.X - usedESTool.NeedleCenter.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC.Y - usedESTool.NeedleCenter.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + offsetBCAndWC2.X + curDealBP.chipPositionCompensation.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + offsetBCAndWC2.Y + curDealBP.chipPositionCompensation.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                //顶针座升起
+                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, CurSubmonutParam.ESBaseWorkPos, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                //拾取芯片
+                                //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                                )
+                                {
+                                    //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                                    var pp = CurSubmonutParam.PPSettings;
+                                    pp.WorkHeight = CurSubmonutParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z; ;
+                                    //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedPPToolName);
+                                    if (pptool != null)
+                                    {
+                                        pp.PPToolZero = pptool.AltimetryOnMark;
+                                    }
+                                    else
+                                    {
+                                        //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
+                                        //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
+                                        //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
+                                        //var ppWorkSystemPos = 0f;
+                                        pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                        //pp.WorkHeight = ppWorkSystemPos;
+                                    }
+
+                                    IOUtilityClsLib.IOUtilityHelper.Instance.OpenESBaseVaccum();
+                                    //Thread.Sleep(3000);
+                                    var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                    var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                                    if (PPUtility.Instance.PlaceViaSystemCoor(pp, null, null, true))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
+                                        LogRecorder.RecordLog(EnumLogContentType.Error, "放下芯片失败！");
+                                        WarningBox.FormShow("错误", "放下芯片失败！");
+                                        return GlobalGWResultDefine.RET_FAILED;
+                                    }
+                                }
+                                else
+                                {
+                                    IOUtilityClsLib.IOUtilityHelper.Instance.CloseESBaseVaccum();
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "放下芯片失败！");
+                                    WarningBox.FormShow("错误", "放下芯片失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "芯片绑定的顶针工具无效！");
+                                WarningBox.FormShow("错误", "拾取芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                        }
+                        else if (CurSubmonutParam.CarrierType == EnumCarrierType.WaferWafflePack)
+                        {
+                            //芯片吸嘴物料中心上方
+                            var ppSystemOffset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                            ppSystemOffset = pptool.PP1AndBondCameraOffset;
+                            if (pptool != null)
+                            {
+                                var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                                var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                                ppSystemOffset.X = usedPPandBondCameraOffsetX;
+                                ppSystemOffset.Y = usedPPandBondCameraOffsetY;
+                            }
+                            var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
+
+
+
+                            if (_positioningSystem.BondZMovetoSafeLocation()
+                            //芯片吸嘴物料中心上方
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X+ ProductExecutor.Instance.OffsetBeforePickupSubmonut.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y- ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, ppSystemOffset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, ppSystemOffset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            ////拾取芯片
+                            //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            )
+                            {
+                                //XY联动移动到物料上方
+                                EnumStageAxis[] multiAxis2 = new EnumStageAxis[3];
+                                multiAxis2[0] = EnumStageAxis.BondX;
+                                multiAxis2[1] = EnumStageAxis.BondY;
+                                //multiAxis[2] = EnumStageAxis.SubmonutPPT;
+                                multiAxis2[2] = pptool.StageAxisTheta;
+                                double[] targets = new double[3];
+                                targets[0] = ppSystemOffset.X + bondcamera2wafercamera.X + curDealBP.chipPositionCompensation.X;
+                                targets[1] = ppSystemOffset.Y + bondcamera2wafercamera.Y + curDealBP.chipPositionCompensation.Y;
+                                targets[2] = 0;
+                                StageMotionResult result = _positioningSystem.MoveAixsToStageCoord(multiAxis2, targets, EnumCoordSetType.Absolute);
+                                if (result == StageMotionResult.Success)
+                                {
+
+                                }
+                                else
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "拾取芯片失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,BondXTarget:{ppSystemOffset.X + bondcamera2wafercamera.X}");
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,BondXCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX)}");
+                                //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
+                                var pp = CurSubmonutParam.PPSettings;
+                                pp.WorkHeight = CurSubmonutParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z;
+
+                                //var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.RelatedPPToolName);
+                                if (pptool != null)
+                                {
+                                    //吸嘴工具原点
+                                    pp.PPToolZero = pptool.AltimetryOnMark;
+
+                                }
+                                else
+                                {
+                                    //TBD此处采用系统保存的吸嘴和顶针系统的位置数据
+                                    //var ppWorkSystemPos = _systemConfig.PositioningConfig.PPESAltimetryParameter.PPSystemPosition - (ProductExecutor.Instance.ProductRecipe.CurrentComponent.ESBaseWorkPos - pptool.PPESAltimetryParameter.ESStagePosition)
+                                    //+ ProductExecutor.Instance.ProductRecipe.CurrentComponent.ThicknessMM + ProductExecutor.Instance.ProductRecipe.CurrentComponent.CarrierThicknessMM;
+                                    //var ppWorkSystemPos = 0f;
+                                    pp.PPToolZero = (float)_systemConfig.PositioningConfig.TrackChipPPOrigion.Z;
+                                    //pp.WorkHeight = ppWorkSystemPos;
+                                }
+
+
+                                //var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                                //var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
+                                //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-visionAngle:{ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta}");
+                                //LogRecorder.RecordLog(EnumLogContentType.Error, $"StepAction_PickUpSubmonutWithRotate-targetAngle:{targetA}");
+                                if (PPUtility.Instance.PlaceViaSystemCoor(pp, null, null, true))
+                                {
+                                    //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+                                    //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, -targetA, EnumCoordSetType.Relative);
+                                    //LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_PickUpSubmonutWithRotate,TCoorAfter:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.SubmonutPPT)}");
+                                }
+                                else
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "放下芯片失败！");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                            }
+                            else
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Error, "放下芯片失败！");
+                                return GlobalGWResultDefine.RET_FAILED;
+                            }
+                        }
+
+
+
+                    }
+
+
+                }
+
+
                 return GlobalGWResultDefine.RET_SUCCESS;
 
             }
