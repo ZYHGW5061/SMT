@@ -264,7 +264,7 @@ namespace RecipeEditPanelClsLib
                         return;
                     }
                     //删除Recipe内容
-                    recipe.Delete();
+                    recipe?.Delete();
 
                     TreeListNode recipeNodes = ParentRootNode;
                     //if (recipe.WaferSize == EnumWaferSize.INCH8)

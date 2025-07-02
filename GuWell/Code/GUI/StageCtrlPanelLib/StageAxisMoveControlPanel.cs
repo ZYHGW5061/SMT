@@ -275,7 +275,9 @@ namespace StageCtrlPanelLib
                 || _currentStageAxis == EnumStageAxis.WaferTableX
                 || _currentStageAxis == EnumStageAxis.WaferTableY
                 || _currentStageAxis == EnumStageAxis.ESZ
-                || _currentStageAxis == EnumStageAxis.NeedleZ)
+                || _currentStageAxis == EnumStageAxis.NeedleZ
+                || _currentStageAxis == EnumStageAxis.SubmountPPZ
+                || _currentStageAxis == EnumStageAxis.SubmountPPT)
             {
                 try
                 {

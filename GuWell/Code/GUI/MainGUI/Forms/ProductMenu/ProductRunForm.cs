@@ -116,9 +116,13 @@ namespace MainGUI.Forms.ProductMenu
                 if (!ckeIsProcessPart.Checked)
                 {
                     var bpCountInOneModule = curRecipe.StepBondingPositionList.Count;
-                    var allMoudleCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count;
-                    var allBPCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
-                    labelCounter.Text = $"{productExecutor.BondDieCounter}/{allBPCounts}";
+                    if(curRecipe.SubstrateInfos.ModuleMapInfos.Count>0)
+                    {
+                        var allMoudleCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count;
+                        var allBPCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
+                        labelCounter.Text = $"{productExecutor.BondDieCounter}/{allBPCounts}";
+                    }
+                    
                 }
                 else
                 {

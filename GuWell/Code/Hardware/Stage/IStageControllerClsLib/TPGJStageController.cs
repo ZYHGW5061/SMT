@@ -99,6 +99,10 @@ namespace StageControllerClsLib
                         return (StageCore.StageInfo.AxisControllerDic[axis] as NeedleSwitchSingleAxisController);
                     case EnumStageAxis.FilpToolTheta:
                         return (StageCore.StageInfo.AxisControllerDic[axis] as FilpToolThetaSingleAxisController);
+                    case EnumStageAxis.SubmountPPT:
+                        return (StageCore.StageInfo.AxisControllerDic[axis] as SubmountPPTSingleAxisController);
+                    case EnumStageAxis.SubmountPPZ:
+                        return (StageCore.StageInfo.AxisControllerDic[axis] as SubmountPPZSingleAxisController);
                     default:
                         return null;
                 }

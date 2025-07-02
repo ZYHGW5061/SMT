@@ -48,6 +48,8 @@ namespace GlobalToolClsLib
         private float needleZ;
         private float needleSwitch;
         private float filpToolTheta;
+        private float submountPPT;
+        private float submountPPZ;
 
         private int bondYSta;
         private int bondXSta;
@@ -68,6 +70,9 @@ namespace GlobalToolClsLib
         private int needleZSta;
         private int needleSwitchSta;
         private int filpToolThetaSta;
+        private int submountPPTSta;
+        private int submountPPZSta;
+
 
 
 
@@ -612,6 +617,38 @@ namespace GlobalToolClsLib
             }
         }
 
+        /// <summary>
+        /// 衬底吸嘴T轴
+        /// </summary>
+        public float SubmountPPT
+        {
+            get { return submountPPT; }
+            set
+            {
+                if (submountPPT != value)
+                {
+                    submountPPT = value;
+                    OnPropertyChanged(nameof(SubmountPPT));
+                }
+            }
+        }
+        /// <summary>
+        /// 衬底吸嘴Z轴
+        /// </summary>
+        public float SubmountPPZ
+        {
+            get { return submountPPZ; }
+            set
+            {
+                if (submountPPZ != value)
+                {
+                    submountPPZ = value;
+                    OnPropertyChanged(nameof(SubmountPPZ));
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// Bond头Y轴
@@ -911,6 +948,38 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+        /// <summary>
+        /// 衬底吸嘴T
+        /// </summary>
+        public int SubmountPPTSta
+        {
+            get { return submountPPTSta; }
+            set
+            {
+                if (submountPPTSta != value)
+                {
+                    submountPPTSta = value;
+                    OnPropertyChanged(nameof(SubmountPPTSta));
+                }
+            }
+        }
+        /// <summary>
+        /// 衬底吸嘴Z
+        /// </summary>
+        public int SubmountPPZSta
+        {
+            get { return submountPPZSta; }
+            set
+            {
+                if (submountPPZSta != value)
+                {
+                    submountPPZSta = value;
+                    OnPropertyChanged(nameof(SubmountPPZSta));
+                }
+            }
+        }
+
 
 
 

@@ -122,9 +122,9 @@ namespace RecipeEditPanelClsLib
                 //var templateTrainFileName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentComponent.Name}.contourmxml");
                 //this.visualMatchControlGUI1.MatchTemplatefilepath = templateTrainFileName;
                 //this.visualMatchControlGUI1.MatchRunfilepath = "";
-                var templateTrainFileName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentBondPosition.Name}.contourmxml");
-                var templateTrainParamName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentBondPosition.Name}TrainParam.xml");
-                var templateRunFileName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentBondPosition.Name}Run.xml");
+                var templateTrainFileName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentComponent.Name}.contourmxml");
+                var templateTrainParamName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentComponent.Name}TrainParam.xml");
+                var templateRunFileName = Path.Combine(templateFolderName, $"PositionTemplateFile_{EditRecipe.CurrentComponent.Name}Run.xml");
                 this.visualMatchControlGUI1.MatchTemplatefilepath = templateTrainFileName;
                 this.visualMatchControlGUI1.MatchTemplateParampath = templateTrainParamName;
                 this.visualMatchControlGUI1.MatchRunfilepath = templateRunFileName;

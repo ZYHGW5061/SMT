@@ -48,7 +48,7 @@ namespace RecipeEditPanelClsLib
             _columnPitchMM= _editRecipe.SubstrateInfos.PitchColumnMM;
             _rowPitchMM= _editRecipe.SubstrateInfos.PitchRowMM;
 
-            FirstMaterialPosition=new PointF((float)_editRecipe.SubstrateInfos.FirstSubstrateHomeSystemLocation.X, (float)_editRecipe.SubstrateInfos.FirstSubstrateHomeSystemLocation.Y);
+            FirstMaterialPosition=new PointF((float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.X, (float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.Y);
             if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
             {
                 step4Sign.Visible = false;

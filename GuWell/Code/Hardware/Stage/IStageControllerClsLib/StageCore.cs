@@ -338,6 +338,14 @@ namespace StageControllerClsLib
                 {
                     _boardCardController.Home(axis, 17);
                 }
+                else if (axis == EnumStageAxis.SubmountPPZ)
+                {
+                    _boardCardController.Home(axis, 101);
+                }
+                else if (axis == EnumStageAxis.SubmountPPT)
+                {
+                    _boardCardController.Home(axis, 33);
+                }
             }
         }
 

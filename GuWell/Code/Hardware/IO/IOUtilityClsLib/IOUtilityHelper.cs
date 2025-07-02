@@ -937,6 +937,16 @@ namespace IOUtilityClsLib
                         DataModel.Instance.FilpToolTheta = pos;
                         DataModel.Instance.FilpToolThetaSta = sta;
                     }
+                    else if (axis == EnumStageAxis.SubmountPPT)
+                    {
+                        DataModel.Instance.SubmountPPT = pos;
+                        DataModel.Instance.SubmountPPTSta = sta;
+                    }
+                    else if (axis == EnumStageAxis.SubmountPPZ)
+                    {
+                        DataModel.Instance.SubmountPPZ = pos;
+                        DataModel.Instance.SubmountPPZSta = sta;
+                    }
                 }
 
             }

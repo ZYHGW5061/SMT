@@ -364,6 +364,10 @@ namespace RecipeEditPanelClsLib
             {
                 step.productStepType = EnumProductStepType.BondDie;
             }
+            else if(rbTypeEutectic.Checked)
+            {
+                step.productStepType = EnumProductStepType.Eutectic;
+            }
 
             if (cbSubstrateList.SelectedItem != null)
             {

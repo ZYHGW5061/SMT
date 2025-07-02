@@ -265,6 +265,13 @@ namespace ControlPanelClsLib
             UpdatePosition(EnumStageAxis.FilpToolTheta, DataModel.Instance.FilpToolTheta);
             SetAxisSta(EnumStageAxis.FilpToolTheta, DataModel.Instance.FilpToolThetaSta);
 
+            UpdatePosition(EnumStageAxis.SubmountPPT, DataModel.Instance.SubmountPPT);
+            SetAxisSta(EnumStageAxis.SubmountPPT, DataModel.Instance.SubmountPPTSta);
+
+            UpdatePosition(EnumStageAxis.SubmountPPZ, DataModel.Instance.SubmountPPZ);
+            SetAxisSta(EnumStageAxis.SubmountPPZ, DataModel.Instance.SubmountPPZSta);
+
+
             #endregion
 
 
@@ -1618,6 +1625,180 @@ namespace ControlPanelClsLib
             {
                 _syncContext.Post(_ => SetAxisSta(EnumStageAxis.FilpToolTheta, DataModel.Instance.FilpToolThetaSta), null);
             }
+            #region Motor
+
+            if (e.PropertyName == nameof(DataModel.BondX))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.BondX, DataModel.Instance.BondX), null);
+            }
+            if (e.PropertyName == nameof(DataModel.BondXSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.BondX, DataModel.Instance.BondXSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.BondY))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.BondY, DataModel.Instance.BondY), null);
+            }
+            if (e.PropertyName == nameof(DataModel.BondYSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.BondY, DataModel.Instance.BondYSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.BondZ))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.BondZ, DataModel.Instance.BondZ), null);
+            }
+            if (e.PropertyName == nameof(DataModel.BondZSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.BondZ, DataModel.Instance.BondZSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.ChipPPT))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.ChipPPT, DataModel.Instance.ChipPPT), null);
+            }
+            if (e.PropertyName == nameof(DataModel.ChipPPTSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.ChipPPT, DataModel.Instance.ChipPPTSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.PPtoolBankTheta))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.PPtoolBankTheta, DataModel.Instance.PPtoolBankTheta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.PPtoolBankThetaSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.PPtoolBankTheta, DataModel.Instance.PPtoolBankThetaSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.DippingGlue))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.DippingGlue, DataModel.Instance.DippingGlue), null);
+            }
+            if (e.PropertyName == nameof(DataModel.DippingGlueSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.DippingGlue, DataModel.Instance.DippingGlueSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack1))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.TransportTrack1, DataModel.Instance.TransportTrack1), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack1Sta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.TransportTrack1, DataModel.Instance.TransportTrack1Sta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack2))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.TransportTrack2, DataModel.Instance.TransportTrack2), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack2Sta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.TransportTrack2, DataModel.Instance.TransportTrack2Sta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack3))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.TransportTrack3, DataModel.Instance.TransportTrack3), null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportTrack3Sta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.TransportTrack3, DataModel.Instance.TransportTrack3Sta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableY))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferTableY, DataModel.Instance.WaferTableY), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableYSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferTableY, DataModel.Instance.WaferTableYSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableX))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferTableX, DataModel.Instance.WaferTableX), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableXSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferTableX, DataModel.Instance.WaferTableXSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableZ))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferTableZ, DataModel.Instance.WaferTableZ), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferTableZSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferTableZ, DataModel.Instance.WaferTableZSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferFilm))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferFilm, DataModel.Instance.WaferFilm), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferFilmSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferFilm, DataModel.Instance.WaferFilmSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferFinger))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferFinger, DataModel.Instance.WaferFinger), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferFingerSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferFinger, DataModel.Instance.WaferFingerSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferCassetteLift))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.WaferCassetteLift, DataModel.Instance.WaferCassetteLift), null);
+            }
+            if (e.PropertyName == nameof(DataModel.WaferCassetteLiftSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.WaferCassetteLift, DataModel.Instance.WaferCassetteLiftSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.ESZ))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.ESZ, DataModel.Instance.ESZ), null);
+            }
+            if (e.PropertyName == nameof(DataModel.ESZSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.ESZ, DataModel.Instance.ESZSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.NeedleZ))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.NeedleZ, DataModel.Instance.NeedleZ), null);
+            }
+            if (e.PropertyName == nameof(DataModel.NeedleZSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.NeedleZ, DataModel.Instance.NeedleZSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.NeedleSwitch))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.NeedleSwitch, DataModel.Instance.NeedleSwitch), null);
+            }
+            if (e.PropertyName == nameof(DataModel.NeedleSwitchSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.NeedleSwitch, DataModel.Instance.NeedleSwitchSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.FilpToolTheta))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.FilpToolTheta, DataModel.Instance.FilpToolTheta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.FilpToolThetaSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.FilpToolTheta, DataModel.Instance.FilpToolThetaSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.SubmountPPT))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.SubmountPPT, DataModel.Instance.SubmountPPT), null);
+            }
+            if (e.PropertyName == nameof(DataModel.SubmountPPTSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.SubmountPPT, DataModel.Instance.SubmountPPTSta), null);
+            }
+            if (e.PropertyName == nameof(DataModel.SubmountPPZ))
+            {
+                _syncContext.Post(_ => UpdatePosition(EnumStageAxis.SubmountPPZ, DataModel.Instance.SubmountPPZ), null);
+            }
+            if (e.PropertyName == nameof(DataModel.SubmountPPZSta))
+            {
+                _syncContext.Post(_ => SetAxisSta(EnumStageAxis.SubmountPPZ, DataModel.Instance.SubmountPPZSta), null);
+            }
+
+
+            #endregion
+
 
 
             #endregion

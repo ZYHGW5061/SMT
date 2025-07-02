@@ -155,6 +155,8 @@ namespace BondTerminal
                     _stageEngine[EnumStageAxis.WaferTableY].Home();
                     _stageEngine[EnumStageAxis.WaferTableX].Home();
                     _stageEngine[EnumStageAxis.WaferTableZ].Home();
+                    _stageEngine[EnumStageAxis.SubmountPPZ].Home();
+                    _stageEngine[EnumStageAxis.SubmountPPT].Home();
                     CloseWaitDialog();
                 }
                 catch (Exception ex)

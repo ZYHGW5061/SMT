@@ -79,6 +79,8 @@ namespace StageManagerClsLib
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.NeedleZ, new NeedleZSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.NeedleSwitch, new NeedleSwitchSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.FilpToolTheta, new FilpToolThetaSingleAxisController());
+                stageInfo.AxisControllerDic.Add(EnumStageAxis.SubmountPPT, new SubmountPPTSingleAxisController());
+                stageInfo.AxisControllerDic.Add(EnumStageAxis.SubmountPPZ, new SubmountPPZSingleAxisController());
                 //添加其他轴
 
                 StageCore.Instance.StageInfo = stageInfo;

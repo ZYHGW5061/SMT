@@ -349,7 +349,7 @@ namespace RecipeEditPanelClsLib
                                                     //吸嘴移动到相机中心（此时也是物料中心）(只移XY)
                                                     //_positioningSystem.ChipPPMovetoBondCameraCenter();
                                                     //拾取芯片
-                                                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                                    _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute);
 
                                                     _editRecipe.CurrentComponent.PPSettings.PPToolZero = pptool.AltimetryOnMark;
 
@@ -369,12 +369,17 @@ namespace RecipeEditPanelClsLib
 
 
                                                         //拾取完成之后进行角度补偿和旋转后的XY补偿
-                                                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
+                                                        if (_positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, -(visionRet.Theta - visionParam.OrigionAngle), EnumCoordSetType.Relative) == StageMotionResult.Success
                                                     && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success
                                                     //拾取之后移动到仰视相机上方
                                                     && _positioningSystem.PPtoolMovetoUplookingCameraCenter(pptool)
                                                     && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, pptool.LookuptoPPOrigion.Z + _editRecipe.CurrentComponent.ThicknessMM, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                         {
+                                                            if(pptool.EnumPPtool == EnumPPtool.PPtool2)
+                                                            {
+                                                                _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                                                            }
+
                                                             JobInfosManager.Instance.CurrentComponentForProgramAccuracy.X = item.MaterialLocation.X;
                                                             JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Y = item.MaterialLocation.Y;
                                                             JobInfosManager.Instance.CurrentComponentForProgramAccuracy.Z = _editRecipe.CurrentComponent.ChipPPPickSystemPos;

@@ -377,6 +377,9 @@ namespace ProductRunClsLib
         //吸取芯片前校准结果
         public XYZTCoordinateConfig OffsetBeforePickupSubmonut { get; set; }
 
+        //当前吸取芯片位置
+        public XYZTCoordinateConfig CurrectPickupSubmonut { get; set; }
+
         public float CompensateXAfterPickupChip { get; set; }
         public float CompensateYAfterPickupChip { get; set; }
 
@@ -1113,14 +1116,14 @@ namespace ProductRunClsLib
                                     case EnumJobRunStatus.Initial:
                                         ResetEventWaitForNext();
 
-                                        StepAction_PositionComponent stepAction_PositionSubmonut = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionSubmonut, "定位芯片");
+                                        StepAction_PositionComponent stepAction_PositionSubmonut = new StepAction_PositionComponent(step, EnumActionNo.Action_PositionSubmonut, "定位衬底");
                                         ret = stepAction_PositionSubmonut.Run();
                                         currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PositionSubmonutSuccess : EnumJobRunStatus.PositionSubmonutFail;
                                         WaitForNext();
                                         break;
                                     case EnumJobRunStatus.PositionSubmonutSuccess:
                                         ResetEventWaitForNext();
-                                        StepAction_PickUpChipWithRotate stepAction_PickSubmonut = new StepAction_PickUpChipWithRotate(step, EnumActionNo.Action_PositionSubmonut, "拾取芯片");
+                                        StepAction_PickUpChipWithRotate stepAction_PickSubmonut = new StepAction_PickUpChipWithRotate(step, EnumActionNo.Action_PositionSubmonut, "拾取衬底");
                                         ret = stepAction_PickSubmonut.Run();
                                         currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.PickupSubmonutSuccess : EnumJobRunStatus.PickupSubmonutFail;
                                         ProductExecutor.Instance.CurSubmonutNum++;
@@ -1919,14 +1922,17 @@ namespace ProductRunClsLib
 
         private void BeforeRun()
         {
-            InTranspotoneMaterial();
-            DataModel.Instance.PropertyChanged += ActBeforeRun;
+            //InTranspotoneMaterial();
+            //DataModel.Instance.PropertyChanged += ActBeforeRun;
+
+            Execute();
+
         }
         private void ProcedureComplete()
         {
             
             Thread.Sleep(2000);
-            DataModel.Instance.PropertyChanged -= ActBeforeRun;
+            //DataModel.Instance.PropertyChanged -= ActBeforeRun;
         }
 
         private void InTranspotoneMaterial()

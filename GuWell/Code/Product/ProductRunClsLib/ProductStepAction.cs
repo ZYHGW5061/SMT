@@ -662,7 +662,7 @@ namespace ProductRunClsLib
             {
                 componentType = EnumComponentType.Component;
             }
-            else if(actionNo == EnumActionNo.Action_PositionChip)
+            else if(actionNo == EnumActionNo.Action_PositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -1699,7 +1699,7 @@ namespace ProductRunClsLib
             {
                 componentType = EnumComponentType.Component;
             }
-            else if (actionNo == EnumActionNo.Action_PositionChip)
+            else if (actionNo == EnumActionNo.Action_PositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -2035,11 +2035,11 @@ namespace ProductRunClsLib
         public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
         public StepAction_AccuracyPositionWithUplookCameraNoBond(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
         {
-            if (actionNo == EnumActionNo.Action_PositionChip)
+            if (actionNo == EnumActionNo.Action_AccuracyPositionChip)
             {
                 componentType = EnumComponentType.Component;
             }
-            else if (actionNo == EnumActionNo.Action_PositionChip)
+            else if (actionNo == EnumActionNo.Action_AccuracyPositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -2759,7 +2759,7 @@ namespace ProductRunClsLib
             {
                 componentType = EnumComponentType.Component;
             }
-            else if (actionNo == EnumActionNo.Action_PositionChip)
+            else if (actionNo == EnumActionNo.Action_PositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -3111,11 +3111,11 @@ namespace ProductRunClsLib
         public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
         public StepAction_AccuracyPositionChipInCalibrationTableNoBond(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
         {
-            if (actionNo == EnumActionNo.Action_PositionChip)
+            if (actionNo == EnumActionNo.Action_AccuracyPositionChip)
             {
                 componentType = EnumComponentType.Component;
             }
-            else if (actionNo == EnumActionNo.Action_PositionChip)
+            else if (actionNo == EnumActionNo.Action_AccuracyPositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -3571,7 +3571,7 @@ namespace ProductRunClsLib
             {
                 componentType = EnumComponentType.Component;
             }
-            else if (actionNo == EnumActionNo.Action_PositionChip)
+            else if (actionNo == EnumActionNo.Action_PositionSubmonut)
             {
                 componentType = EnumComponentType.Submonut;
             }
@@ -3616,6 +3616,7 @@ namespace ProductRunClsLib
                         && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupChip.X + offset.X
                             , ProductExecutor.Instance.OffsetBeforePickupChip.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
                         {
+                           
                             //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
                             var pp = CurChipParam.PPSettings;
 
@@ -3851,6 +3852,8 @@ namespace ProductRunClsLib
                 }
                 else
                 {
+                    ProductExecutor.Instance.CurrectPickupSubmonut = new XYZTCoordinateConfig();
+
                     BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
                     var curDealBP = CurBondPosition;
                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
@@ -3877,6 +3880,9 @@ namespace ProductRunClsLib
                             offset.X = usedPPandBondCameraOffsetX;
                             offset.Y = usedPPandBondCameraOffsetY;
                         }
+
+                        
+
                         if (_positioningSystem.BondZMovetoSafeLocation()
                         //芯片吸嘴T复位
                         //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
@@ -3884,6 +3890,10 @@ namespace ProductRunClsLib
                         && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupSubmonut.X + offset.X
                             , ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
                         {
+                            
+                            ProductExecutor.Instance.CurrectPickupSubmonut.X = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
+                            ProductExecutor.Instance.CurrectPickupSubmonut.Y = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
+
                             //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
                             var pp = CurSubmonutParam.PPSettings;
 
@@ -3971,6 +3981,9 @@ namespace ProductRunClsLib
                             && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
                             )
                             {
+                                ProductExecutor.Instance.CurrectPickupSubmonut.X = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
+                                ProductExecutor.Instance.CurrectPickupSubmonut.Y = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
+
                                 //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
                                 var pp = CurSubmonutParam.PPSettings;
                                 pp.WorkHeight = CurSubmonutParam.ChipPPPickSystemPos + (float)curDealBP.chipPositionCompensation.Z; ;
@@ -4092,6 +4105,8 @@ namespace ProductRunClsLib
                                 //pp.WorkHeight = ppWorkSystemPos;
                             }
 
+                            ProductExecutor.Instance.CurrectPickupSubmonut.X = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
+                            ProductExecutor.Instance.CurrectPickupSubmonut.Y = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
 
                             //var materialOrigionA = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
                             //var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA;
@@ -4548,7 +4563,7 @@ namespace ProductRunClsLib
 
                     //BondZ移动到相机识别位置
                     var z = _systemConfig.PositioningConfig.EutecticWeldingLocation.Z + _curRecipe.SubmonutInfos.ThicknessMM;
-                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, z, EnumCoordSetType.Absolute);
+                    _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, z, EnumCoordSetType.Absolute);
                     LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_CamMovToEutecnicPos-End.");
 
                     MatchIdentificationParam visionParam = CurBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault();
@@ -6051,7 +6066,7 @@ namespace ProductRunClsLib
                 LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondSubmonutToEutectic-Start.");
 
                 CameraWindowGUI.Instance?.SelectCamera(0);
-                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionSubmonutInCalibrationTable-Start.");
+                //LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondSubmonutToEutectic-Start.");
                 var materialOrigionA_init = CurSubmonutParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
                 var targetA = ProductExecutor.Instance.OffsetBeforePickupSubmonut.Theta - materialOrigionA_init;
                 var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurSubmonutParam.PPSettings.PPtoolName);
@@ -6097,7 +6112,7 @@ namespace ProductRunClsLib
                     if (!PPUtility.Instance.PlaceViaSystemCoor(ppParam, null, AfterPlaceChipOnEutecticTable, true))
                     {
                         _positioningSystem.PPMovetoSafeLocation();
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到校准台失败！");
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到共晶台失败！");
                         return GlobalGWResultDefine.RET_FAILED;
                     }
                     else
@@ -6146,7 +6161,7 @@ namespace ProductRunClsLib
                 LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondChipToEutectic-Start.");
 
                 CameraWindowGUI.Instance?.SelectCamera(0);
-                LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_AccuracyPositionChipInCalibrationTable-Start.");
+                //LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_BondChipToEutectic-Start.");
                 var materialOrigionA_init = CurChipParam.PositionComponentVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
                 var targetA = ProductExecutor.Instance.OffsetBeforeEutecticChip.Theta - materialOrigionA_init + CurBondPosition.BondPositionCompensation.Theta;
                 var PPtool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
@@ -6313,6 +6328,7 @@ namespace ProductRunClsLib
         }
         public void BeforePickChipFromEutecticTable()
         {
+            IOUtilityHelper.Instance.CloseChipPPVaccum();
             IOUtilityHelper.Instance.CloseMaterailPlatformVaccum();
         }
     }
@@ -6455,7 +6471,7 @@ namespace ProductRunClsLib
                     if (!PPUtility.Instance.PickViaSystemCoor(ppParam, BlankingSubmountAction))
                     {
                         _positioningSystem.PPMovetoSafeLocation();
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "放置衬底到校准台失败！");
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "从共晶台吸取衬底失败！");
                         return GlobalGWResultDefine.RET_FAILED;
                     }
                     else
@@ -6488,12 +6504,16 @@ namespace ProductRunClsLib
                                 offset.X = usedPPandBondCameraOffsetX;
                                 offset.Y = usedPPandBondCameraOffsetY;
                             }
+                            double X = CurSubmonutParam.ComponentMapInfos[ProductExecutor.Instance.CurSubmonutNum - 1].MaterialLocation.X + ProductExecutor.Instance.MaterialSubmonutLocationOffsetX;
+                            double Y = CurSubmonutParam.ComponentMapInfos[ProductExecutor.Instance.CurSubmonutNum - 1].MaterialLocation.Y + ProductExecutor.Instance.MaterialSubmonutLocationOffsetY;
+
                             if (_positioningSystem.BondZMovetoSafeLocation()
                             //芯片吸嘴T复位
                             //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmonutPPT, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
                             && _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisTheta, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                            && _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupSubmonut.X + offset.X
-                                , ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                            //&& _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.OffsetBeforePickupSubmonut.X + offset.X
+                            //    , ProductExecutor.Instance.OffsetBeforePickupSubmonut.Y + offset.Y, EnumCoordSetType.Relative) == StageMotionResult.Success
+                            &&  _positioningSystem.BondXYUnionMovetoStageCoor(ProductExecutor.Instance.CurrectPickupSubmonut.X,ProductExecutor.Instance.CurrectPickupSubmonut.Y, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                             {
                                 //拾取芯片，TBD - 此处的高度应该用吸嘴工具和物料参数计算
                                 var pp = CurSubmonutParam.PPSettings;

@@ -306,7 +306,7 @@ namespace StageCtrlPanelLib
                         directFlags_X = -1;
                     }
 
-                    if (yAxis == EnumStageAxis.ESZ || yAxis == EnumStageAxis.NeedleZ || yAxis == EnumStageAxis.BondZ)
+                    if (yAxis == EnumStageAxis.ESZ || yAxis == EnumStageAxis.NeedleZ || yAxis == EnumStageAxis.BondZ || yAxis == EnumStageAxis.SubmountPPZ)
                     {
                         directFlags_Y = 1;
                     }
@@ -394,7 +394,7 @@ namespace StageCtrlPanelLib
                         directFlags_X = -1;
                     }
 
-                    if (yAxis == EnumStageAxis.ESZ || yAxis == EnumStageAxis.NeedleZ || yAxis == EnumStageAxis.BondZ)
+                    if (yAxis == EnumStageAxis.ESZ || yAxis == EnumStageAxis.NeedleZ || yAxis == EnumStageAxis.BondZ || yAxis == EnumStageAxis.SubmountPPZ)
                     {
                         directFlags_Y = 1;
                     }
@@ -489,6 +489,11 @@ namespace StageCtrlPanelLib
                 case EnumStageSystem.ES:
                     cmbSelectAxis.Items.Add("Z");
                     cmbSelectAxis.Items.Add("NeedleZ");
+                    break;
+                case EnumStageSystem.SubmountPP:
+                    //cmbSelectAxis.Items.Add("Z");
+                    cmbSelectAxis.Items.Add("Focus");
+                    cmbSelectAxis.Items.Add("Theta");
                     break;
                 default:
                     break;
@@ -616,6 +621,27 @@ namespace StageCtrlPanelLib
                         case EnumSystemAxis.NeedleZ:
                             xAxis = EnumStageAxis.None;
                             yAxis = EnumStageAxis.NeedleZ;
+                            break;
+                        default:
+                            xAxis = EnumStageAxis.None;
+                            yAxis = EnumStageAxis.None;
+                            break;
+                    }
+                    break;
+                case EnumStageSystem.SubmountPP:
+                    switch (SelectedAxisSystem)
+                    {
+                        //case EnumSystemAxis.Z:
+                        //    xAxis = EnumStageAxis.None;
+                        //    yAxis = EnumStageAxis.ChipPPZ;
+                        //    break;
+                        case EnumSystemAxis.Focus:
+                            xAxis = EnumStageAxis.None;
+                            yAxis = EnumStageAxis.SubmountPPZ;
+                            break;
+                        case EnumSystemAxis.Theta:
+                            xAxis = EnumStageAxis.SubmountPPT;
+                            yAxis = EnumStageAxis.None;
                             break;
                         default:
                             xAxis = EnumStageAxis.None;

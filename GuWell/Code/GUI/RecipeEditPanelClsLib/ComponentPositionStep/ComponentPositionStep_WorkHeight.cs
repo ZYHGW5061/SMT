@@ -155,45 +155,63 @@ namespace RecipeEditPanelClsLib
         {
             if (EditRecipe.CurrentComponent.CarrierType == EnumCarrierType.WafflePack)
             {
-                if (WarningBox.FormShow("使用激光测距仪自动测高？", "确认相机已定位到拾取位置！", "提示") == 1)
-                {
-                    try
-                    {
-                        CreateWaitDialog();
-                        //将激光测高仪移动到当前相机位置
-                        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, _systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.X,
-                        EnumCoordSetType.Relative);
-                        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, _systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.Y,
-                            EnumCoordSetType.Relative);
-                        //读取激光测高仪读数
-                        var curLaserMeasureH = _laserSensor.ReadDistance() / 10000;
-                        //根据校准数据及当前的激光测高仪读数计算吸嘴工作高度
-                        var curBondZ = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondZ);
-                        var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
-                        var offsetMeasureZ = curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ;
-                        var componentZ = offsetMeasureZ - offsetZ;
-                        //此处应该是根据关联的吸嘴工具获取参数
-                        //PPWorkHeight = (float)(_systemConfig.PositioningConfig.TrackChipPPOrigion.Z - offsetMeasureZ + offsetZ);
-                        ChipTopplateHigherValueThanMarkTopplate = (float)-componentZ;
-                        //ReadChipPPSystemPosition-TBD
-                        //PPWorkHeight = _positioningSystem.ConvertStagePosToSystemPos(EnumStageAxis.BondZ, PPWorkHeight);
+                //if (WarningBox.FormShow("使用激光测距仪自动测高？", "确认相机已定位到拾取位置！", "提示") == 1)
+                //{
+                //    try
+                //    {
+                //        CreateWaitDialog();
+                //        //将激光测高仪移动到当前相机位置
+                //        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, _systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.X,
+                //        EnumCoordSetType.Relative);
+                //        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, _systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.Y,
+                //            EnumCoordSetType.Relative);
+                //        //读取激光测高仪读数
+                //        var curLaserMeasureH = _laserSensor.ReadDistance() / 10000;
+                //        //根据校准数据及当前的激光测高仪读数计算吸嘴工作高度
+                //        var curBondZ = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondZ);
+                //        var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
+                //        var offsetMeasureZ = curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ;
+                //        var componentZ = offsetMeasureZ - offsetZ;
+                //        //此处应该是根据关联的吸嘴工具获取参数
+                //        //PPWorkHeight = (float)(_systemConfig.PositioningConfig.TrackChipPPOrigion.Z - offsetMeasureZ + offsetZ);
+                //        ChipTopplateHigherValueThanMarkTopplate = (float)-componentZ;
+                //        //ReadChipPPSystemPosition-TBD
+                //        //PPWorkHeight = _positioningSystem.ConvertStagePosToSystemPos(EnumStageAxis.BondZ, PPWorkHeight);
 
-                        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -_systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.X,
-                            EnumCoordSetType.Relative);
-                        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -_systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.Y,
-                            EnumCoordSetType.Relative);
-                        CloseWaitDialog();
-                        WarningBox.FormShow("成功！", "测高完成！", "提示");
-                    }
-                    catch (Exception ex)
+                //        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -_systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.X,
+                //            EnumCoordSetType.Relative);
+                //        _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -_systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.Y,
+                //            EnumCoordSetType.Relative);
+                //        CloseWaitDialog();
+                //        WarningBox.FormShow("成功！", "测高完成！", "提示");
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        LogRecorder.RecordLog(EnumLogContentType.Error, "ComponentHeightProgram-LaserMeasureHeight,Error.", ex);
+                //        WarningBox.FormShow("异常！", "测高失败！", "提示");
+                //    }
+                //    finally
+                //    {
+                //        CloseWaitDialog();
+                //    }
+
+                    
+                //}
+                if (WarningBox.FormShow("工作高度确认!", "确认吸嘴已到合适拾取高度？", "提示") == 1)
+                {
+                    ChipTopplateHigherValueThanMarkTopplate = (float)_positioningSystem.ReadChipPPSystemPosition(EditRecipe.CurrentComponent.PPSettings.PPtoolName);
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == EditRecipe.CurrentComponent.PPSettings.PPtoolName);
+                    if (pptool != null)
                     {
-                        LogRecorder.RecordLog(EnumLogContentType.Error, "ComponentHeightProgram-LaserMeasureHeight,Error.", ex);
-                        WarningBox.FormShow("异常！", "测高失败！", "提示");
+                        if (pptool.EnumPPtool == EnumPPtool.PPtool2)
+                        {
+                            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                            {
+                                _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPFreeZ, EnumCoordSetType.Absolute);
+                            }
+                        }
                     }
-                    finally
-                    {
-                        CloseWaitDialog();
-                    }
+                    WarningBox.FormShow("成功！", "工作高度确认完成！", "提示");
                 }
             }
             else if(EditRecipe.CurrentComponent.CarrierType == EnumCarrierType.Wafer)
@@ -201,7 +219,7 @@ namespace RecipeEditPanelClsLib
                 if (WarningBox.FormShow("工作高度确认", "确认顶针座和吸嘴已到合适高度？", "提示") == 1)
                 {
                     ESWorkHeight = (float)_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ESZ);
-                    ChipTopplateHigherValueThanMarkTopplate = (float)_positioningSystem.ReadChipPPSystemPosition(EditRecipe.CurrentComponent.RelatedPPToolName);
+                    ChipTopplateHigherValueThanMarkTopplate = (float)_positioningSystem.ReadChipPPSystemPosition(EditRecipe.CurrentComponent.PPSettings.PPtoolName);
                     WarningBox.FormShow("成功！", "工作高度确认完成！", "提示");
                 }
             }
@@ -209,7 +227,7 @@ namespace RecipeEditPanelClsLib
             {
                 if (WarningBox.FormShow("工作高度确认!", "确认吸嘴已到合适拾取高度？", "提示") == 1)
                 {
-                    ChipTopplateHigherValueThanMarkTopplate = (float)_positioningSystem.ReadChipPPSystemPosition(EditRecipe.CurrentComponent.RelatedPPToolName);
+                    ChipTopplateHigherValueThanMarkTopplate = (float)_positioningSystem.ReadChipPPSystemPosition(EditRecipe.CurrentComponent.PPSettings.PPtoolName);
                     WarningBox.FormShow("成功！", "工作高度确认完成！", "提示");
                 }
             }
@@ -217,22 +235,63 @@ namespace RecipeEditPanelClsLib
 
         private void btnGotoPPCenter_Click(object sender, EventArgs e)
         {
-            if (WarningBox.FormShow("吸嘴即将移动到晶圆相机中心!", "请确认榜头处于安全高位？", "提示") == 1)
+            if (EditRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
             {
-                var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
-                var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
-                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == EditRecipe.CurrentComponent.RelatedPPToolName);
-                if (pptool != null)
+                if (WarningBox.FormShow("吸嘴即将移动到榜头相机中心!", "请确认榜头处于安全高位？", "提示") == 1)
                 {
-                    var usedPPandBondCameraOffsetX = pptool.ChipPPPosCompensateCoordinate1.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
-                    var usedPPandBondCameraOffsetY = pptool.ChipPPPosCompensateCoordinate1.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
-                    offset.X = usedPPandBondCameraOffsetX;
-                    offset.Y = usedPPandBondCameraOffsetY;
+                    var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                    var BondX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
+                    var BondY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
+                    XYZTCoordinateConfig bondcamera2wafercamera = new XYZTCoordinateConfig() { X = BondX, Y = BondY};
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == EditRecipe.CurrentComponent.PPSettings.PPtoolName);
+                    if (pptool != null)
+                    {
+                        var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                        var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                        offset.X = usedPPandBondCameraOffsetX;
+                        offset.Y = usedPPandBondCameraOffsetY;
+                    }
+                    //芯片吸嘴物料中心上方
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute);
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute);
+
+                    if(pptool != null)
+                    {
+                        if(pptool.EnumPPtool == EnumPPtool.PPtool2)
+                        {
+                            if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
+                            {
+                                _positioningSystem.MoveAixsToStageCoord(pptool.StageAxisZ, pptool.PPWorkZ, EnumCoordSetType.Absolute);
+                            }
+                        }
+                    }
+                   
+
                 }
-                //芯片吸嘴物料中心上方
-                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute);
-                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute);
+
             }
+            else if (EditRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+            {
+
+                if (WarningBox.FormShow("吸嘴即将移动到晶圆相机中心!", "请确认榜头处于安全高位？", "提示") == 1)
+                {
+                    var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                    var bondcamera2wafercamera = _systemConfig.PositioningConfig.WaferCameraOrigion;
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == EditRecipe.CurrentComponent.PPSettings.PPtoolName);
+                    if (pptool != null)
+                    {
+                        var usedPPandBondCameraOffsetX = pptool.LookuptoPPOrigion.X - _systemConfig.PositioningConfig.LookupCameraOrigion.X;
+                        var usedPPandBondCameraOffsetY = pptool.LookuptoPPOrigion.Y - _systemConfig.PositioningConfig.LookupCameraOrigion.Y;
+                        offset.X = usedPPandBondCameraOffsetX;
+                        offset.Y = usedPPandBondCameraOffsetY;
+                    }
+                    //芯片吸嘴物料中心上方
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, offset.X + bondcamera2wafercamera.X, EnumCoordSetType.Absolute);
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, offset.Y + bondcamera2wafercamera.Y, EnumCoordSetType.Absolute);
+                }
+            }
+
+            
         }
     }
 }

@@ -187,7 +187,7 @@ namespace RecipeEditPanelClsLib
             this.curComponentDetail.AutoScroll = true;
             this.curComponentDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.curComponentDetail.Location = new System.Drawing.Point(0, 0);
-            this.curComponentDetail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.curComponentDetail.Margin = new System.Windows.Forms.Padding(4);
             this.curComponentDetail.Name = "curComponentDetail";
             this.curComponentDetail.Size = new System.Drawing.Size(712, 551);
             this.curComponentDetail.TabIndex = 0;
@@ -204,7 +204,7 @@ namespace RecipeEditPanelClsLib
             this.positionDetail1.AutoScroll = true;
             this.positionDetail1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.positionDetail1.Location = new System.Drawing.Point(0, 0);
-            this.positionDetail1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.positionDetail1.Margin = new System.Windows.Forms.Padding(4);
             this.positionDetail1.Name = "positionDetail1";
             this.positionDetail1.Size = new System.Drawing.Size(712, 584);
             this.positionDetail1.TabIndex = 0;
@@ -727,7 +727,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cursubmonutDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cursubmonutDetail.Location = new System.Drawing.Point(0, 0);
-            this.cursubmonutDetail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cursubmonutDetail.Margin = new System.Windows.Forms.Padding(4);
             this.cursubmonutDetail.Name = "cursubmonutDetail";
             this.cursubmonutDetail.Size = new System.Drawing.Size(712, 551);
             this.cursubmonutDetail.TabIndex = 0;
@@ -891,6 +891,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.panel1.Controls.Add(this.rbStepTypeDispense);
             this.panel1.Controls.Add(this.rbStepTypeBondDie);
+            this.panel1.Controls.Add(this.rbTypeEutectic);
             this.panel1.Location = new System.Drawing.Point(91, 53);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(189, 29);
@@ -910,7 +911,7 @@ namespace RecipeEditPanelClsLib
             // rbStepTypeBondDie
             // 
             this.rbStepTypeBondDie.AutoSize = true;
-            this.rbStepTypeBondDie.Location = new System.Drawing.Point(124, 5);
+            this.rbStepTypeBondDie.Location = new System.Drawing.Point(70, 5);
             this.rbStepTypeBondDie.Name = "rbStepTypeBondDie";
             this.rbStepTypeBondDie.Size = new System.Drawing.Size(49, 18);
             this.rbStepTypeBondDie.TabIndex = 50;
@@ -1075,14 +1076,13 @@ namespace RecipeEditPanelClsLib
             // rbTypeEutectic
             // 
             this.rbTypeEutectic.AutoSize = true;
-            this.rbTypeEutectic.Location = new System.Drawing.Point(186, 3);
+            this.rbTypeEutectic.Location = new System.Drawing.Point(125, 5);
             this.rbTypeEutectic.Name = "rbTypeEutectic";
             this.rbTypeEutectic.Size = new System.Drawing.Size(49, 18);
             this.rbTypeEutectic.TabIndex = 49;
             this.rbTypeEutectic.TabStop = true;
             this.rbTypeEutectic.Text = "共晶";
             this.rbTypeEutectic.UseVisualStyleBackColor = true;
-            this.rbTypeEutectic.Visible = false;
             this.rbTypeEutectic.CheckedChanged += new System.EventHandler(this.rbTypeEutectic_CheckedChanged);
             // 
             // rbTypeMaterial
@@ -1104,7 +1104,6 @@ namespace RecipeEditPanelClsLib
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.rbTypeMaterial);
-            this.Controls.Add(this.rbTypeEutectic);
             this.Controls.Add(this.groupBox1);
             this.Name = "RecipeStep_ProductStep";
             this.Size = new System.Drawing.Size(1105, 719);

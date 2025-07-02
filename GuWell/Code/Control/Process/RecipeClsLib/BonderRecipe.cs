@@ -231,7 +231,12 @@ namespace RecipeClsLib
                 if (loadedRecipe.ProductSteps.Count > 0)
                 {
                     loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.ProductSteps)[0];
-                    loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
+                    var substrateInfos = LoadSubstrate(loadedRecipe.ProductSteps);
+                    if(substrateInfos != null && substrateInfos.Count>0)
+                    {
+                        loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
+                    }
+                    
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
@@ -239,7 +244,11 @@ namespace RecipeClsLib
                 else
                 {
                     loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
-                    loadedRecipe.SubstrateInfos = LoadSubstrates(loadedRecipe.RecipeName)[0];
+                    var substrateInfos = LoadSubstrates(loadedRecipe.RecipeName);
+                    if (substrateInfos != null && substrateInfos.Count > 0)
+                    {
+                        loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
+                    }
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);

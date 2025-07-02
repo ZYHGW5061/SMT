@@ -38,13 +38,13 @@ namespace GlobalDataDefineClsLib
         ChipPPT = 6,
 
         [Description("芯片吸嘴Z轴")]
-        ChipPPZ=101,
+        ChipPPZ = 101,
 
         [Description("基板吸嘴Theta轴")]
-        SubmountPPT=102,
+        SubmountPPT = 14,
 
         [Description("基板吸嘴Z轴")]
-        SubmountPPZ=103,
+        SubmountPPZ = 13,
 
         [Description("吸嘴库Theta轴")]
         PPtoolBankTheta = 50,
@@ -72,13 +72,13 @@ namespace GlobalDataDefineClsLib
         WaferTableZ = 4,
 
         [Description("晶圆阔膜轴")]
-        WaferFilm = 13,
+        WaferFilm = 130,
 
         [Description("晶圆夹爪轴")]
-        WaferFinger = 14,
+        WaferFinger = 140,
 
         [Description("晶圆抽匣升降轴")]
-        WaferCassetteLift = 15,
+        WaferCassetteLift = 150,
 
         [Description("顶针底座轴")]
         ESZ = 8,
@@ -87,10 +87,10 @@ namespace GlobalDataDefineClsLib
         NeedleZ = 5,
 
         [Description("顶针切换轴")]
-        NeedleSwitch = 18,
+        NeedleSwitch = 180,
 
         [Description("翻转工具Theta轴")]
-        FilpToolTheta = 19,
+        FilpToolTheta = 190,
 
 
 
