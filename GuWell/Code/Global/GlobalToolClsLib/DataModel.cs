@@ -201,6 +201,7 @@ namespace GlobalToolClsLib
         private double laserValue;
         private double pressureValue1;
         private double pressureValue2;
+        private double zrpressureValue;
 
 
         private int epoxtCH;
@@ -2426,6 +2427,23 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+        /// <summary>
+        /// ZR压力传感器读数
+        /// </summary>
+        public double ZRPressureValue
+        {
+            get { return zrpressureValue; }
+            set
+            {
+                if (zrpressureValue != value)
+                {
+                    zrpressureValue = value;
+                    OnPropertyChanged(nameof(ZRPressureValue));
+                }
+            }
+        }
+
 
 
         /// <summary>

@@ -28,6 +28,7 @@ using StageManagerClsLib;
 using StageControllerClsLib;
 using WestDragon.Framework.UtilityHelper;
 using VisionClsLib;
+using DynamometerGUI;
 
 namespace BondTerminal
 {
@@ -755,6 +756,22 @@ namespace BondTerminal
         {
             FrmCalibrationTable frm = new FrmCalibrationTable();
             frm.ShowDialog();
+        }
+
+        private void 压力校准工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PressureCurveForm form = (Application.OpenForms["PressureCurveForm"]) as PressureCurveForm;
+            if (form == null)
+            {
+                form = new PressureCurveForm();
+                form.Location = this.PointToScreen(new Point(500, 500));
+                form.Owner = this.FindForm();
+                form.Show(this);
+            }
+            else
+            {
+                form.Activate();
+            }
         }
 
         //private void testToolStripMenuItem_Click(object sender, EventArgs e)

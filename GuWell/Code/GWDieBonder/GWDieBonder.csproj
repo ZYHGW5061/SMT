@@ -187,6 +187,10 @@
       <Project>{233912cb-6628-496b-a996-82a242556d8d}</Project>
       <Name>ControlPanelClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GUI\DynamometerGUI\DynamometerGUI.csproj">
+      <Project>{34F0697A-1DA6-4B2C-A659-D769F385CCC7}</Project>
+      <Name>DynamometerGUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GUI\MainGUI\MainGUI.csproj">
       <Project>{F950F81A-B501-4126-8F2A-91F2C86538AD}</Project>
       <Name>MainGUI</Name>

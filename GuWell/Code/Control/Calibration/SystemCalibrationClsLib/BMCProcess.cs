@@ -3314,12 +3314,13 @@ namespace SystemCalibrationClsLib
 
                 XYZToffset5 = new XYZTOffsetConfig();
 
-                //榜头移动到安全位置
-                BondToSafeAsync();
+                
 
 
                 Task.Factory.StartNew(new Action(async () =>
                 {
+                    //榜头移动到安全位置
+                    BondToSafeAsync();
 
                     for (int i = 0; i < times + 6; i++)
                     {
@@ -3330,38 +3331,38 @@ namespace SystemCalibrationClsLib
 
 
 
-                        ////榜头移动到BMC位置，BMC识别
-                        //Done = BondCameraIdentifyBMCMoveAsync(0);
-                        //if (Done == false)
-                        //{
-                        //    int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
-                        //    if (Done1 == 0)
-                        //    {
-                        //        break;
-                        //    }
-                        //    else
-                        //    {
-                        //        continue;
-                        //    }
-                        //}
+                        //榜头移动到BMC位置，BMC识别
+                        Done = BondCameraIdentifyBMCMoveAsync(0);
+                        if (Done == false)
+                        {
+                            int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
+                            if (Done1 == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
 
-                        //MoveWafer1();
+                        MoveWafer1();
 
-                        ////榜头移动到BMC上方，关闭BMC基板真空，吸取BMC
-                        //Done = BondPickupBMC();
+                        //榜头移动到BMC上方，关闭BMC基板真空，吸取BMC
+                        Done = BondPickupBMC();
 
-                        //if (Done == false)
-                        //{
-                        //    int Done1 = ShowMessage("动作确认", "吸取BMC失败是否继续", "提示");
-                        //    if (Done1 == 0)
-                        //    {
-                        //        break;
-                        //    }
-                        //    else
-                        //    {
-                        //        continue;
-                        //    }
-                        //}
+                        if (Done == false)
+                        {
+                            int Done1 = ShowMessage("动作确认", "吸取BMC失败是否继续", "提示");
+                            if (Done1 == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
 
 
 
@@ -3399,39 +3400,39 @@ namespace SystemCalibrationClsLib
                         }
 
 
-                        ////榜头移动到共晶台上方（纯手模式），将BMC放到共晶台上
-                        //Done = BondPutDownBMC();
-                        //if (Done == false)
-                        //{
-                        //    int Done1 = ShowMessage("动作确认", "放下BMC失败", "提示");
-                        //    if (Done1 == 0)
-                        //    {
-                        //        return;
-                        //    }
-                        //    else
-                        //    {
-                        //        return;
-                        //    }
-                        //}
+                        //榜头移动到共晶台上方（纯手模式），将BMC放到共晶台上
+                        Done = BondPutDownBMC();
+                        if (Done == false)
+                        {
+                            int Done1 = ShowMessage("动作确认", "放下BMC失败", "提示");
+                            if (Done1 == 0)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
 
-                        XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig();
-                        ////榜头相机移动到共晶台位置，识别BMC，记录BMC相对于相机中心的偏移
-                        //XYZTCoordinateConfig XYZToffset = BondCameraIdentifyBMCAsync();
+                        //XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig();
+                        //榜头相机移动到共晶台位置，识别BMC，记录BMC相对于相机中心的偏移
+                        XYZTCoordinateConfig XYZToffset = BondCameraIdentifyBMCAsync();
 
-                        //if (XYZToffset == null)
-                        //{
-                        //    int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
-                        //    if (Done1 == 0)
-                        //    {
-                        //        break;
-                        //    }
-                        //    else
-                        //    {
-                        //        XYZToffset = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
-                        //    }
-                        //}
+                        if (XYZToffset == null)
+                        {
+                            int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
+                            if (Done1 == 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                XYZToffset = new XYZTCoordinateConfig() { X = 0, Y = 0, Z = 0, Theta = 0 };
+                            }
+                        }
 
-                        if(i <= 4)
+                        if (i <= 4)
                         {
                             XOffsets_1.Add((float)XYZToffset.X);
                             YOffsets_1.Add((float)XYZToffset.Y);
