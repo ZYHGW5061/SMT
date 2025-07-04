@@ -103,6 +103,16 @@ namespace GlobalToolClsLib
             };
                 createTable(tablename4, tableDictionarys4);
 
+                string tablename5 = "PressureData";
+                Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData("", SQLDataType.STRING) },
+                { "Time", new SQLData("", SQLDataType.STRING) },
+                { "Pressure1", new SQLData(0, SQLDataType.FLOAT) },
+                { "Pressure2", new SQLData(0, SQLDataType.FLOAT) },
+            };
+                createTable(tablename5, tableDictionarys5);
+
 
                 return true;
             }

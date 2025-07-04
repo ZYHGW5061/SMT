@@ -88,9 +88,17 @@
     <EmbeddedResource Include="Properties\licenses.licx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Global\GlobalDataDefineClsLib\GlobalDataDefineClsLib.csproj">
+      <Project>{B0F0BD56-7EFF-414B-9D41-F4E7ACA2A8B2}</Project>
+      <Name>GlobalDataDefineClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Global\GlobalToolClsLib\GlobalToolClsLib.csproj">
       <Project>{A22451FA-03C2-45C7-B2EA-39E9C9792925}</Project>
       <Name>GlobalToolClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\BoardCard\BoardCardControllerClsLib\BoardCardControllerClsLib.csproj">
+      <Project>{BEC297A8-3688-414C-92DE-60B7E3355E4A}</Project>
+      <Name>BoardCardControllerClsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Hardware\Dynamometer\DynamometerControllerClsLib\DynamometerControllerClsLib.csproj">
       <Project>{FD65B6B1-69A7-4A94-8B7A-33D3EDD70162}</Project>

@@ -1337,7 +1337,7 @@ namespace SystemCalibrationClsLib
                 //BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
                 //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + 0.5f);
 
-                BondXYZAbsoluteMove(BondX, BondY, BondZ + 0.5f);
+                BondXYZAbsoluteMove(BondX, BondY, BondZ - 0.8f);
                 
 
 
@@ -2994,7 +2994,7 @@ namespace SystemCalibrationClsLib
 
                 //_positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Relative);
 
-                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentBondCameraBMCSubstrate.Z + 1.2, EnumCoordSetType.Absolute);
+                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentBondCameraBMCSubstrate.Z + 0, EnumCoordSetType.Absolute);
 
                 _positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Absolute);
 
@@ -3323,7 +3323,7 @@ namespace SystemCalibrationClsLib
                     BondToSafeAsync();
 
                     for (int i = 0; i < times + 6; i++)
-                    {
+                     {
                         bool Done = false;
 
                         LogRecorder.RecordLog(EnumLogContentType.Info, $"BMC Run:{i}.");
@@ -3346,7 +3346,7 @@ namespace SystemCalibrationClsLib
                             }
                         }
 
-                        MoveWafer1();
+                        //MoveWafer1();
 
                         //榜头移动到BMC上方，关闭BMC基板真空，吸取BMC
                         Done = BondPickupBMC();
@@ -3417,7 +3417,11 @@ namespace SystemCalibrationClsLib
 
                         //XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig();
                         //榜头相机移动到共晶台位置，识别BMC，记录BMC相对于相机中心的偏移
-                        XYZTCoordinateConfig XYZToffset = BondCameraIdentifyBMCAsync();
+                        //XYZTCoordinateConfig XYZToffset = BondCameraIdentifyBMCAsync();
+
+                        XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig()
+                        { X = 0, Y = 0, Theta = 0 };
+
 
                         if (XYZToffset == null)
                         {
@@ -3491,7 +3495,7 @@ namespace SystemCalibrationClsLib
                         
                     }
 
-                    MoveTransport();
+                    //MoveTransport();
 
                     //榜头移动到安全位置
                     BondToSafeAsync();

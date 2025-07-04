@@ -119,14 +119,16 @@ namespace IOUtilityClsLib
             //_enablePollingIO2 = true;
             //Task.Run(new Action(ReadSerialPortTask2));
 
-            //_enablePollingIO3 = true;
-            //Task.Run(new Action(ReadSerialPortTask3));
+            _enablePollingIO3 = true;
+            Task.Run(new Action(ReadSerialPortTask3));
 
             //_enablePollingIO4 = true;
             //Task.Run(new Action(ReadSerialPortTask4));
 
             //_enablePollingIO5 = true;
             //Task.Run(new Action(ReadSerialPortTask5));
+
+            SQLiteProgram.Instance.Init();
         }
         public bool IsChipPPVaccumOpened()
         {
@@ -946,6 +948,8 @@ namespace IOUtilityClsLib
                     {
                         DataModel.Instance.SubmountPPZ = pos;
                         DataModel.Instance.SubmountPPZSta = sta;
+                        DataModel.Instance.ZRAxisForceStation = (int)_boardCardController.Get_ZRAxisForceStation(axis);
+
                     }
                 }
 
@@ -1142,7 +1146,7 @@ namespace IOUtilityClsLib
         {
             while (_enablePollingIO3)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(50);
                 try
                 {
                     ParseDataAndUpdateSerialPortDynameter();

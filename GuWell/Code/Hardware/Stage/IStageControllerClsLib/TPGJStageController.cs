@@ -165,6 +165,11 @@ namespace StageControllerClsLib
                         //this[axis].Home();
                     }
 
+                    if(axis == EnumStageAxis.SubmountPPZ)
+                    {
+                        var DD = this[axis].Get_ZRAxisForceMode();
+                    }
+
                     //if (axis == EnumStageAxis.WaferTableX || axis == EnumStageAxis.WaferTableY || axis == EnumStageAxis.WaferTableZ)
                     //{
                     //    this[axis].Home();

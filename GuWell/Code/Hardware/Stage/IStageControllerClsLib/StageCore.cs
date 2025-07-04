@@ -423,5 +423,168 @@ namespace StageControllerClsLib
             //    }
             //}
         }
+
+        #region  ZR控制部分
+
+
+        #region 获取ZR的Z轴是否处于力控模式（等待触发状态）
+        /// <summary>
+        /// 检测是否处于力控模式（等待触发状态）
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <returns>false：位置模式 true：力控模式</returns>
+        public bool Get_ZRAxisForceMode(EnumStageAxis axis)
+        {
+            return _boardCardController.Get_ZRAxisForceMode(axis);
+        }
+
+        #endregion
+
+        #region 切换ZR的Z轴工作状态状态（上电默认为位置状态）
+        /// <summary>
+        /// 切换ZR的Z轴工作状态状态（上电默认为位置状态）
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="WorkMode"> 0:位置模式 1：力控模式</param>
+        public void Set_ZRAxisWorkMode(EnumStageAxis axis, short WorkMode)
+        {
+            _boardCardController.Set_ZRAxisWorkMode(axis, WorkMode);
+        }
+        #endregion
+
+        #region 获得力控流程状态机
+        /// <summary>
+        /// 获得力控流程状态机
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <returns> 
+        /// 0 未激活
+        /// 1 力控已完成
+        /// 2 快进中
+        /// 4 保压中
+        /// 5 回退中
+        /// 9 保留状态
+        /// </returns>
+        public ushort Get_ZRAxisForceStation(EnumStageAxis axis)
+        {
+            return _boardCardController.Get_ZRAxisForceStation(axis);
+        }
+        #endregion
+
+
+        #region 获取力控流程参数
+        /// <summary>
+        /// 获取力控流程参数
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="speedPos">快进位置(mm)</param>
+        /// <param name="keepTime">保压时间(ms)</param>
+        /// <param name="switchPos">速度切换位置 (mm)</param>
+        /// <param name="backPos">回退位置 (mm)</param>
+        /// <param name="speed">快进速度 (mm/s)</param>
+        /// <param name="firstSpeed">一段速度 (mm/s)</param>
+        /// <param name="secondSpeed">二段速度 (mm/s)</param>
+        /// <param name="currentLimit">扭矩限制 (%)</param>
+        public void Get_ZRForceParamters(
+            EnumStageAxis axis,
+            out double speedPos,
+            out double keepTime,
+            out double switchPos,
+            out double backPos,
+            out double speed,
+            out double firstSpeed,
+            out double secondSpeed,
+            out double currentLimit)
+        {
+            _boardCardController.Get_ZRForceParamters(
+            axis,
+            out speedPos,
+            out keepTime,
+            out switchPos,
+            out backPos,
+            out speed,
+            out firstSpeed,
+            out secondSpeed,
+            out currentLimit);
+        }
+        #endregion
+
+        #region 设置力控流程参数
+        /// <summary>
+        /// 设置力控流程参数
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="speedPos">快进位置(mm)</param>
+        /// <param name="keepTime">保压时间(ms)</param>
+        /// <param name="switchPos">速度切换位置 (mm)</param>
+        /// <param name="backPos">回退位置 (mm)</param>
+        /// <param name="speed">快进速度 (mm/s)</param>
+        /// <param name="firstSpeed">一段速度 (mm/s)</param>
+        /// <param name="secondSpeed">二段速度 (mm/s)</param>
+        /// <param name="currentLimit">扭矩限制 (%)</param>
+        public void Set_ZRForceParamters(
+     EnumStageAxis axis,
+     double speedPos,
+     double keepTime,
+     double switchPos,
+     double backPos,
+     double speed,
+     double firstSpeed,
+     double secondSpeed,
+     double currentLimit)
+        {
+            _boardCardController.Set_ZRForceParamters(
+            axis,
+            speedPos,
+            keepTime,
+            switchPos,
+            backPos,
+            speed,
+            firstSpeed,
+            secondSpeed,
+            currentLimit);
+        }
+        #endregion
+
+        #region    触发力控开始
+
+        /// <summary>
+        /// 触发力控开始
+        /// </summary>
+        /// <param name="axis"></param>
+        public void Enable_ZRAxisForeceMode(EnumStageAxis axis)
+        {
+            _boardCardController.Enable_ZRAxisForeceMode(axis);
+        }
+
+
+
+
+        #endregion
+
+        #region  力控快速返回
+
+        public void GoBack_ZRAxisForeceMode(EnumStageAxis axis)
+        {
+
+
+            _boardCardController.GoBack_ZRAxisForeceMode(axis);
+
+        }
+
+
+
+        #endregion
+
+
+
+
+
+
+
+        #endregion
+
+
+
     }
 }

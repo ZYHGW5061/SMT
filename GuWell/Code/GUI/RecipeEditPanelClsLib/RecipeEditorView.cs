@@ -17,6 +17,7 @@ using RecipeClsLib;
 using ConfigurationClsLib;
 using WestDragon.Framework.BaseLoggerClsLib;
 using WestDragon.Framework.LoggerManagerClsLib;
+using System.IO;
 
 namespace RecipeEditPanelClsLib
 {
@@ -48,6 +49,12 @@ namespace RecipeEditPanelClsLib
             get { return LoggerManager.GetHandler().GetFileLogger(GlobalParameterSetting.SYSTEM_DEBUG_LOGGER_ID); }
         }
 
+        private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
+        private static string _substrateSavePath = string.Format(@"{0}Recipes\Substrate\", SystemDefaultDirectory);
+        private static string _componentsSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
+        private static string _bondPositionSavePath = string.Format(@"{0}Recipes\BondPositions\", SystemDefaultDirectory);
+        private static string _epoxyApplicationSavePath = string.Format(@"{0}Recipes\EpoxyApplication\", SystemDefaultDirectory);
+
         /// <summary>
         /// 页面无参构造函数
         /// </summary>
@@ -75,19 +82,45 @@ namespace RecipeEditPanelClsLib
 
         private void RefreshRecipeNode()
         {
-            ParentTreeListAddSubstrateListNode(_editRecipe.SubstrateInfos.Name);
-            foreach (var item in _editRecipe.StepComponentList)
+            //ParentTreeListAddSubstrateListNode(_editRecipe.SubstrateInfos.Name);
+            //foreach (var item in _editRecipe.StepComponentList)
+            //{
+            //    ParentTreeListAddComponentListNode(item.Name);
+            //}
+            //foreach (var item in _editRecipe.StepBondingPositionList)
+            //{
+            //    ParentTreeListAddBondPositionListNode(item.Name);
+            //}
+            //foreach (var item in _editRecipe.StepEpoxyApplicationList)
+            //{
+            //    ParentTreeListAddEpoxyApplicationListNode(item.Name);
+            //}
+
+            var childs = Directory.GetDirectories(_substrateSavePath);
+            for (int index = 0; index < childs.Length; index++)
             {
-                ParentTreeListAddComponentListNode(item.Name);
+                var childName = Path.GetFileName(childs[index]);
+                ParentTreeListAddSubstrateListNode(childName);
             }
-            foreach (var item in _editRecipe.StepBondingPositionList)
+            var childs2 = Directory.GetDirectories(_componentsSavePath);
+            for (int index = 0; index < childs2.Length; index++)
             {
-                ParentTreeListAddBondPositionListNode(item.Name);
+                var childName = Path.GetFileName(childs2[index]);
+                ParentTreeListAddComponentListNode(childName);
             }
-            foreach (var item in _editRecipe.StepEpoxyApplicationList)
+            var childs3 = Directory.GetDirectories(_bondPositionSavePath);
+            for (int index = 0; index < childs3.Length; index++)
             {
-                ParentTreeListAddEpoxyApplicationListNode(item.Name);
+                var childName = Path.GetFileName(childs3[index]);
+                ParentTreeListAddBondPositionListNode(childName);
             }
+            var childs4 = Directory.GetDirectories(_epoxyApplicationSavePath);
+            for (int index = 0; index < childs4.Length; index++)
+            {
+                var childName = Path.GetFileName(childs4[index]);
+                ParentTreeListAddEpoxyApplicationListNode(childName);
+            }
+
         }
 
         /// <summary>

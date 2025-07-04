@@ -202,6 +202,7 @@ namespace GlobalToolClsLib
         private double pressureValue1;
         private double pressureValue2;
         private double zrpressureValue;
+        private int zrAxisForceStation;
 
 
         private int epoxtCH;
@@ -2440,6 +2441,22 @@ namespace GlobalToolClsLib
                 {
                     zrpressureValue = value;
                     OnPropertyChanged(nameof(ZRPressureValue));
+                }
+            }
+        }
+
+        /// <summary>
+        /// ZR力控状态
+        /// </summary>
+        public int ZRAxisForceStation
+        {
+            get { return zrAxisForceStation; }
+            set
+            {
+                if (zrAxisForceStation != value)
+                {
+                    zrAxisForceStation = value;
+                    OnPropertyChanged(nameof(ZRAxisForceStation));
                 }
             }
         }

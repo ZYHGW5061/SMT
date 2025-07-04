@@ -29,15 +29,15 @@ namespace BoardCardControllerClsLib
         public void Connect()
         {
             var err = GTN.mc.GTN_Open(5, 2);
-           
+
             StartEcatCommunication();
             err = GTN.mc.GTN_IsEcatReady(CORE, out EcatSts);
-         
+
             while (EcatSts != 1)
             {
                 Thread.Sleep(1000);
                 err = GTN.mc.GTN_IsEcatReady(CORE, out EcatSts);
-               
+
             }
         }
         #endregion 开卡连接
@@ -47,7 +47,7 @@ namespace BoardCardControllerClsLib
         {
             short Num = -1, Num2 = -1;
             var err = GTN.mc.GTN_GetEcatSlaves(CORE, out Num, out Num2);
-            if(Num < 1)
+            if (Num < 1)
             {
                 return false;
             }
@@ -65,15 +65,15 @@ namespace BoardCardControllerClsLib
             try
             {
                 var rtn = GTN.mc.GTN_TerminateEcatComm(CORE);
-               
+
                 rtn = GTN.mc.GTN_InitEcatComm(CORE);
-              
+
                 if (rtn != 0) { return; }
                 Thread.Sleep(1000);
                 do
                 {
                     rtn = GTN.mc.GTN_IsEcatReady(CORE, out Success);
-                  
+
                     Thread.Sleep(10);
                 } while (Success == 0);
                 rtn = GTN.mc.GTN_StartEcatComm(CORE);
@@ -81,7 +81,7 @@ namespace BoardCardControllerClsLib
             }
             catch (Exception ex)
             {
-               
+
             }
         }
         #endregion
@@ -125,7 +125,7 @@ namespace BoardCardControllerClsLib
                 IO_WriteOutPut(11, (int)EnumBoardcardDefineOutputIO.StatisticWaffleVaccumSwitch, 0);
                 IO_WriteOutPut(11, (int)EnumBoardcardDefineOutputIO.TransportVaccumSwitch1, 0);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -135,7 +135,7 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public bool Get_SoftLimit_AxisStsPositive(EnumStageAxis axis)
         {
-           return  AxisControl.mc.SoftLimit_AxisStsPositive((short)axis);
+            return AxisControl.mc.SoftLimit_AxisStsPositive((short)axis);
         }
         #endregion 关闭总线连接
 
@@ -162,7 +162,7 @@ namespace BoardCardControllerClsLib
 
         }
         ///
-        public bool Get_ALLAxisSts_Enable(int  axiscount)
+        public bool Get_ALLAxisSts_Enable(int axiscount)
         {
 
             return AxisControl.mc.AreAllAxesEnabled(axiscount);
@@ -186,7 +186,7 @@ namespace BoardCardControllerClsLib
         /// <summary>
         /// 获取轴正忙
         /// </summary>
-        public bool Get_AxisSts_Busy(EnumStageAxis axis,out short  err)
+        public bool Get_AxisSts_Busy(EnumStageAxis axis, out short err)
         {
             return AxisControl.mc.AxisSts_Busy((short)axis, out err);
         }
@@ -199,7 +199,7 @@ namespace BoardCardControllerClsLib
         public bool Get_AxisSts_PosDone(EnumStageAxis axis)
         {
             //return AxisControl.mc.AxisSts_PosDone((short)axis);
-            if(axis == EnumStageAxis.BondZ)
+            if (axis == EnumStageAxis.BondZ)
             {
                 return AxisControl.mc.AxisSts_PosDone((short)axis);
             }
@@ -283,30 +283,30 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void MotioParaInit()
         {
-           // MotorPara.AxisMotionPara[1].EactID = 1;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.acc = 1;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.dec = 1;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.smoothTime = 20;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.smooth = 0.5;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.velStart = 10;
-           // MotorPara.AxisMotionPara[1].DynamicsParaIn.circlePulse = 10000;
-           // MotorPara.AxisMotionPara[1].AXISModule.lead = 1;
-           // MotorPara.AxisMotionPara[2].EactID = 2;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.acc = 1;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.dec = 1;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.smoothTime = 20;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.smooth = 0.5;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.velStart = 10;
-           // MotorPara.AxisMotionPara[2].DynamicsParaIn.circlePulse = 10000;
-           // MotorPara.AxisMotionPara[2].AXISModule.lead = 1;
-           //MotorPara.AxisMotionPara[3].EactID = 3;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.acc = 1;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.dec = 1;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.smoothTime = 20;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.smooth = 0.5;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.velStart = 10;
-           // MotorPara.AxisMotionPara[3].DynamicsParaIn.circlePulse = 10000;
-           // MotorPara.AxisMotionPara[3].AXISModule.lead = 1;
+            // MotorPara.AxisMotionPara[1].EactID = 1;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.acc = 1;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.dec = 1;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.smoothTime = 20;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.smooth = 0.5;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.velStart = 10;
+            // MotorPara.AxisMotionPara[1].DynamicsParaIn.circlePulse = 10000;
+            // MotorPara.AxisMotionPara[1].AXISModule.lead = 1;
+            // MotorPara.AxisMotionPara[2].EactID = 2;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.acc = 1;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.dec = 1;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.smoothTime = 20;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.smooth = 0.5;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.velStart = 10;
+            // MotorPara.AxisMotionPara[2].DynamicsParaIn.circlePulse = 10000;
+            // MotorPara.AxisMotionPara[2].AXISModule.lead = 1;
+            //MotorPara.AxisMotionPara[3].EactID = 3;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.acc = 1;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.dec = 1;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.smoothTime = 20;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.smooth = 0.5;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.velStart = 10;
+            // MotorPara.AxisMotionPara[3].DynamicsParaIn.circlePulse = 10000;
+            // MotorPara.AxisMotionPara[3].AXISModule.lead = 1;
 
 
 
@@ -329,7 +329,7 @@ namespace BoardCardControllerClsLib
             //MotorPara.AxisMotionPara[id].DynamicsParaIn.velStart = axisParam.AxisSpeed;
             MotorPara.AxisMotionPara[id].DynamicsParaIn.circlePulse = axisParam.CirclePulse;
             MotorPara.AxisMotionPara[id].AXISModule.lead = axisParam.Lead;
-            MotorPara.AxisMotionPara[id].DynamicsParaIn.velStart = (float)(axisParam.AxisSpeed *(axisParam.CirclePulse/ axisParam.Lead) / 1000);
+            MotorPara.AxisMotionPara[id].DynamicsParaIn.velStart = (float)(axisParam.AxisSpeed * (axisParam.CirclePulse / axisParam.Lead) / 1000);
         }
         #endregion
 
@@ -343,8 +343,8 @@ namespace BoardCardControllerClsLib
             int pos;
             GTN.mc.GTN_AxisOn(CORE, (short)axis);
 
-             GTN.mc.GTN_GetEcatEncPos(1, (short)axis, out pos);
-           
+            GTN.mc.GTN_GetEcatEncPos(1, (short)axis, out pos);
+
             GTN.mc.GTN_SetPrfPos(1, (short)axis, pos);
             GTN.mc.GTN_SetEncPos(1, (short)axis, pos);
             GTN.mc.GTN_SynchAxisPos(1, 1 << (short)axis - 1);
@@ -360,13 +360,13 @@ namespace BoardCardControllerClsLib
         {
             GTN.mc.GTN_AxisOff(CORE, (short)axis);
         }
-      
+
         /// <summary>
         /// 轴组下使能
         /// </summary>
-        public void Disable(EnumStageAxis axis,out short err)  //轴组下使能后无保持力
+        public void Disable(EnumStageAxis axis, out short err)  //轴组下使能后无保持力
         {
-            err= GTN.mc.GTN_AxisOff(CORE, (short)axis);
+            err = GTN.mc.GTN_AxisOff(CORE, (short)axis);
         }
         #endregion
 
@@ -389,8 +389,8 @@ namespace BoardCardControllerClsLib
         public double GetAxisSpeed(EnumStageAxis axis)
         {
             int OriPosPulse = 0;
-            OriPosPulse =AxisControl.mc.MC_GetPrfVel((short)axis);
-            return (double)OriPosPulse * PulseToMM(axis)*1000;
+            OriPosPulse = AxisControl.mc.MC_GetPrfVel((short)axis);
+            return (double)OriPosPulse * PulseToMM(axis) * 1000;
         }
         #endregion
 
@@ -401,7 +401,7 @@ namespace BoardCardControllerClsLib
         public double GetCurrentPosition(EnumStageAxis axis)
         {
             double OriPosPulse = 0;
-            OriPosPulse =  AxisControl.mc. MC_GetEncPos((short) axis);
+            OriPosPulse = AxisControl.mc.MC_GetEncPos((short)axis);
             return (double)OriPosPulse * PulseToMM(axis);
 
         }
@@ -417,7 +417,7 @@ namespace BoardCardControllerClsLib
             OriPosPulse = AxisControl.mc.MC_GetPrfAcc((short)axis);
             return (double)OriPosPulse * PulseToMM(axis) * 1000;
         }
-#endregion
+        #endregion
 
         public double GetKillDeceleration(EnumStageAxis axis)
         {
@@ -476,7 +476,7 @@ namespace BoardCardControllerClsLib
                 GTN.mc.GTN_SynchAxisPos(1, 1 << (short)axis - 1);
 
             }
-            else if(axis == EnumStageAxis.SubmountPPT|| axis == EnumStageAxis.SubmountPPZ || axis == EnumStageAxis.ESZ || axis == EnumStageAxis.NeedleZ || axis == EnumStageAxis.WaferTableZ)
+            else if (axis == EnumStageAxis.SubmountPPT || axis == EnumStageAxis.SubmountPPZ || axis == EnumStageAxis.ESZ || axis == EnumStageAxis.NeedleZ || axis == EnumStageAxis.WaferTableZ)
             {
                 int pos = 0;
                 AxisControl.mc.Step_Go_Home((short)axis);
@@ -486,7 +486,7 @@ namespace BoardCardControllerClsLib
                 GTN.mc.GTN_SetEncPos(1, (short)axis, pos);
                 GTN.mc.GTN_SynchAxisPos(1, 1 << (short)axis - 1);
             }
-           
+
         }
         /// <summary>
         /// 回原点，并指定回原点的方法
@@ -494,13 +494,13 @@ namespace BoardCardControllerClsLib
         /// <param name="axis"></param>
         /// <param name="homemode"></param>
         /// <returns></returns>
-        public bool Home(EnumStageAxis axis ,short homemode)
+        public bool Home(EnumStageAxis axis, short homemode)
         {
             bool Done = false;
             ClrAlarm(axis);
             int pos = 0;
             Done = AxisControl.mc.MC_Home((short)axis, homemode);
- 
+
             if (!Done)
             {
                 return false;
@@ -545,7 +545,7 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void JogPositive(EnumStageAxis axis, float speed)
         {
-            if (axis == EnumStageAxis.BondZ|| axis==EnumStageAxis.NeedleZ)
+            if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
             {
                 speed = -speed;
             }
@@ -567,7 +567,7 @@ namespace BoardCardControllerClsLib
         /// <summary>
         /// 设置轴点动
         /// </summary>
-        public void JogMove(EnumStageAxis axis, double speed,double  acc,out short err)
+        public void JogMove(EnumStageAxis axis, double speed, double acc, out short err)
         {
             //speed = (float)(speed * MMToPulse(axis) / 1000);
             //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
@@ -634,8 +634,8 @@ namespace BoardCardControllerClsLib
             ClrAlarm(axis);
             Speed = Speed * MMToPulse(axis) / 1000;
             targetPos = targetPos * MMToPulse(axis);
-            acc = acc * MMToPulse(axis)/1000;
-            err =  AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID,acc, acc, Speed, 
+            acc = acc * MMToPulse(axis) / 1000;
+            err = AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID, acc, acc, Speed,
                                                   MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime, (int)targetPos);
 
         }
@@ -650,14 +650,14 @@ namespace BoardCardControllerClsLib
         /// <param name="Pos">位置</param>
         public void MoveRelativeSync(EnumStageAxis axis, double distance, double Speed, int millisecondsTimeout = -1)
         {
-            if(axis == EnumStageAxis.BondZ)
+            if (axis == EnumStageAxis.BondZ)
             {
                 distance = -distance;
             }
 
             ClrAlarm(axis);
 
-            
+
 
             if (axis == EnumStageAxis.BondY)
             {
@@ -690,11 +690,11 @@ namespace BoardCardControllerClsLib
                                             (int)distance);
             }
 
-                
+
         }
 
 
-        public void MoveRelativeSync(EnumStageAxis axis, double distance, double Speed,double acc, out short err)
+        public void MoveRelativeSync(EnumStageAxis axis, double distance, double Speed, double acc, out short err)
         {
             ClrAlarm(axis);
             Speed = Speed * MMToPulse(axis) / 1000;
@@ -735,7 +735,7 @@ namespace BoardCardControllerClsLib
             deceleration = deceleration * MMToPulse(axis) / 1000;
             MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec = deceleration;
         }
-#endregion
+        #endregion
         public void SetJERK(EnumStageAxis axis, double value)
         {
             throw new NotImplementedException();
@@ -761,7 +761,7 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void SetSoftLeftAndRightLimit(EnumStageAxis axis, double Pvalue, double Nvalue)
         {
-            Pvalue= Pvalue * MMToPulse(axis);
+            Pvalue = Pvalue * MMToPulse(axis);
             Nvalue = Nvalue * MMToPulse(axis);
             AxisControl.mc.MC_SetSoftLimitNegativeAndPostive((short)axis, (Int32)Pvalue, (Int32)Nvalue);
 
@@ -809,9 +809,9 @@ namespace BoardCardControllerClsLib
 
 
         }
-        public void StopMotion(EnumStageAxis axis ,out short err)
+        public void StopMotion(EnumStageAxis axis, out short err)
         {
-            AxisControl.mc.Axis_Stop((short)axis,out err);
+            AxisControl.mc.Axis_Stop((short)axis, out err);
 
 
         }
@@ -867,27 +867,27 @@ namespace BoardCardControllerClsLib
             return (double)(AxisControl.mc.Int2DoubleDivide(MotorPara.AxisMotionPara[(int)axis].AXISModule.lead,
                                                             MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.circlePulse));
 
-        
+
         }
         #endregion
         #region 将毫米转换成脉冲单位
         //将毫米转换成脉冲单位
         public double MMToPulse(EnumStageAxis axis)
         {
-            return (MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.circlePulse 
+            return (MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.circlePulse
                     / MotorPara.AxisMotionPara[(int)axis].AXISModule.lead);
-        
-        
+
+
         }
         #endregion
         #region  Ethercat远程IO输出设置 number（1-16） Value 1真 0假
         /// <summary>
         /// 远程IO输出设置 number（1-16） Value 1真 0假
         /// </summary>
-        public void IO_WriteOutPut(ushort EcatID, short number, int  Value)
+        public void IO_WriteOutPut(ushort EcatID, short number, int Value)
         {
             Thread.Sleep(10);
-            AxisControl.IOFun.IO_WriteOutPut( EcatID,  number,  Value);
+            AxisControl.IOFun.IO_WriteOutPut(EcatID, number, Value);
 
 
         }
@@ -899,11 +899,11 @@ namespace BoardCardControllerClsLib
         public void IO_WriteOutPut_2(ushort slaveno, short doIndex, int Value)
         {
             Thread.Sleep(10);
-            if(doIndex<16)
+            if (doIndex < 16)
             {
                 slaveno = 0;
             }
-            else if(doIndex<32)
+            else if (doIndex < 32)
             {
                 slaveno = 1;
                 doIndex = (short)(doIndex - 16);
@@ -920,17 +920,17 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void IO_ReadInput(ushort EcatID, int ioIndex, out int Value)
         {
-            AxisControl.IOFun.IO_ReadInput(EcatID, ioIndex, out  Value);
+            AxisControl.IOFun.IO_ReadInput(EcatID, ioIndex, out Value);
 
         }
-#endregion
+        #endregion
         #region Ethercat输出IO读取
         public void IO_ReadOutput(ushort EcatID, int ioIndex, out int Value)
         {
             AxisControl.IOFun.IO_ReadOutput(EcatID, ioIndex, out Value);
 
         }
-#endregion
+        #endregion
         #region Ethercat输入IO读取
         /// <summary>
         /// 远程数字量IO输入设置 number（1-16） Value 1真 0假
@@ -940,14 +940,14 @@ namespace BoardCardControllerClsLib
             AxisControl.IOFun.IO_ReadInput_D(EcatID, (ushort)offset, out Value);
 
         }
-#endregion
+        #endregion
         #region Ethercat输出IO读取
         public void IO_ReadOutput_D(ushort EcatID, int offset, out int Value)
         {
             AxisControl.IOFun.IO_ReadOutput_D(EcatID, (ushort)offset, out Value);
 
         }
-#endregion
+        #endregion
 
         #region 读取Glink模拟输入量
         public void IO_ReadInput_A(ushort slaveno, ushort offset, out int Value)
@@ -955,14 +955,14 @@ namespace BoardCardControllerClsLib
             AxisControl.IOFun.IO_ReadInput_A(slaveno, (ushort)offset, out Value);
 
         }
-#endregion
+        #endregion
         #region 读取Glink模拟输出量
         public void IO_ReadOutput_A(ushort slaveno, ushort offset, out int Value)
         {
             AxisControl.IOFun.IO_ReadOutput_A(slaveno, (ushort)offset, out Value);
 
         }
-#endregion
+        #endregion
         #region 读取Ethercat输入IO状态，OUT list输出数组
         public void IO_ReadAllInput(ushort EcatID, out List<int> Value)
         {
@@ -974,7 +974,7 @@ namespace BoardCardControllerClsLib
         {
             AxisControl.IOFun.IO_ReadAllOutput(EcatID, out Value);
         }
-#endregion
+        #endregion
         #region 读取Glink输入IO状态，OUT list输出数组
         public void IO_ReadAllInput_2(ushort EcatID, out List<int> Value)
         {
@@ -983,7 +983,7 @@ namespace BoardCardControllerClsLib
             AxisControl.IOFun.IO_ReadAllInput_2(1, out Value2);
             Value = Value1.Concat(Value2).ToList<int>();
         }
-#endregion
+        #endregion
         #region 读取Glink输出IO状态，OUT list输出数组
         public void IO_ReadAllOutput_2(ushort EcatID, out List<int> Value)
         {
@@ -992,7 +992,7 @@ namespace BoardCardControllerClsLib
             AxisControl.IOFun.IO_ReadAllOutput_2(1, out Value2);
             Value = Value1.Concat(Value2).ToList<int>();
         }
-#endregion
+        #endregion
         #region 读取Glink连接状态
         /// <summary>
         /// 读取Glink连接状态
@@ -1020,7 +1020,7 @@ namespace BoardCardControllerClsLib
         {
             int stats = 0;
             uint clk;
-            
+
             GTN.mc.GTN_GetSts(CORE, Convert.ToInt16(axis), out stats, 1, out clk);
             return stats;
         }
@@ -1043,7 +1043,7 @@ namespace BoardCardControllerClsLib
         /// 
         /// </summary>
         /// <param name="axis"></param>
-        public void ALLAxisClrAlarm(short axiscount, out short  err)
+        public void ALLAxisClrAlarm(short axiscount, out short err)
         {
             err = GTN.mc.GTN_ClrSts(CORE, axiscount, 1);
         }
@@ -1110,9 +1110,9 @@ namespace BoardCardControllerClsLib
             }
             AxisControl.IOFun.IO_ReadInput_2(slaveno, doIndex, out Value);
         }
-        public short GlinkIO_ReadInput( int doIndex, out int Value)
+        public short GlinkIO_ReadInput(int doIndex, out int Value)
         {
-            ushort slaveno =0;
+            ushort slaveno = 0;
             short err = 0;
             if (doIndex < 16)
             {
@@ -1134,7 +1134,7 @@ namespace BoardCardControllerClsLib
                 doIndex = (short)(doIndex - 48);
             }
 
-            err= AxisControl.IOFun.IO_ReadInput_2(slaveno, doIndex, out Value);
+            err = AxisControl.IOFun.IO_ReadInput_2(slaveno, doIndex, out Value);
             return err;
         }
         #endregion
@@ -1154,7 +1154,7 @@ namespace BoardCardControllerClsLib
         }
         public void IO_ReadOutput_2(ushort slaveno, out int Value)
         {
-            
+
             AxisControl.IOFun.IO_ReadOutput_2(slaveno, out Value);
         }
 
@@ -1168,7 +1168,7 @@ namespace BoardCardControllerClsLib
 
         #region  S型速度规划的实现
 
-        public void S_Movetion(EnumStageAxis axis,double TargetPos)
+        public void S_Movetion(EnumStageAxis axis, double TargetPos)
         {
             double pPos;
             uint clk;
@@ -1177,12 +1177,12 @@ namespace BoardCardControllerClsLib
 
 
             double q0 = pPos;
-            double q1 = TargetPos *10000;  //默认转换关系为1mm对应10000脉冲
+            double q1 = TargetPos * 10000;  //默认转换关系为1mm对应10000脉冲
             double v0 = 0;
             double v1 = 0;
-            double vmax = 200*10000;
-            double amax = 5000*10000;
-            double jmax = 50000*10000;
+            double vmax = 200 * 10000;
+            double amax = 5000 * 10000;
+            double jmax = 50000 * 10000;
             var (q, qd, time, numPoints) = AxisControl.AxisPvt.GenerateTrajectory(q0, q1, v0, v1, vmax, amax, jmax); //执行规划，并生成规划数组
 
             double[] S_pos = new double[numPoints];
@@ -1193,7 +1193,7 @@ namespace BoardCardControllerClsLib
             Array.Copy(time, S_time, numPoints);
             if (numPoints > 0)
             {
-                S_pos[numPoints-1] = TargetPos * 10000;
+                S_pos[numPoints - 1] = TargetPos * 10000;
 
 
             }
@@ -1209,9 +1209,9 @@ namespace BoardCardControllerClsLib
                 S_time[i] *= 1000; // 乘以 1000  
             }
             GTN.mc.GTN_PrfPvt(1, Convert.ToInt16(axis));//设置此轴为PVT模式
-            GTN.mc.GTN_PvtTable(1, 1, numPoints,ref  S_time[0],ref  S_pos[0], ref S_vel[0]); //压入数据
+            GTN.mc.GTN_PvtTable(1, 1, numPoints, ref S_time[0], ref S_pos[0], ref S_vel[0]); //压入数据
             GTN.mc.GTN_PvtTableSelect(1, Convert.ToInt16(axis), 1);
-            mask = 1 << (Convert.ToInt16(axis) -1);
+            mask = 1 << (Convert.ToInt16(axis) - 1);
             GTN.mc.GTN_PvtStart(1, mask);
 
         }
@@ -1298,54 +1298,381 @@ namespace BoardCardControllerClsLib
         #endregion
 
 
+        #region  ZR控制部分
+
+
+        #region 获取ZR的Z轴是否处于力控模式（等待触发状态）
+        /// <summary>
+        /// 检测是否处于力控模式（等待触发状态）
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <returns>false：位置模式 true：力控模式</returns>
+        public bool Get_ZRAxisForceMode(EnumStageAxis axis)
+        {
+
+            //检测是否处于力控模式
+            Int32 value32;
+            UInt32 resultSize = 0;
+            UInt32 errCode = 0;
+            short rtn = 0;
+            short core = 1;//卡号
+            byte[] byteValue32 = BitConverter.GetBytes(0);
+            rtn = GTN.mc.GTN_EcatSDOUpload(core, (ushort)10, 0x201A, 0x00, out byteValue32[0], 2, out resultSize, out errCode);
+            value32 = BitConverter.ToInt32(byteValue32, 0);
+            if (rtn != 0 || value32 != 1)
+            {
+
+                return false;
+            }
+            else
+            {
+
+                return true;
+
+            }
+
+        }
+        #endregion
+
+        #region 切换ZR的Z轴工作状态状态（上电默认为位置状态）
+        /// <summary>
+        /// 切换ZR的Z轴工作状态状态（上电默认为位置状态）
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="WorkMode"> 0:位置模式 1：力控模式</param>
+        public void Set_ZRAxisWorkMode(EnumStageAxis axis, short WorkMode)
+        {
+            short rtn = 0;
+            short core = 1;//卡号
+            byte[] byteValue32 = BitConverter.GetBytes(0);
+            UInt32 errCode = 0;
+            if (0 == WorkMode)  //切换到位置模式
+            {
+                byteValue32 = BitConverter.GetBytes(256);
+                rtn = GTN.mc.GTN_EcatSDODownload(core, (ushort)10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode); //动态切换模式
+                Thread.Sleep(5);
+            }
+            else if (1 == WorkMode)  //切换到力控模式
+            {
+                byteValue32 = BitConverter.GetBytes(0);
+                rtn = GTN.mc.GTN_EcatSDODownload(core, (ushort)10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
+                Thread.Sleep(5);
+
+            }
+
+        }
+        #endregion
+
+        #region 获得力控流程状态机
+        /// <summary>
+        /// 获得力控流程状态机
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <returns> 
+        /// 0 未激活
+        /// 1 力控已完成
+        /// 2 快进中
+        /// 4 保压中
+        /// 5 回退中
+        /// 9 保留状态
+        /// </returns>
+        public ushort Get_ZRAxisForceStation(EnumStageAxis axis)
+        {
+            const short CoreId = 1; // 卡号常量
+            const ushort ErrorCode = 999; // 错误码常量
+
+            // 初始化4字节缓冲区
+            byte[] responseBuffer = new byte[4];
+
+            // 调用EtherCAT SDO上传（使用传统out参数写法）
+            UInt32 actualSize, errorCode;
+            short result = GTN.mc.GTN_EcatSDOUpload(
+                CoreId,
+                (ushort)10,
+                0x201A,
+                0x00,
+                out responseBuffer[0],
+                2,
+                out actualSize,
+                out errorCode);
+
+            // 获取失败处理
+            if (result != 0)
+            {
+                return ErrorCode;
+            }
+
+            // 手动组合字节（兼容C# 7.3）
+            int status = responseBuffer[0] | (responseBuffer[1] << 8);
+            status &= 0x0F;
+
+            // 使用传统switch语句（替代switch表达式）
+            switch (status)
+            {
+                case 1:  // 力控已完成
+                    return 1;
+                case 2:  // 快进中
+                    return 2;
+                case 4:  // 保压中
+                    return 4;
+                case 5:  // 回退中
+                    return 5;
+                case 0:  // 未激活
+                case 9:  // 保留状态
+                    return ErrorCode;
+                default: // 其他未定义状态
+                    return ErrorCode;
+            }
+        }
+        #endregion
+
+
+        #region 获取力控流程参数
+        /// <summary>
+        /// 获取力控流程参数
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="speedPos">快进位置(mm)</param>
+        /// <param name="keepTime">保压时间(ms)</param>
+        /// <param name="switchPos">速度切换位置 (mm)</param>
+        /// <param name="backPos">回退位置 (mm)</param>
+        /// <param name="speed">快进速度 (mm/s)</param>
+        /// <param name="firstSpeed">一段速度 (mm/s)</param>
+        /// <param name="secondSpeed">二段速度 (mm/s)</param>
+        /// <param name="currentLimit">扭矩限制 (%)</param>
+        public void Get_ZRForceParamters(
+            EnumStageAxis axis,
+            out double speedPos,
+            out double keepTime,
+            out double switchPos,
+            out double backPos,
+            out double speed,
+            out double firstSpeed,
+            out double secondSpeed,
+            out double currentLimit)
+        {
+            const short CoreId = 1; // 卡号
+            const int Scale = 1000; // 1mm对应脉冲数
+            byte[] buffer = new byte[4]; // 复用缓冲区
+
+            //// 使用局部函数封装重复逻辑
+            //double ReadParameter(ushort index, byte subIndex, uint byteSize, double scaleFactor)
+            //{
+            //    uint resultSize, errCode;
+            //    GTN.mc.GTN_EcatSDOUpload(CoreId, (ushort)10, index, subIndex,
+            //                            out buffer[0], byteSize, out resultSize, out errCode);
+            //    int value = BitConverter.ToInt32(buffer, 0);
+            //    return value * 1.0 / scaleFactor;
+            //}
+
+            // 读取各参数（明确注释每个参数含义）
+            speedPos = ReadParameter(0x200A, 0x00, 4, Scale);     // 快进位置 (mm)
+            switchPos = ReadParameter(0x200B, 0x00, 4, Scale);     // 速度切换位置 (mm)
+            speed = ReadParameter(0x2010, 0x00, 4, Scale);        // 快进速度 (mm/s)
+            firstSpeed = ReadParameter(0x200E, 0x00, 4, Scale);   // 一段速度 (mm/s)
+            secondSpeed = ReadParameter(0x200F, 0x00, 4, Scale);  // 二段速度 (mm/s)
+            currentLimit = ReadParameter(0x2017, 0x00, 2, 100);   // 扭矩限制 (%)
+            keepTime = ReadParameter(0x203A, 0x00, 4, 1);         // 保压时间 (ms)
+            backPos = ReadParameter(0x2009, 0x00, 4, Scale);      // 回退位置 (mm)
+        }
+
+        public double ReadParameter(ushort index, byte subIndex, uint byteSize, double scaleFactor)
+        {
+            const short CoreId = 1; // 卡号
+            const int Scale = 1000; // 1mm对应脉冲数
+            byte[] buffer = BitConverter.GetBytes(0);
+            uint resultSize, errCode;
+            var rtn = GTN.mc.GTN_EcatSDOUpload(CoreId, (ushort)10, index, subIndex,
+                                    out buffer[0], byteSize, out resultSize, out errCode);
+            int value = BitConverter.ToInt32(buffer, 0);
+            return value * 1.0 / scaleFactor;
+        }
+
+        #endregion
+
+        #region 设置力控流程参数
+        /// <summary>
+        /// 设置力控流程参数
+        /// </summary>
+        /// <param name="axis">轴号</param>
+        /// <param name="speedPos">快进位置(mm)</param>
+        /// <param name="keepTime">保压时间(ms)</param>
+        /// <param name="switchPos">速度切换位置 (mm)</param>
+        /// <param name="backPos">回退位置 (mm)</param>
+        /// <param name="speed">快进速度 (mm/s)</param>
+        /// <param name="firstSpeed">一段速度 (mm/s)</param>
+        /// <param name="secondSpeed">二段速度 (mm/s)</param>
+        /// <param name="currentLimit">扭矩限制 (%)</param>
+        public void Set_ZRForceParamters(
+     EnumStageAxis axis,
+     double speedPos,
+     double keepTime,
+     double switchPos,
+     double backPos,
+     double speed,
+     double firstSpeed,
+     double secondSpeed,
+     double currentLimit)
+        {
+            const short coreId = 1;         // 卡号
+            const int scale = 1000;         // 1mm对应脉冲数
+            byte[] buffer = new byte[4];    // 复用缓冲区
+
+
+            
+            // 设置各参数（带物理单位注释）
+            SetAxisParameter(0x200A, 0x00, 4, speedPos * scale);       // 快进位置 (mm → 脉冲)
+            SetAxisParameter(0x200B, 0x00, 4, switchPos * scale);      // 切换位置 (mm → 脉冲)
+            SetAxisParameter(0x2010, 0x00, 4, speed * scale);          // 快进速度 (mm/s → 脉冲/s)
+            SetAxisParameter(0x200E, 0x00, 4, firstSpeed * scale);     // 一段速度 (mm/s → 脉冲/s)
+            SetAxisParameter(0x200F, 0x00, 4, secondSpeed * scale);    // 二段速度 (mm/s → 脉冲/s)
+            SetAxisParameter(0x2017, 0x00, 2, currentLimit * 100);      // 扭矩限制 (% → 0.01%)
+            SetAxisParameter(0x203A, 0x00, 4, keepTime * 1);           // 保压时间 (ms → 毫秒)
+            SetAxisParameter(0x2009, 0x00, 4, backPos * scale);        // 回退位置 (mm → 脉冲)
+
+        }
+        #endregion
+
+        // 封装参数设置核心逻辑
+        void SetAxisParameter(ushort index, byte subIndex, int byteSize, double value)
+        {
+            const short coreId = 1;         // 卡号
+            const int scale = 1000;         // 1mm对应脉冲数
+            byte[] buffer = new byte[4];    // 复用缓冲区
+            // 数值转换（添加范围检查更安全）
+            int intValue = (int)value;
+
+            byte[] byteValue32 = BitConverter.GetBytes(0);
+            byteValue32 = BitConverter.GetBytes(Convert.ToInt32(value));
+            // 执行SDO下载
+            uint errCode;
+            var rtn = GTN.mc.GTN_EcatSDODownload(
+                coreId,
+                (ushort)10,
+                index,
+                subIndex,
+                ref byteValue32[0],
+                (uint)byteSize,
+                out errCode);
+
+
+        }
+
+        #region    触发力控开始
+
+        /// <summary>
+        /// 触发力控开始
+        /// </summary>
+        /// <param name="axis"></param>
+        public void Enable_ZRAxisForeceMode(EnumStageAxis axis)
+        {
+            short rtn = 0;
+            short core = 1;//卡号
+            byte[] byteValue32 = BitConverter.GetBytes(0);
+            UInt32 errCode = 0;
+            //触发力控
+            byteValue32 = BitConverter.GetBytes(0);
+            rtn = GTN.mc.GTN_EcatSDODownload(core, (ushort)10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
+            Thread.Sleep(5);//上升沿要加延时才能保证触发成功
+            byteValue32 = BitConverter.GetBytes(1);
+            rtn = GTN.mc.GTN_EcatSDODownload(core, (ushort)10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
+
+        }
+
+
+
+
+        #endregion
+        #region   默认力控立即返回
+
+        public void GoBack_ZRAxisForeceMode(EnumStageAxis axis)//保压中立即回退 0x2016 给2 上升沿触发
+        {
+            short rtn = 0;
+            short core = 1;//卡号
+            byte[] byteValue32 = BitConverter.GetBytes(0);
+            UInt32 errCode = 0;
+            rtn = GTN.mc.GTN_EcatSDODownload(core, 10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
+           
+            Thread.Sleep(5); //上升沿要加延时才能保证触发成功
+            byteValue32 = BitConverter.GetBytes(2);
+            rtn = GTN.mc.GTN_EcatSDODownload(core, 10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
+
+        }
+
+
+
+
+
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #endregion
+
+
+
+
+
         #region  XY的直线插补
 
 
-        public  bool Set2DCoordinate(double synVelMax, double synAccMax, short profile1, short profile2, int originPos1, int originPos2)
+        public bool Set2DCoordinate(double synVelMax, double synAccMax, short profile1, short profile2, int originPos1, int originPos2)
         {
 
-           return   AxisControl.Interpolation.Set2DCoordinate(synVelMax, synAccMax, profile1, profile2, originPos1, originPos2, out short error);
+            return AxisControl.Interpolation.Set2DCoordinate(synVelMax, synAccMax, profile1, profile2, originPos1, originPos2, out short error);
 
         }
 
-        public  bool ClearCrdFifo(short core, short crd, short fifonum)
+        public bool ClearCrdFifo(short core, short crd, short fifonum)
         {
 
-            return AxisControl.Interpolation.ClearCrdFifo( core,  crd,  fifonum);
+            return AxisControl.Interpolation.ClearCrdFifo(core, crd, fifonum);
 
 
 
         }
-        public  bool LnXYDataWrite(short crd, Int32 x, Int32 y, double synVel, double synAcc)
+        public bool LnXYDataWrite(short crd, Int32 x, Int32 y, double synVel, double synAcc)
         {
 
-            return AxisControl.Interpolation.LnXYDataWrite( crd,  x,  y,  synVel,  synAcc);
+            return AxisControl.Interpolation.LnXYDataWrite(crd, x, y, synVel, synAcc);
         }
 
 
 
 
-        public  void GetCrdSpace(short crd, out Int32 pSpace)
+        public void GetCrdSpace(short crd, out Int32 pSpace)
 
         {
-             AxisControl.Interpolation.GetCrdSpace( crd, out   pSpace);
-
-
-        }
-
-
-        public  bool StartCrdMove()
-
-        {
-           return  AxisControl.Interpolation.StartCrdMove();
+            AxisControl.Interpolation.GetCrdSpace(crd, out pSpace);
 
 
         }
 
 
-        public  void GetCrdStatus(short crd, out short sts, out int Finsh)
+        public bool StartCrdMove()
+
         {
-            AxisControl.Interpolation.GetCrdStatus( crd, out  sts, out  Finsh);
+            return AxisControl.Interpolation.StartCrdMove();
+
+
+        }
+
+
+        public void GetCrdStatus(short crd, out short sts, out int Finsh)
+        {
+            AxisControl.Interpolation.GetCrdStatus(crd, out sts, out Finsh);
 
         }
 
