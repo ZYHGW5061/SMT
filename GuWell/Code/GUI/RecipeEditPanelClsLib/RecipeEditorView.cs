@@ -925,7 +925,8 @@ namespace RecipeEditPanelClsLib
                         else if (node.ParentNode.GetDisplayText(0) == "基板")
                         {
                             RefreshChildNodesTree();
-                            _editRecipe.SubstrateInfos.Name = _mainTreeCurNodeCaption;
+                            //_editRecipe.SubstrateInfos.Name = _mainTreeCurNodeCaption;
+                            _editRecipe.CurrentSubstrateInfosName = _mainTreeCurNodeCaption;
 
                             node.SelectImageIndex = node.ImageIndex;
                             return;

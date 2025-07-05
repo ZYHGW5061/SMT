@@ -33,6 +33,10 @@ namespace RecipeClsLib
         public string RecipeName { get; set; }
 
         [XmlIgnore]
+        public List<ProgramSubstrateSettings> StepSubstrateList { get; set; }
+
+
+        [XmlIgnore]
         public List<ProgramComponentSettings> StepComponentList { get; set; }
 
         [XmlIgnore]
@@ -98,11 +102,28 @@ namespace RecipeClsLib
         [XmlIgnore]
         public string CurrentBondPositionSettingsName { get; set; }
         [XmlIgnore]
+        public string CurrentSubstrateInfosName { get; set; }
+        [XmlIgnore]
         public string CurrentComponentInfosName { get; set; }
         [XmlIgnore]
         public string CurrentEpoxyApplicationName { get; set; }
         [XmlIgnore]
         public string CurrentEutecticName { get; set; }
+
+        [XmlIgnore]
+        public ProgramSubstrateSettings CurrentSubstrate
+        {
+            get
+            {
+                ProgramSubstrateSettings ret = null;
+                if (!string.IsNullOrEmpty(CurrentSubstrateInfosName))
+                {
+                    ret = StepSubstrateList.FirstOrDefault(i => i.Name == CurrentSubstrateInfosName);
+                }
+                return ret;
+            }
+        }
+
 
         [XmlIgnore]
         public ProgramComponentSettings CurrentComponent
@@ -162,6 +183,7 @@ namespace RecipeClsLib
         public BondRecipe()
         {
             RecipeName = string.Empty;
+            StepSubstrateList = new List<ProgramSubstrateSettings>();
             StepComponentList = new List<ProgramComponentSettings>();
             SubmonutInfos = new ProgramComponentSettings();
             SubstrateInfos = new ProgramSubstrateSettings();
@@ -236,7 +258,7 @@ namespace RecipeClsLib
                     {
                         loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     }
-                    
+                    loadedRecipe.StepSubstrateList = LoadSubstrate(loadedRecipe.ProductSteps);
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
@@ -249,6 +271,7 @@ namespace RecipeClsLib
                     {
                         loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     }
+                    loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
                     loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
                     loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
                     loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
@@ -299,19 +322,19 @@ namespace RecipeClsLib
                 case EnumRecipeStep.Configuration:
                     break;
                 case EnumRecipeStep.Substrate_InformationSettings:
-                    SaveSubstrate();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.Substrate_PositionSettings:
-                    SaveSubstrate();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.Substrate_MaterialMap:
-                    SaveSubstrate();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.Substrate_PPSettings:
-                    SaveSubstrate();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.Substrate_Accuracy:
-                    SaveSubstrate();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.BondPosition:
                     SaveBondPosition();
@@ -342,7 +365,7 @@ namespace RecipeClsLib
                     SaveEpoxyApplication();
                     break;
                 case EnumRecipeStep.Module_MaterialMap:
-                    SaveSubstrateMap();
+                    SaveSubstrateMap2();
                     break;
                 case EnumRecipeStep.None:
                     break;
@@ -649,6 +672,15 @@ namespace RecipeClsLib
                 SaveSubstrateMap();
             }
         }
+        private void SaveSubstrate2()
+        {
+            if (CurrentSubstrate != null)
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{CurrentSubstrate.Name}\{CurrentSubstrate.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(CurrentSubstrate, xmlFile, Encoding.UTF8);
+                SaveSubstrateMap2();
+            }
+        }
 
         private void SaveComponent()
         {
@@ -724,6 +756,19 @@ namespace RecipeClsLib
             var moduleXmlFile = $@"{_SubstrateSavePath}{SubstrateInfos.Name}\ModuleMap.xml";
             XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
         }
+        private void SaveSubstrateMap2()
+        {
+            //var substrateXmlFile = $@"{_recipeFolderFullName}\SubstrateMap.xml";
+            //XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.SubstrateMapInfos, substrateXmlFile, Encoding.UTF8);
+            //var moduleXmlFile = $@"{_recipeFolderFullName}\ModuleMap.xml";
+            //XmlSerializeHelper.XmlSerializeToFile(this.SubstrateInfos.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
+
+            var substrateXmlFile = $@"{_SubstrateSavePath}{CurrentSubstrate.Name}\SubstrateMap.xml";
+            XmlSerializeHelper.XmlSerializeToFile(this.CurrentSubstrate.SubstrateMapInfos, substrateXmlFile, Encoding.UTF8);
+            var moduleXmlFile = $@"{_SubstrateSavePath}{CurrentSubstrate.Name}\ModuleMap.xml";
+            XmlSerializeHelper.XmlSerializeToFile(this.CurrentSubstrate.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
+        }
+
         private static List<MaterialMapInformation> LoadSubstrateMap()
         {
             var materialMapData = new List<MaterialMapInformation>();
