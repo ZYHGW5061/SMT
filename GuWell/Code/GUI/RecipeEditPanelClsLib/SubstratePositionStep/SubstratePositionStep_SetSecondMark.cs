@@ -163,20 +163,36 @@ namespace RecipeEditPanelClsLib
                     //此处注意坐标轴的方向和相机坐标系的方向是否一致TBD
                     PositionOfPattern = new PointF((float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX) + offsetX, (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY) + offsetY);
 
-                    if (EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Count == 2)
+                    //if (EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Count == 2)
+                    //{
+                    //    VisionParameters visionMarkParam = EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1];
+
+                    //    visionMarkParam.ShapeMatchParameters.Clear();
+                    //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+
+                    //}
+                    //else if (EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Count == 1)
+                    //{
+                    //    VisionParameters visionMarkParam = new VisionParameters();
+                    //    visionMarkParam.ShapeMatchParameters.Clear();
+                    //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+                    //    EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                    //}
+
+                    if (EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Count == 2)
                     {
-                        VisionParameters visionMarkParam = EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1];
+                        VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters[1];
 
                         visionMarkParam.ShapeMatchParameters.Clear();
                         visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
 
                     }
-                    else if (EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Count == 1)
+                    else if (EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Count == 1)
                     {
                         VisionParameters visionMarkParam = new VisionParameters();
                         visionMarkParam.ShapeMatchParameters.Clear();
                         visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
-                        EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                        EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
                     }
                 }
                 finished = true;

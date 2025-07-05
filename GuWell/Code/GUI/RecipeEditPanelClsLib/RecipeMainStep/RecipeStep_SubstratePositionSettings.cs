@@ -70,7 +70,8 @@ namespace RecipeEditPanelClsLib
             //    currentStepPage.NotifyStepFinished(out finished, out step);
             //    SaveStepParametersWhenStepFinished(step);
             //}
-            _editRecipe.SubstrateInfos.IsMaterialPositionSettingsComplete = true;
+            //_editRecipe.SubstrateInfos.IsMaterialPositionSettingsComplete = true;
+            _editRecipe.CurrentSubstrate.IsMaterialPositionSettingsComplete = true;
             finished = true;
         }
         private CameraWindowGUI _parentCameraWnd;
@@ -254,7 +255,8 @@ namespace RecipeEditPanelClsLib
                     break;
                 case EnumDefineSetupRecipeSubstratePositionStep.SetWorkHeight:
 
-                    _editRecipe.SubstrateInfos.SubstrateTopZSystemPos = currentStepPage.SubstrateTopplateHigherValueThanMarkTopplate;
+                    //_editRecipe.SubstrateInfos.SubstrateTopZSystemPos = currentStepPage.SubstrateTopplateHigherValueThanMarkTopplate;
+                    _editRecipe.CurrentSubstrate.SubstrateTopZSystemPos = currentStepPage.SubstrateTopplateHigherValueThanMarkTopplate;
 
                     break;
                 case EnumDefineSetupRecipeSubstratePositionStep.SetLeftUpperCorner:
@@ -269,11 +271,18 @@ namespace RecipeEditPanelClsLib
                 case EnumDefineSetupRecipeSubstratePositionStep.SetLeftLowerCorner:
                     _leftLowerCornerCoor = currentStepPage.LeftLowerCornerCoor;
                     CalculateCenterCoor();
-                    _editRecipe.SubstrateInfos.WidthMM = _substratetSize.X;
-                    _editRecipe.SubstrateInfos.HeightMM = _substratetSize.Y;
+                    //_editRecipe.SubstrateInfos.WidthMM = _substratetSize.X;
+                    //_editRecipe.SubstrateInfos.HeightMM = _substratetSize.Y;
 
-                    _editRecipe.SubstrateInfos.FirstSubstrateCenterSystemLocation.X = _centerCoor.X;
-                    _editRecipe.SubstrateInfos.FirstSubstrateCenterSystemLocation.Y = _centerCoor.Y;
+                    //_editRecipe.SubstrateInfos.FirstSubstrateCenterSystemLocation.X = _centerCoor.X;
+                    //_editRecipe.SubstrateInfos.FirstSubstrateCenterSystemLocation.Y = _centerCoor.Y;
+
+                    _editRecipe.CurrentSubstrate.WidthMM = _substratetSize.X;
+                    _editRecipe.CurrentSubstrate.HeightMM = _substratetSize.Y;
+
+                    _editRecipe.CurrentSubstrate.FirstSubstrateCenterSystemLocation.X = _centerCoor.X;
+                    _editRecipe.CurrentSubstrate.FirstSubstrateCenterSystemLocation.Y = _centerCoor.Y;
+
                     //var usedCamera = _editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera;
                     //if (usedCamera == EnumCameraType.BondCamera)
                     //{
@@ -292,7 +301,22 @@ namespace RecipeEditPanelClsLib
 
                 //    break;
                 case EnumDefineSetupRecipeSubstratePositionStep.SetMark1VisionParam:
-                    var shapeMatchParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.FirstOrDefault()?.ShapeMatchParameters.FirstOrDefault();
+                    //var shapeMatchParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.FirstOrDefault()?.ShapeMatchParameters.FirstOrDefault();
+                    //if (shapeMatchParam != null)
+                    //{
+                    //    shapeMatchParam.OrigionAngle = _substrateRotateAngle;
+                    //    //此处更新模板的特征和物料中心的偏移
+                    //    shapeMatchParam.PatternOffsetWithMaterialCenter.X = _centerCoor.X - currentStepPage.PositionOfPattern.X;
+                    //    shapeMatchParam.PatternOffsetWithMaterialCenter.Y = _centerCoor.Y - currentStepPage.PositionOfPattern.Y;
+
+                    //    shapeMatchParam.PositionOfMaterialCenter.X = _centerCoor.X;
+                    //    shapeMatchParam.PositionOfMaterialCenter.Y = _centerCoor.Y;
+                    //}
+                    ////此处更新模板的特征和物料中心的偏移
+                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X = currentStepPage.PositionOfPattern.X;
+                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y = currentStepPage.PositionOfPattern.Y;
+
+                    var shapeMatchParam = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.FirstOrDefault()?.ShapeMatchParameters.FirstOrDefault();
                     if (shapeMatchParam != null)
                     {
                         shapeMatchParam.OrigionAngle = _substrateRotateAngle;
@@ -304,14 +328,29 @@ namespace RecipeEditPanelClsLib
                         shapeMatchParam.PositionOfMaterialCenter.Y = _centerCoor.Y;
                     }
                     //此处更新模板的特征和物料中心的偏移
-                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X = currentStepPage.PositionOfPattern.X;
-                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y = currentStepPage.PositionOfPattern.Y;
+                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.X = currentStepPage.PositionOfPattern.X;
+                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.Y = currentStepPage.PositionOfPattern.Y;
 
 
                     break;
                 case EnumDefineSetupRecipeSubstratePositionStep.SetMark2VisionParam:
 
-                    var shapeMatchParam2 = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters.FirstOrDefault();
+                    //var shapeMatchParam2 = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters.FirstOrDefault();
+                    //if (shapeMatchParam2 != null)
+                    //{
+                    //    shapeMatchParam2.OrigionAngle = _substrateRotateAngle;
+                    //    //此处更新模板的特征和物料中心的偏移
+                    //    shapeMatchParam2.PatternOffsetWithMaterialCenter.X = _centerCoor.X - currentStepPage.PositionOfPattern.X;
+                    //    shapeMatchParam2.PatternOffsetWithMaterialCenter.Y = _centerCoor.Y - currentStepPage.PositionOfPattern.Y;
+
+                    //    shapeMatchParam2.PositionOfMaterialCenter.X = _centerCoor.X;
+                    //    shapeMatchParam2.PositionOfMaterialCenter.Y = _centerCoor.Y;
+                    //}
+                    ////此处更新模板的第二特征和物料中心的偏移
+                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.X = currentStepPage.PositionOfPattern.X;
+                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.Y = currentStepPage.PositionOfPattern.Y;
+
+                    var shapeMatchParam2 = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters.FirstOrDefault();
                     if (shapeMatchParam2 != null)
                     {
                         shapeMatchParam2.OrigionAngle = _substrateRotateAngle;
@@ -323,8 +362,8 @@ namespace RecipeEditPanelClsLib
                         shapeMatchParam2.PositionOfMaterialCenter.Y = _centerCoor.Y;
                     }
                     //此处更新模板的第二特征和物料中心的偏移
-                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.X = currentStepPage.PositionOfPattern.X;
-                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.Y = currentStepPage.PositionOfPattern.Y;
+                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomeSecondPoint.X = currentStepPage.PositionOfPattern.X;
+                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomeSecondPoint.Y = currentStepPage.PositionOfPattern.Y;
 
                     break;
                 default:

@@ -162,13 +162,27 @@ namespace RecipeEditPanelClsLib
 
                     PositionOfPattern = new PointF((float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX) + offsetX, (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY) + offsetY);
 
-                    VisionParameters visionMarkParam = EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.FirstOrDefault();
+                    //VisionParameters visionMarkParam = EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.FirstOrDefault();
+                    //if (visionMarkParam == null)
+                    //{
+                    //    visionMarkParam = new VisionParameters();
+                    //    visionMarkParam.ShapeMatchParameters.Clear();
+                    //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+                    //    EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                    //}
+                    //else
+                    //{
+                    //    visionMarkParam.ShapeMatchParameters.Clear();
+                    //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+                    //}
+
+                    VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.FirstOrDefault();
                     if (visionMarkParam == null)
                     {
                         visionMarkParam = new VisionParameters();
                         visionMarkParam.ShapeMatchParameters.Clear();
                         visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
-                        EditRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                        EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
                     }
                     else
                     {

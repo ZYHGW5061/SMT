@@ -878,7 +878,9 @@ namespace RecipeEditPanelClsLib
                 else if (currentStep == EnumRecipeStep.Substrate_PositionSettings)
                 {
                     //识别substrate的Mark1和Mark2
-                    MatchIdentificationParam visionParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[0].ShapeMatchParameters[0];
+                    //MatchIdentificationParam visionParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[0].ShapeMatchParameters[0];
+                    MatchIdentificationParam visionParam = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters[0].ShapeMatchParameters[0];
+
                     double X = visionParam.BondTablePositionOfCreatePattern.X;
                     double Y = visionParam.BondTablePositionOfCreatePattern.Y;
                     double Z = visionParam.CameraZWorkPosition;
@@ -893,10 +895,15 @@ namespace RecipeEditPanelClsLib
                                 if (_positioningSystem.BondXYUnionMovetoStageCoor(visionRet.X, visionRet.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                 {
                                     //更新substrate坐标原点
-                                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
-                                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+                                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+                                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
 
-                                    visionParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters[0];
+                                    //visionParam = _editRecipe.SubstrateInfos.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters[0];
+                                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+                                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+
+                                    visionParam = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters[0];
+
                                     X = visionParam.BondTablePositionOfCreatePattern.X;
                                     Y = visionParam.BondTablePositionOfCreatePattern.Y;
                                     Z = visionParam.CameraZWorkPosition;
@@ -911,8 +918,11 @@ namespace RecipeEditPanelClsLib
                                                 if (_positioningSystem.BondXYUnionMovetoStageCoor(visionSecondTime.X, visionSecondTime.Y, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                                 {
                                                     //更新substrate第二基准点坐标
-                                                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
-                                                    _editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+                                                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+                                                    //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+                                                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomeSecondPoint.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+                                                    _editRecipe.CurrentSubstrate.SubstrateCoordinateHomeSecondPoint.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+
                                                     NotifyRecipeDefined(_editRecipe, currentStep);
                                                 }
                                             }
@@ -923,7 +933,8 @@ namespace RecipeEditPanelClsLib
                         }
                     }
                     //搜索完榜头相机移动到第一个Mark位置
-                    _positioningSystem.BondXYUnionMovetoSystemCoor(_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X, _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y, EnumCoordSetType.Absolute);
+                    //_positioningSystem.BondXYUnionMovetoSystemCoor(_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X, _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y, EnumCoordSetType.Absolute);
+                    _positioningSystem.BondXYUnionMovetoSystemCoor(_editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.X, _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.Y, EnumCoordSetType.Absolute);
 
 
                 }

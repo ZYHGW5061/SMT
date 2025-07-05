@@ -70,7 +70,8 @@ namespace RecipeEditPanelClsLib
             //    currentStepPage.NotifyStepFinished(out finished, out step);
             //    SaveStepParametersWhenStepFinished(step);
             //}
-            _editRecipe.SubstrateInfos.IsModulePositionSettingsComplete = true;
+            //_editRecipe.SubstrateInfos.IsModulePositionSettingsComplete = true;
+            _editRecipe.CurrentSubstrate.IsModulePositionSettingsComplete = true;
             finished = true;
         }
         private CameraWindowGUI _parentCameraWnd;
@@ -92,11 +93,24 @@ namespace RecipeEditPanelClsLib
             _parentCameraWnd.InitVisualControl();
             _parentCameraWnd.Dock = DockStyle.Fill;
             panelControlCameraAera.Controls.Add(_parentCameraWnd);
-            if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+            //if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+            //{
+            //    _parentCameraWnd.SelectCamera(0);
+            //}
+            //else if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+            //{
+            //    _parentCameraWnd.SelectCamera(2);
+            //}
+            //else
+            //{
+            //    _parentCameraWnd.SelectCamera(0);
+            //}
+
+            if (_editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
             {
                 _parentCameraWnd.SelectCamera(0);
             }
-            else if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+            else if (_editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
             {
                 _parentCameraWnd.SelectCamera(2);
             }
@@ -104,6 +118,8 @@ namespace RecipeEditPanelClsLib
             {
                 _parentCameraWnd.SelectCamera(0);
             }
+
+
         }
         private void LoadPreviousStepPage()
         {
@@ -262,7 +278,10 @@ namespace RecipeEditPanelClsLib
                     //_editRecipe.SubstrateInfos.SubmountPPPlacePos = _positioningSystem.ConvertStagePosToSystemPos(EnumStageAxis.BondZ, stagePos);
 
 
-                    _editRecipe.SubstrateInfos.ModuleTopZSystemPos = currentStepPage.ModuleTopplateHigherValueThanMarkTopplate;
+                    //_editRecipe.SubstrateInfos.ModuleTopZSystemPos = currentStepPage.ModuleTopplateHigherValueThanMarkTopplate;
+
+                    _editRecipe.CurrentSubstrate.ModuleTopZSystemPos = currentStepPage.ModuleTopplateHigherValueThanMarkTopplate;
+
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.SetLeftUpperCorner:
                     _leftUpperCornerCoor = currentStepPage.LeftUpperCornerCoor;
@@ -276,8 +295,10 @@ namespace RecipeEditPanelClsLib
                 case EnumDefineSetupRecipeModulePositionStep.SetLeftLowerCorner:
                     _leftLowerCornerCoor = currentStepPage.LeftLowerCornerCoor;
                     CalculateCenterCoor();
-                    _editRecipe.SubstrateInfos.ModuleWidthMM = _size.X;
-                    _editRecipe.SubstrateInfos.ModuleHeightMM = _size.Y;
+                    //_editRecipe.SubstrateInfos.ModuleWidthMM = _size.X;
+                    //_editRecipe.SubstrateInfos.ModuleHeightMM = _size.Y;
+                    _editRecipe.CurrentSubstrate.ModuleWidthMM = _size.X;
+                    _editRecipe.CurrentSubstrate.ModuleHeightMM = _size.Y;
                     var usedCamera = EnumCameraType.BondCamera;
                     if(usedCamera==EnumCameraType.BondCamera)
                     {
@@ -289,12 +310,16 @@ namespace RecipeEditPanelClsLib
                         _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableX, _centerCoor.X, EnumCoordSetType.Absolute);
                         _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableY, _centerCoor.Y, EnumCoordSetType.Absolute);
                     }
-                    _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.X = _centerCoor.X;
-                    _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.Y = _centerCoor.Y;
+                    //_editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.X = _centerCoor.X;
+                    //_editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.Y = _centerCoor.Y;
+                    _editRecipe.CurrentSubstrate.FirstModuleCenterSystemLocation.X = _centerCoor.X;
+                    _editRecipe.CurrentSubstrate.FirstModuleCenterSystemLocation.Y = _centerCoor.Y;
                     //将物料移动到视野中心
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.VisionPosition:
-                    var shapeMatchParam = _editRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                    //var shapeMatchParam = _editRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                    var shapeMatchParam = _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.ShapeMatchParameters.FirstOrDefault();
+
                     if (shapeMatchParam != null)
                     {
                         shapeMatchParam.OrigionAngle = _rotateAngle;

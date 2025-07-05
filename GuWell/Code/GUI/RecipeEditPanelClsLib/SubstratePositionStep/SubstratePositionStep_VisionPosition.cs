@@ -93,7 +93,23 @@ namespace RecipeEditPanelClsLib
                 var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\{EnumRecipeType.Bonder.ToString()}\{EditRecipe.RecipeName}\TemplateConfig\";
                 CommonProcess.EnsureFolderExist(templateFolderName);
 
-                if (recipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+                //if (recipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+                //{
+                //    visualMatchControlGUI1.InitVisualControl(UsedCameraWnd, BondCameraVisual);
+                //    MatchIdentificationParam param = new MatchIdentificationParam();
+                //    param.RingLightintensity = (int)HardwareManagerClsLib.HardwareManager.Instance.BondRingLightController.GetIntensity(HardwareConfiguration.Instance.SubstrateRingLightConfig.ChannelNumber);
+                //    param.DirectLightintensity = (int)HardwareManagerClsLib.HardwareManager.Instance.BondDirectLightController.GetIntensity(HardwareConfiguration.Instance.SubstrateDirectLightConfig.ChannelNumber);
+                //    visualMatchControlGUI1.SetVisualParam(param);
+                //}
+                //else if (recipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+                //{
+                //    visualMatchControlGUI1.InitVisualControl(UsedCameraWnd, WaferCameraVisual);
+                //    MatchIdentificationParam param = new MatchIdentificationParam();
+                //    param.RingLightintensity = (int)HardwareManagerClsLib.HardwareManager.Instance.WaferRingLightController.GetIntensity(HardwareConfiguration.Instance.WaferRingLightConfig.ChannelNumber);
+                //    param.DirectLightintensity = (int)HardwareManagerClsLib.HardwareManager.Instance.WaferDirectLightController.GetIntensity(HardwareConfiguration.Instance.WaferDirectLightConfig.ChannelNumber);
+                //    visualMatchControlGUI1.SetVisualParam(param);
+                //}
+                if (recipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
                 {
                     visualMatchControlGUI1.InitVisualControl(UsedCameraWnd, BondCameraVisual);
                     MatchIdentificationParam param = new MatchIdentificationParam();
@@ -101,7 +117,7 @@ namespace RecipeEditPanelClsLib
                     param.DirectLightintensity = (int)HardwareManagerClsLib.HardwareManager.Instance.BondDirectLightController.GetIntensity(HardwareConfiguration.Instance.SubstrateDirectLightConfig.ChannelNumber);
                     visualMatchControlGUI1.SetVisualParam(param);
                 }
-                else if (recipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+                else if (recipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
                 {
                     visualMatchControlGUI1.InitVisualControl(UsedCameraWnd, WaferCameraVisual);
                     MatchIdentificationParam param = new MatchIdentificationParam();
@@ -156,7 +172,9 @@ namespace RecipeEditPanelClsLib
 
                 //shapeMatchParam.Templatexml = visualMatchControlGUI1.MatchTemplatefilepath;
                 shapeMatchParam.Runxml = "";
-                var usedCamera = EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera;
+                //var usedCamera = EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera;
+                var usedCamera = EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera;
+
                 shapeMatchParam.CameraZWorkPosition = (float)(usedCamera == EnumCameraType.BondCamera ? _positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondZ)
                     : _positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableZ));
 
@@ -175,8 +193,11 @@ namespace RecipeEditPanelClsLib
                     : _positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.WaferTableY) + offsetY));
 
 
-                EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
-                EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
+                //EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                //EditRecipe.SubstrateInfos.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
+                EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
+
                 finished = true;
             }
             finally

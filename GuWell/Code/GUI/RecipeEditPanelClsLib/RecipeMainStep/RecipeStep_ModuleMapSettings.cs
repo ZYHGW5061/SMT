@@ -43,13 +43,26 @@ namespace RecipeEditPanelClsLib
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
-            _numbersofRows= _editRecipe.SubstrateInfos.RowCount;
-            _numbersofColumns= _editRecipe.SubstrateInfos.ColumnCount;
-            _columnPitchMM= _editRecipe.SubstrateInfos.PitchColumnMM;
-            _rowPitchMM= _editRecipe.SubstrateInfos.PitchRowMM;
+            //_numbersofRows= _editRecipe.SubstrateInfos.RowCount;
+            //_numbersofColumns= _editRecipe.SubstrateInfos.ColumnCount;
+            //_columnPitchMM= _editRecipe.SubstrateInfos.PitchColumnMM;
+            //_rowPitchMM= _editRecipe.SubstrateInfos.PitchRowMM;
 
-            FirstMaterialPosition=new PointF((float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.X, (float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.Y);
-            if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //FirstMaterialPosition=new PointF((float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.X, (float)_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.Y);
+            //if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //{
+            //    step4Sign.Visible = false;
+            //    step5Sign.Visible = false;
+            //    step6Sign.Visible = false;
+            //}
+
+            _numbersofRows = _editRecipe.CurrentSubstrate.RowCount;
+            _numbersofColumns = _editRecipe.CurrentSubstrate.ColumnCount;
+            _columnPitchMM = _editRecipe.CurrentSubstrate.PitchColumnMM;
+            _rowPitchMM = _editRecipe.CurrentSubstrate.PitchRowMM;
+
+            FirstMaterialPosition = new PointF((float)_editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.X, (float)_editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.Y);
+            if (_editRecipe.CurrentSubstrate.CarrierType != EnumCarrierType.Wafer)
             {
                 step4Sign.Visible = false;
                 step5Sign.Visible = false;
@@ -65,14 +78,24 @@ namespace RecipeEditPanelClsLib
 
             currengStep = EnumRecipeStep.Module_MaterialMap;
             GenerateMap();
-            _editRecipe.SubstrateInfos.ModuleRowCount = _numbersofRows;
-            _editRecipe.SubstrateInfos.ModuleColumnCount = _numbersofColumns;
-            _editRecipe.SubstrateInfos.ModulePitchColumnMM = _columnPitchMM;
-            _editRecipe.SubstrateInfos.ModulePitchRowMM = _rowPitchMM;
+            //_editRecipe.SubstrateInfos.ModuleRowCount = _numbersofRows;
+            //_editRecipe.SubstrateInfos.ModuleColumnCount = _numbersofColumns;
+            //_editRecipe.SubstrateInfos.ModulePitchColumnMM = _columnPitchMM;
+            //_editRecipe.SubstrateInfos.ModulePitchRowMM = _rowPitchMM;
 
-            _editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.X = FirstMaterialPosition.X;
-            _editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.Y = FirstMaterialPosition.Y;
-            _editRecipe.SubstrateInfos.IsModuleMapSettingsComplete = true;
+            //_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.X = FirstMaterialPosition.X;
+            //_editRecipe.SubstrateInfos.FirstModuleHomeSystemLocation.Y = FirstMaterialPosition.Y;
+            //_editRecipe.SubstrateInfos.IsModuleMapSettingsComplete = true;
+
+            _editRecipe.CurrentSubstrate.ModuleRowCount = _numbersofRows;
+            _editRecipe.CurrentSubstrate.ModuleColumnCount = _numbersofColumns;
+            _editRecipe.CurrentSubstrate.ModulePitchColumnMM = _columnPitchMM;
+            _editRecipe.CurrentSubstrate.ModulePitchRowMM = _rowPitchMM;
+
+            _editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.X = FirstMaterialPosition.X;
+            _editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.Y = FirstMaterialPosition.Y;
+            _editRecipe.CurrentSubstrate.IsModuleMapSettingsComplete = true;
+
             finished = true;
         }
         private void InitialCameraControl()
@@ -93,11 +116,23 @@ namespace RecipeEditPanelClsLib
             cameraWnd.InitVisualControl();
             cameraWnd.Dock = DockStyle.Fill;
             panelControlCameraAera.Controls.Add(cameraWnd);
-            if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+            //if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
+            //{
+            //    cameraWnd.SelectCamera(0);
+            //}
+            //else if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+            //{
+            //    cameraWnd.SelectCamera(2);
+            //}
+            //else
+            //{
+            //    cameraWnd.SelectCamera(0);
+            //}
+            if (_editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.BondCamera)
             {
                 cameraWnd.SelectCamera(0);
             }
-            else if (_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
+            else if (_editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera == EnumCameraType.WaferCamera)
             {
                 cameraWnd.SelectCamera(2);
             }
@@ -105,6 +140,7 @@ namespace RecipeEditPanelClsLib
             {
                 cameraWnd.SelectCamera(0);
             }
+
         }
         private void LoadPreviousStepPage()
         {
@@ -145,7 +181,48 @@ namespace RecipeEditPanelClsLib
             //{
             //    this.btnNext.Visible = true;
             //}
-            if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //{
+            //    //if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetFirstSubmountPos)
+            //    //{
+            //    //    ((SubstrateMapStep_PositionFirstSubstrate)currentStepPage).SetStepInfo("步骤 1/3：Map设定：定位到第一颗衬底");
+            //    //}
+            //    //else if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetColumnMap)
+            //    //{
+
+            //    //    ((SubstrateMapStep_ColumnParam)currentStepPage).SetStepInfo("步骤 2/3：Map设定：定位到最后一列衬底");
+
+            //    //}
+            //    //else if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetRowMap)
+            //    //{
+
+            //    //    ((SubstrateMapStep_RowParam)currentStepPage).SetStepInfo("步骤 3/3：Map设定：定位到最后一行衬底");
+
+            //    //}
+            //    if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetRowMap)
+            //    {
+            //        this.btnNext.Visible = false;
+            //    }
+            //    else
+            //    {
+            //        this.btnNext.Visible = true;
+            //        this.btnNext.Text = "下一步";
+            //    }
+            //}
+            //else
+            //{
+            //    if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetDeterminWaferRangeThirdPoint)
+            //    {
+            //        this.btnNext.Visible = false;
+            //    }
+            //    else
+            //    {
+            //        this.btnNext.Visible = true;
+            //        this.btnNext.Text = "下一步";
+            //    }
+            //}
+
+            if (_editRecipe.CurrentSubstrate.CarrierType != EnumCarrierType.Wafer)
             {
                 //if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetFirstSubmountPos)
                 //{
@@ -185,6 +262,8 @@ namespace RecipeEditPanelClsLib
                     this.btnNext.Text = "下一步";
                 }
             }
+
+
             //this.labelStepInfo.Text = currentStepPage.StepDescription;
             //LoadStepParameters(currentTeachStepPage.CurrentStep);
         }
@@ -202,7 +281,36 @@ namespace RecipeEditPanelClsLib
                 //currentStepPage.Dock = DockStyle.Fill;
                 //this.panelStepOperate.Controls.Add(currentStepPage);
 
-                if (_editRecipe.SubstrateInfos.CarrierType == EnumCarrierType.Wafer)
+                //if (_editRecipe.SubstrateInfos.CarrierType == EnumCarrierType.Wafer)
+                //{
+                //    if (step != EnumDefineSetupRecipeSubstrateMapStep.SetDeterminWaferRangeThirdPoint)
+                //    {
+                //        this.panelStepOperate.Controls.Clear();
+                //        currentStepPage = GenerateStepPage(currentStepPage.CurrentStep + 1);
+                //        currentStepPage.Dock = DockStyle.Fill;
+                //        this.panelStepOperate.Controls.Add(currentStepPage);
+                //    }
+                //    else
+                //    {
+                //        StepSignComplete();
+                //    }
+                //}
+                //else
+                //{
+                //    if (step != EnumDefineSetupRecipeSubstrateMapStep.SetRowMap)
+                //    {
+                //        this.panelStepOperate.Controls.Clear();
+                //        currentStepPage = GenerateStepPage(currentStepPage.CurrentStep + 1);
+                //        currentStepPage.Dock = DockStyle.Fill;
+                //        this.panelStepOperate.Controls.Add(currentStepPage);
+                //    }
+                //    else
+                //    {
+                //        StepSignComplete();
+                //    }
+                //}
+
+                if (_editRecipe.CurrentSubstrate.CarrierType == EnumCarrierType.Wafer)
                 {
                     if (step != EnumDefineSetupRecipeSubstrateMapStep.SetDeterminWaferRangeThirdPoint)
                     {
@@ -230,6 +338,8 @@ namespace RecipeEditPanelClsLib
                         StepSignComplete();
                     }
                 }
+
+
             }
             else
             {
@@ -249,7 +359,50 @@ namespace RecipeEditPanelClsLib
                 this.btnPrevious.Visible = true;
             }
 
-            if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //if (_editRecipe.SubstrateInfos.CarrierType != EnumCarrierType.Wafer)
+            //{
+            //    //if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetFirstSubmountPos)
+            //    //{
+            //    //    ((SubstrateMapStep_PositionFirstSubstrate)currentStepPage).SetStepInfo("步骤 1/3：Map设定：定位到第一颗Module");
+            //    //}
+            //    //else if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetColumnMap)
+            //    //{
+
+            //    //    ((SubstrateMapStep_ColumnParam)currentStepPage).SetStepInfo("步骤 2/3：Map设定：定位到最后一列Module");
+
+            //    //}
+            //    //else if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetRowMap)
+            //    //{
+
+            //    //    ((SubstrateMapStep_RowParam)currentStepPage).SetStepInfo("步骤 3/3：Map设定：定位到最后一行Module");
+
+            //    //}
+            //    if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetRowMap)
+            //    {
+            //        //this.btnNext.Visible = false;
+            //        this.btnNext.Text = "完成";
+            //    }
+            //    else
+            //    {
+            //        this.btnNext.Visible = true;
+            //        this.btnNext.Text = "下一步";
+            //    }
+            //}
+            //else
+            //{
+            //    if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetDeterminWaferRangeThirdPoint)
+            //    {
+            //        //this.btnNext.Visible = false;
+            //        this.btnNext.Text = "完成";
+            //    }
+            //    else
+            //    {
+            //        this.btnNext.Visible = true;
+            //        this.btnNext.Text = "下一步";
+            //    }
+            //}
+
+            if (_editRecipe.CurrentSubstrate.CarrierType != EnumCarrierType.Wafer)
             {
                 //if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstrateMapStep.SetFirstSubmountPos)
                 //{
@@ -291,6 +444,8 @@ namespace RecipeEditPanelClsLib
                     this.btnNext.Text = "下一步";
                 }
             }
+
+
             //if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubmountMapStep.SetRowMap)
             //{
             //    this.btnNext.Visible = false;
@@ -367,6 +522,73 @@ namespace RecipeEditPanelClsLib
         /// </summary>
         private void GenerateMap()
         {
+            //if (_numbersofRows != 0 && _numbersofColumns != 0)
+            //{
+
+            //    var mapAngle = Math.Atan((LastColumnMaterialPosition.Y - FirstMaterialPosition.Y) / (LastColumnMaterialPosition.X - FirstMaterialPosition.X));
+
+            //    _rowPitchMM = (float)(Math.Abs((LastRowMaterialPosition.Y - LastColumnMaterialPosition.Y) * Math.Cos(mapAngle)) / (_numbersofRows - 1));
+            //    _columnPitchMM = (float)(Math.Abs((LastColumnMaterialPosition.X - FirstMaterialPosition.X) * Math.Cos(mapAngle)) / (_numbersofColumns - 1));
+            //    //var columnSpace = Math.Abs(LastRowComponentPosition.X - FirstComponentPosition.X) / (_numbersofColumns - 1);
+            //    //var rowSpace = Math.Abs(LastColumnComponentPosition.Y - LastRowComponentPosition.Y) / (_numbersofRows - 1);
+            //    //var componentWidth = _editRecipe.CurrentComponent.WidthMM;
+            //    //var componentHeight = _editRecipe.CurrentComponent.HeightMM;
+            //    var substrateCoorHomeX = _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X;
+            //    var substrateCoorHomeY = _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y;
+            //    //var offsetXModuleAndSubstrate = _editRecipe.SubstrateInfos.SubstrateMapInfos.FirstOrDefault().MaterialLocation.X - FirstMaterialPosition.X;
+            //    //var offsetYModuleAndSubstrate = _editRecipe.SubstrateInfos.SubstrateMapInfos.FirstOrDefault().MaterialLocation.Y - FirstMaterialPosition.Y;
+
+            //    //Module中心和寻找Map标记点的偏移
+            //    var centerOffsetX = _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.X - FirstMaterialPosition.X;
+            //    var centerOffsetY = _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.Y - FirstMaterialPosition.Y;
+
+            //    var firstModuleRelativeCoorX = FirstMaterialPosition.X - substrateCoorHomeX;
+            //    var firstModuleRelativeCoorY = FirstMaterialPosition.Y - substrateCoorHomeY;
+
+            //    foreach (var item in _editRecipe.SubstrateInfos.SubstrateMapInfos)
+            //    {
+            //        var rotateCenterX = item.MaterialLocation.X- substrateCoorHomeX;
+            //        var rotateCenterY = item.MaterialLocation.Y- substrateCoorHomeY;
+
+            //        List<MaterialMapInformation> temp = new List<MaterialMapInformation>();
+            //        if (_rowPitchMM != 0 && _columnPitchMM != 0)
+            //        {
+            //            _editRecipe.SubstrateInfos.ModuleMapInfos.Clear();
+            //            var ID = 0;
+            //            for (int i = 0; i < _numbersofColumns; i++)
+            //            {
+            //                for (int j = 0; j < _numbersofRows; j++)
+            //                {
+            //                    MaterialMapInformation material = new MaterialMapInformation();
+            //                    var xNormanl = i * _columnPitchMM;
+            //                    var yNormanl = j * _rowPitchMM;
+            //                    //var centerX = rotateCenterX + (xNormanl - rotateCenterX) * Math.Cos(mapAngle) - (yNormanl - rotateCenterY) * Math.Sin(mapAngle);
+            //                    //var centerY = rotateCenterY + (xNormanl - rotateCenterX) * Math.Sin(mapAngle) + (yNormanl - rotateCenterY) * Math.Cos(mapAngle);
+            //                    //Map记录的是Substrate坐标系下的module中心的系统坐标系；
+            //                    var centerX = firstModuleRelativeCoorX+rotateCenterX+ centerOffsetX + (xNormanl) * Math.Cos(mapAngle) - (yNormanl) * Math.Sin(mapAngle);
+            //                    var centerY = firstModuleRelativeCoorY + rotateCenterY + centerOffsetY + (xNormanl) * Math.Sin(mapAngle) - (yNormanl) * Math.Cos(mapAngle);
+            //                    material.MaterialLocation = new PointF() { X = (float)centerX, Y = (float)centerY };
+            //                    material.MaterialCoordIndex = new Point(j, i);
+            //                    material.MaterialNumber = ID++;
+            //                    material.IsMaterialExist = true;
+            //                    material.IsProcess = true;
+            //                    material.Properties = MaterialProperties.Testable;
+            //                    temp.Add(material);
+
+            //                }
+            //            }
+            //        }
+            //        //List<Dictionary<MaterialMapInformation, List<BondingPositionSettings>>> tempList = new List<Dictionary<MaterialMapInformation, List<BondingPositionSettings>>>();
+            //        //foreach (var itemModule in temp)
+            //        //{
+            //        //    var newItem = new Dictionary<MaterialMapInformation, List<BondingPositionSettings>>();
+            //        //    newItem.Add(itemModule, new List<BondingPositionSettings>());
+            //        //    tempList.Add(newItem);
+            //        //}
+            //        _editRecipe.SubstrateInfos.ModuleMapInfos.Add(temp);
+            //    }
+            //}
+
             if (_numbersofRows != 0 && _numbersofColumns != 0)
             {
 
@@ -378,27 +600,27 @@ namespace RecipeEditPanelClsLib
                 //var rowSpace = Math.Abs(LastColumnComponentPosition.Y - LastRowComponentPosition.Y) / (_numbersofRows - 1);
                 //var componentWidth = _editRecipe.CurrentComponent.WidthMM;
                 //var componentHeight = _editRecipe.CurrentComponent.HeightMM;
-                var substrateCoorHomeX = _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X;
-                var substrateCoorHomeY = _editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y;
-                //var offsetXModuleAndSubstrate = _editRecipe.SubstrateInfos.SubstrateMapInfos.FirstOrDefault().MaterialLocation.X - FirstMaterialPosition.X;
-                //var offsetYModuleAndSubstrate = _editRecipe.SubstrateInfos.SubstrateMapInfos.FirstOrDefault().MaterialLocation.Y - FirstMaterialPosition.Y;
+                var substrateCoorHomeX = _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.X;
+                var substrateCoorHomeY = _editRecipe.CurrentSubstrate.SubstrateCoordinateHomePoint.Y;
+                //var offsetXModuleAndSubstrate = _editRecipe.CurrentSubstrate.SubstrateMapInfos.FirstOrDefault().MaterialLocation.X - FirstMaterialPosition.X;
+                //var offsetYModuleAndSubstrate = _editRecipe.CurrentSubstrate.SubstrateMapInfos.FirstOrDefault().MaterialLocation.Y - FirstMaterialPosition.Y;
 
                 //Module中心和寻找Map标记点的偏移
-                var centerOffsetX = _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.X - FirstMaterialPosition.X;
-                var centerOffsetY = _editRecipe.SubstrateInfos.FirstModuleCenterSystemLocation.Y - FirstMaterialPosition.Y;
+                var centerOffsetX = _editRecipe.CurrentSubstrate.FirstModuleCenterSystemLocation.X - FirstMaterialPosition.X;
+                var centerOffsetY = _editRecipe.CurrentSubstrate.FirstModuleCenterSystemLocation.Y - FirstMaterialPosition.Y;
 
                 var firstModuleRelativeCoorX = FirstMaterialPosition.X - substrateCoorHomeX;
                 var firstModuleRelativeCoorY = FirstMaterialPosition.Y - substrateCoorHomeY;
 
-                foreach (var item in _editRecipe.SubstrateInfos.SubstrateMapInfos)
+                foreach (var item in _editRecipe.CurrentSubstrate.SubstrateMapInfos)
                 {
-                    var rotateCenterX = item.MaterialLocation.X- substrateCoorHomeX;
-                    var rotateCenterY = item.MaterialLocation.Y- substrateCoorHomeY;
+                    var rotateCenterX = item.MaterialLocation.X - substrateCoorHomeX;
+                    var rotateCenterY = item.MaterialLocation.Y - substrateCoorHomeY;
 
                     List<MaterialMapInformation> temp = new List<MaterialMapInformation>();
                     if (_rowPitchMM != 0 && _columnPitchMM != 0)
                     {
-                        _editRecipe.SubstrateInfos.ModuleMapInfos.Clear();
+                        _editRecipe.CurrentSubstrate.ModuleMapInfos.Clear();
                         var ID = 0;
                         for (int i = 0; i < _numbersofColumns; i++)
                         {
@@ -410,7 +632,7 @@ namespace RecipeEditPanelClsLib
                                 //var centerX = rotateCenterX + (xNormanl - rotateCenterX) * Math.Cos(mapAngle) - (yNormanl - rotateCenterY) * Math.Sin(mapAngle);
                                 //var centerY = rotateCenterY + (xNormanl - rotateCenterX) * Math.Sin(mapAngle) + (yNormanl - rotateCenterY) * Math.Cos(mapAngle);
                                 //Map记录的是Substrate坐标系下的module中心的系统坐标系；
-                                var centerX = firstModuleRelativeCoorX+rotateCenterX+ centerOffsetX + (xNormanl) * Math.Cos(mapAngle) - (yNormanl) * Math.Sin(mapAngle);
+                                var centerX = firstModuleRelativeCoorX + rotateCenterX + centerOffsetX + (xNormanl) * Math.Cos(mapAngle) - (yNormanl) * Math.Sin(mapAngle);
                                 var centerY = firstModuleRelativeCoorY + rotateCenterY + centerOffsetY + (xNormanl) * Math.Sin(mapAngle) - (yNormanl) * Math.Cos(mapAngle);
                                 material.MaterialLocation = new PointF() { X = (float)centerX, Y = (float)centerY };
                                 material.MaterialCoordIndex = new Point(j, i);
@@ -430,9 +652,11 @@ namespace RecipeEditPanelClsLib
                     //    newItem.Add(itemModule, new List<BondingPositionSettings>());
                     //    tempList.Add(newItem);
                     //}
-                    _editRecipe.SubstrateInfos.ModuleMapInfos.Add(temp);
+                    _editRecipe.CurrentSubstrate.ModuleMapInfos.Add(temp);
                 }
             }
+
+
         }
         private void SaveStepParametersWhenStepFinished(EnumDefineSetupRecipeSubstrateMapStep step)
         {

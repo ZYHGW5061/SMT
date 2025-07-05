@@ -175,8 +175,10 @@ namespace RecipeEditPanelClsLib
                     (float) _positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY) + offsetY);
 
 
-                EditRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.Clear();
-                EditRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
+                //EditRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.Clear();
+                //EditRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
+                EditRecipe.CurrentSubstrate.PositionModuleVisionParameters.ShapeMatchParameters.Clear();
+                EditRecipe.CurrentSubstrate.PositionModuleVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
                 finished = true;
             }
             finally

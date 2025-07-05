@@ -23,29 +23,42 @@ namespace RecipeEditPanelClsLib
         public override void LoadEditedRecipe(BondRecipe recipe)
         {
             _editRecipe = recipe;
-            //seThicknessMM.Text = _editRecipe.SubmonutInfos.ThicknessMM.ToString();
-            //cmbCarrierType.Text = _editRecipe.SubmonutInfos.CarrierType.ToString();
-            //seCarrierThicknessMM.Text = _editRecipe.SubmonutInfos.CarrierThicknessMM.ToString();
-            //cmbVisionPositionMethod.Text = _editRecipe.SubmonutInfos.PositionComponentVisionParameters.VisionPositionMethod.ToString();
-            //cmbAccuracyMethod.Text = _editRecipe.SubmonutInfos.AccuracyComponentPositionVisionParameters.AccuracyMethod.ToString();
-            //cmbAccuracyVisionMethod.Text = _editRecipe.SubmonutInfos.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod.ToString();
-            //cmbVisionPosUsedCamera.Text = _editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionUsedCamera.ToString();
+            ////seThicknessMM.Text = _editRecipe.SubmonutInfos.ThicknessMM.ToString();
+            ////cmbCarrierType.Text = _editRecipe.SubmonutInfos.CarrierType.ToString();
+            ////seCarrierThicknessMM.Text = _editRecipe.SubmonutInfos.CarrierThicknessMM.ToString();
+            ////cmbVisionPositionMethod.Text = _editRecipe.SubmonutInfos.PositionComponentVisionParameters.VisionPositionMethod.ToString();
+            ////cmbAccuracyMethod.Text = _editRecipe.SubmonutInfos.AccuracyComponentPositionVisionParameters.AccuracyMethod.ToString();
+            ////cmbAccuracyVisionMethod.Text = _editRecipe.SubmonutInfos.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod.ToString();
+            ////cmbVisionPosUsedCamera.Text = _editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionUsedCamera.ToString();
 
-            //cmbBlankingMethod.Text = _editRecipe.BlankingParameters.BlankingMethod.ToString();
-            //cmbRelatedPPTool.Text = _editRecipe.SubmonutInfos.RelatedPPToolName;
-            //cmbRelatedESTool.Text = _editRecipe.SubmonutInfos.RelatedESToolName;
+            ////cmbBlankingMethod.Text = _editRecipe.BlankingParameters.BlankingMethod.ToString();
+            ////cmbRelatedPPTool.Text = _editRecipe.SubmonutInfos.RelatedPPToolName;
+            ////cmbRelatedESTool.Text = _editRecipe.SubmonutInfos.RelatedESToolName;
 
-            teSubstrateName.Text = _editRecipe.SubstrateInfos.Name;
+            //teSubstrateName.Text = _editRecipe.SubstrateInfos.Name;
 
-            ckeMultiSubstrate.Checked = _editRecipe.SubstrateInfos.IsMultiSubstrates;
-            ckbMultiModule.Checked = _editRecipe.SubstrateInfos.IsMultiModules;
-            ckbAlignModule.Checked = _editRecipe.SubstrateInfos.IsPositionModules;
+            //ckeMultiSubstrate.Checked = _editRecipe.SubstrateInfos.IsMultiSubstrates;
+            //ckbMultiModule.Checked = _editRecipe.SubstrateInfos.IsMultiModules;
+            //ckbAlignModule.Checked = _editRecipe.SubstrateInfos.IsPositionModules;
 
-            cmbPositionSubstratePointCount.Text = _editRecipe.SubstrateInfos.PositionSubstratePointCount.ToString();
-            cmbPositionSubstrateMehtod.Text= _editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionMethod.ToString();
+            //cmbPositionSubstratePointCount.Text = _editRecipe.SubstrateInfos.PositionSubstratePointCount.ToString();
+            //cmbPositionSubstrateMehtod.Text= _editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionMethod.ToString();
 
-            cmbPositionModulePointCount.Text = _editRecipe.SubstrateInfos.PositionModulePointCount.ToString();
-            cmbPositionModuleMehtod.Text = _editRecipe.SubstrateInfos.PositionModuleVisionParameters.VisionPositionMethod.ToString();
+            //cmbPositionModulePointCount.Text = _editRecipe.SubstrateInfos.PositionModulePointCount.ToString();
+            //cmbPositionModuleMehtod.Text = _editRecipe.SubstrateInfos.PositionModuleVisionParameters.VisionPositionMethod.ToString();
+
+            teSubstrateName.Text = _editRecipe.CurrentSubstrate.Name;
+
+            ckeMultiSubstrate.Checked = _editRecipe.CurrentSubstrate.IsMultiSubstrates;
+            ckbMultiModule.Checked = _editRecipe.CurrentSubstrate.IsMultiModules;
+            ckbAlignModule.Checked = _editRecipe.CurrentSubstrate.IsPositionModules;
+
+            cmbPositionSubstratePointCount.Text = _editRecipe.CurrentSubstrate.PositionSubstratePointCount.ToString();
+            cmbPositionSubstrateMehtod.Text = _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionMethod.ToString();
+
+            cmbPositionModulePointCount.Text = _editRecipe.CurrentSubstrate.PositionModulePointCount.ToString();
+            cmbPositionModuleMehtod.Text = _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionMethod.ToString();
+
         }
         private void InitialControl()
         {
@@ -103,31 +116,47 @@ namespace RecipeEditPanelClsLib
         {
 
             currengStep = EnumRecipeStep.Substrate_InformationSettings;
-            //_editRecipe.SubmonutInfos.ThicknessMM = float.Parse(seThicknessMM.Text.Trim());
-            //_editRecipe.SubmonutInfos.CarrierType = (EnumCarrierType)Enum.Parse(typeof(EnumCarrierType), cmbCarrierType.Text);
-            //_editRecipe.SubmonutInfos.CarrierThicknessMM = float.Parse(seCarrierThicknessMM.Text.Trim());
-            //_editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbVisionPositionMethod.Text);
-            //_editRecipe.SubmonutInfos.AccuracySubmountPositionVisionParameters.AccuracyMethod = (EnumAccuracyMethod)Enum.Parse(typeof(EnumAccuracyMethod), cmbAccuracyMethod.Text);
-            //_editRecipe.SubmonutInfos.AccuracySubmountPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbAccuracyVisionMethod.Text);
+            ////_editRecipe.SubmonutInfos.ThicknessMM = float.Parse(seThicknessMM.Text.Trim());
+            ////_editRecipe.SubmonutInfos.CarrierType = (EnumCarrierType)Enum.Parse(typeof(EnumCarrierType), cmbCarrierType.Text);
+            ////_editRecipe.SubmonutInfos.CarrierThicknessMM = float.Parse(seCarrierThicknessMM.Text.Trim());
+            ////_editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbVisionPositionMethod.Text);
+            ////_editRecipe.SubmonutInfos.AccuracySubmountPositionVisionParameters.AccuracyMethod = (EnumAccuracyMethod)Enum.Parse(typeof(EnumAccuracyMethod), cmbAccuracyMethod.Text);
+            ////_editRecipe.SubmonutInfos.AccuracySubmountPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbAccuracyVisionMethod.Text);
 
-            //_editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbVisionPosUsedCamera.Text);
-            //_editRecipe.BlankingParameters.BlankingMethod = (EnumBlankingMethod)Enum.Parse(typeof(EnumBlankingMethod), cmbBlankingMethod.Text);
-            //_editRecipe.SubmonutInfos.RelatedPPToolName = cmbRelatedPPTool.Text;
-            //_editRecipe.SubmonutInfos.RelatedESToolName = cmbRelatedESTool.Text;
+            ////_editRecipe.SubmonutInfos.PositionSubmountVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbVisionPosUsedCamera.Text);
+            ////_editRecipe.BlankingParameters.BlankingMethod = (EnumBlankingMethod)Enum.Parse(typeof(EnumBlankingMethod), cmbBlankingMethod.Text);
+            ////_editRecipe.SubmonutInfos.RelatedPPToolName = cmbRelatedPPTool.Text;
+            ////_editRecipe.SubmonutInfos.RelatedESToolName = cmbRelatedESTool.Text;
 
-            _editRecipe.SubstrateInfos.Name = teSubstrateName.Text;
+            //_editRecipe.SubstrateInfos.Name = teSubstrateName.Text;
 
-            _editRecipe.SubstrateInfos.IsMultiSubstrates= ckeMultiSubstrate.Checked;
-            _editRecipe.SubstrateInfos.IsMultiModules= ckbMultiModule.Checked;
-            _editRecipe.SubstrateInfos.IsPositionModules= ckbAlignModule.Checked;
+            //_editRecipe.SubstrateInfos.IsMultiSubstrates= ckeMultiSubstrate.Checked;
+            //_editRecipe.SubstrateInfos.IsMultiModules= ckbMultiModule.Checked;
+            //_editRecipe.SubstrateInfos.IsPositionModules= ckbAlignModule.Checked;
 
-            _editRecipe.SubstrateInfos.PositionSubstratePointCount = int.Parse(cmbPositionSubstratePointCount.Text.Trim());
-            _editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionSubstrateMehtod.Text);
+            //_editRecipe.SubstrateInfos.PositionSubstratePointCount = int.Parse(cmbPositionSubstratePointCount.Text.Trim());
+            //_editRecipe.SubstrateInfos.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionSubstrateMehtod.Text);
 
-            _editRecipe.SubstrateInfos.PositionModulePointCount = int.Parse(cmbPositionModulePointCount.Text.Trim());
-            _editRecipe.SubstrateInfos.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionModuleMehtod.Text);
+            //_editRecipe.SubstrateInfos.PositionModulePointCount = int.Parse(cmbPositionModulePointCount.Text.Trim());
+            //_editRecipe.SubstrateInfos.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionModuleMehtod.Text);
 
-            _editRecipe.SubstrateInfos.IsMaterialInfoSettingsComplete = true;
+            //_editRecipe.SubstrateInfos.IsMaterialInfoSettingsComplete = true;
+
+            _editRecipe.CurrentSubstrate.Name = teSubstrateName.Text;
+
+            _editRecipe.CurrentSubstrate.IsMultiSubstrates = ckeMultiSubstrate.Checked;
+            _editRecipe.CurrentSubstrate.IsMultiModules = ckbMultiModule.Checked;
+            _editRecipe.CurrentSubstrate.IsPositionModules = ckbAlignModule.Checked;
+
+            _editRecipe.CurrentSubstrate.PositionSubstratePointCount = int.Parse(cmbPositionSubstratePointCount.Text.Trim());
+            _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionSubstrateMehtod.Text);
+
+            _editRecipe.CurrentSubstrate.PositionModulePointCount = int.Parse(cmbPositionModulePointCount.Text.Trim());
+            _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionModuleMehtod.Text);
+
+            _editRecipe.CurrentSubstrate.IsMaterialInfoSettingsComplete = true;
+
+
             finished = true;
         }
 
