@@ -67,6 +67,7 @@
     <Compile Include="BMCProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemCalibration.cs" />
+    <Compile Include="ZRProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Algorithm\Vision\VisionClsLib\VisionClsLib.csproj">

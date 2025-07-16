@@ -374,7 +374,7 @@ namespace StageControllerClsLib
             int err = 0;
             if (axis == EnumStageAxis.BondX || axis == EnumStageAxis.BondY || axis == EnumStageAxis.BondZ)
             {
-                _boardCardController.SetAxisErrPosBind(axis, out err, band, time);
+                _boardCardController.SetAxisErrPosBind(axis, out err, 50, time);
 
             }
             else if (axis == EnumStageAxis.ChipPPT)

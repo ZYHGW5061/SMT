@@ -258,10 +258,10 @@ namespace RecipeClsLib
                     {
                         loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     }
-                    loadedRecipe.StepSubstrateList = LoadSubstrate(loadedRecipe.ProductSteps);
-                    loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
-                    loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
-                    loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
+                    //loadedRecipe.StepSubstrateList = LoadSubstrate(loadedRecipe.ProductSteps);
+                    //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
+                    //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
+                    //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
                 }
                 else
                 {
@@ -271,11 +271,16 @@ namespace RecipeClsLib
                     {
                         loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     }
-                    loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
-                    loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
-                    loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
-                    loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
                 }
+                loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
+                loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
+                loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
+                loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
+
                 //loadedRecipe.SubstrateInfos.SubstrateMapInfos = LoadSubstrateMap();
                 //loadedRecipe.SubstrateInfos.ModuleMapInfos = LoadModuleMap();
 
@@ -542,13 +547,17 @@ namespace RecipeClsLib
             for (int index = 0; index < childFiles.Length; index++)
             {
                 var fileName = Path.GetFileName(childFiles[index]);
-                if (fileName.EndsWith($"_{substrateName}"))
-                {
-                    var xmlFile = $@"{_SubstrateSavePath}\{fileName}\{fileName}.xml";
-                    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
-                    comp.SubstrateMapInfos = LoadSubstrateMap(fileName);
-                    ret.Add(comp);
-                }
+                //if (fileName.EndsWith($"_{substrateName}"))
+                //{
+                //    var xmlFile = $@"{_SubstrateSavePath}\{fileName}\{fileName}.xml";
+                //    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+                //    comp.SubstrateMapInfos = LoadSubstrateMap(fileName);
+                //    ret.Add(comp);
+                //}
+                var xmlFile = $@"{_SubstrateSavePath}\{fileName}\{fileName}.xml";
+                var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
+                comp.SubstrateMapInfos = LoadSubstrateMap(fileName);
+                ret.Add(comp);
             }
 
             return ret;
@@ -572,13 +581,17 @@ namespace RecipeClsLib
             for (int index = 0; index < childFiles.Length; index++)
             {
                 var fileName = Path.GetFileName(childFiles[index]);
-                if (fileName.EndsWith($"_{recipeName}"))
-                {
-                    var xmlFile = $@"{_componentsSavePath}\{fileName}\{fileName}.xml";
-                    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramComponentSettings>(xmlFile, Encoding.UTF8);
-                    comp.ComponentMapInfos = LoadComponentMap(fileName);
-                    ret.Add(comp);
-                }
+                //if (fileName.EndsWith($"_{recipeName}"))
+                //{
+                //    var xmlFile = $@"{_componentsSavePath}\{fileName}\{fileName}.xml";
+                //    var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramComponentSettings>(xmlFile, Encoding.UTF8);
+                //    comp.ComponentMapInfos = LoadComponentMap(fileName);
+                //    ret.Add(comp);
+                //}
+                var xmlFile = $@"{_componentsSavePath}\{fileName}\{fileName}.xml";
+                var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramComponentSettings>(xmlFile, Encoding.UTF8);
+                comp.ComponentMapInfos = LoadComponentMap(fileName);
+                ret.Add(comp);
             }
 
             return ret;
@@ -597,13 +610,16 @@ namespace RecipeClsLib
             for (int index = 0; index < childDir.Length; index++)
             {
                 var fileName = Path.GetFileName(childDir[index]);
-                if (fileName.EndsWith($"_{recipeName}"))
-                {
+                //if (fileName.EndsWith($"_{recipeName}"))
+                //{
 
-                    var xmlFile = $@"{_bondPositionSavePath}{fileName}\{fileName}.xml";
-                    var bp = XmlSerializeHelper.XmlDeserializeFromFile<BondingPositionSettings>(xmlFile, Encoding.UTF8);
-                    ret.Add(bp);
-                }
+                //    var xmlFile = $@"{_bondPositionSavePath}{fileName}\{fileName}.xml";
+                //    var bp = XmlSerializeHelper.XmlDeserializeFromFile<BondingPositionSettings>(xmlFile, Encoding.UTF8);
+                //    ret.Add(bp);
+                //}
+                var xmlFile = $@"{_bondPositionSavePath}{fileName}\{fileName}.xml";
+                var bp = XmlSerializeHelper.XmlDeserializeFromFile<BondingPositionSettings>(xmlFile, Encoding.UTF8);
+                ret.Add(bp);
 
             }
 
@@ -623,13 +639,16 @@ namespace RecipeClsLib
             for (int index = 0; index < childDir.Length; index++)
             {
                 var fileName = Path.GetFileName(childDir[index]);
-                if (fileName.EndsWith($"_{recipeName}"))
-                {
+                //if (fileName.EndsWith($"_{recipeName}"))
+                //{
 
-                    var xmlFile = $@"{_epoxyApplicationSavePath}{fileName}\{fileName}.xml";
-                    var bp = XmlSerializeHelper.XmlDeserializeFromFile<EpoxyApplication>(xmlFile, Encoding.UTF8);
-                    ret.Add(bp);
-                }
+                //    var xmlFile = $@"{_epoxyApplicationSavePath}{fileName}\{fileName}.xml";
+                //    var bp = XmlSerializeHelper.XmlDeserializeFromFile<EpoxyApplication>(xmlFile, Encoding.UTF8);
+                //    ret.Add(bp);
+                //}
+                var xmlFile = $@"{_epoxyApplicationSavePath}{fileName}\{fileName}.xml";
+                var bp = XmlSerializeHelper.XmlDeserializeFromFile<EpoxyApplication>(xmlFile, Encoding.UTF8);
+                ret.Add(bp);
 
             }
 

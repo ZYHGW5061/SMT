@@ -609,6 +609,21 @@ namespace SystemCalibrationClsLib
 
         //流程
 
+        public bool InitCamera()
+        {
+            try
+            {
+                BondCameraVisual.SetOneMode();
+                WaferCameraVisual.SetOneMode();
+                UplookingCameraVisual.SetOneMode();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 自动聚焦
         /// </summary>
@@ -1117,8 +1132,16 @@ namespace SystemCalibrationClsLib
             {
                 //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
                 //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
                 BondCameraVisual.SetLightintensity(param);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                sw.Reset();
+                sw.Start();
 
                 bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
 
@@ -1128,6 +1151,12 @@ namespace SystemCalibrationClsLib
 
                 Bitmap bitmap = BondCameraVisual.GetBitmap();
                 Bitmap Showbitmap = new Bitmap(bitmap);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"榜头相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                sw.Reset();
+                sw.Start();
 
                 bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
                 bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
@@ -1142,6 +1171,8 @@ namespace SystemCalibrationClsLib
 
                 Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
 
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"榜头相机识别{sw.ElapsedMilliseconds}ms \n");
 
                 double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
                 double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
@@ -1200,7 +1231,17 @@ namespace SystemCalibrationClsLib
             {
                 //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
                 //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
                 WaferCameraVisual.SetLightintensity(param);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                sw.Reset();
+                sw.Start();
 
                 bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
 
@@ -1210,6 +1251,12 @@ namespace SystemCalibrationClsLib
 
                 Bitmap bitmap = WaferCameraVisual.GetBitmap();
                 Bitmap Showbitmap = new Bitmap(bitmap);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"晶圆相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                sw.Reset();
+                sw.Start();
 
                 bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
                 bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
@@ -1223,6 +1270,9 @@ namespace SystemCalibrationClsLib
                 List<MatchResult> results = new List<MatchResult>();
 
                 Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"晶圆相机识别{sw.ElapsedMilliseconds}ms \n");
 
                 double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
                 double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);

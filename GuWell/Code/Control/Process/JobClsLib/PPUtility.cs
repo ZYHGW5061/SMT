@@ -462,10 +462,10 @@ namespace JobClsLib
                     }
 
                 }
-                else
-                {
-                    return false;
-                }
+                //else
+                //{
+                //    return false;
+                //}
 
                
                 //if (param.IsUseNeedle)

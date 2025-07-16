@@ -596,20 +596,35 @@ namespace BoardCardControllerClsLib
         public void MoveAbsoluteSync(EnumStageAxis axis, double targetPos, double Speed, int millisecondsTimeout = -1)
         {
             ClrAlarm(axis);
+            //if (axis == EnumStageAxis.BondY)
+            //{
+            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
+            //}
+            //else if (axis == EnumStageAxis.BondX)
+            //{
+            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
+            //}
+            //else if (axis == EnumStageAxis.BondZ)
+            //{
+            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 2500, 25000);
+            //}
             if (axis == EnumStageAxis.BondY)
             {
                 AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
+                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 20000, 100000);
             }
             else if (axis == EnumStageAxis.BondX)
             {
                 AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
+                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 20000, 100000);
             }
             else if (axis == EnumStageAxis.BondZ)
             {
                 AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 2500, 25000);
+                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 5000, 50000);
             }
             //else if (axis == EnumStageAxis.ChipPPT)
             //{

@@ -105,6 +105,12 @@ namespace CameraControllerClsLib
         bool GetImage();
 
         /// <summary>
+        /// 设置单采模式
+        /// </summary>
+        /// <returns></returns>
+        bool SetOneMode();
+
+        /// <summary>
         /// 单张采集
         /// </summary>
         /// <returns></returns>

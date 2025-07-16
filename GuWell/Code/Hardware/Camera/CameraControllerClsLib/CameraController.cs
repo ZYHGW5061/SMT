@@ -579,11 +579,11 @@ namespace CameraControllerClsLib
                             Grabbing = false;
                         }
 
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
 
                         GrabMode = false;
 
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
 
                         if (grabbing == false)
                         {
@@ -660,6 +660,40 @@ namespace CameraControllerClsLib
             }
         }
 
+        public bool SetOneMode()
+        {
+            try
+            {
+                if (grabmode)
+                {
+                    if (grabbing)
+                    {
+                        Grabbing = false;
+                    }
+
+                    Thread.Sleep(10);
+
+                    GrabMode = false;
+
+                    Thread.Sleep(10);
+
+                    if (grabbing == false)
+                    {
+                        Grabbing = true;
+                    }
+                }
+                if (grabbing == false)
+                {
+                    Grabbing = true;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 单采模式获取图像
         /// </summary>
@@ -679,11 +713,11 @@ namespace CameraControllerClsLib
                             Grabbing = false;
                         }
 
-                        Thread.Sleep(20);
+                        Thread.Sleep(10);
 
                         GrabMode = false;
 
-                        Thread.Sleep(20);
+                        Thread.Sleep(10);
 
                         if (grabbing == false)
                         {

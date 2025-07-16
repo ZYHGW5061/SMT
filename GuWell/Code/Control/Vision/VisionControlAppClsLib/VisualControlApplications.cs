@@ -168,8 +168,11 @@ namespace VisionControlAppClsLib
             return Image;
         }
     
-        
-    
+        public bool SetOneMode()
+        {
+            return Camera.SetOneMode();
+        }
+
 
         #endregion
 

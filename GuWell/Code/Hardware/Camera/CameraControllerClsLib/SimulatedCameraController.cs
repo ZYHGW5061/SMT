@@ -153,5 +153,10 @@ namespace CameraControllerClsLib
         {
             return null;
         }
+
+        public bool SetOneMode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

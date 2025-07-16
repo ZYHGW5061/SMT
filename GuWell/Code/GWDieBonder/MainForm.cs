@@ -156,8 +156,8 @@ namespace BondTerminal
                     _stageEngine[EnumStageAxis.WaferTableY].Home();
                     _stageEngine[EnumStageAxis.WaferTableX].Home();
                     _stageEngine[EnumStageAxis.WaferTableZ].Home();
-                    _stageEngine[EnumStageAxis.SubmountPPZ].Home();
-                    _stageEngine[EnumStageAxis.SubmountPPT].Home();
+                    //_stageEngine[EnumStageAxis.SubmountPPZ].Home();
+                    //_stageEngine[EnumStageAxis.SubmountPPT].Home();
                     CloseWaitDialog();
                 }
                 catch (Exception ex)
@@ -772,6 +772,21 @@ namespace BondTerminal
             {
                 form.Activate();
             }
+        }
+
+        private void 运行ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.Run(10, 2000);
+        }
+
+        private void 到安全位置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.BondToSafeAsync();
+        }
+
+        private void 到测力位置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.BondToPressureTableAsync();
         }
 
         //private void testToolStripMenuItem_Click(object sender, EventArgs e)
