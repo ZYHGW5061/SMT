@@ -568,6 +568,7 @@ namespace GlobalDataDefineClsLib
         LookupSubmountPPOrigion = 8,
         LookupLaserSensorOrigion = 9,
         EutecticWeldingOrigion = 10,
+        CalibrationTableOrigion = 11,
     }
     [Serializable]
     [XmlType("Mask")]

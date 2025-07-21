@@ -556,6 +556,228 @@ namespace SystemCalibrationClsLib
 
         }
 
+
+        /// <summary>
+        /// 榜头相机移动到BMC位置，识别BMC
+        /// </summary>
+        /// <param name="Auto"></param>
+        private bool BondCameraIdentifyCalibrationTableMoveAsync(int Mode = 0)
+        {
+            //while(!EnToIdentifyBMC)
+            //{
+            //    Thread.Sleep(50);
+            //}
+
+            if (CameraWindowGUI.Instance != null)
+            {
+                //CameraWindowGUI.Instance.SelectCamera(0);
+            }
+            if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+            {
+                CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
+                CameraWindowForm.Instance.Show();
+            }
+
+            string name = "榜头相机识别";
+            string title = "";
+            VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+            visualMatch.InitVisualControl(CameraWindowGUI.Instance, BondCameraVisual);
+
+            double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+            double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+            double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+            //BondCameraVisual.SetDirectLightintensity(visualMatch.DirectLightintensity);
+            //BondCameraVisual.SetRingLightintensity(visualMatch.RingLightintensity);
+            //BondCameraVisual.SetLightintensity(_systemConfig.SystemCalibrationConfig.BondIdentifyBMCMatch);
+
+
+            if (Mode == 0)
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                BondX = _systemConfig.PositioningConfig.CalibrationTableOrigion.X;
+                BondY = _systemConfig.PositioningConfig.CalibrationTableOrigion.Y;
+                BondZ = _systemConfig.PositioningConfig.CalibrationTableOrigion.Z + _systemConfig.PositioningConfig.TrackOrigion.Z;
+
+                AxisAbsoluteMove(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z);
+                BondXYZAbsoluteMove(BondX, BondY, _systemConfig.PositioningConfig.BondSafeLocation.Z);
+                AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"Bond相机移动到校准台上方{sw.ElapsedMilliseconds}ms \n");
+
+
+                sw.Reset();
+                sw.Start();
+                MatchIdentificationParam BondCameraChipparam = _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch;
+                XYZTCoordinateConfig offset = BondCameraVisualTool(BondCameraChipparam);
+                sw.Stop();
+                LogRecorder.RecordLog(EnumLogContentType.Info, $"Bond相机识别校准台{sw.ElapsedMilliseconds}ms \n");
+                if (offset == null)
+                {
+                    int result1 = SystemCalibration.Instance.ShowMessageAsync("动作确认", "识别失败", "提示");
+                    if (result1 == 1)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                XYZToffset6 = new XYZTOffsetConfig()
+                {
+                    X = offset.X,
+                    Y = offset.Y,
+                    Theta = offset.Theta,
+                };
+
+
+
+                if (CameraWindowGUI.Instance != null)
+                {
+                    //CameraWindowGUI.Instance.SelectCamera(0);
+                    CameraWindowGUI.Instance.ClearGraphicDraw();
+                }
+            }
+
+
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// 仰视相机创建识别 轮廓
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public bool UplookingPPtoolMatchProcess(int Mode = 0)
+        {
+            try
+            {
+                //while (!EnToIdentifyUpBMC)
+                //{
+                //    Thread.Sleep(50);
+                //}
+
+
+
+                if (CameraWindowGUI.Instance != null)
+                {
+                    //CameraWindowGUI.Instance.SelectCamera(1);
+                }
+                if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+                {
+                    CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
+                    CameraWindowForm.Instance.Show();
+                }
+
+                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+
+                //吸嘴旋转补偿
+                CalibrationAlgorithms PPCalibration = new CalibrationAlgorithms();
+
+                PointF point1 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.Y);
+                PointF point2 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.Y);
+
+                PPCalibration.PPRotateXYDeviationParamCal(point1, point2, 0, 180);
+
+                //double angle = currentBondBMC.Theta;
+                double angle = 0;
+                double angle0 = 0;
+
+                PointF point3 = PPCalibration.PPXYDeviationCal((float)angle0, (float)0);
+
+                PointF pointoffset = new PointF();
+                if (_systemConfig.SystemCalibrationConfig.BondIdentifyBMCSpotNum == 1)
+                {
+                    pointoffset.X = (float)(point3.X); pointoffset.Y = (float)(point3.Y);
+                }
+                else if (_systemConfig.SystemCalibrationConfig.BondIdentifyBMCSpotNum == 2)
+                {
+                    pointoffset.X = (float)(point3.X + XYZToffset2.X); pointoffset.Y = (float)(point3.Y + XYZToffset2.Y);
+                }
+
+                //创建仰视识别
+                string name = "仰视相机识别";
+                string title = "";
+                VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+                visualMatch.InitVisualControl(CameraWindowGUI.Instance, UplookingCameraVisual);
+
+                MatchIdentificationParam param = _systemConfig.SystemCalibrationConfig.UplookingIdentifyBMCMatch;
+
+                MatchIdentificationParam param1 = new MatchIdentificationParam();
+
+                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                //UplookingCameraVisual.SetDirectLightintensity(visualMatch.DirectLightintensity);
+                //UplookingCameraVisual.SetRingLightintensity(visualMatch.RingLightintensity);
+                //UplookingCameraVisual.SetLightintensity(_systemConfig.SystemCalibrationConfig.UplookingIdentifyBMCMatch);
+
+
+                if (Mode == 0)
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    BondX = _systemConfig.PositioningConfig.LookupChipPPOrigion.X;
+                    BondY = _systemConfig.PositioningConfig.LookupChipPPOrigion.Y;
+                    BondZ = _systemConfig.PositioningConfig.LookupChipPPOrigion.Z;
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z);
+                    BondXYZAbsoluteMove(BondX, BondY, _systemConfig.PositioningConfig.BondSafeLocation.Z);
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Info, $"吸嘴移动到Uplooking相机中心{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+                    //Thread.Sleep(2000);
+                    //XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
+                    MatchIdentificationParam UplookingCameraChipparam = _systemConfig.SystemCalibrationConfig.UplookingIdentifyBond1Match;
+                    XYZTCoordinateConfig offset = UplookingCameraVisualTool(UplookingCameraChipparam);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Info, $"Uplooking相机识别吸嘴{sw.ElapsedMilliseconds}ms \n");
+
+                    if (offset == null)
+                    {
+                        int result1 = SystemCalibration.Instance.ShowMessageAsync("动作确认", "识别失败", "提示");
+                        if (result1 == 1)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    XYZToffset6 = new XYZTOffsetConfig()
+                    {
+                        X = offset.X,
+                        Y = offset.Y,
+                        Theta = offset.Theta,
+                    };
+
+
+                }
+
+                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+
         /// <summary>
         /// 榜头相机移动到BMC位置，识别BMC
         /// </summary>
@@ -3151,8 +3373,8 @@ namespace SystemCalibrationClsLib
                 //target1[0] = currentBondBMCSubstrate.X + XYZToffset3.X + point3.X;
                 //target1[1] = currentBondBMCSubstrate.Y + XYZToffset3.Y + point3.Y;
 
-                target1[0] = currentBondBMCSubstrate.X + XYZToffset3.X + point3.X - XYZToffset5.X + Xoffset;
-                target1[1] = currentBondBMCSubstrate.Y + XYZToffset3.Y + point3.Y - XYZToffset5.Y + Yoffset;
+                target1[0] = currentBondBMCSubstrate.X + XYZToffset3.X + point3.X + XYZToffset5.X + Xoffset;
+                target1[1] = currentBondBMCSubstrate.Y + XYZToffset3.Y + point3.Y + XYZToffset5.Y + Yoffset;
                 //target1[2] = -Angle;
 
                 //_positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Relative);
@@ -3524,8 +3746,8 @@ namespace SystemCalibrationClsLib
 
                 XYZToffset5 = new XYZTOffsetConfig();
 
-                
 
+                int bci = 0;
 
                 Task.Factory.StartNew(new Action(async () =>
                 {
@@ -3539,10 +3761,26 @@ namespace SystemCalibrationClsLib
                         LogRecorder.RecordLog(EnumLogContentType.Info, $"BMC Run:{i}.");
                         Thread.Sleep(delaytime);
 
+                        //榜头移动到安全位置
+                        BondToSafeAsync();
+
+                        //////Done = BondCameraIdentifyCalibrationTableMoveAsync(0);
+                        //////if (Done == false)
+                        //////{
+                        //////    int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
+                        //////    if (Done1 == 0)
+                        //////    {
+                        //////        break;
+                        //////    }
+                        //////    else
+                        //////    {
+                        //////        continue;
+                        //////    }
+                        //////}
+                        ///
 
 
-                        //榜头移动到BMC位置，BMC识别
-                        Done = BondCameraIdentifyBMCMoveAsync(0);
+                        Done = UplookingPPtoolMatchProcess(0);
                         if (Done == false)
                         {
                             int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
@@ -3556,78 +3794,92 @@ namespace SystemCalibrationClsLib
                             }
                         }
 
-                        //MoveWafer1();
 
-                        //榜头移动到BMC上方，关闭BMC基板真空，吸取BMC
-                        Done = BondPickupBMC();
+                        //////榜头移动到BMC位置，BMC识别
+                        ////Done = BondCameraIdentifyBMCMoveAsync(0);
+                        ////if (Done == false)
+                        ////{
+                        ////    int Done1 = ShowMessage("动作确认", "识别失败是否继续进行BMC", "提示");
+                        ////    if (Done1 == 0)
+                        ////    {
+                        ////        break;
+                        ////    }
+                        ////    else
+                        ////    {
+                        ////        continue;
+                        ////    }
+                        ////}
 
-                        if (Done == false)
-                        {
-                            int Done1 = ShowMessage("动作确认", "吸取BMC失败是否继续", "提示");
-                            if (Done1 == 0)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
+                        //////MoveWafer1();
 
+                        //////榜头移动到BMC上方，关闭BMC基板真空，吸取BMC
+                        ////Done = BondPickupBMC();
 
-
-
-                        //仰视识别BMC
-                        Done = UplookingMatchProcess(0);
-                        if (Done == false)
-                        {
-                            int Done1 = ShowMessage("动作确认", "仰视相机BMC识别失败", "提示");
-                            if (Done1 == 0)
-                            {
-                                return;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
-
-                        //MoveWafer2();
-
-                        //榜头移动到BMC基板（纯手模式），创建贴片位置识别
-                        Done = BondCameraIdentifyBMCSubstrateMoveAsync(0);
-                        if (Done == false)
-                        {
-                            int Done1 = ShowMessage("动作确认", "贴片位置识别失败", "提示");
-                            if (Done1 == 0)
-                            {
-                                return;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
+                        ////if (Done == false)
+                        ////{
+                        ////    int Done1 = ShowMessage("动作确认", "吸取BMC失败是否继续", "提示");
+                        ////    if (Done1 == 0)
+                        ////    {
+                        ////        break;
+                        ////    }
+                        ////    else
+                        ////    {
+                        ////        continue;
+                        ////    }
+                        ////}
 
 
-                        //榜头移动到共晶台上方（纯手模式），将BMC放到共晶台上
-                        Done = BondPutDownBMC();
-                        if (Done == false)
-                        {
-                            int Done1 = ShowMessage("动作确认", "放下BMC失败", "提示");
-                            if (Done1 == 0)
-                            {
-                                return;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
 
-                        //XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig();
-                        //榜头相机移动到共晶台位置，识别BMC，记录BMC相对于相机中心的偏移
-                        //XYZTCoordinateConfig XYZToffset = BondCameraIdentifyBMCAsync();
+
+                        //////仰视识别BMC
+                        ////Done = UplookingMatchProcess(0);
+                        ////if (Done == false)
+                        ////{
+                        ////    int Done1 = ShowMessage("动作确认", "仰视相机BMC识别失败", "提示");
+                        ////    if (Done1 == 0)
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////    else
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////}
+
+                        //////MoveWafer2();
+
+                        //////榜头移动到BMC基板（纯手模式），创建贴片位置识别
+                        ////Done = BondCameraIdentifyBMCSubstrateMoveAsync(0);
+                        ////if (Done == false)
+                        ////{
+                        ////    int Done1 = ShowMessage("动作确认", "贴片位置识别失败", "提示");
+                        ////    if (Done1 == 0)
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////    else
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////}
+
+
+                        //////榜头移动到共晶台上方（纯手模式），将BMC放到共晶台上
+                        ////Done = BondPutDownBMC();
+                        ////if (Done == false)
+                        ////{
+                        ////    int Done1 = ShowMessage("动作确认", "放下BMC失败", "提示");
+                        ////    if (Done1 == 0)
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////    else
+                        ////    {
+                        ////        return;
+                        ////    }
+                        ////}
+
+
 
                         XYZTCoordinateConfig XYZToffset = new XYZTCoordinateConfig()
                         { X = 0, Y = 0, Theta = 0 };
@@ -3661,17 +3913,17 @@ namespace SystemCalibrationClsLib
                             YOffsets_1.Add((float)XYZToffset.Y);
                         }
 
-                        //if(i > 4)
-                        //{
-                        //    XYZToffset5 = new XYZTOffsetConfig()
-                        //    {
-                        //        X = XOffsets_1.Average(),
-                        //        Y = YOffsets_1.Average(),
-                        //        Theta = 0,
-                        //    };
+                        if (i > 4)
+                        {
+                            XYZToffset5 = new XYZTOffsetConfig()
+                            {
+                                X = XOffsets_1.Average(),
+                                Y = YOffsets_1.Average(),
+                                Theta = 0,
+                            };
 
-                            
-                        //}
+
+                        }
 
                         //if(i > 5)
                         //{
@@ -3702,9 +3954,9 @@ namespace SystemCalibrationClsLib
                         //        BondBMCSubstrateYOffsets.Add((float)XYZToffset4.Y);
                         //        BondBMCSubstrateThetaOffsets.Add((float)XYZToffset4.Theta);
                         //    }
-                            
 
-                            
+
+
 
                         //    XOffsets.Add((float)XYZToffset.X);
                         //    YOffsets.Add((float)XYZToffset.Y);
@@ -3712,30 +3964,68 @@ namespace SystemCalibrationClsLib
                         //    ThetaOffsets.Add((float)XYZToffset.Theta);
                         //}
 
-                        if (i > 5)
-                        {
-                            XOffsets.Add((float)XYZToffset.X);
-                            YOffsets.Add((float)XYZToffset.Y);
-                            ZOffsets.Add((float)XYZToffset.Z);
-                            ThetaOffsets.Add((float)XYZToffset.Theta);
 
-                            if (XYZToffset1 != null)
+                        
+
+                        if (i > 6)
+                        {
+                            //XOffsets_2.Add((float)XYZToffset.X);
+                            //YOffsets_2.Add((float)XYZToffset.Y);
+
+                            //XYZToffset5 = new XYZTOffsetConfig()
+                            //{
+                            //    X = XOffsets_1.Average() + XOffsets_2.Average(),
+                            //    Y = YOffsets_1.Average() + YOffsets_2.Average(),
+                            //    Theta = 0,
+                            //};
+
+                            if (bci < 10)
                             {
-                                BondBMCXOffsets.Add((float)XYZToffset1.X);
-                                BondBMCYOffsets.Add((float)XYZToffset1.Y);
-                                BondBMCThetaOffsets.Add((float)XYZToffset1.Theta);
+                                bci++;
+                                XOffsets_2.Add((float)XYZToffset.X);
+                                YOffsets_2.Add((float)XYZToffset.Y);
+
+
                             }
-                            if (XYZToffset3 != null)
+                            else
                             {
-                                UpBMCXOffsets.Add((float)XYZToffset3.X);
-                                UpBMCYOffsets.Add((float)XYZToffset3.Y);
-                                UpBMCThetaOffsets.Add((float)XYZToffset3.Theta);
+                                XYZTOffsetConfig zjz = XYZToffset5;
+                                XYZToffset5 = new XYZTOffsetConfig()
+                                {
+                                    X = XOffsets_2.Average() + zjz.X,
+                                    Y = YOffsets_2.Average() + zjz.Y,
+                                    Theta = 0,
+                                };
+                                bci = 0;
+                                XOffsets_2.Clear();
                             }
-                            if (XYZToffset4 != null)
+
+                            if (i>9)
                             {
-                                BondBMCSubstrateXOffsets.Add((float)XYZToffset4.X);
-                                BondBMCSubstrateYOffsets.Add((float)XYZToffset4.Y);
-                                BondBMCSubstrateThetaOffsets.Add((float)XYZToffset4.Theta);
+                                XOffsets.Add((float)XYZToffset.X);
+                                YOffsets.Add((float)XYZToffset.Y);
+                                ZOffsets.Add((float)XYZToffset.Z);
+                                ThetaOffsets.Add((float)XYZToffset.Theta);
+
+                                if (XYZToffset1 != null)
+                                {
+                                    BondBMCXOffsets.Add((float)XYZToffset1.X);
+                                    BondBMCYOffsets.Add((float)XYZToffset1.Y);
+                                    BondBMCThetaOffsets.Add((float)XYZToffset1.Theta);
+                                }
+                                if (XYZToffset3 != null)
+                                {
+                                    UpBMCXOffsets.Add((float)XYZToffset3.X);
+                                    UpBMCYOffsets.Add((float)XYZToffset3.Y);
+                                    UpBMCThetaOffsets.Add((float)XYZToffset3.Theta);
+                                }
+                                if (XYZToffset4 != null)
+                                {
+                                    BondBMCSubstrateXOffsets.Add((float)XYZToffset4.X);
+                                    BondBMCSubstrateYOffsets.Add((float)XYZToffset4.Y);
+                                    BondBMCSubstrateThetaOffsets.Add((float)XYZToffset4.Theta);
+                                }
+
                             }
 
                         }

@@ -617,6 +617,13 @@ namespace ConfigurationClsLib
         /// </summary>
         [XmlElement("BondIdentifyBMCNum")]
         public int BondIdentifyBMCNum { get; set; }
+
+        /// <summary>
+        /// 榜头相机识别校准台
+        /// </summary>
+        [XmlElement("BondIdentifyCalibrationTableMatch")]
+        public MatchIdentificationParam BondIdentifyCalibrationTableMatch { get; set; }
+
         /// <summary>
         /// 榜头相机识别BMC
         /// </summary>

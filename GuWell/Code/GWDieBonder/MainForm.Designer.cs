@@ -50,6 +50,10 @@ namespace BondTerminal
             this.手动创建ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.创建ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.运行ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.运行ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.到安全位置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.到测力位置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.共晶台测试ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.工具ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pP工具ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,10 +82,7 @@ namespace BondTerminal
             this.toolStripStatusLabelRunStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelAlarm = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusCurrentRecipe = new System.Windows.Forms.ToolStripStatusLabel();
-            this.zRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.运行ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.到安全位置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.到测力位置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.校准台校准ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -160,7 +161,8 @@ namespace BondTerminal
             this.系统初始化ToolStripMenuItem,
             this.共晶台校准ToolStripMenuItem,
             this.bMCToolStripMenuItem,
-            this.zRToolStripMenuItem});
+            this.zRToolStripMenuItem,
+            this.校准台校准ToolStripMenuItem});
             this.系统校准ToolStripMenuItem.Name = "系统校准ToolStripMenuItem";
             this.系统校准ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
             this.系统校准ToolStripMenuItem.Text = "系统校准";
@@ -238,23 +240,54 @@ namespace BondTerminal
             // 手动创建ToolStripMenuItem
             // 
             this.手动创建ToolStripMenuItem.Name = "手动创建ToolStripMenuItem";
-            this.手动创建ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.手动创建ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.手动创建ToolStripMenuItem.Text = "手动创建";
             this.手动创建ToolStripMenuItem.Click += new System.EventHandler(this.手动创建ToolStripMenuItem_Click);
             // 
             // 创建ToolStripMenuItem
             // 
             this.创建ToolStripMenuItem.Name = "创建ToolStripMenuItem";
-            this.创建ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.创建ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.创建ToolStripMenuItem.Text = "创建";
             this.创建ToolStripMenuItem.Click += new System.EventHandler(this.创建ToolStripMenuItem_Click);
             // 
             // 运行ToolStripMenuItem
             // 
             this.运行ToolStripMenuItem.Name = "运行ToolStripMenuItem";
-            this.运行ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.运行ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.运行ToolStripMenuItem.Text = "运行";
             this.运行ToolStripMenuItem.Click += new System.EventHandler(this.运行ToolStripMenuItem_Click);
+            // 
+            // zRToolStripMenuItem
+            // 
+            this.zRToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.运行ToolStripMenuItem1,
+            this.到安全位置ToolStripMenuItem,
+            this.到测力位置ToolStripMenuItem});
+            this.zRToolStripMenuItem.Name = "zRToolStripMenuItem";
+            this.zRToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.zRToolStripMenuItem.Text = "ZR";
+            // 
+            // 运行ToolStripMenuItem1
+            // 
+            this.运行ToolStripMenuItem1.Name = "运行ToolStripMenuItem1";
+            this.运行ToolStripMenuItem1.Size = new System.Drawing.Size(160, 26);
+            this.运行ToolStripMenuItem1.Text = "运行";
+            this.运行ToolStripMenuItem1.Click += new System.EventHandler(this.运行ToolStripMenuItem1_Click);
+            // 
+            // 到安全位置ToolStripMenuItem
+            // 
+            this.到安全位置ToolStripMenuItem.Name = "到安全位置ToolStripMenuItem";
+            this.到安全位置ToolStripMenuItem.Size = new System.Drawing.Size(160, 26);
+            this.到安全位置ToolStripMenuItem.Text = "到安全位置";
+            this.到安全位置ToolStripMenuItem.Click += new System.EventHandler(this.到安全位置ToolStripMenuItem_Click);
+            // 
+            // 到测力位置ToolStripMenuItem
+            // 
+            this.到测力位置ToolStripMenuItem.Name = "到测力位置ToolStripMenuItem";
+            this.到测力位置ToolStripMenuItem.Size = new System.Drawing.Size(160, 26);
+            this.到测力位置ToolStripMenuItem.Text = "到测力位置";
+            this.到测力位置ToolStripMenuItem.Click += new System.EventHandler(this.到测力位置ToolStripMenuItem_Click);
             // 
             // 共晶台测试ToolStripMenuItem
             // 
@@ -520,36 +553,12 @@ namespace BondTerminal
             this.toolStripStatusCurrentRecipe.Size = new System.Drawing.Size(175, 17);
             this.toolStripStatusCurrentRecipe.Text = "当前配方";
             // 
-            // zRToolStripMenuItem
+            // 校准台校准ToolStripMenuItem
             // 
-            this.zRToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.运行ToolStripMenuItem1,
-            this.到安全位置ToolStripMenuItem,
-            this.到测力位置ToolStripMenuItem});
-            this.zRToolStripMenuItem.Name = "zRToolStripMenuItem";
-            this.zRToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
-            this.zRToolStripMenuItem.Text = "ZR";
-            // 
-            // 运行ToolStripMenuItem1
-            // 
-            this.运行ToolStripMenuItem1.Name = "运行ToolStripMenuItem1";
-            this.运行ToolStripMenuItem1.Size = new System.Drawing.Size(180, 26);
-            this.运行ToolStripMenuItem1.Text = "运行";
-            this.运行ToolStripMenuItem1.Click += new System.EventHandler(this.运行ToolStripMenuItem1_Click);
-            // 
-            // 到安全位置ToolStripMenuItem
-            // 
-            this.到安全位置ToolStripMenuItem.Name = "到安全位置ToolStripMenuItem";
-            this.到安全位置ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
-            this.到安全位置ToolStripMenuItem.Text = "到安全位置";
-            this.到安全位置ToolStripMenuItem.Click += new System.EventHandler(this.到安全位置ToolStripMenuItem_Click);
-            // 
-            // 到测力位置ToolStripMenuItem
-            // 
-            this.到测力位置ToolStripMenuItem.Name = "到测力位置ToolStripMenuItem";
-            this.到测力位置ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
-            this.到测力位置ToolStripMenuItem.Text = "到测力位置";
-            this.到测力位置ToolStripMenuItem.Click += new System.EventHandler(this.到测力位置ToolStripMenuItem_Click);
+            this.校准台校准ToolStripMenuItem.Name = "校准台校准ToolStripMenuItem";
+            this.校准台校准ToolStripMenuItem.Size = new System.Drawing.Size(180, 26);
+            this.校准台校准ToolStripMenuItem.Text = "校准台校准";
+            this.校准台校准ToolStripMenuItem.Click += new System.EventHandler(this.校准台校准ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -637,6 +646,7 @@ namespace BondTerminal
         private System.Windows.Forms.ToolStripMenuItem 运行ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 到安全位置ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 到测力位置ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 校准台校准ToolStripMenuItem;
     }
 }
 

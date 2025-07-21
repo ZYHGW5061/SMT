@@ -789,6 +789,11 @@ namespace BondTerminal
             ZRProcess.Instance.BondToPressureTableAsync();
         }
 
+        private void 校准台校准ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.CalibrationTableRun();
+        }
+
         //private void testToolStripMenuItem_Click(object sender, EventArgs e)
         //{
         //    int mode = 0;

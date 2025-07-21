@@ -2159,6 +2159,12 @@ namespace SystemCalibrationClsLib
                 BondY = config.EutecticWeldingLocation.Y;
                 BondZ = config.EutecticWeldingLocation.Z;
             }
+            else if (maskType == EnumMaskType.CalibrationTableOrigion)
+            {
+                BondX = config.CalibrationTableOrigion.X;
+                BondY = config.CalibrationTableOrigion.Y;
+                BondZ = config.CalibrationTableOrigion.Z + config.TrackOrigion.Z;
+            }
 
 
 
@@ -2356,6 +2362,29 @@ namespace SystemCalibrationClsLib
 
                 title = "创建共晶位置识别";
             }
+            else if (maskType == EnumMaskType.CalibrationTableOrigion)
+            {
+                BondX = config.CalibrationTableOrigion.X;
+                BondY = config.CalibrationTableOrigion.Y;
+                BondZ = config.CalibrationTableOrigion.Z + config.TrackOrigion.Z;
+
+                //visualMatch.RingLightintensity = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.RingLightintensity;
+                //visualMatch.DirectLightintensity = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.DirectLightintensity;
+                //visualMatch.Score = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Score;
+                //visualMatch.AngleRange = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.MaxAngle;
+                //visualMatch.TemplateRoi = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.TemplateRoi;
+                //visualMatch.SearchRoi = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.SearchRoi;
+                ////visualMatch.Templateresult = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Templateresult;
+                //visualMatch.MatchTemplatefilepath = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Templatexml;
+                //visualMatch.MatchRunfilepath = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Runxml;
+
+                //BondCameraVisual.SetDirectLightintensity(visualMatch.DirectLightintensity);
+                //BondCameraVisual.SetRingLightintensity(visualMatch.RingLightintensity);
+
+                visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch);
+
+                title = "创建校准台位置识别";
+            }
 
 
 
@@ -2409,6 +2438,12 @@ namespace SystemCalibrationClsLib
                 _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch = param1;
 
                 param = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch;
+            }
+            else if (maskType == EnumMaskType.CalibrationTableOrigion)
+            {
+                _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch = param1;
+
+                param = _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch;
             }
 
             //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
@@ -2594,6 +2629,29 @@ namespace SystemCalibrationClsLib
 
                 title = "创建共晶位置识别";
             }
+            else if (maskType == EnumMaskType.CalibrationTableOrigion)
+            {
+                BondX = config.CalibrationTableOrigion.X;
+                BondY = config.CalibrationTableOrigion.Y;
+                BondZ = config.CalibrationTableOrigion.Z + config.TrackOrigion.Z;
+
+                //visualMatch.RingLightintensity = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.RingLightintensity;
+                //visualMatch.DirectLightintensity = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.DirectLightintensity;
+                //visualMatch.Score = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Score;
+                //visualMatch.AngleRange = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.MaxAngle;
+                //visualMatch.TemplateRoi = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.TemplateRoi;
+                //visualMatch.SearchRoi = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.SearchRoi;
+                ////visualMatch.Templateresult = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Templateresult;
+                //visualMatch.MatchTemplatefilepath = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Templatexml;
+                //visualMatch.MatchRunfilepath = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch.Runxml;
+
+                //BondCameraVisual.SetDirectLightintensity(visualMatch.DirectLightintensity);
+                //BondCameraVisual.SetRingLightintensity(visualMatch.RingLightintensity);
+
+                visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch);
+
+                title = "创建校准台位置识别";
+            }
 
 
 
@@ -2647,6 +2705,12 @@ namespace SystemCalibrationClsLib
                 _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch = param1;
 
                 param = _systemConfig.SystemCalibrationConfig.BondIdentifyEutecticWeldingMatch;
+            }
+            else if (maskType == EnumMaskType.CalibrationTableOrigion)
+            {
+                _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch = param1;
+
+                param = _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch;
             }
 
             return true;
@@ -5688,6 +5752,40 @@ namespace SystemCalibrationClsLib
 
             return Done;
         }
+
+        /// <summary>
+        /// 榜头相机移动到校准台位置，自动对焦，识别校准台中心
+        /// </summary>
+        private bool BondCameraIdentifyCalibrationTableOrigion(int Mode = 0)
+        {
+            bool Done = false;
+            if (Mode == 1)
+            {
+                Done = BondCameraIdentifymarkpointsManual(EnumMaskType.CalibrationTableOrigion);
+            }
+            else if (Mode == 0)
+            {
+                Done = BondCameraIdentifymarkpoints(EnumMaskType.CalibrationTableOrigion, _systemConfig.SystemCalibrationConfig.BondIdentifyCalibrationTableMatch);
+            }
+            else if (Mode == 2)
+            {
+                Done = BondCameraIdentifymarkpointsManual2(EnumMaskType.CalibrationTableOrigion);
+            }
+
+            //BondCameraVisual.SetDirectLightintensity(0);
+            //BondCameraVisual.SetRingLightintensity(0);
+
+            double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+            double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+            double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+            config.CalibrationTableOrigion.X = BondX;
+            config.CalibrationTableOrigion.Y = BondY;
+            config.CalibrationTableOrigion.Z = BondZ - config.TrackOrigion.Z;
+
+            return Done;
+        }
+
 
         /// <summary>
         /// 榜头移动到仰视相机中心，自动对焦，识别吸嘴工具
@@ -11137,6 +11235,146 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.ClearGraphicDraw();
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
+
+                    //提示取下CCU工具
+                    Done = ShowMessageAsync("动作确认", "是否保存系统校准", "提示");
+                    if (Done == 0)
+                    {
+                        //return;
+                    }
+                    else
+                    {
+                        _systemConfig.SaveConfig();
+                    }
+                    //提示取下CCU工具
+                    Done = ShowMessage("动作确认", "结束校准", "提示");
+                    if (Done == 0)
+                    {
+                        //return;
+                    }
+                    else
+                    {
+                        //_systemConfig.SaveConfig();
+                    }
+                }
+
+            }
+            ));
+
+
+        }
+
+
+        /// <summary>
+        /// 自动校准校准台
+        /// </summary>
+        public void CalibrationTableRun()
+        {
+            if (CameraWindowGUI.Instance != null)
+            {
+                CameraWindowGUI.Instance.SelectCamera(0);
+            }
+            if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+            {
+                CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
+                CameraWindowForm.Instance.Show();
+            }
+
+            Task.Factory.StartNew(new Action(() =>
+            {
+                int Done = -1;
+                int Mode = 0;
+                bool Done1 = false;
+                try
+                {
+                    if (CameraWindowGUI.Instance != null)
+                    {
+                        CameraWindowGUI.Instance.ClearGraphicDraw();
+                        CameraWindowGUI.Instance.SelectCamera(0);
+                    }
+
+                    Debug.WriteLine("榜头相机移动到安全位置");
+                    BondToSafeAsync(Mode);
+
+                    #region 校准台校准
+
+
+                    //提示安装测高工具
+                    Done = ShowMessage("动作确认", "开始校准校准台，去掉测高工具", "提示");
+                    if (Done == 0)
+                    {
+                        return;
+                    }
+
+                    if (CameraWindowGUI.Instance != null)
+                    {
+                        CameraWindowGUI.Instance.ClearGraphicDraw();
+                        CameraWindowGUI.Instance.SelectCamera(0);
+                    }
+
+                    while (true)
+                    {
+                        Debug.WriteLine("榜头相机移动到校准台，识别校准台");
+                        Done1 = BondCameraIdentifyCalibrationTableOrigion(Mode);
+
+                        if (Done1 == false)
+                        {
+                            Done = ShowMessage("校准异常", "榜头相机移动到校准台，校准校准台失败，是否继续校准", "提示");
+                            if (Done == 0)
+                            {
+                                Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                if (Done == 0)
+                                {
+                                    return;
+                                }
+                                else
+                                {
+                                    Mode = 0;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                Mode = 1;
+                                continue;
+                            }
+                        }
+
+
+                        Mode = 0;
+                        break;
+                    }
+
+
+                    if (CameraWindowGUI.Instance != null)
+                    {
+                        CameraWindowGUI.Instance.ClearGraphicDraw();
+                        CameraWindowGUI.Instance.SelectCamera(0);
+                    }
+
+                    #endregion
+
+                    //榜头移动到安全位置
+                    BondToSafeAsync();
+
+
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+                    //if ((CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+                    //{
+                    //    CameraWindowForm.Instance.Hide();
+                    //}
+                    CloseStageAxisMove();
+                    CloseStage();
+                    CloseDynamometer();
+
+
+
 
                     //提示取下CCU工具
                     Done = ShowMessageAsync("动作确认", "是否保存系统校准", "提示");
