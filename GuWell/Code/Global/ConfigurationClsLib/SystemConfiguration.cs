@@ -244,6 +244,8 @@ namespace ConfigurationClsLib
             TrackEpoxtSpotCoordinate = new XYZTCoordinateConfig();
             TrackBondCameraToEpoxtSpotCoordinate = new XYZTCoordinateConfig();
 
+            EpoxtToDippingglueCoordinate = new XYZTCoordinateConfig();
+
             CalibrationTableOrigion = new XYZTCoordinateConfig();
 
             ESZSafeZoneofWaferTablePoint1 = new PointF();
@@ -297,6 +299,12 @@ namespace ConfigurationClsLib
         /// </summary>
         [XmlElement("TrackBondCameraToEpoxtSpotCoordinate")]
         public XYZTCoordinateConfig TrackBondCameraToEpoxtSpotCoordinate { get; set; }
+
+        /// <summary>
+        /// 蘸胶位置坐标
+        /// </summary>
+        [XmlElement("EpoxtToDippingglueCoordinate")]
+        public XYZTCoordinateConfig EpoxtToDippingglueCoordinate { get; set; }
 
 
         /// <summary>

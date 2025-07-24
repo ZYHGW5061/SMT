@@ -5526,6 +5526,167 @@ namespace SystemCalibrationClsLib
             return true;
         }
 
+        private bool BondToDippingGlue(int Mode = 0)
+        {
+            double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+            double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+            double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+            bool Done = false;
+
+            int result0 = ShowMessage("动作确认", "请安装点胶针", "提示");
+            if (result0 == 1)
+            {
+                AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 1);
+
+                if (Mode == 1)
+                {
+                    //ShowStage();
+
+                    if (config.EpoxtToDippingglueCoordinate.X != 0 && config.EpoxtToDippingglueCoordinate.Y != 0 && config.EpoxtToDippingglueCoordinate.Z != 0)
+                    {
+                        BondX = config.EpoxtToDippingglueCoordinate.X;
+                        BondY = config.EpoxtToDippingglueCoordinate.Y;
+                        BondZ = config.EpoxtToDippingglueCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            config.EpoxtToDippingglueCoordinate.X = BondX;
+                            config.EpoxtToDippingglueCoordinate.Y = BondY;
+                            config.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+
+                }
+                else if (Mode == 0)
+                {
+                    //ShowStage();
+
+                    if (config.EpoxtToDippingglueCoordinate.X != 0 && config.EpoxtToDippingglueCoordinate.Y != 0 && config.EpoxtToDippingglueCoordinate.Z != 0)
+                    {
+                        BondX = config.EpoxtToDippingglueCoordinate.X;
+                        BondY = config.EpoxtToDippingglueCoordinate.Y;
+                        BondZ = config.EpoxtToDippingglueCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            config.EpoxtToDippingglueCoordinate.X = BondX;
+                            config.EpoxtToDippingglueCoordinate.Y = BondY;
+                            config.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                }
+                else if (Mode == 2)
+                {
+                    //ShowStage();
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            config.EpoxtToDippingglueCoordinate.X = BondX;
+                            config.EpoxtToDippingglueCoordinate.Y = BondY;
+                            config.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                }
+            }
+            else
+            {
+                return Done;
+            }
+
+
+
+            return true;
+        }
+
+
+
+
         /// <summary>
         /// 榜头相机移动到轨道原点，自动对焦，识别轨道原点
         /// </summary>
@@ -10982,7 +11143,7 @@ namespace SystemCalibrationClsLib
                     //}
 
                     //提示取下CCU工具
-                    Done = ShowMessageAsync("动作确认", "是否保存Submount吸嘴校准", "提示");
+                    Done = ShowMessageAsync("动作确认", "是否保存胶针校准", "提示");
                     if (Done == 0)
                     {
                         //return;
@@ -11013,6 +11174,112 @@ namespace SystemCalibrationClsLib
             ));
 
         }
+
+        public void DippingglueRun(int Mode = 0)
+        {
+            if (CameraWindowGUI.Instance != null)
+            {
+                CameraWindowGUI.Instance.SelectCamera(0);
+            }
+            if (!(CameraWindowForm.Instance.IsHandleCreated && CameraWindowForm.Instance.Visible))
+            {
+                CameraWindowForm.Instance.ShowLocation(new Point(200, 200));
+                CameraWindowForm.Instance.Show();
+            }
+
+            config = _systemConfig.PositioningConfig;
+
+            Task.Factory.StartNew(new Action(() =>
+            {
+                int Done = -1;
+                bool Done1 = false;
+                try
+                {
+                    if (CameraWindowGUI.Instance != null)
+                    {
+                        CameraWindowGUI.Instance.ClearGraphicDraw();
+                        CameraWindowGUI.Instance.SelectCamera(0);
+                    }
+                    #region 榜头相机校准 榜头测高
+
+                    while (true)
+                    {
+                        Debug.WriteLine("榜头移动到蘸胶位置");
+                        Done1 = BondToDippingGlue(Mode);
+
+                        if (Done1 == false)
+                        {
+                            Done = ShowMessage("校准异常", "蘸胶位置校准失败，是否继续校准", "提示");
+                            if (Done == 0)
+                            {
+                                Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                if (Done == 0)
+                                {
+                                    return;
+                                }
+                                else
+                                {
+                                    Mode = 0;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                Mode = 1;
+                                continue;
+                            }
+                        }
+
+
+                        Mode = 0;
+                        break;
+                    }
+
+                    #endregion
+
+                    //榜头移动到安全位置
+                    BondToSafeAsync();
+
+                    CloseStageAxisMove();
+                    CloseStage();
+                    CloseDynamometer();
+
+
+                    //}
+
+                    //提示取下CCU工具
+                    Done = ShowMessageAsync("动作确认", "是否保存蘸胶位置校准", "提示");
+                    if (Done == 0)
+                    {
+                        //return;
+                    }
+                    else
+                    {
+                        _systemConfig.PositioningConfig = config;
+                        _systemConfig.SaveConfig();
+                    }
+                    //提示取下CCU工具
+                    Done = ShowMessage("动作确认", "结束校准", "提示");
+                    if (Done == 0)
+                    {
+                        //return;
+                    }
+                    else
+                    {
+                        //_systemConfig.SaveConfig();
+                    }
+
+                }
+                catch
+                {
+
+                }
+
+            }
+            ));
+
+        }
+
 
 
         /// <summary>

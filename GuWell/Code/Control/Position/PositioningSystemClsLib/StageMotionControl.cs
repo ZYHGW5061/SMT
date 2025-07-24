@@ -258,7 +258,11 @@ namespace PositioningSystemClsLib
                 WarningBox.FormShow("错误", "设定的速度值超出范围!","提示");
                 return false;
             }
-            _stageEngine[axisIndex].SetAxisSpeed(speed);
+            if(_stageEngine == null)
+            {
+                return false;
+            }
+            _stageEngine[axisIndex]?.SetAxisSpeed(speed);
             return true;
         }
 

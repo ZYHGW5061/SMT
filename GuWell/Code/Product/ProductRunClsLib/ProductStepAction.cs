@@ -94,8 +94,10 @@ namespace ProductRunClsLib
         DispenseOnePosFail,
         DispenseAllPosSuccess,
         DispenseAllPosFail,
+        WaitPositionChip,
         PositionChipSuccess,
         PositionChipFail,
+        WaitPickupChip,
         PickupChipSuccess,
         PickupChipFail,
         AccuracyCalibrationChipSuccess,
@@ -2028,8 +2030,181 @@ namespace ProductRunClsLib
     }
 
     /// <summary>
-    /// 使用仰视相机二次校准时识别两次，一次补角度，另外一次找中心，没有使用旋转补偿
+    /// 芯片移动到贴装位置上方
     /// </summary>
+    public class StepAction_ChipToBondPosition : StepActionBase
+    {
+        public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
+        public StepAction_ChipToBondPosition(ProductStep step, EnumActionNo actionNo, string actionDesc) : base(step, actionNo, actionDesc)
+        {
+            if (actionNo == EnumActionNo.Action_PositionChip)
+            {
+                componentType = EnumComponentType.Component;
+            }
+            else if (actionNo == EnumActionNo.Action_PositionSubmonut)
+            {
+                componentType = EnumComponentType.Submonut;
+            }
+        }
+
+        public override GWResult Run(RunParameter runParam = null)
+        {
+            try
+            {
+                if (componentType == EnumComponentType.Component)
+                {
+                    CameraWindowGUI.Instance?.SelectCamera(1);
+                    LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_ChipToBondPosition-Start.");
+                    var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == CurChipParam.PPSettings.PPtoolName);
+
+                    if (_positioningSystem.BondZMovetoSafeLocation())
+                    {
+                        #region 移动到贴装位置上方
+
+                        BondRecipe _curRecipe = ProductExecutor.Instance.ProductRecipe;
+                        var curSubstrate = _curRecipe.SubstrateInfos.ModuleMapInfosWithBondPositionInfos[ProductExecutor.Instance.CurSubstrateNum - 1];
+                        var curModule = curSubstrate[ProductExecutor.Instance.CurModuleNum - 1];
+                        var curDealBP = CurBondPosition;
+                        if (CurBondPosition != null)
+                        {
+                            curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
+
+                            var tempCounter = ProductExecutor.Instance.CurModuleNum - 1;
+                            while (!curDealBP.IsPositionSuccess)
+                            {
+                                tempCounter++;
+                                if (tempCounter >= curSubstrate.Count)
+                                {
+                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_ChipToBondPosition Failed.");
+                                    return GlobalGWResultDefine.RET_FAILED;
+                                }
+                                curModule = curSubstrate[tempCounter];
+                                curDealBP = curModule.Item2.FirstOrDefault(i => i.Name == CurBondPosition.Name);
+                            }
+                        }
+                        var bondPosOffsetTheta = curDealBP.BondPositionWithPatternOffset.Theta;
+                        var bondPosOrigionAngle = curDealBP.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        //二次校准时模板初始角度
+                        var angleofChipAccuracyPattern = 0f;
+                        if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.PatternSearch)
+                        {
+                            angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.ShapeMatchParameters.FirstOrDefault().OrigionAngle;
+                        }
+                        else if (CurChipParam.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod == EnumVisionPositioningMethod.EdgeSearch)
+                        {
+                            angleofChipAccuracyPattern = CurChipParam.AccuracyComponentPositionVisionParameters.LineSearchParams.FirstOrDefault().OrigionAngle;
+                        }
+                        //贴装补偿的角度
+                        var compensateT = curDealBP.BondPositionCompensation.Theta;
+
+                        //计算二次识别后芯片中心所处的位置的Stage位置(拾取芯片后没有补偿角度)
+                        var curChipCenterStagePosX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX) + ProductExecutor.Instance.OffsetAfterChipAccuracy.X;
+                        var curChipCenterStagePosY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY) + ProductExecutor.Instance.OffsetAfterChipAccuracy.Y;
+
+
+                        //贴装补偿的XY,向右向上补偿为正
+                        var compensateX = CurBondPosition.BondPositionCompensation.X;
+                        var compensateY = CurBondPosition.BondPositionCompensation.Y;
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.X: {compensateX}");
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"CurBondPosition.BondPositionCompensation.Y: {compensateY}");
+                        float thetaRadians = -(float)((-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta) * Math.PI / 180.0);
+                        //float thetaRadians = (float)((bondPosOrigionAngle) * Math.PI / 180.0);
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"VisionParametersForFindBondPosition_.OrigionAngle: {bondPosOrigionAngle}");
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"PositionBondChipResult.Theta: {curDealBP.PositionBondChipResult.Theta}");
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetAngle: {(-bondPosOrigionAngle + curDealBP.PositionBondChipResult.Theta)}");
+
+
+                        //if (thetaRadians > 0)
+                        //{
+                        //    compensateX = Math.Cos(thetaRadians) * compensateX;
+                        //    compensateY = Math.Cos(thetaRadians) * compensateY;
+                        //}
+                        //else
+                        //{
+                        //    compensateX = Math.Cos(-thetaRadians) * compensateX;
+                        //    compensateY = Math.Cos(-thetaRadians) * compensateY;
+                        //}
+
+                        // 计算旋转后的坐标
+                        double compensateX_1 = compensateX * Math.Cos(thetaRadians) - compensateY * Math.Sin(thetaRadians);
+                        double compensateY_1 = compensateX * Math.Sin(thetaRadians) + compensateY * Math.Cos(thetaRadians);
+
+                        compensateX = compensateX_1;
+                        compensateY = compensateY_1;
+
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetX: {compensateX}");
+                        LogRecorder.RecordLog(EnumLogContentType.Info, $"offsetY: {compensateY}");
+
+                        //将记录的贴装位置的系统坐标系转换为Stage坐标系
+                        #region 计算贴装芯片时需要移动到的Stage位置
+                        var baseStageCoor = _positioningSystem.ConvertBondCameraSystemCoordToStageCoord(new XYZTCoordinate
+                        {
+                            X = curDealBP.BondPositionSystemPosAfterVisionCalibration.X,
+                            Y = curDealBP.BondPositionSystemPosAfterVisionCalibration.Y
+                        });
+
+                        #endregion
+
+                        #region 计算贴装芯片时需要移动到的stage位置
+
+                        var curChipStagePosXAfterCorrect = -compensateX;
+                        var curChipStagePosYAfterCorrect = +compensateY;
+
+
+                        //计算旋转、贴装补偿之后的芯片和榜头相机的偏移
+                        var chipCentetAndBondCameraCenterOffsetX = curChipStagePosXAfterCorrect;
+                        var chipCentetAndBondCameraCenterOffsetY = curChipStagePosYAfterCorrect;
+
+                        var finalXOpt = baseStageCoor.X + chipCentetAndBondCameraCenterOffsetX;
+                        var finalYOpt = baseStageCoor.Y + chipCentetAndBondCameraCenterOffsetY;
+                        #endregion
+                        if (_positioningSystem.BondXYUnionMovetoStageCoor(finalXOpt, finalYOpt, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_ChipToBondPosition-End.");
+                            return GlobalGWResultDefine.RET_SUCCESS;
+                        }
+                        else
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "StepAction_ChipToBondPosition,移动到贴装位失败.");
+                            return GlobalGWResultDefine.RET_FAILED;
+                        }
+                        #endregion
+
+                    }
+                    else
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_ChipToBondPosition,Failed.");
+                        return GlobalGWResultDefine.RET_FAILED;
+                    }
+
+                }
+                else
+                {
+
+                }
+
+
+
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_AccuracyPositionWithUplookCamera,Error.", ex);
+                return GlobalGWResultDefine.RET_FAILED;
+            }
+            finally
+            {
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
+                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                _positioningSystem.PPMovetoSafeLocation();
+            }
+        }
+    }
+
+
+        /// <summary>
+        /// 使用仰视相机二次校准时识别两次，一次补角度，另外一次找中心，没有使用旋转补偿
+        /// </summary>
     public class StepAction_AccuracyPositionWithUplookCameraNoBond : StepActionBase
     {
         public EnumComponentType componentType { get; set; } = EnumComponentType.Component;
@@ -4802,6 +4977,41 @@ namespace ProductRunClsLib
                                     {
                                         if (curBP.IsPositionSuccess)
                                         {
+                                            if(_curRecipe.DispenserSettings.DispensingMode == EnumDispensingMode.Dipping)
+                                            {
+                                                var DippingX = (float)SystemConfiguration.Instance.PositioningConfig.EpoxtToDippingglueCoordinate.X;
+                                                var DippingY = (float)SystemConfiguration.Instance.PositioningConfig.EpoxtToDippingglueCoordinate.Y;
+                                                
+                                                if (_positioningSystem.BondXYUnionMovetoStageCoor(DippingX, DippingY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                                {
+                                                    IOUtilityHelper.Instance.DownDispenserCylinder();
+                                                    var Z = (float)SystemConfiguration.Instance.PositioningConfig.EpoxtToDippingglueCoordinate.Z;
+                                                    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                                    {
+                                                        Thread.Sleep(50);
+                                                        if (_positioningSystem.BondZMovetoSafeLocation())
+                                                        {
+
+                                                        }
+                                                        else
+                                                        {
+                                                            IOUtilityHelper.Instance.UpDispenserCylinder();
+                                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_Dispense,Fail.");
+                                                            return GlobalGWResultDefine.RET_FAILED;
+                                                        }
+                                                    }
+                                                   
+
+                                                }
+                                                else
+                                                {
+                                                    IOUtilityHelper.Instance.UpDispenserCylinder();
+                                                    LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_Dispense,Fail.");
+                                                    return GlobalGWResultDefine.RET_FAILED;
+                                                }
+                                            }
+
+
                                             var despenserAndBondCameraOffsetX = float.IsNaN(_curRecipe.DispenserSettings.DispenserPosOffsetXWithBondCamera)
                                                 ? -_systemConfig.PositioningConfig.EpoxtAndBondCameraOffset.X : _curRecipe.DispenserSettings.DispenserPosOffsetXWithBondCamera;
                                             var despenserAndBondCameraOffsetY = float.IsNaN(_curRecipe.DispenserSettings.DispenserPosOffsetYWithBondCamera)
@@ -4814,14 +5024,18 @@ namespace ProductRunClsLib
                                                 var Z = _curRecipe.DispenserSettings.DispenserSystemPosZMM + curBP.DispenserPositionCompensation.Z;
                                                 if (_positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                 {
-                                                    if (CurEpoxyApplication.DispensePattern == EnumDispensePattern.Point)
+                                                    if (_curRecipe.DispenserSettings.DispensingMode != EnumDispensingMode.Dipping)
                                                     {
-                                                        DispenserUtility.Instance.ExecutePointRecipe(CurEpoxyApplication.DispenserRecipeName);
+                                                        if (CurEpoxyApplication.DispensePattern == EnumDispensePattern.Point)
+                                                        {
+                                                            DispenserUtility.Instance.ExecutePointRecipe(CurEpoxyApplication.DispenserRecipeName);
+                                                        }
+                                                        else
+                                                        {
+                                                            DispenserUtility.Instance.DrawCross(CurEpoxyApplication.DispensePatternWidthMM, CurEpoxyApplication.DispensePatternHeightMM);
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        DispenserUtility.Instance.DrawCross(CurEpoxyApplication.DispensePatternWidthMM, CurEpoxyApplication.DispensePatternHeightMM);
-                                                    }
+                                                        
                                                 }
                                                 dispenseCounter++;
 

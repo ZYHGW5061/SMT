@@ -78,7 +78,7 @@ namespace BondTerminal
                 {
                     while (!this.Created) { continue; }
                     InitializeSystem();
-                    //初始化硬件环境
+                    ////初始化硬件环境
                     ConnectingStage();
                     ConnectingLightController();
                     ConnectingPowerController();
@@ -90,11 +90,14 @@ namespace BondTerminal
 
                     InitializeViualControl();
 
-                    //_ConnectCameraSuccess = true;
-                    //_ConnectLightControllerSuccess = true;
                     //_ConnectStageSuccess = true;
+                    //_ConnectLightControllerSuccess = true;
                     //_ConnectPowerControllerSuccess = true;
-                    _VisualControlInitializeSuccess = true;
+                    //_ConnectDispensingMachineControllerSuccess = true;
+                    //_ConnectCameraSuccess = true;
+                    //_ConnectLaserSensorSuccess = true;
+                    //_ConnectDynamometerSuccess = true;
+                    //_VisualControlInitializeSuccess = true;
 
                     _timeOut = 0;
                     while (true)

@@ -1655,6 +1655,7 @@ namespace GlobalDataDefineClsLib
         Material,
         Dispense,
         BondDie,
+        BondDie2,
 
         [Description("共晶")]
         Eutectic
@@ -2148,6 +2149,28 @@ namespace GlobalDataDefineClsLib
         Off,
         BeforeDispenseCycle,
         Before1stDispensingCycyleonTS
+    }
+
+    [Serializable]
+    public enum EnumDispensingMode
+    {
+        /// <summary>
+        /// 点胶
+        /// </summary>
+        Dispensing,
+        /// <summary>
+        /// 画胶
+        /// </summary>
+        GluePatternDispensing,
+        /// <summary>
+        /// 压胶
+        /// </summary>
+        AdhesivePressing,
+        /// <summary>
+        /// 蘸胶
+        /// </summary>
+        Dipping
+
     }
     [Serializable]
     public enum EnumEpoxyExudationMode
@@ -2768,6 +2791,9 @@ namespace GlobalDataDefineClsLib
         public bool IsCompleted { get; set; }
         [XmlElement("PredispensingMode")]
         public EnumPredispensingMode PredispensingMode { get; set; }
+
+        [XmlElement("DispensingMode")]
+        public EnumDispensingMode DispensingMode { get; set; }
 
         [XmlElement("PredispensingCount")]
         public int PredispensingCount { get; set; }
