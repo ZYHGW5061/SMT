@@ -63,9 +63,12 @@
             this.seTurningTimeMS = new DevExpress.XtraEditors.SpinEdit();
             this.ckeIsSlowSpeedRun = new DevExpress.XtraEditors.CheckEdit();
             this.ckeConfirmVaccum = new DevExpress.XtraEditors.CheckEdit();
+            this.sePreDispensePosZ = new DevExpress.XtraEditors.SpinEdit();
             this.seAbandonPosZ = new DevExpress.XtraEditors.SpinEdit();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            this.sePreDispensePosY = new DevExpress.XtraEditors.SpinEdit();
             this.seAbandonPosY = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl25 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl20 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl15 = new DevExpress.XtraEditors.LabelControl();
@@ -76,12 +79,14 @@
             this.labelControl18 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl9 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl7 = new DevExpress.XtraEditors.LabelControl();
+            this.sePreDispensePosX = new DevExpress.XtraEditors.SpinEdit();
             this.seAbandonPosX = new DevExpress.XtraEditors.SpinEdit();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl21 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl17 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl26 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.btnSaveESZSafeZoneofWaferTablePoint3 = new DevExpress.XtraEditors.SimpleButton();
@@ -125,11 +130,12 @@
             this.backstageViewTabItem2 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.bvtAutoFocus = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
-            this.labelControl25 = new DevExpress.XtraEditors.LabelControl();
-            this.labelControl26 = new DevExpress.XtraEditors.LabelControl();
-            this.sePreDispensePosX = new DevExpress.XtraEditors.SpinEdit();
-            this.sePreDispensePosY = new DevExpress.XtraEditors.SpinEdit();
-            this.sePreDispensePosZ = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl27 = new DevExpress.XtraEditors.LabelControl();
+            this.btnRecognizeSuccessSavingPath = new DevExpress.XtraEditors.SimpleButton();
+            this.teRecognizeSuccessSavingPath = new DevExpress.XtraEditors.TextEdit();
+            this.labelControl28 = new DevExpress.XtraEditors.LabelControl();
+            this.btnRecognizeFailSavingPath = new DevExpress.XtraEditors.SimpleButton();
+            this.teRecognizeFailSavingPath = new DevExpress.XtraEditors.TextEdit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -164,8 +170,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.seTurningTimeMS.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ckeIsSlowSpeedRun.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ckeConfirmVaccum.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosZ.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosZ.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosY.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosY.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosX.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosX.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teRawDataSavePath.Properties)).BeginInit();
             this.backstageViewClientControl5.SuspendLayout();
@@ -183,9 +192,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.teDispenserCounter.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teTotalBondCounter.Properties)).BeginInit();
             this.backstageViewClientControl2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosX.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosY.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosZ.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl2
@@ -251,6 +259,12 @@
             // groupControl3
             // 
             this.groupControl3.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.groupControl3.Controls.Add(this.labelControl28);
+            this.groupControl3.Controls.Add(this.btnRecognizeFailSavingPath);
+            this.groupControl3.Controls.Add(this.teRecognizeFailSavingPath);
+            this.groupControl3.Controls.Add(this.labelControl27);
+            this.groupControl3.Controls.Add(this.btnRecognizeSuccessSavingPath);
+            this.groupControl3.Controls.Add(this.teRecognizeSuccessSavingPath);
             this.groupControl3.Controls.Add(this.labelControl40);
             this.groupControl3.Controls.Add(this.cmbRecogniseResulSaveOption);
             this.groupControl3.Controls.Add(this.btnApplyImageSaving);
@@ -387,8 +401,8 @@
             this.bvcMain.Items.Add(this.backstageViewTabItem2);
             this.bvcMain.Location = new System.Drawing.Point(0, 0);
             this.bvcMain.Name = "bvcMain";
-            this.bvcMain.SelectedTab = this.bvtJob;
-            this.bvcMain.SelectedTabIndex = 1;
+            this.bvcMain.SelectedTab = this.bvtImageSave;
+            this.bvcMain.SelectedTabIndex = 3;
             this.bvcMain.Size = new System.Drawing.Size(1146, 609);
             this.bvcMain.TabIndex = 2;
             this.bvcMain.Text = "backstageViewControl1";
@@ -962,6 +976,33 @@
             this.ckeConfirmVaccum.Size = new System.Drawing.Size(125, 20);
             this.ckeConfirmVaccum.TabIndex = 27;
             // 
+            // sePreDispensePosZ
+            // 
+            this.sePreDispensePosZ.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.sePreDispensePosZ.Location = new System.Drawing.Point(356, 199);
+            this.sePreDispensePosZ.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.sePreDispensePosZ.Name = "sePreDispensePosZ";
+            this.sePreDispensePosZ.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.sePreDispensePosZ.Properties.AutoHeight = false;
+            this.sePreDispensePosZ.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.sePreDispensePosZ.Properties.DisplayFormat.FormatString = "0.0";
+            this.sePreDispensePosZ.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosZ.Properties.EditFormat.FormatString = "0.0";
+            this.sePreDispensePosZ.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosZ.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.sePreDispensePosZ.Properties.MaskSettings.Set("mask", "f1");
+            this.sePreDispensePosZ.Size = new System.Drawing.Size(94, 23);
+            this.sePreDispensePosZ.TabIndex = 26;
+            // 
             // seAbandonPosZ
             // 
             this.seAbandonPosZ.EditValue = new decimal(new int[] {
@@ -1000,6 +1041,33 @@
             this.labelControl4.TabIndex = 25;
             this.labelControl4.Text = "Z";
             // 
+            // sePreDispensePosY
+            // 
+            this.sePreDispensePosY.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.sePreDispensePosY.Location = new System.Drawing.Point(246, 199);
+            this.sePreDispensePosY.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.sePreDispensePosY.Name = "sePreDispensePosY";
+            this.sePreDispensePosY.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.sePreDispensePosY.Properties.AutoHeight = false;
+            this.sePreDispensePosY.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.sePreDispensePosY.Properties.DisplayFormat.FormatString = "0.0";
+            this.sePreDispensePosY.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosY.Properties.EditFormat.FormatString = "0.0";
+            this.sePreDispensePosY.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosY.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.sePreDispensePosY.Properties.MaskSettings.Set("mask", "f1");
+            this.sePreDispensePosY.Size = new System.Drawing.Size(94, 23);
+            this.sePreDispensePosY.TabIndex = 26;
+            // 
             // seAbandonPosY
             // 
             this.seAbandonPosY.EditValue = new decimal(new int[] {
@@ -1026,6 +1094,17 @@
             this.seAbandonPosY.Properties.MaskSettings.Set("mask", "f1");
             this.seAbandonPosY.Size = new System.Drawing.Size(94, 23);
             this.seAbandonPosY.TabIndex = 26;
+            // 
+            // labelControl25
+            // 
+            this.labelControl25.Appearance.Options.UseTextOptions = true;
+            this.labelControl25.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControl25.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControl25.Location = new System.Drawing.Point(269, 133);
+            this.labelControl25.Name = "labelControl25";
+            this.labelControl25.Size = new System.Drawing.Size(26, 29);
+            this.labelControl25.TabIndex = 25;
+            this.labelControl25.Text = "Y";
             // 
             // labelControl2
             // 
@@ -1137,6 +1216,33 @@
             this.labelControl7.TabIndex = 25;
             this.labelControl7.Text = "共晶后破空延时/ms:";
             // 
+            // sePreDispensePosX
+            // 
+            this.sePreDispensePosX.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.sePreDispensePosX.Location = new System.Drawing.Point(135, 199);
+            this.sePreDispensePosX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.sePreDispensePosX.Name = "sePreDispensePosX";
+            this.sePreDispensePosX.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.sePreDispensePosX.Properties.AutoHeight = false;
+            this.sePreDispensePosX.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.sePreDispensePosX.Properties.DisplayFormat.FormatString = "0.0";
+            this.sePreDispensePosX.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosX.Properties.EditFormat.FormatString = "0.0";
+            this.sePreDispensePosX.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.sePreDispensePosX.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.sePreDispensePosX.Properties.MaskSettings.Set("mask", "f1");
+            this.sePreDispensePosX.Size = new System.Drawing.Size(94, 23);
+            this.sePreDispensePosX.TabIndex = 26;
+            // 
             // seAbandonPosX
             // 
             this.seAbandonPosX.EditValue = new decimal(new int[] {
@@ -1218,6 +1324,17 @@
             this.labelControl1.Size = new System.Drawing.Size(26, 29);
             this.labelControl1.TabIndex = 25;
             this.labelControl1.Text = "X";
+            // 
+            // labelControl26
+            // 
+            this.labelControl26.Appearance.Options.UseTextOptions = true;
+            this.labelControl26.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControl26.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControl26.Location = new System.Drawing.Point(57, 196);
+            this.labelControl26.Name = "labelControl26";
+            this.labelControl26.Size = new System.Drawing.Size(72, 29);
+            this.labelControl26.TabIndex = 25;
+            this.labelControl26.Text = "预划胶位置:";
             // 
             // labelControl5
             // 
@@ -1555,7 +1672,6 @@
             this.bvtJob.Caption = "系统配置";
             this.bvtJob.ContentControl = this.backstageViewClientControl3;
             this.bvtJob.Name = "bvtJob";
-            this.bvtJob.Selected = true;
             // 
             // backstageViewItemSeparator3
             // 
@@ -1566,6 +1682,7 @@
             this.bvtImageSave.Caption = "图像保存设置";
             this.bvtImageSave.ContentControl = this.backstageViewClientControl5;
             this.bvtImageSave.Name = "bvtImageSave";
+            this.bvtImageSave.Selected = true;
             // 
             // backstageViewItemSeparator5
             // 
@@ -1602,108 +1719,53 @@
             this.backstageViewClientControl2.Size = new System.Drawing.Size(576, 660);
             this.backstageViewClientControl2.TabIndex = 2;
             // 
-            // labelControl25
+            // labelControl27
             // 
-            this.labelControl25.Appearance.Options.UseTextOptions = true;
-            this.labelControl25.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.labelControl25.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl25.Location = new System.Drawing.Point(269, 133);
-            this.labelControl25.Name = "labelControl25";
-            this.labelControl25.Size = new System.Drawing.Size(26, 29);
-            this.labelControl25.TabIndex = 25;
-            this.labelControl25.Text = "Y";
+            this.labelControl27.Location = new System.Drawing.Point(48, 75);
+            this.labelControl27.Name = "labelControl27";
+            this.labelControl27.Size = new System.Drawing.Size(100, 14);
+            this.labelControl27.TabIndex = 26;
+            this.labelControl27.Text = "成功图像保存路径:";
             // 
-            // labelControl26
+            // btnRecognizeSuccessSavingPath
             // 
-            this.labelControl26.Appearance.Options.UseTextOptions = true;
-            this.labelControl26.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
-            this.labelControl26.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            this.labelControl26.Location = new System.Drawing.Point(57, 196);
-            this.labelControl26.Name = "labelControl26";
-            this.labelControl26.Size = new System.Drawing.Size(72, 29);
-            this.labelControl26.TabIndex = 25;
-            this.labelControl26.Text = "预划胶位置:";
+            this.btnRecognizeSuccessSavingPath.Location = new System.Drawing.Point(377, 72);
+            this.btnRecognizeSuccessSavingPath.Name = "btnRecognizeSuccessSavingPath";
+            this.btnRecognizeSuccessSavingPath.Size = new System.Drawing.Size(58, 20);
+            this.btnRecognizeSuccessSavingPath.TabIndex = 25;
+            this.btnRecognizeSuccessSavingPath.Text = "...";
+            this.btnRecognizeSuccessSavingPath.Click += new System.EventHandler(this.btnRecognizeSuccessSavingPath_Click);
             // 
-            // sePreDispensePosX
+            // teRecognizeSuccessSavingPath
             // 
-            this.sePreDispensePosX.EditValue = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.sePreDispensePosX.Location = new System.Drawing.Point(135, 199);
-            this.sePreDispensePosX.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.sePreDispensePosX.Name = "sePreDispensePosX";
-            this.sePreDispensePosX.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.sePreDispensePosX.Properties.AutoHeight = false;
-            this.sePreDispensePosX.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.sePreDispensePosX.Properties.DisplayFormat.FormatString = "0.0";
-            this.sePreDispensePosX.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosX.Properties.EditFormat.FormatString = "0.0";
-            this.sePreDispensePosX.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosX.Properties.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.sePreDispensePosX.Properties.MaskSettings.Set("mask", "f1");
-            this.sePreDispensePosX.Size = new System.Drawing.Size(94, 23);
-            this.sePreDispensePosX.TabIndex = 26;
+            this.teRecognizeSuccessSavingPath.Location = new System.Drawing.Point(154, 72);
+            this.teRecognizeSuccessSavingPath.Name = "teRecognizeSuccessSavingPath";
+            this.teRecognizeSuccessSavingPath.Size = new System.Drawing.Size(205, 20);
+            this.teRecognizeSuccessSavingPath.TabIndex = 27;
             // 
-            // sePreDispensePosY
+            // labelControl28
             // 
-            this.sePreDispensePosY.EditValue = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.sePreDispensePosY.Location = new System.Drawing.Point(246, 199);
-            this.sePreDispensePosY.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.sePreDispensePosY.Name = "sePreDispensePosY";
-            this.sePreDispensePosY.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.sePreDispensePosY.Properties.AutoHeight = false;
-            this.sePreDispensePosY.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.sePreDispensePosY.Properties.DisplayFormat.FormatString = "0.0";
-            this.sePreDispensePosY.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosY.Properties.EditFormat.FormatString = "0.0";
-            this.sePreDispensePosY.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosY.Properties.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.sePreDispensePosY.Properties.MaskSettings.Set("mask", "f1");
-            this.sePreDispensePosY.Size = new System.Drawing.Size(94, 23);
-            this.sePreDispensePosY.TabIndex = 26;
+            this.labelControl28.Location = new System.Drawing.Point(48, 112);
+            this.labelControl28.Name = "labelControl28";
+            this.labelControl28.Size = new System.Drawing.Size(100, 14);
+            this.labelControl28.TabIndex = 29;
+            this.labelControl28.Text = "失败图像保存路径:";
             // 
-            // sePreDispensePosZ
+            // btnRecognizeFailSavingPath
             // 
-            this.sePreDispensePosZ.EditValue = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.sePreDispensePosZ.Location = new System.Drawing.Point(356, 199);
-            this.sePreDispensePosZ.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.sePreDispensePosZ.Name = "sePreDispensePosZ";
-            this.sePreDispensePosZ.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
-            this.sePreDispensePosZ.Properties.AutoHeight = false;
-            this.sePreDispensePosZ.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.sePreDispensePosZ.Properties.DisplayFormat.FormatString = "0.0";
-            this.sePreDispensePosZ.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosZ.Properties.EditFormat.FormatString = "0.0";
-            this.sePreDispensePosZ.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.sePreDispensePosZ.Properties.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.sePreDispensePosZ.Properties.MaskSettings.Set("mask", "f1");
-            this.sePreDispensePosZ.Size = new System.Drawing.Size(94, 23);
-            this.sePreDispensePosZ.TabIndex = 26;
+            this.btnRecognizeFailSavingPath.Location = new System.Drawing.Point(377, 109);
+            this.btnRecognizeFailSavingPath.Name = "btnRecognizeFailSavingPath";
+            this.btnRecognizeFailSavingPath.Size = new System.Drawing.Size(58, 20);
+            this.btnRecognizeFailSavingPath.TabIndex = 28;
+            this.btnRecognizeFailSavingPath.Text = "...";
+            this.btnRecognizeFailSavingPath.Click += new System.EventHandler(this.btnRecognizeFailSavingPath_Click);
+            // 
+            // teRecognizeFailSavingPath
+            // 
+            this.teRecognizeFailSavingPath.Location = new System.Drawing.Point(154, 109);
+            this.teRecognizeFailSavingPath.Name = "teRecognizeFailSavingPath";
+            this.teRecognizeFailSavingPath.Size = new System.Drawing.Size(205, 20);
+            this.teRecognizeFailSavingPath.TabIndex = 30;
             // 
             // ParameterConfigForm
             // 
@@ -1752,8 +1814,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.seTurningTimeMS.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ckeIsSlowSpeedRun.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ckeConfirmVaccum.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosZ.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosZ.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosY.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosY.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosX.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seAbandonPosX.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teRawDataSavePath.Properties)).EndInit();
             this.backstageViewClientControl5.ResumeLayout(false);
@@ -1773,9 +1838,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.teDispenserCounter.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teTotalBondCounter.Properties)).EndInit();
             this.backstageViewClientControl2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosX.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosY.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sePreDispensePosZ.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1883,5 +1947,11 @@
         private DevExpress.XtraEditors.LabelControl labelControl25;
         private DevExpress.XtraEditors.SpinEdit sePreDispensePosX;
         private DevExpress.XtraEditors.LabelControl labelControl26;
+        private DevExpress.XtraEditors.LabelControl labelControl28;
+        private DevExpress.XtraEditors.SimpleButton btnRecognizeFailSavingPath;
+        private DevExpress.XtraEditors.TextEdit teRecognizeFailSavingPath;
+        private DevExpress.XtraEditors.LabelControl labelControl27;
+        private DevExpress.XtraEditors.SimpleButton btnRecognizeSuccessSavingPath;
+        private DevExpress.XtraEditors.TextEdit teRecognizeSuccessSavingPath;
     }
 }

@@ -163,6 +163,11 @@ namespace ConfigurationClsLib
         [XmlElement("RawDataSavingPath")]
         public string RawDataSavingPath { get; set; }
 
+        [XmlElement("RecognizeFailSavingPath")]
+        public string RecognizeFailSavingPath { get; set; }
+        [XmlElement("RecognizeSuccessSavingPath")]
+        public string RecognizeSuccessSavingPath { get; set; }
+
         [XmlElement("EnableMarathon")]
         public bool EnableMarathon { get; set; }
         [XmlElement("RecogniseResulSaveOption")]

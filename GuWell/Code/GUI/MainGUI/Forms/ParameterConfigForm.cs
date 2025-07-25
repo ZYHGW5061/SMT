@@ -112,6 +112,8 @@ namespace MainGUI.Forms
             try
             {
                 _systemConfig.JobConfig.RecogniseResulSaveOption = (EnumRecogniseResulSaveOption)cmbRecogniseResulSaveOption.SelectedIndex;
+                _systemConfig.JobConfig.RecognizeSuccessSavingPath = teRecognizeSuccessSavingPath.Text;
+                _systemConfig.JobConfig.RecognizeFailSavingPath = teRecognizeFailSavingPath.Text;
                 _systemConfig.SaveConfig();
                 WarningBox.FormShow("成功。", "设置完成!", "提示");
             }
@@ -256,7 +258,7 @@ namespace MainGUI.Forms
                     WarningBox.FormShow("错误", "文件夹路径不能为空", "提示");
                     return;
                 }
-                teRawDataSavePath.Text = dialog.SelectedPath + @"\"; ;
+                teRawDataSavePath.Text = dialog.SelectedPath + @"\";
             }
         }
 
@@ -309,6 +311,36 @@ namespace MainGUI.Forms
             if (WarningBox.FormShow("动作确认", "是否将榜头Z轴当前位置定义为榜头Z危险位？", "提示") == 1)
             {
                 seBondZWariningPos.Text = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondZ).ToString("0.000");
+            }
+        }
+
+        private void btnRecognizeSuccessSavingPath_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.Description = "请选择识别成功图像保存地址";
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(dialog.SelectedPath))
+                {
+                    WarningBox.FormShow("错误", "文件夹路径不能为空", "提示");
+                    return;
+                }
+                teRecognizeSuccessSavingPath.Text = dialog.SelectedPath + @"\";
+            }
+        }
+
+        private void btnRecognizeFailSavingPath_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.Description = "请选择识别失败图像保存地址";
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(dialog.SelectedPath))
+                {
+                    WarningBox.FormShow("错误", "文件夹路径不能为空", "提示");
+                    return;
+                }
+                teRecognizeFailSavingPath.Text = dialog.SelectedPath + @"\";
             }
         }
     }

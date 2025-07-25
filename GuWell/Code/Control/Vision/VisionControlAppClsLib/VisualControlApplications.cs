@@ -343,7 +343,8 @@ namespace VisionControlAppClsLib
                         if (RunImage != null)
                         {
                             Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
-                            string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            //string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeFail\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeFailSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
                             capturedImageSaved.Save(failPath, ImageFormat.Bmp);
                             capturedImageSaved.Dispose();
                             capturedImageSaved = null;
@@ -359,7 +360,8 @@ namespace VisionControlAppClsLib
                         if (RunImage != null)
                         {
                             Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
-                            string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            //string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeSuccess\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeSuccessSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
                             capturedImageSaved.Save(failPath, ImageFormat.Bmp);
                             capturedImageSaved.Dispose();
                             capturedImageSaved = null;
