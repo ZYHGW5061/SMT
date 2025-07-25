@@ -1,0 +1,228 @@
+﻿using CommonPanelClsLib;
+using DevExpress.XtraEditors;
+using GlobalDataDefineClsLib;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using UserManagerClsLib;
+
+namespace SystemGUILib.UserMangement
+{
+    public partial class CtrlRightsManager : DevExpress.XtraEditors.XtraUserControl
+    {
+        /// <summary>
+        /// RightsData数据操作
+        /// </summary>
+        //private UserRightsManager _rightsDataManage = UserRightsManager.Instance;
+        /// <summary>
+        /// 跟节点
+        /// </summary>
+        private TreeNode AllTreeNode = new TreeNode();
+
+        public CtrlRightsManager()
+        {
+            InitializeComponent();
+
+        }
+
+        /// <summary>
+        /// 绑定权限下拉列表
+        /// </summary>
+        private void ComboxDataSource()
+        {
+            cmbRightsType.DataSource = UserRightsManager.Instance.GetAllRights();
+            cmbRightsType.DisplayMember = "RightsType";
+            cmbRightsType.ValueMember = "RightsID";
+        }
+
+        /// <summary>
+        /// 绑定树
+        /// </summary>
+        private void LoadRightsTreeDataSource()
+        {
+            AddTreeNode(AllTreeNode, 0);
+            foreach (var item in AllTreeNode.Nodes)
+            {
+                treeUserRights.Nodes.Add((TreeNode)item);
+            }
+            treeUserRights.ExpandAll();
+        }
+
+        /// <summary>
+        /// 添加节点
+        /// </summary>
+        /// <param name="treeNode"></param>
+        /// <param name="parentID"></param>
+        private void AddTreeNode(TreeNode treeNode, int parentID)
+        {
+            List<FunctionInfo> listFunctionInfo = UserRightsManager.Instance.GetFunctionInfoByParentID(parentID);
+            if (listFunctionInfo != null)
+            {
+                foreach (var item in listFunctionInfo)
+                {
+                    TreeNode node = new TreeNode();
+                    node.Name = item.FunctionID.ToString();
+                    node.Text = item.FunctionName;
+                    treeNode.Nodes.Add(node);
+                    AddTreeNode(node, item.FunctionID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public void GetFunctionListByUserId(Dictionary<string, FunctionInfo> dicFunctionInfo, int parentID)
+        {
+            var listFunctions = UserRightsManager.Instance.GetFunctionInfoByParentID(parentID);
+            if (listFunctions != null)
+            {
+                foreach (var item in listFunctions)
+                {
+                    dicFunctionInfo.Add(item.FunctionName, item);
+                    GetFunctionListByUserId(dicFunctionInfo, item.FunctionID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 根据RightsID加载对应的权限
+        /// </summary>
+        /// <param name="rightsID"></param>
+        private void LoadRightsTreeByRightsType(int rightsID)
+        {
+            var functionRights = UserRightsManager.Instance.GetFunctionRightsInfoByRightsID(rightsID);
+
+            //foreach (TreeNode node in treeUserRights.Nodes)
+            //{
+            //    var ret = functionRights.FirstOrDefault(i => i.FunctionInfoID.ToString() == node.Name);
+            //    if(ret!=null)
+            //    {
+            //        node.Checked = ret.Visible;
+            //    }
+            //    else
+            //    {
+            //        node.Checked = false;
+            //    }
+            //}
+            RefreshRightsTree(functionRights, treeUserRights.Nodes);
+            //foreach (var item in functionRights)
+            //{
+            //    TreeNode[]  nodes =  treeUserRights.Nodes.Find(item.FunctionInfoID.ToString(), true);
+            //    if (nodes.Length>0)
+            //    {
+            //        nodes[0].Checked = item.Visible;
+            //    }
+            //}
+        }
+        private void RefreshRightsTree(List<FunctionRightsInfo> rightsInfo, TreeNodeCollection nodes)
+        {
+            foreach (TreeNode treeNode in nodes)
+            {
+                var ret = rightsInfo.FirstOrDefault(i => i.FunctionInfoID.ToString() == treeNode.Name);
+                if (ret != null)
+                {
+                    treeNode.Checked = ret.Visible;
+                }
+                else
+                {
+                    treeNode.Checked = false;
+                }
+                if (treeNode.Nodes.Count > 0)
+                {
+                    RefreshRightsTree(rightsInfo, treeNode.Nodes);
+                }
+            }
+        }
+        private List<int> _settedRights = new List<int>();
+        /// <summary>
+        /// 保存权限功能信息
+        /// </summary>
+        /// <param name="nodes"></param>
+        private void SaveToFunctionRights(TreeNodeCollection nodes)
+        {
+            _settedRights.Clear();
+            RefreshSettedRight(nodes);
+            UserRightsManager.Instance.UpdateUserLevelRights((int)cmbRightsType.SelectedValue, _settedRights);
+        }
+        private void RefreshSettedRight(TreeNodeCollection nodes)
+        {
+            foreach (var node in nodes)
+            {
+                TreeNode treeNode = (node as TreeNode);
+                if (treeNode.Name == "1" ? true : treeNode.Checked)
+                {
+                    _settedRights.Add(int.Parse(treeNode.Name));
+                }
+                if (treeNode.Nodes.Count > 0)
+                {
+                    RefreshSettedRight(treeNode.Nodes);
+                }
+            }
+        }
+        private void SelecedNode(TreeNode node, bool isChecked)
+        {
+            foreach (var item in node.Nodes)
+            {
+                TreeNode treeNode = (item as TreeNode);
+                treeNode.Checked = isChecked;
+                if (treeNode.Nodes.Count > 0)
+                {
+                    SelecedNode(treeNode, isChecked);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 下拉框更改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cmbRightsType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (TreeNode item in treeUserRights.Nodes)
+            {
+                item.Checked = false;
+            }
+            LoadRightsTreeByRightsType((int)cmbRightsType.SelectedValue);
+        }
+
+        /// <summary>
+        /// 复选框更改事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void treeUserRights_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            SelecedNode(e.Node, e.Node.Checked);
+        }
+
+        /// <summary>
+        /// 保存权限设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveToFunctionRights(treeUserRights.Nodes);
+            WarningBox.FormShow("成功!", "设置完成!", "Tips");
+            //XtraMessageBox.Show("Save success.","Tips");
+        }
+
+        private void CtrlRightsManager_Load(object sender, EventArgs e)
+        {
+            ComboxDataSource();
+            LoadRightsTreeDataSource();
+            LoadRightsTreeByRightsType(1);
+            cmbRightsType.SelectedIndexChanged += cmbRightsType_SelectedIndexChanged;
+            treeUserRights.AfterCheck += treeUserRights_AfterCheck;
+        }
+    }
+}

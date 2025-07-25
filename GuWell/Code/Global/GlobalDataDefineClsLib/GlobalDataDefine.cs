@@ -178,6 +178,9 @@ namespace GlobalDataDefineClsLib
     public enum DynamometerProducer { JNSENSOR, RLD }
     [Serializable]
     public enum EnumCommunicationType { SerialPort, Ethernet }
+
+
+
     public enum EnumRecogniseResulSaveOption
     {
         NotSave = 0, SaveOK = 1, SaveNG = 2, AllSave = 3
