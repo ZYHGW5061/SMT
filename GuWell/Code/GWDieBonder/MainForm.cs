@@ -431,6 +431,7 @@ namespace BondTerminal
                     else
                     {
                         SystemConfiguration.Instance.SaveConfig();
+                        
                         e.Cancel = false;
                     }
                 }

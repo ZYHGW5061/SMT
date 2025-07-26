@@ -278,6 +278,14 @@ namespace ConfigurationClsLib
         [XmlAttribute("Index")]
         public int Index { get; set; }
 
+        [XmlAttribute("StageType")]
+        public EnumStageType StageType { get; set; }
+
+        [XmlAttribute("Smotheda")]
+        public double Smotheda { get; set; }
+        [XmlAttribute("Smothedj")]
+        public double Smothedj { get; set; }
+
         [XmlAttribute("LowAxisSpeed")]
         public double LowAxisSpeed { get; set; }
         [XmlAttribute("MediumAxisSpeed")]
@@ -290,6 +298,9 @@ namespace ConfigurationClsLib
         public double AxisSpeed { get; set; }
         [XmlAttribute("MaxAxisSpeed")]
         public double MaxAxisSpeed { get; set; }
+
+        
+
         [XmlAttribute("Deceleration")]
         public double Deceleration { get; set; }
 

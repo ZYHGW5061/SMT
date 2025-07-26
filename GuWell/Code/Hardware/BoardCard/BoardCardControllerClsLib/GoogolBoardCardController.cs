@@ -388,9 +388,12 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public double GetAxisSpeed(EnumStageAxis axis)
         {
-            int OriPosPulse = 0;
-            OriPosPulse = AxisControl.mc.MC_GetPrfVel((short)axis);
-            return (double)OriPosPulse * PulseToMM(axis) * 1000;
+            //int OriPosPulse = 0;
+            //OriPosPulse = AxisControl.mc.MC_GetPrfVel((short)axis);
+            //return (double)OriPosPulse * PulseToMM(axis) * 1000;
+
+            double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
+            return s_v;
         }
         #endregion
 
@@ -596,43 +599,16 @@ namespace BoardCardControllerClsLib
         public void MoveAbsoluteSync(EnumStageAxis axis, double targetPos, double Speed, int millisecondsTimeout = -1)
         {
             ClrAlarm(axis);
-            //if (axis == EnumStageAxis.BondY)
-            //{
-            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
-            //}
-            //else if (axis == EnumStageAxis.BondX)
-            //{
-            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
-            //}
-            //else if (axis == EnumStageAxis.BondZ)
-            //{
-            //    AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-            //    S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 2500, 25000);
-            //}
-            if (axis == EnumStageAxis.BondY)
+
+            AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+            if (_axisConfig.StageType == EnumStageType.S)
             {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 20000, 100000);
+                double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
+                S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
             }
-            else if (axis == EnumStageAxis.BondX)
+            else if(_axisConfig.StageType == EnumStageType.None)
             {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 20000, 100000);
-            }
-            else if (axis == EnumStageAxis.BondZ)
-            {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 5000, 50000);
-            }
-            //else if (axis == EnumStageAxis.ChipPPT)
-            //{
-            //    S_Movetion(axis, targetPos, 20, 2500, 25000);
-            //}
-            else
-            {
-                Speed = Speed * MMToPulse(axis) / 1000;
+                //Speed = Speed * MMToPulse(axis) / 1000;
                 targetPos = targetPos * MMToPulse(axis);
                 AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID,
                                                MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
@@ -672,27 +648,14 @@ namespace BoardCardControllerClsLib
 
             ClrAlarm(axis);
 
-
-
-            if (axis == EnumStageAxis.BondY)
+            AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+            if (_axisConfig.StageType == EnumStageType.S)
             {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+                double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
                 double targetPos = GetCurrentPosition(axis) + distance;
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
+                S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
             }
-            else if (axis == EnumStageAxis.BondX)
-            {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                double targetPos = GetCurrentPosition(axis) + distance;
-                S_Movetion(axis, targetPos, _axisConfig.AxisSpeed, 10000, 50000);
-            }
-            else if (axis == EnumStageAxis.BondZ)
-            {
-                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-                double targetPos = GetCurrentPosition(axis) + distance;
-                S_Movetion(axis, targetPos, 5, 2500, 2500);
-            }
-            else
+            else if (_axisConfig.StageType == EnumStageType.None)
             {
                 Speed = Speed * MMToPulse(axis) / 1000;
                 distance = distance * MMToPulse(axis);
@@ -704,7 +667,6 @@ namespace BoardCardControllerClsLib
                                             MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime,
                                             (int)distance);
             }
-
 
         }
 
@@ -732,11 +694,14 @@ namespace BoardCardControllerClsLib
         #endregion
 
         #region 设置轴速度
+
+
         /// <summary>
         /// 设置轴速度
         /// </summary>
         public void SetAxisSpeed(EnumStageAxis axis, double speed)
         {
+            _hardwareConfig.StageConfig.GetAixsConfigByType(axis).AxisSpeed = speed;
             speed = speed * MMToPulse(axis) / 1000;
             MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
         }

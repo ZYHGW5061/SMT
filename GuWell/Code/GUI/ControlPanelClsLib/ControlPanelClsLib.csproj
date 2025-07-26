@@ -369,6 +369,7 @@
     <EmbeddedResource Include="IOMaintainPanel.resx">
       <DependentUpon>IOMaintainPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

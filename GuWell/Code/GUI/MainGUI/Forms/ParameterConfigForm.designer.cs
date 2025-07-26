@@ -34,6 +34,12 @@
             this.checkEdit_UseCurveFit = new DevExpress.XtraEditors.CheckEdit();
             this.checkEdit_UsePointSensorFocus = new DevExpress.XtraEditors.CheckEdit();
             this.groupControl3 = new DevExpress.XtraEditors.GroupControl();
+            this.labelControl28 = new DevExpress.XtraEditors.LabelControl();
+            this.btnRecognizeFailSavingPath = new DevExpress.XtraEditors.SimpleButton();
+            this.teRecognizeFailSavingPath = new DevExpress.XtraEditors.TextEdit();
+            this.labelControl27 = new DevExpress.XtraEditors.LabelControl();
+            this.btnRecognizeSuccessSavingPath = new DevExpress.XtraEditors.SimpleButton();
+            this.teRecognizeSuccessSavingPath = new DevExpress.XtraEditors.TextEdit();
             this.labelControl40 = new DevExpress.XtraEditors.LabelControl();
             this.cmbRecogniseResulSaveOption = new DevExpress.XtraEditors.ComboBoxEdit();
             this.btnApplyImageSaving = new DevExpress.XtraEditors.SimpleButton();
@@ -130,12 +136,8 @@
             this.backstageViewTabItem2 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.bvtAutoFocus = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
-            this.labelControl27 = new DevExpress.XtraEditors.LabelControl();
-            this.btnRecognizeSuccessSavingPath = new DevExpress.XtraEditors.SimpleButton();
-            this.teRecognizeSuccessSavingPath = new DevExpress.XtraEditors.TextEdit();
-            this.labelControl28 = new DevExpress.XtraEditors.LabelControl();
-            this.btnRecognizeFailSavingPath = new DevExpress.XtraEditors.SimpleButton();
-            this.teRecognizeFailSavingPath = new DevExpress.XtraEditors.TextEdit();
+            this.backstageViewClientControl6 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
+            this.backstageViewTabItem3 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -143,6 +145,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.checkEdit_UsePointSensorFocus.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
             this.groupControl3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRecogniseResulSaveOption.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlEnableSaveRawdata)).BeginInit();
             this.groupControlEnableSaveRawdata.SuspendLayout();
@@ -192,8 +196,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.teDispenserCounter.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teTotalBondCounter.Properties)).BeginInit();
             this.backstageViewClientControl2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // groupControl2
@@ -275,6 +277,54 @@
             this.groupControl3.Size = new System.Drawing.Size(983, 609);
             this.groupControl3.TabIndex = 2;
             this.groupControl3.Text = "Image Saving Settings";
+            // 
+            // labelControl28
+            // 
+            this.labelControl28.Location = new System.Drawing.Point(48, 112);
+            this.labelControl28.Name = "labelControl28";
+            this.labelControl28.Size = new System.Drawing.Size(100, 14);
+            this.labelControl28.TabIndex = 29;
+            this.labelControl28.Text = "失败图像保存路径:";
+            // 
+            // btnRecognizeFailSavingPath
+            // 
+            this.btnRecognizeFailSavingPath.Location = new System.Drawing.Point(377, 109);
+            this.btnRecognizeFailSavingPath.Name = "btnRecognizeFailSavingPath";
+            this.btnRecognizeFailSavingPath.Size = new System.Drawing.Size(58, 20);
+            this.btnRecognizeFailSavingPath.TabIndex = 28;
+            this.btnRecognizeFailSavingPath.Text = "...";
+            this.btnRecognizeFailSavingPath.Click += new System.EventHandler(this.btnRecognizeFailSavingPath_Click);
+            // 
+            // teRecognizeFailSavingPath
+            // 
+            this.teRecognizeFailSavingPath.Location = new System.Drawing.Point(154, 109);
+            this.teRecognizeFailSavingPath.Name = "teRecognizeFailSavingPath";
+            this.teRecognizeFailSavingPath.Size = new System.Drawing.Size(205, 20);
+            this.teRecognizeFailSavingPath.TabIndex = 30;
+            // 
+            // labelControl27
+            // 
+            this.labelControl27.Location = new System.Drawing.Point(48, 75);
+            this.labelControl27.Name = "labelControl27";
+            this.labelControl27.Size = new System.Drawing.Size(100, 14);
+            this.labelControl27.TabIndex = 26;
+            this.labelControl27.Text = "成功图像保存路径:";
+            // 
+            // btnRecognizeSuccessSavingPath
+            // 
+            this.btnRecognizeSuccessSavingPath.Location = new System.Drawing.Point(377, 72);
+            this.btnRecognizeSuccessSavingPath.Name = "btnRecognizeSuccessSavingPath";
+            this.btnRecognizeSuccessSavingPath.Size = new System.Drawing.Size(58, 20);
+            this.btnRecognizeSuccessSavingPath.TabIndex = 25;
+            this.btnRecognizeSuccessSavingPath.Text = "...";
+            this.btnRecognizeSuccessSavingPath.Click += new System.EventHandler(this.btnRecognizeSuccessSavingPath_Click);
+            // 
+            // teRecognizeSuccessSavingPath
+            // 
+            this.teRecognizeSuccessSavingPath.Location = new System.Drawing.Point(154, 72);
+            this.teRecognizeSuccessSavingPath.Name = "teRecognizeSuccessSavingPath";
+            this.teRecognizeSuccessSavingPath.Size = new System.Drawing.Size(205, 20);
+            this.teRecognizeSuccessSavingPath.TabIndex = 27;
             // 
             // labelControl40
             // 
@@ -390,10 +440,12 @@
             this.bvcMain.Controls.Add(this.backstageViewClientControl5);
             this.bvcMain.Controls.Add(this.backstageViewClientControl1);
             this.bvcMain.Controls.Add(this.backstageViewClientControl4);
+            this.bvcMain.Controls.Add(this.backstageViewClientControl6);
             this.bvcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bvcMain.Items.Add(this.backstageViewItemSeparator1);
             this.bvcMain.Items.Add(this.bvtJob);
             this.bvcMain.Items.Add(this.backstageViewItemSeparator3);
+            this.bvcMain.Items.Add(this.backstageViewTabItem3);
             this.bvcMain.Items.Add(this.bvtImageSave);
             this.bvcMain.Items.Add(this.backstageViewItemSeparator5);
             this.bvcMain.Items.Add(this.backstageViewTabItem1);
@@ -401,8 +453,8 @@
             this.bvcMain.Items.Add(this.backstageViewTabItem2);
             this.bvcMain.Location = new System.Drawing.Point(0, 0);
             this.bvcMain.Name = "bvcMain";
-            this.bvcMain.SelectedTab = this.bvtImageSave;
-            this.bvcMain.SelectedTabIndex = 3;
+            this.bvcMain.SelectedTab = this.bvtJob;
+            this.bvcMain.SelectedTabIndex = 1;
             this.bvcMain.Size = new System.Drawing.Size(1146, 609);
             this.bvcMain.TabIndex = 2;
             this.bvcMain.Text = "backstageViewControl1";
@@ -1552,9 +1604,9 @@
             // backstageViewClientControl4
             // 
             this.backstageViewClientControl4.Controls.Add(this.groupControl1);
-            this.backstageViewClientControl4.Location = new System.Drawing.Point(163, 0);
+            this.backstageViewClientControl4.Location = new System.Drawing.Point(227, 0);
             this.backstageViewClientControl4.Name = "backstageViewClientControl4";
-            this.backstageViewClientControl4.Size = new System.Drawing.Size(983, 609);
+            this.backstageViewClientControl4.Size = new System.Drawing.Size(919, 609);
             this.backstageViewClientControl4.TabIndex = 7;
             // 
             // groupControl1
@@ -1574,7 +1626,7 @@
             this.groupControl1.Location = new System.Drawing.Point(0, 0);
             this.groupControl1.Name = "groupControl1";
             this.groupControl1.ShowCaption = false;
-            this.groupControl1.Size = new System.Drawing.Size(983, 609);
+            this.groupControl1.Size = new System.Drawing.Size(919, 609);
             this.groupControl1.TabIndex = 5;
             this.groupControl1.Text = "Job Review Settings";
             // 
@@ -1672,6 +1724,7 @@
             this.bvtJob.Caption = "系统配置";
             this.bvtJob.ContentControl = this.backstageViewClientControl3;
             this.bvtJob.Name = "bvtJob";
+            this.bvtJob.Selected = true;
             // 
             // backstageViewItemSeparator3
             // 
@@ -1682,7 +1735,6 @@
             this.bvtImageSave.Caption = "图像保存设置";
             this.bvtImageSave.ContentControl = this.backstageViewClientControl5;
             this.bvtImageSave.Name = "bvtImageSave";
-            this.bvtImageSave.Selected = true;
             // 
             // backstageViewItemSeparator5
             // 
@@ -1719,53 +1771,18 @@
             this.backstageViewClientControl2.Size = new System.Drawing.Size(576, 660);
             this.backstageViewClientControl2.TabIndex = 2;
             // 
-            // labelControl27
+            // backstageViewClientControl6
             // 
-            this.labelControl27.Location = new System.Drawing.Point(48, 75);
-            this.labelControl27.Name = "labelControl27";
-            this.labelControl27.Size = new System.Drawing.Size(100, 14);
-            this.labelControl27.TabIndex = 26;
-            this.labelControl27.Text = "成功图像保存路径:";
+            this.backstageViewClientControl6.Location = new System.Drawing.Point(163, 0);
+            this.backstageViewClientControl6.Name = "backstageViewClientControl6";
+            this.backstageViewClientControl6.Size = new System.Drawing.Size(983, 609);
+            this.backstageViewClientControl6.TabIndex = 8;
             // 
-            // btnRecognizeSuccessSavingPath
+            // backstageViewTabItem3
             // 
-            this.btnRecognizeSuccessSavingPath.Location = new System.Drawing.Point(377, 72);
-            this.btnRecognizeSuccessSavingPath.Name = "btnRecognizeSuccessSavingPath";
-            this.btnRecognizeSuccessSavingPath.Size = new System.Drawing.Size(58, 20);
-            this.btnRecognizeSuccessSavingPath.TabIndex = 25;
-            this.btnRecognizeSuccessSavingPath.Text = "...";
-            this.btnRecognizeSuccessSavingPath.Click += new System.EventHandler(this.btnRecognizeSuccessSavingPath_Click);
-            // 
-            // teRecognizeSuccessSavingPath
-            // 
-            this.teRecognizeSuccessSavingPath.Location = new System.Drawing.Point(154, 72);
-            this.teRecognizeSuccessSavingPath.Name = "teRecognizeSuccessSavingPath";
-            this.teRecognizeSuccessSavingPath.Size = new System.Drawing.Size(205, 20);
-            this.teRecognizeSuccessSavingPath.TabIndex = 27;
-            // 
-            // labelControl28
-            // 
-            this.labelControl28.Location = new System.Drawing.Point(48, 112);
-            this.labelControl28.Name = "labelControl28";
-            this.labelControl28.Size = new System.Drawing.Size(100, 14);
-            this.labelControl28.TabIndex = 29;
-            this.labelControl28.Text = "失败图像保存路径:";
-            // 
-            // btnRecognizeFailSavingPath
-            // 
-            this.btnRecognizeFailSavingPath.Location = new System.Drawing.Point(377, 109);
-            this.btnRecognizeFailSavingPath.Name = "btnRecognizeFailSavingPath";
-            this.btnRecognizeFailSavingPath.Size = new System.Drawing.Size(58, 20);
-            this.btnRecognizeFailSavingPath.TabIndex = 28;
-            this.btnRecognizeFailSavingPath.Text = "...";
-            this.btnRecognizeFailSavingPath.Click += new System.EventHandler(this.btnRecognizeFailSavingPath_Click);
-            // 
-            // teRecognizeFailSavingPath
-            // 
-            this.teRecognizeFailSavingPath.Location = new System.Drawing.Point(154, 109);
-            this.teRecognizeFailSavingPath.Name = "teRecognizeFailSavingPath";
-            this.teRecognizeFailSavingPath.Size = new System.Drawing.Size(205, 20);
-            this.teRecognizeFailSavingPath.TabIndex = 30;
+            this.backstageViewTabItem3.Caption = "系统坐标";
+            this.backstageViewTabItem3.ContentControl = this.backstageViewClientControl6;
+            this.backstageViewTabItem3.Name = "backstageViewTabItem3";
             // 
             // ParameterConfigForm
             // 
@@ -1786,6 +1803,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.groupControl3)).EndInit();
             this.groupControl3.ResumeLayout(false);
             this.groupControl3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbRecogniseResulSaveOption.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.groupControlEnableSaveRawdata)).EndInit();
             this.groupControlEnableSaveRawdata.ResumeLayout(false);
@@ -1838,8 +1857,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.teDispenserCounter.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teTotalBondCounter.Properties)).EndInit();
             this.backstageViewClientControl2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeSuccessSavingPath.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.teRecognizeFailSavingPath.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1953,5 +1970,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl27;
         private DevExpress.XtraEditors.SimpleButton btnRecognizeSuccessSavingPath;
         private DevExpress.XtraEditors.TextEdit teRecognizeSuccessSavingPath;
+        private DevExpress.XtraBars.Ribbon.BackstageViewClientControl backstageViewClientControl6;
+        private DevExpress.XtraBars.Ribbon.BackstageViewTabItem backstageViewTabItem3;
     }
 }

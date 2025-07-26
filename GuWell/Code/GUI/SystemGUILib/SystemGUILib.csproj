@@ -59,11 +59,11 @@
       <DependentUpon>AlarmHistoryView.cs</DependentUpon>
     </Compile>
     <Compile Include="Class1.cs" />
-    <Compile Include="Log\GlobalLogView.cs">
+    <Compile Include="LogUI\GlobalLogGUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Log\GlobalLogView.Designer.cs">
-      <DependentUpon>GlobalLogView.cs</DependentUpon>
+    <Compile Include="LogUI\GlobalLogGUI.Designer.cs">
+      <DependentUpon>GlobalLogGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserMangement\CtrlRightsManager.cs">
@@ -89,9 +89,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Alarm\AlarmHistoryView.resx">
       <DependentUpon>AlarmHistoryView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Log\GlobalLogView.resx">
-      <DependentUpon>GlobalLogView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="UserMangement\CtrlRightsManager.resx">

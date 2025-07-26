@@ -135,6 +135,22 @@ namespace GlobalDataDefineClsLib
         NotorInPlace = 8,
         EmergencyStop = 9,
     }
+
+    [Serializable]
+    public enum EnumStageType
+    {
+        [Description("位置模式")]
+        None = 0,
+
+        [Description("力控模式")]
+        ZR = 1,
+
+        [Description("速度规划模式")]
+        S = 2,
+
+    }
+
+
     [Serializable]
     public enum EnumFindBondPositionMethod
     {
