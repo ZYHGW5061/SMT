@@ -31,9 +31,6 @@ namespace StageCtrlPanelLib
         {
             this.backstageViewControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewControl();
             this.backstageViewClientControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
-            this.backstageViewTabItem1 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
-            this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
-            this.backstageViewTabItem2 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.label29 = new System.Windows.Forms.Label();
             this.laFilpToolTheta = new System.Windows.Forms.Label();
@@ -235,10 +232,11 @@ namespace StageCtrlPanelLib
             this.label190 = new System.Windows.Forms.Label();
             this.label191 = new System.Windows.Forms.Label();
             this.label192 = new System.Windows.Forms.Label();
+            this.backstageViewClientControl2 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.comboBoxSelAxis = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBoxSelAxis = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -256,15 +254,15 @@ namespace StageCtrlPanelLib
             this.laStop = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
             this.numPosition = new System.Windows.Forms.NumericUpDown();
-            this.label48 = new System.Windows.Forms.Label();
-            this.numSpeed = new System.Windows.Forms.NumericUpDown();
             this.label49 = new System.Windows.Forms.Label();
             this.comboBoxStageType = new System.Windows.Forms.ComboBox();
+            this.label48 = new System.Windows.Forms.Label();
+            this.numSpeed = new System.Windows.Forms.NumericUpDown();
             this.label50 = new System.Windows.Forms.Label();
             this.label51 = new System.Windows.Forms.Label();
             this.label52 = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
             this.numSacceleration = new System.Windows.Forms.NumericUpDown();
             this.numSJerk = new System.Windows.Forms.NumericUpDown();
             this.numAcceleration = new System.Windows.Forms.NumericUpDown();
@@ -272,8 +270,8 @@ namespace StageCtrlPanelLib
             this.numMaxSpeed = new System.Windows.Forms.NumericUpDown();
             this.label55 = new System.Windows.Forms.Label();
             this.label56 = new System.Windows.Forms.Label();
-            this.label57 = new System.Windows.Forms.Label();
             this.label58 = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
             this.label59 = new System.Windows.Forms.Label();
             this.label60 = new System.Windows.Forms.Label();
             this.numSoftLeftLimit = new System.Windows.Forms.NumericUpDown();
@@ -289,18 +287,20 @@ namespace StageCtrlPanelLib
             this.btnAbsoluteMove = new System.Windows.Forms.Button();
             this.btnRelativeMove = new System.Windows.Forms.Button();
             this.btnEnable = new System.Windows.Forms.Button();
-            this.btnDisable = new System.Windows.Forms.Button();
-            this.btnErrorClear = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
+            this.btnErrorClear = new System.Windows.Forms.Button();
+            this.btnDisable = new System.Windows.Forms.Button();
             this.btnLimitEffective = new System.Windows.Forms.Button();
             this.btnLimitFailure = new System.Windows.Forms.Button();
             this.btnGoHome = new System.Windows.Forms.Button();
             this.btnSetZero = new System.Windows.Forms.Button();
+            this.backstageViewTabItem1 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
+            this.backstageViewTabItem2 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             ((System.ComponentModel.ISupportInitialize)(this.backstageViewControl1)).BeginInit();
             this.backstageViewControl1.SuspendLayout();
             this.backstageViewClientControl1.SuspendLayout();
-            this.backstageViewClientControl2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.backstageViewClientControl2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPosition)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSpeed)).BeginInit();
@@ -342,27 +342,6 @@ namespace StageCtrlPanelLib
             this.backstageViewClientControl1.Name = "backstageViewClientControl1";
             this.backstageViewClientControl1.Size = new System.Drawing.Size(868, 600);
             this.backstageViewClientControl1.TabIndex = 1;
-            // 
-            // backstageViewTabItem1
-            // 
-            this.backstageViewTabItem1.Caption = "轴状态";
-            this.backstageViewTabItem1.ContentControl = this.backstageViewClientControl1;
-            this.backstageViewTabItem1.Name = "backstageViewTabItem1";
-            // 
-            // backstageViewClientControl2
-            // 
-            this.backstageViewClientControl2.Controls.Add(this.tableLayoutPanel1);
-            this.backstageViewClientControl2.Location = new System.Drawing.Point(132, 0);
-            this.backstageViewClientControl2.Name = "backstageViewClientControl2";
-            this.backstageViewClientControl2.Size = new System.Drawing.Size(868, 600);
-            this.backstageViewClientControl2.TabIndex = 2;
-            // 
-            // backstageViewTabItem2
-            // 
-            this.backstageViewTabItem2.Caption = "轴参数";
-            this.backstageViewTabItem2.ContentControl = this.backstageViewClientControl2;
-            this.backstageViewTabItem2.Name = "backstageViewTabItem2";
-            this.backstageViewTabItem2.Selected = true;
             // 
             // tableLayoutPanel4
             // 
@@ -3357,6 +3336,14 @@ namespace StageCtrlPanelLib
             this.label192.Text = "●";
             this.label192.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // backstageViewClientControl2
+            // 
+            this.backstageViewClientControl2.Controls.Add(this.tableLayoutPanel1);
+            this.backstageViewClientControl2.Location = new System.Drawing.Point(132, 0);
+            this.backstageViewClientControl2.Name = "backstageViewClientControl2";
+            this.backstageViewClientControl2.Size = new System.Drawing.Size(868, 600);
+            this.backstageViewClientControl2.TabIndex = 2;
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 8;
@@ -3447,6 +3434,17 @@ namespace StageCtrlPanelLib
             this.tableLayoutPanel1.Size = new System.Drawing.Size(868, 600);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
+            // comboBoxSelAxis
+            // 
+            this.comboBoxSelAxis.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboBoxSelAxis.FormattingEnabled = true;
+            this.comboBoxSelAxis.Location = new System.Drawing.Point(111, 15);
+            this.comboBoxSelAxis.Name = "comboBoxSelAxis";
+            this.comboBoxSelAxis.Size = new System.Drawing.Size(102, 22);
+            this.comboBoxSelAxis.TabIndex = 3;
+            this.comboBoxSelAxis.Text = "BondX";
+            this.comboBoxSelAxis.SelectedIndexChanged += new System.EventHandler(this.comboBoxSelAxis_SelectedIndexChanged);
+            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -3466,17 +3464,6 @@ namespace StageCtrlPanelLib
             this.label3.Size = new System.Drawing.Size(31, 14);
             this.label3.TabIndex = 1;
             this.label3.Text = "报警";
-            // 
-            // comboBoxSelAxis
-            // 
-            this.comboBoxSelAxis.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.comboBoxSelAxis.FormattingEnabled = true;
-            this.comboBoxSelAxis.Location = new System.Drawing.Point(111, 14);
-            this.comboBoxSelAxis.Name = "comboBoxSelAxis";
-            this.comboBoxSelAxis.Size = new System.Drawing.Size(102, 22);
-            this.comboBoxSelAxis.TabIndex = 3;
-            this.comboBoxSelAxis.Text = "BondX";
-            this.comboBoxSelAxis.SelectedIndexChanged += new System.EventHandler(this.comboBoxSelAxis_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -3698,6 +3685,26 @@ namespace StageCtrlPanelLib
             this.numPosition.TabIndex = 69;
             this.numPosition.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // label49
+            // 
+            this.label49.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(248, 18);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(43, 14);
+            this.label49.TabIndex = 72;
+            this.label49.Text = "轴类型";
+            // 
+            // comboBoxStageType
+            // 
+            this.comboBoxStageType.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboBoxStageType.FormattingEnabled = true;
+            this.comboBoxStageType.Location = new System.Drawing.Point(327, 15);
+            this.comboBoxStageType.Name = "comboBoxStageType";
+            this.comboBoxStageType.Size = new System.Drawing.Size(102, 22);
+            this.comboBoxStageType.TabIndex = 73;
+            this.comboBoxStageType.Text = "None";
+            // 
             // label48
             // 
             this.label48.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -3721,26 +3728,6 @@ namespace StageCtrlPanelLib
             this.numSpeed.Size = new System.Drawing.Size(102, 22);
             this.numSpeed.TabIndex = 71;
             this.numSpeed.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label49
-            // 
-            this.label49.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(248, 18);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(43, 14);
-            this.label49.TabIndex = 72;
-            this.label49.Text = "轴类型";
-            // 
-            // comboBoxStageType
-            // 
-            this.comboBoxStageType.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.comboBoxStageType.FormattingEnabled = true;
-            this.comboBoxStageType.Location = new System.Drawing.Point(327, 14);
-            this.comboBoxStageType.Name = "comboBoxStageType";
-            this.comboBoxStageType.Size = new System.Drawing.Size(102, 22);
-            this.comboBoxStageType.TabIndex = 73;
-            this.comboBoxStageType.Text = "None";
             // 
             // label50
             // 
@@ -3772,16 +3759,6 @@ namespace StageCtrlPanelLib
             this.label52.TabIndex = 76;
             this.label52.Text = "S模式加加速度";
             // 
-            // label53
-            // 
-            this.label53.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(17, 218);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(74, 14);
-            this.label53.TabIndex = 77;
-            this.label53.Text = "S模式加速度";
-            // 
             // label54
             // 
             this.label54.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -3791,6 +3768,16 @@ namespace StageCtrlPanelLib
             this.label54.Size = new System.Drawing.Size(55, 14);
             this.label54.TabIndex = 78;
             this.label54.Text = "最大速度";
+            // 
+            // label53
+            // 
+            this.label53.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(17, 218);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(74, 14);
+            this.label53.TabIndex = 77;
+            this.label53.Text = "S模式加速度";
             // 
             // numSacceleration
             // 
@@ -3882,16 +3869,6 @@ namespace StageCtrlPanelLib
             this.label56.TabIndex = 85;
             this.label56.Text = "平滑系数";
             // 
-            // label57
-            // 
-            this.label57.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(32, 268);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(43, 14);
-            this.label57.TabIndex = 86;
-            this.label57.Text = "左限位";
-            // 
             // label58
             // 
             this.label58.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -3901,6 +3878,16 @@ namespace StageCtrlPanelLib
             this.label58.Size = new System.Drawing.Size(43, 14);
             this.label58.TabIndex = 87;
             this.label58.Text = "右限位";
+            // 
+            // label57
+            // 
+            this.label57.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(32, 268);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(43, 14);
+            this.label57.TabIndex = 86;
+            this.label57.Text = "左限位";
             // 
             // label59
             // 
@@ -4105,16 +4092,16 @@ namespace StageCtrlPanelLib
             this.btnEnable.UseVisualStyleBackColor = true;
             this.btnEnable.Click += new System.EventHandler(this.btnEnable_Click);
             // 
-            // btnDisable
+            // btnStop
             // 
-            this.btnDisable.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnDisable.Location = new System.Drawing.Point(220, 455);
-            this.btnDisable.Name = "btnDisable";
-            this.btnDisable.Size = new System.Drawing.Size(100, 40);
-            this.btnDisable.TabIndex = 103;
-            this.btnDisable.Text = "去使能";
-            this.btnDisable.UseVisualStyleBackColor = true;
-            this.btnDisable.Click += new System.EventHandler(this.btnDisable_Click);
+            this.btnStop.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnStop.Location = new System.Drawing.Point(652, 455);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(100, 40);
+            this.btnStop.TabIndex = 105;
+            this.btnStop.Text = "急停";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // btnErrorClear
             // 
@@ -4127,16 +4114,16 @@ namespace StageCtrlPanelLib
             this.btnErrorClear.UseVisualStyleBackColor = true;
             this.btnErrorClear.Click += new System.EventHandler(this.btnErrorClear_Click);
             // 
-            // btnStop
+            // btnDisable
             // 
-            this.btnStop.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnStop.Location = new System.Drawing.Point(652, 455);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(100, 40);
-            this.btnStop.TabIndex = 105;
-            this.btnStop.Text = "急停";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnDisable.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnDisable.Location = new System.Drawing.Point(220, 455);
+            this.btnDisable.Name = "btnDisable";
+            this.btnDisable.Size = new System.Drawing.Size(100, 40);
+            this.btnDisable.TabIndex = 103;
+            this.btnDisable.Text = "去使能";
+            this.btnDisable.UseVisualStyleBackColor = true;
+            this.btnDisable.Click += new System.EventHandler(this.btnDisable_Click);
             // 
             // btnLimitEffective
             // 
@@ -4182,6 +4169,19 @@ namespace StageCtrlPanelLib
             this.btnSetZero.UseVisualStyleBackColor = true;
             this.btnSetZero.Click += new System.EventHandler(this.btnSetZero_Click);
             // 
+            // backstageViewTabItem1
+            // 
+            this.backstageViewTabItem1.Caption = "轴状态";
+            this.backstageViewTabItem1.ContentControl = this.backstageViewClientControl1;
+            this.backstageViewTabItem1.Name = "backstageViewTabItem1";
+            // 
+            // backstageViewTabItem2
+            // 
+            this.backstageViewTabItem2.Caption = "轴参数";
+            this.backstageViewTabItem2.ContentControl = this.backstageViewClientControl2;
+            this.backstageViewTabItem2.Name = "backstageViewTabItem2";
+            this.backstageViewTabItem2.Selected = true;
+            // 
             // StageAxisParamGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -4193,9 +4193,9 @@ namespace StageCtrlPanelLib
             ((System.ComponentModel.ISupportInitialize)(this.backstageViewControl1)).EndInit();
             this.backstageViewControl1.ResumeLayout(false);
             this.backstageViewClientControl1.ResumeLayout(false);
-            this.backstageViewClientControl2.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.backstageViewClientControl2.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPosition)).EndInit();

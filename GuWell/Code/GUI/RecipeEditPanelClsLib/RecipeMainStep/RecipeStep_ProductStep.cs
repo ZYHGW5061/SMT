@@ -33,6 +33,7 @@ namespace RecipeEditPanelClsLib
         //List<EutecticParameters> eutecticList;
         ProductStep curStep;
         List<ProductStep> productSteps;
+        ProgramSubstrateSettings curStepSubstrate;
         ProgramComponentSettings curStepSubmonut;
         ProgramComponentSettings curStepComp;
         BondingPositionSettings curStepBondingPos;
@@ -240,7 +241,9 @@ namespace RecipeEditPanelClsLib
                 {
                     //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
                     curStepSubmonut = submonutList.Find(t => t.Name == curStep.SubmonutName);
-                    cursubmonutDetail.FillComponentDetail(curStepSubmonut, _editRecipe.SubstrateInfos);
+                    //cursubmonutDetail.FillComponentDetail(curStepSubmonut, _editRecipe.SubstrateInfos);
+                    curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
+                    curComponentDetail.FillComponentDetail(curStepSubmonut, curStepSubstrate);
                 }
                 else
                 {
@@ -251,7 +254,9 @@ namespace RecipeEditPanelClsLib
                 {
                     //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
                     curStepComp = componentsList.Find(t => t.Name == curStep.ComponentName);
-                    curComponentDetail.FillComponentDetail(curStepComp,_editRecipe.SubstrateInfos);
+                    //curComponentDetail.FillComponentDetail(curStepComp,_editRecipe.SubstrateInfos);
+                    curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
+                    curComponentDetail.FillComponentDetail(curStepComp, curStepSubstrate);
                 }
                 else
                 {

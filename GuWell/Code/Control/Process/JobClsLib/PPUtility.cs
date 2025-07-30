@@ -406,6 +406,8 @@ namespace JobClsLib
             try
             {
                 var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                float speed_init = (float)axisConfig.AxisSpeed;
+
                 ////SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
                 //if (param.UsedPP == EnumUsedPP.SubmountPP)
                 //{
@@ -595,7 +597,7 @@ namespace JobClsLib
                          return false;
                      }
                      //快速抬升
-                     _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)axisConfig.AxisSpeed);
+                     _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                      //if (param.UsedPP == EnumUsedPP.SubmountPP)
                      //{
                      //    if(_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)
@@ -690,6 +692,7 @@ namespace JobClsLib
                 }
                 LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-Start.");
                 var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                float speed_init = (float)axisConfig.AxisSpeed;
 
                 ////SingleStepRunUtility.Instance.EnableSingleStep = isSingleStepRun;
                 //if (param.UsedPP == EnumUsedPP.SubmountPP)
@@ -845,7 +848,7 @@ namespace JobClsLib
                             return false;
                         }
                         //快速上升
-                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)axisConfig.AxisSpeed);
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                         //if (param.UsedPP == EnumUsedPP.SubmountPP)
                         //{
                         //    if (_positioningSystem.PPMovetoSafeLocation() == StageMotionResult.Fail)

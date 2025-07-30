@@ -538,7 +538,7 @@ namespace RecipeEditPanelClsLib
                 }
                 else if (parentNodeName == "基板")
                 {
-                    isCompleted = _editRecipe.IsStepComplete_Substrate();
+                    isCompleted = _editRecipe.IsStepComplete_Substrate(funncType);
                 }
                 if (isCompleted)
                     childNode.ImageIndex = 3;
@@ -1011,6 +1011,7 @@ namespace RecipeEditPanelClsLib
                 frm.SetFormTitle("新建基板");
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
+                    _editRecipe.StepSubstrateList.Add(new  ProgramSubstrateSettings { Name = $"{ frm.NewName}", MaterialType = EnumMaterialType.Substrate });
                     ParentTreeListAddNode(frm.NewName);
                     RefreshChildNodesTree();
                     //RefreshSubNodeStatus();
@@ -1023,8 +1024,8 @@ namespace RecipeEditPanelClsLib
                 frm.SetFormTitle("新建芯片");
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _editRecipe.StepComponentList.Add(new ProgramComponentSettings { Name = $"{ frm.NewName}_{_editRecipe.RecipeName}",MaterialType=EnumMaterialType.Chip });
-                    ParentTreeListAddNode($"{ frm.NewName}_{_editRecipe.RecipeName}");
+                    _editRecipe.StepComponentList.Add(new ProgramComponentSettings { Name = $"{ frm.NewName}",MaterialType=EnumMaterialType.Chip });
+                    ParentTreeListAddNode($"{ frm.NewName}");
                     RefreshChildNodesTree();
                     RefreshParentTreeNodeStatus();
 
@@ -1036,8 +1037,8 @@ namespace RecipeEditPanelClsLib
                 frm.SetFormTitle("新建贴装位置");
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _editRecipe.StepBondingPositionList.Add(new BondingPositionSettings { Name = $"{ frm.NewName}_{_editRecipe.RecipeName}", FindBondPositionMethod = frm.FindBondPositionMethod });
-                    ParentTreeListAddNode($"{ frm.NewName}_{_editRecipe.RecipeName}");
+                    _editRecipe.StepBondingPositionList.Add(new BondingPositionSettings { Name = $"{ frm.NewName}", FindBondPositionMethod = frm.FindBondPositionMethod });
+                    ParentTreeListAddNode($"{ frm.NewName}");
                     RefreshParentTreeNodeStatus();
                 }
             }
@@ -1047,8 +1048,8 @@ namespace RecipeEditPanelClsLib
                 frm.SetFormTitle("新建胶水设置");
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _editRecipe.StepEpoxyApplicationList.Add(new EpoxyApplication { Name = $"{ frm.NewName}_{_editRecipe.RecipeName}"});
-                    ParentTreeListAddNode($"{ frm.NewName}_{_editRecipe.RecipeName}");
+                    _editRecipe.StepEpoxyApplicationList.Add(new EpoxyApplication { Name = $"{ frm.NewName}"});
+                    ParentTreeListAddNode($"{ frm.NewName}");
                     RefreshParentTreeNodeStatus();
                 }
             }

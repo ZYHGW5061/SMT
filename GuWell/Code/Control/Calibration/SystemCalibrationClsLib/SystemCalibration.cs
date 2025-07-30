@@ -3746,9 +3746,13 @@ namespace SystemCalibrationClsLib
             {
                 AxisAbsoluteMove(EnumStageAxis.ChipPPT, 0);
             }
-            else if (maskType == EnumMaskType.LookupSubmountPPOrigion)
+            else if (maskType == EnumMaskType.LookupChipPPOrigion)
             {
                 AxisAbsoluteMove(EnumStageAxis.SubmountPPT, 0);
+            }
+            else if (maskType == EnumMaskType.LookupSubmountPPOrigion)
+            {
+                AxisAbsoluteMove(EnumStageAxis.ChipPPT, 0);
             }
 
 
@@ -4480,12 +4484,12 @@ namespace SystemCalibrationClsLib
             }
             else if (BondTool == 0)
             {
-                BondX = MaskBondX + config.PP1AndBondCameraOffset.X + currentppTool.PPAndUCtoolOffset.X;
-                BondY = MaskBondY + config.PP1AndBondCameraOffset.Y + currentppTool.PPAndUCtoolOffset.Y;
+                BondX = MaskBondX + currentppTool.PP1AndBondCameraOffset.X;
+                BondY = MaskBondY + currentppTool.PP1AndBondCameraOffset.Y;
                 BondZ = MaskBondZ + BondZOffset;
-                if ((MaskBondZ + config.PP1AndBondCameraOffset.Z) > (Zmin + BondZOffset1))
+                if ((MaskBondZ + currentppTool.PP1AndBondCameraOffset.Z) > (Zmin + BondZOffset1))
                 {
-                    BondZ1 = MaskBondZ + config.PP1AndBondCameraOffset.Z + BondZOffset1;
+                    BondZ1 = MaskBondZ + currentppTool.PP1AndBondCameraOffset.Z + BondZOffset1;
                 }
                 else
                 {
@@ -4817,7 +4821,8 @@ namespace SystemCalibrationClsLib
                         }
                         else if(BondTool == 0)
                         {
-                            currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            //currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            currentppTool.AltimetryOnMark = (float)BondZ;
                         }
                         else if (BondTool == 2)
                         {
@@ -5974,9 +5979,13 @@ namespace SystemCalibrationClsLib
             double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
             double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
 
-            currentppTool.PPAndUCtoolOffset.X = BondX - config.LookupChipPPOrigion.X;
-            currentppTool.PPAndUCtoolOffset.Y = BondX - config.LookupChipPPOrigion.Y;
-            currentppTool.PPAndUCtoolOffset.Z = BondX - config.LookupChipPPOrigion.Z;
+            currentppTool.LookuptoPPOrigion.X = BondX;
+            currentppTool.LookuptoPPOrigion.Y = BondY;
+            currentppTool.LookuptoPPOrigion.Z = BondZ;
+
+            currentppTool.LookupCameraOrigion.X = config.LookupCameraOrigion.X;
+            currentppTool.LookupCameraOrigion.Y = config.LookupCameraOrigion.Y;
+            currentppTool.LookupCameraOrigion.Z = config.LookupCameraOrigion.Z;
 
             return Done;
         }

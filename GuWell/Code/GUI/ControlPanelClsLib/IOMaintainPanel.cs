@@ -57,6 +57,8 @@ namespace ControlPanelClsLib
 
             _syncContext = SynchronizationContext.Current;
 
+            DataModel.Instance.PropertyChanged += DataModel_PropertyChanged;
+
             _boardCardController = BoardCardManager.Instance.GetCurrentController();
         }
 

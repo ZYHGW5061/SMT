@@ -32,12 +32,28 @@ namespace RecipeClsLib
         [XmlAttribute("RecipeName")]
         public string RecipeName { get; set; }
 
+        /// <summary>
+        /// 配方
+        /// </summary>
         [XmlIgnore]
         public List<ProgramSubstrateSettings> StepSubstrateList { get; set; }
 
-
+        /// <summary>
+        /// 配方
+        /// </summary>
         [XmlIgnore]
         public List<ProgramComponentSettings> StepComponentList { get; set; }
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<ProgramSubstrateSettings> StepSubstrateList_2 { get; set; }
+
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<ProgramComponentSettings> StepComponentList_2 { get; set; }
 
         [XmlIgnore]
         public ProgramComponentSettings SubmonutInfos { get; set; }
@@ -49,8 +65,21 @@ namespace RecipeClsLib
 
         [XmlIgnore]
         public List<BondingPositionSettings> StepBondingPositionList { get; set; }
+
+        /// <summary>
+        /// 生产贴片位置列表
+        /// </summary>
+        [XmlIgnore]
+        public List<BondingPositionSettings> StepBondingPositionList_2 { get; set; }
+
         [XmlIgnore]
         public List<EpoxyApplication> StepEpoxyApplicationList { get; set; }
+
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<EpoxyApplication> StepEpoxyApplicationList_2 { get; set; }
 
         [XmlIgnore]
         public List<EutecticParameters> EutecticParameters = new List<EutecticParameters>();
@@ -262,6 +291,11 @@ namespace RecipeClsLib
                     //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
                     //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
                     //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
+
+                    loadedRecipe.StepSubstrateList_2 = LoadSubstrate(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepComponentList_2 = LoadComponents(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepBondingPositionList_2 = LoadBondPositions(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepEpoxyApplicationList_2 = LoadEpoxyApplications(loadedRecipe.ProductSteps);
                 }
                 else
                 {
@@ -904,6 +938,72 @@ namespace RecipeClsLib
             ret = SubstrateInfos.IsModuleMapSettingsComplete;
             return ret;
         }
+
+        public bool IsStepComplete_Substrate(string SubstrateName)
+        {
+            var ret = false;
+            if (IsStepComplete_SubstrateInfo(SubstrateName)
+                && IsStepComplete_SubstratePosition(SubstrateName)
+                && IsStepComplete_SubstrateMap(SubstrateName)
+                && IsStepComplete_ModulePosition(SubstrateName)
+                && IsStepComplete_ModuleMap(SubstrateName))
+            {
+                ret = true;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstrateInfo(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialInfoSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstratePosition(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialPositionSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstrateMap(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialMapSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ModulePosition(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsModulePositionSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ModuleMap(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsModuleMapSettingsComplete;
+            }
+            return ret;
+        }
+
+
         public bool IsStepComplete_SubmountPPSettings()
         {
             var ret = false;

@@ -14,6 +14,27 @@ using WestDragon.Framework.UtilityHelper;
 
 namespace PositioningSystemClsLib
 {
+    /*
+     * BondX stage坐标： 零点在右，向左为正；system坐标： 零点在系统原点，向右为正
+     * BondY stage坐标： 零点在前，向后为正；system坐标： 零点在系统原点，向后为正
+     * BondZ stage坐标： 零点在下，向上为正；system坐标： 零点在系统原点，向上为正
+     * ChipPPT stage坐标： 零点在前，顺时针为正；system坐标： 零点在系统原点，顺时针为正
+     * TransportTrack1 stage坐标： 零点在左，向右为正；
+     * TransportTrack2 stage坐标： 零点在左，向右为正；
+     * TransportTrack3 stage坐标： 零点在左，向右为正；
+     * WaferTableX stage坐标： 零点在左，向右为正；system坐标： 零点在晶圆原点，向右为正
+     * WaferTableY stage坐标： 零点在后，向后为正；system坐标： 零点在晶圆原点，向后为正
+     * WaferTableZ stage坐标： 零点在上，向下为负；system坐标： 零点在晶圆原点，向上为正
+     * ESZ stage坐标： 零点在下，向上为正；
+     * NeedleZ stage坐标： 零点在下，向上为正；
+     * 
+     * Bond相机 左上为正
+     * Uplooking相机 右下为正
+     * Water相机 左下为正
+     * 
+     */
+
+
     /// <summary>
     /// 定位系统，操作Stage硬件实现对指定坐标的定位，读数，坐标转换等.
     /// </summary>
@@ -777,7 +798,7 @@ namespace PositioningSystemClsLib
                 case EnumStageAxis.None:
                     break;
                 case EnumStageAxis.BondX:
-                    systemPos = stagePos - (float)_systemConfig.PositioningConfig.BondOrigion.X;
+                    systemPos = (float)_systemConfig.PositioningConfig.BondOrigion.X - stagePos;
                     break;
                 case EnumStageAxis.BondY:
                     systemPos = stagePos - (float)_systemConfig.PositioningConfig.BondOrigion.Y;
