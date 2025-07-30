@@ -938,6 +938,72 @@ namespace RecipeClsLib
             ret = SubstrateInfos.IsModuleMapSettingsComplete;
             return ret;
         }
+
+        public bool IsStepComplete_Substrate(string SubstrateName)
+        {
+            var ret = false;
+            if (IsStepComplete_SubstrateInfo(SubstrateName)
+                && IsStepComplete_SubstratePosition(SubstrateName)
+                && IsStepComplete_SubstrateMap(SubstrateName)
+                && IsStepComplete_ModulePosition(SubstrateName)
+                && IsStepComplete_ModuleMap(SubstrateName))
+            {
+                ret = true;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstrateInfo(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialInfoSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstratePosition(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialPositionSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_SubstrateMap(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsMaterialMapSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ModulePosition(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsModulePositionSettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ModuleMap(string SubstrateName)
+        {
+            var ret = false;
+            var material = StepSubstrateList.FirstOrDefault(i => i.Name == SubstrateName);
+            if (material != null)
+            {
+                ret = material.IsModuleMapSettingsComplete;
+            }
+            return ret;
+        }
+
+
         public bool IsStepComplete_SubmountPPSettings()
         {
             var ret = false;

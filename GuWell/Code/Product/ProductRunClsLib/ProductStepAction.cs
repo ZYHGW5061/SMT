@@ -717,9 +717,11 @@ namespace ProductRunClsLib
 
                             xx = CurChipParam.ComponentMapInfos[ProductExecutor.Instance.CurChipNum - 1].MaterialLocation.X - CurChipParam.ComponentMapInfos[0].MaterialLocation.X - (float)ProductExecutor.Instance.MaterialLocationOffsetX;
                             yy = CurChipParam.ComponentMapInfos[ProductExecutor.Instance.CurChipNum - 1].MaterialLocation.Y - CurChipParam.ComponentMapInfos[0].MaterialLocation.Y - (float)ProductExecutor.Instance.MaterialLocationOffsetY;
-                            if (_positioningSystem.BondMovetoSafeLocation()
-                            //顶针移动到零点
-                            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                            if (
+                            //    _positioningSystem.BondMovetoSafeLocation()
+                            ////顶针移动到零点
+                            //&& 
+                            _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, usedESTool.NeedleZeorPosition, EnumCoordSetType.Absolute) == StageMotionResult.Success
                             //&& _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ESZ, 0, EnumCoordSetType.Absolute) == StageMotionResult.Success
                             && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableX, CurChipParam.ComponentMapInfos[0].MaterialLocation.X - xx, EnumCoordSetType.Absolute) == StageMotionResult.Success
                             && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableY, CurChipParam.ComponentMapInfos[0].MaterialLocation.Y - yy, EnumCoordSetType.Absolute) == StageMotionResult.Success
@@ -794,8 +796,10 @@ namespace ProductRunClsLib
                         xx = CurChipParam.ComponentMapInfos[ProductExecutor.Instance.CurChipNum - 1].MaterialLocation.X - CurChipParam.ComponentMapInfos[0].MaterialLocation.X - (float)ProductExecutor.Instance.MaterialLocationOffsetX;
                         yy = CurChipParam.ComponentMapInfos[ProductExecutor.Instance.CurChipNum - 1].MaterialLocation.Y - CurChipParam.ComponentMapInfos[0].MaterialLocation.Y - (float)ProductExecutor.Instance.MaterialLocationOffsetY;
                         //移动wafertable
-                        if (_positioningSystem.BondMovetoSafeLocation()
-                        && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableX, CurChipParam.ComponentMapInfos[0].MaterialLocation.X - xx, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        if (
+                        //    _positioningSystem.BondMovetoSafeLocation()
+                        //&& 
+                        _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableX, CurChipParam.ComponentMapInfos[0].MaterialLocation.X - xx, EnumCoordSetType.Absolute) == StageMotionResult.Success
                         && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableY, CurChipParam.ComponentMapInfos[0].MaterialLocation.Y - yy, EnumCoordSetType.Absolute) == StageMotionResult.Success
                         && _positioningSystem.MoveAxisToSystemCoord(EnumStageAxis.WaferTableZ, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                         {
@@ -1899,6 +1903,10 @@ namespace ProductRunClsLib
                                 //               + compensateT + bondPosOffsetTheta;
                                 var finalAngle = bondPosOrigionAngle - curDealBP.PositionBondChipResult.Theta + compensateT + bondPosOffsetTheta;
                                 LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,FinalAngle:{finalAngle}");
+                                if(finalAngle > 90)
+                                {
+                                    finalAngle = 0;
+                                }
                                 #endregion
                                 LogRecorder.RecordLog(EnumLogContentType.Debug, $"StepAction_AccuracyPositionWithUplookCamera,TCoorBefore:{_positioningSystem.ReadCurrentStagePosition(EnumStageAxis.ChipPPT)}");
                                 //if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -finalAngle + 50, EnumCoordSetType.Relative) == StageMotionResult.Success

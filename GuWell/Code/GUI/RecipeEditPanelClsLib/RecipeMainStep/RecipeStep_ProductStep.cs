@@ -243,7 +243,11 @@ namespace RecipeEditPanelClsLib
                     curStepSubmonut = submonutList.Find(t => t.Name == curStep.SubmonutName);
                     //cursubmonutDetail.FillComponentDetail(curStepSubmonut, _editRecipe.SubstrateInfos);
                     curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
+<<<<<<< HEAD
                     cursubmonutDetail.FillComponentDetail(curStepSubmonut, curStepSubstrate);
+=======
+                    curComponentDetail.FillComponentDetail(curStepSubmonut, curStepSubstrate);
+>>>>>>> ca403a28d84036bad69c2fad53093514a582a09b
                 }
                 else
                 {
@@ -254,6 +258,10 @@ namespace RecipeEditPanelClsLib
                 {
                     //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
                     curStepComp = componentsList.Find(t => t.Name == curStep.ComponentName);
+<<<<<<< HEAD
+=======
+                    //curComponentDetail.FillComponentDetail(curStepComp,_editRecipe.SubstrateInfos);
+>>>>>>> ca403a28d84036bad69c2fad53093514a582a09b
                     curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
                     curComponentDetail.FillComponentDetail(curStepComp, curStepSubstrate);
                 }

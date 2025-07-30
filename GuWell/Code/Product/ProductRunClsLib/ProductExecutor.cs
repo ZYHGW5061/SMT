@@ -1506,7 +1506,7 @@ namespace ProductRunClsLib
 
                                         //});
 
-                                        IsPickupChip = true;
+                                        
 
                                         ResetEventWaitForNext();
                                         if (ProductRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera)
@@ -1525,7 +1525,9 @@ namespace ProductRunClsLib
                                             ret = StepAction_ChipToBondPosition.Run();
                                         }
                                         currentJobStatus = ret == GlobalGWResultDefine.RET_SUCCESS ? EnumJobRunStatus.AccuracyCalibrationChipSuccess : EnumJobRunStatus.AccuracyCalibrationChipFail;
+                                        IsPickupChip = true;
                                         WaitForNext();
+                                        
                                         break;
                                     case EnumJobRunStatus.PickupChipFail:
                                         //芯片拾取失败时自动抛料跳到下一颗TBD需增加自动抛料

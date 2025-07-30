@@ -538,7 +538,7 @@ namespace RecipeEditPanelClsLib
                 }
                 else if (parentNodeName == "基板")
                 {
-                    isCompleted = _editRecipe.IsStepComplete_Substrate();
+                    isCompleted = _editRecipe.IsStepComplete_Substrate(funncType);
                 }
                 if (isCompleted)
                     childNode.ImageIndex = 3;
