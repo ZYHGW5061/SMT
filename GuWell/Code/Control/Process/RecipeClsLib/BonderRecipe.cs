@@ -32,12 +32,28 @@ namespace RecipeClsLib
         [XmlAttribute("RecipeName")]
         public string RecipeName { get; set; }
 
+        /// <summary>
+        /// 配方
+        /// </summary>
         [XmlIgnore]
         public List<ProgramSubstrateSettings> StepSubstrateList { get; set; }
 
-
+        /// <summary>
+        /// 配方
+        /// </summary>
         [XmlIgnore]
         public List<ProgramComponentSettings> StepComponentList { get; set; }
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<ProgramSubstrateSettings> StepSubstrateList_2 { get; set; }
+
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<ProgramComponentSettings> StepComponentList_2 { get; set; }
 
         [XmlIgnore]
         public ProgramComponentSettings SubmonutInfos { get; set; }
@@ -49,8 +65,21 @@ namespace RecipeClsLib
 
         [XmlIgnore]
         public List<BondingPositionSettings> StepBondingPositionList { get; set; }
+
+        /// <summary>
+        /// 生产贴片位置列表
+        /// </summary>
+        [XmlIgnore]
+        public List<BondingPositionSettings> StepBondingPositionList_2 { get; set; }
+
         [XmlIgnore]
         public List<EpoxyApplication> StepEpoxyApplicationList { get; set; }
+
+        /// <summary>
+        /// 生产
+        /// </summary>
+        [XmlIgnore]
+        public List<EpoxyApplication> StepEpoxyApplicationList_2 { get; set; }
 
         [XmlIgnore]
         public List<EutecticParameters> EutecticParameters = new List<EutecticParameters>();
@@ -262,19 +291,24 @@ namespace RecipeClsLib
                     //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.ProductSteps);
                     //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.ProductSteps);
                     //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.ProductSteps);
+
+                    loadedRecipe.StepSubstrateList_2 = LoadSubstrate(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepComponentList_2 = LoadComponents(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepBondingPositionList_2 = LoadBondPositions(loadedRecipe.ProductSteps);
+                    loadedRecipe.StepEpoxyApplicationList_2 = LoadEpoxyApplications(loadedRecipe.ProductSteps);
                 }
                 else
                 {
-                    loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
-                    var substrateInfos = LoadSubstrates(loadedRecipe.RecipeName);
-                    if (substrateInfos != null && substrateInfos.Count > 0)
-                    {
-                        loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
-                    }
-                    //loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
-                    //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
-                    //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
-                    //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
+                    //loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
+                    //var substrateInfos = LoadSubstrates(loadedRecipe.RecipeName);
+                    //if (substrateInfos != null && substrateInfos.Count > 0)
+                    //{
+                    //    loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
+                    //}
+                    ////loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
+                    ////loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
+                    ////loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
+                    ////loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
                 }
                 loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
                 loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);

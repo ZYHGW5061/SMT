@@ -4803,7 +4803,7 @@ namespace ProductRunClsLib
                     foreach (var itemModule in substrateModules)
                     {
                         var dd = new Tuple<MaterialMapInformation, List<BondingPositionSettings>>(itemModule, new List<BondingPositionSettings>());
-                        foreach (var itemStepBP in _curRecipe.StepBondingPositionList)
+                        foreach (var itemStepBP in _curRecipe.StepBondingPositionList_2)
                         {
                             if (ProductExecutor.Instance.RunStat != EnumProductRunStat.UserAbort)
                             {
@@ -4989,7 +4989,7 @@ namespace ProductRunClsLib
                                                     if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                     {
                                                         Thread.Sleep(50);
-                                                        if (_positioningSystem.BondZMovetoSafeLocation())
+                                                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, SystemConfiguration.Instance.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                                         {
 
                                                         }
@@ -5034,6 +5034,20 @@ namespace ProductRunClsLib
                                                         {
                                                             DispenserUtility.Instance.DrawCross(CurEpoxyApplication.DispensePatternWidthMM, CurEpoxyApplication.DispensePatternHeightMM);
                                                         }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, SystemConfiguration.Instance.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                                                        {
+
+                                                        }
+                                                        else
+                                                        {
+                                                            IOUtilityHelper.Instance.UpDispenserCylinder();
+                                                            LogRecorder.RecordLog(EnumLogContentType.Error, "StepAction_Dispense,Fail.");
+                                                            return GlobalGWResultDefine.RET_FAILED;
+                                                        }
+
                                                     }
                                                         
                                                 }
