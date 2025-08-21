@@ -61,10 +61,21 @@ namespace StageCtrlPanelLib
             _readPosTimer.Stop();
         }
 
+        ~StageQuickMove()
+        {
+            if (DataModel.Instance.StageRead)
+            {
+                DataModel.Instance.StageRead = false;
+
+            }
+        }
+
         private void InitializeTool()
         {
             DataModel.Instance.PropertyChanged += DataModel_PropertyChanged;
             _syncContext = SynchronizationContext.Current;
+
+            DataModel.Instance.StageRead = true;
         }
 
 

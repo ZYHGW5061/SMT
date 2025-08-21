@@ -110,6 +110,9 @@ namespace IOUtilityClsLib
         }
         public void Start()
         {
+            DataModel.Instance.CurPPtoolName = SystemConfiguration.Instance.JobConfig.CurPPtoolName;
+
+
             _enablePollingIO = true;
             Task.Run(new Action(ReadIOTask));
 
@@ -128,7 +131,7 @@ namespace IOUtilityClsLib
             //_enablePollingIO5 = true;
             //Task.Run(new Action(ReadSerialPortTask5));
 
-            SQLiteProgram.Instance.Init();
+            SQLiteProgram.Instance.Init(SystemConfiguration.Instance.JobConfig.SQliteDataSavingPath);
         }
         public bool IsChipPPVaccumOpened()
         {
@@ -770,6 +773,12 @@ namespace IOUtilityClsLib
             DataModel.Instance.SafeDoorSensor2 = msg[(int)EnumBoardcardDefineInputIO.SafeDoorSensor2] == 1 ? true : false;
 
 
+            bool ppexists = msg[(int)EnumBoardcardDefineInputIO.ChipPPExists] == 1 ? true : false;
+            if(!ppexists)
+            {
+                DataModel.Instance.CurPPtoolName = "";
+            }
+
         }
         internal void ParseDataAndUpdateOutputIOValue(List<int> msg)
         {
@@ -837,7 +846,7 @@ namespace IOUtilityClsLib
                 }
                 AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
 
-                if (_axisConfig?.RunningType == EnumRunningType.Actual)
+                if (_axisConfig?.RunningType == EnumRunningType.Actual && DataModel.Instance.StageRead)
                 {
                     var pos = (float)_boardCardController.GetCurrentPosition(axis);
                     var sta = (int)_boardCardController.GetAxisState(axis);

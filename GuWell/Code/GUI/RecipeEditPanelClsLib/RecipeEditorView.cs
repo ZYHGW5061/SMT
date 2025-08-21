@@ -359,6 +359,12 @@ namespace RecipeEditPanelClsLib
                             funcClient.Visible = false;
                        
                         break;
+                    case "贴片后定位":
+
+                        funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ComponentCalibrationAfterPPSettings), recipeRootStep);// { Dock = DockStyle.Fill };
+                        funcClient.Visible = false;
+
+                        break;
                     case "Module定位设置":
 
                         funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ModulePositionSettings), recipeRootStep);// { Dock = DockStyle.Fill };
@@ -614,6 +620,18 @@ namespace RecipeEditPanelClsLib
                     if (SelectedRootStep == EnumRecipeRootStep.Component)
                     {
                         isCompleted = _editRecipe.IsStepComplete_ComponentAccuracy(_mainTreeCurNodeCaption);
+                    }
+                    //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
+                    else
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_SubmountAccuracy();
+                    }
+                }
+                else if (funncType == "贴片后定位")
+                {
+                    if (SelectedRootStep == EnumRecipeRootStep.Component)
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_ComponentCalibrationAfterPP(_mainTreeCurNodeCaption);
                     }
                     //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
                     else
@@ -1279,6 +1297,13 @@ namespace RecipeEditPanelClsLib
                     node4.ImageIndex = 4;
                     node4.SelectImageIndex = 4;
                     node4.Tag = true;
+
+                    var node5 = treeChildNodes.Nodes.Add();
+                    node5.SetValue(0, "贴片后定位");
+                    node5.StateImageIndex = -1;
+                    node5.ImageIndex = 4;
+                    node5.SelectImageIndex = 4;
+                    node5.Tag = true;
                 }
 
                 RefreshChildTreeNodeStatus();

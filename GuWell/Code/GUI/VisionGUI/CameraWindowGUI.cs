@@ -2,6 +2,7 @@
 using CommonPanelClsLib;
 using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using LightControllerManagerClsLib;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VisionClsLib;
+using WestDragon.Framework.BaseLoggerClsLib;
 
 namespace VisionGUI
 {
@@ -1732,35 +1734,43 @@ namespace VisionGUI
 
         private void CameraWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (CameraWindow.Image == null)
+            try
             {
-                string str = $"(X:{e.Location.X},Y:{e.Location.Y})(0)";
-                //toolStripStatusLabelPos.Text = str;
-                barStaticItem1.Caption = str;
-            }
-            else
-            {
-                double width = CameraWindow.Width;
-                double height = CameraWindow.Height;
-                double IMwidth = CameraWindow.Image.Width;
-                double IMheight = CameraWindow.Image.Height;
-                double X1 = e.Location.X / width * IMwidth;
-                double Y1 = e.Location.Y / height * IMheight;
-                Bitmap bitmap = (Bitmap)CameraWindow.Image;
-                string str = "";
-                if (bitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+                if (CameraWindow.Image == null)
                 {
-                    Color srcColor = bitmap.GetPixel((int)X1, (int)Y1);
-                    str = $"(X:{(int)X1},Y:{(int)Y1})({srcColor.R})";
+                    string str = $"(X:{e.Location.X},Y:{e.Location.Y})(0)";
+                    //toolStripStatusLabelPos.Text = str;
+                    barStaticItem1.Caption = str;
                 }
                 else
                 {
-                    Color srcColor = bitmap.GetPixel((int)X1, (int)Y1);
-                    str = $"(X:{(int)X1},Y:{(int)Y1})({srcColor.R},{srcColor.G},{srcColor.B})";
+                    double width = CameraWindow.Width;
+                    double height = CameraWindow.Height;
+                    double IMwidth = CameraWindow.Image.Width;
+                    double IMheight = CameraWindow.Image.Height;
+                    double X1 = e.Location.X / width * IMwidth;
+                    double Y1 = e.Location.Y / height * IMheight;
+                    Bitmap bitmap = (Bitmap)CameraWindow.Image;
+                    string str = "";
+                    if (bitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+                    {
+                        Color srcColor = bitmap.GetPixel((int)X1, (int)Y1);
+                        str = $"(X:{(int)X1},Y:{(int)Y1})({srcColor.R})";
+                    }
+                    else
+                    {
+                        Color srcColor = bitmap.GetPixel((int)X1, (int)Y1);
+                        str = $"(X:{(int)X1},Y:{(int)Y1})({srcColor.R},{srcColor.G},{srcColor.B})";
+                    }
+                    //toolStripStatusLabelPos.Text = str;
+                    barStaticItem1.Caption = str;
                 }
-                //toolStripStatusLabelPos.Text = str;
-                barStaticItem1.Caption = str;
             }
+            catch(Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "相机窗口像素坐标错误", ex);
+            }
+            
         }
 
         private void CameraControltoolStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

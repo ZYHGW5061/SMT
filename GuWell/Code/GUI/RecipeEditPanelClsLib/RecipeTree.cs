@@ -216,6 +216,13 @@ namespace RecipeEditPanelClsLib
             if (addProductDialog.ShowDialog(this.FindForm()) == DialogResult.OK)
             {
                 string newRecipeName = addProductDialog.RecipeName;
+                string _currentToolName = addProductDialog.ESToolName;
+                ESToolSettings currentTool = null;
+                if (!string.IsNullOrEmpty(_currentToolName))
+                {
+                    currentTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == _currentToolName);
+                    
+                }
                 TreeListNode recipeNodes = ParentRootNode;
 
                 if (!IsExistRecipeName(newRecipeName, EnumRecipeType.Bonder))
@@ -224,8 +231,14 @@ namespace RecipeEditPanelClsLib
                     recipeNode.SetValue(0, newRecipeName);
                     BondRecipe recipeAdded = new BondRecipe()
                     {
-                        RecipeName = newRecipeName
+                        RecipeName = newRecipeName,
+
                     };
+                    if (currentTool != null)
+                    {
+                        recipeAdded.DispenserName = currentTool.Name;
+                    }
+                    
                     recipeNode.StateImageIndex = 1;
                     recipeNode.ImageIndex = 1;
                     recipeNode.SelectImageIndex = 1;

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using WestDragon.Framework.BaseLoggerClsLib;
 using WestDragon.Framework.UtilityHelper;
 
 namespace RecipeClsLib
@@ -62,6 +63,9 @@ namespace RecipeClsLib
         public ProgramSubstrateSettings SubstrateInfos { get; set; }
         [XmlElement("DispenserSettings")]
         public DispenserSettings DispenserSettings { get; set; }
+
+        [XmlElement("DispenserName")]
+        public string DispenserName { get; set; }
 
         [XmlIgnore]
         public List<BondingPositionSettings> StepBondingPositionList { get; set; }
@@ -180,6 +184,20 @@ namespace RecipeClsLib
                 return ret;
             }
         }
+
+        [XmlIgnore]
+        public DispenserSettings CurrentDispenser
+        {
+            get
+            {
+                DispenserSettings ret = null;
+                if (!string.IsNullOrEmpty(DispenserName))
+                {
+                    ret = SystemConfiguration.Instance.DispenserSettings.FirstOrDefault(i => i.Name == DispenserName);
+                }
+                return ret;
+            }
+        }
         [XmlIgnore]
         public EpoxyApplication CurrentEpoxyApplication
         {
@@ -269,7 +287,7 @@ namespace RecipeClsLib
             _recipeFolderFullName = _recipeFullName.Substring(0, _recipeFullName.LastIndexOf("\\"));
             if (!File.Exists(_recipeFullName))
             {
-                throw new FileNotFoundException(string.Format("recipe {0} is not found.", _recipeFullName));
+                LogRecorder.RecordLog(EnumLogContentType.Error, string.Format("配方 {0} 不存在", _recipeFullName));
             }
             BondRecipe loadedRecipe = new BondRecipe();
             try
@@ -404,7 +422,7 @@ namespace RecipeClsLib
                     SaveEpoxyApplication();
                     break;
                 case EnumRecipeStep.Module_MaterialMap:
-                    SaveSubstrateMap2();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.None:
                     break;
@@ -742,6 +760,24 @@ namespace RecipeClsLib
                 var xmlFile = $@"{_componentsSavePath}{CurrentComponent.Name}\{CurrentComponent.Name}.xml";
                 XmlSerializeHelper.XmlSerializeToFile(CurrentComponent, xmlFile, Encoding.UTF8);
                 SaveComponentMap();
+            }
+        }
+
+        public static void SaveComponent(ProgramComponentSettings Component, string ComponentName)
+        {
+            if (Component != null)
+            {
+                var xmlFile = $@"{_componentsSavePath}{ComponentName}\{ComponentName}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(Component, xmlFile, Encoding.UTF8);
+            }
+        }
+
+        public static void SaveSubstrate(ProgramSubstrateSettings Substrate, string SubstrateName)
+        {
+            if (Substrate != null)
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{SubstrateName}\{SubstrateName}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(Substrate, xmlFile, Encoding.UTF8);
             }
         }
 
@@ -1091,6 +1127,16 @@ namespace RecipeClsLib
             if (material != null)
             {
                 ret = material.IsMaterialAccuracySettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ComponentCalibrationAfterPP(string componentName)
+        {
+            var ret = false;
+            var material = StepComponentList.FirstOrDefault(i => i.Name == componentName);
+            if (material != null)
+            {
+                ret = material.IsMaterialCalibrationAfterPPSettingsComplete;
             }
             return ret;
         }

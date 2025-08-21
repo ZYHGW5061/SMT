@@ -1,5 +1,6 @@
 ﻿using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using RecipeClsLib;
 using System;
 using System.Collections.Generic;
@@ -71,18 +72,28 @@ namespace RecipeEditPanelClsLib
             //cmbVisionPosUsedCamera.Items.Add(EnumCameraType.BondCamera);
             ////cmbVisionPosUsedCamera.Items.Add(EnumCameraType.UplookingCamera);
 
-            cmbPositionSubstrateMehtod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
-            {
-                cmbPositionSubstrateMehtod.Items.Add(item);
-            }
+            cmbPositionSubstrateMehtod.DataSource = EnumExtensions.GetEnumDataSource<EnumVisionPositioningMethod>();
+
+            cmbPositionSubstrateMehtod.DisplayMember = "Value";
+            cmbPositionSubstrateMehtod.ValueMember = "Key";
+
+            cmbPositionModuleMehtod.DataSource = EnumExtensions.GetEnumDataSource<EnumVisionPositioningMethod>();
+
+            cmbPositionModuleMehtod.DisplayMember = "Value";
+            cmbPositionModuleMehtod.ValueMember = "Key";
+
+            //cmbPositionSubstrateMehtod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
+            //{
+            //    cmbPositionSubstrateMehtod.Items.Add(item);
+            //}
 
 
-            cmbPositionModuleMehtod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
-            {
-                cmbPositionModuleMehtod.Items.Add(item);
-            }
+            //cmbPositionModuleMehtod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
+            //{
+            //    cmbPositionModuleMehtod.Items.Add(item);
+            //}
 
             //cmbVisionPositionMethod.Items.Clear();
             //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
@@ -149,10 +160,15 @@ namespace RecipeEditPanelClsLib
             _editRecipe.CurrentSubstrate.IsPositionModules = ckbAlignModule.Checked;
 
             _editRecipe.CurrentSubstrate.PositionSubstratePointCount = int.Parse(cmbPositionSubstratePointCount.Text.Trim());
-            _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionSubstrateMehtod.Text);
+            //_editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionSubstrateMehtod.Text);
+            _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)cmbPositionSubstrateMehtod.SelectedValue;
+            _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.VisionPositionUsedCamera = EnumCameraType.BondCamera;
+            _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionUsedCamera = EnumCameraType.BondCamera;
 
             _editRecipe.CurrentSubstrate.PositionModulePointCount = int.Parse(cmbPositionModulePointCount.Text.Trim());
-            _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionModuleMehtod.Text);
+            //_editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbPositionModuleMehtod.Text);
+            _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)cmbPositionModuleMehtod.SelectedValue;
+
 
             _editRecipe.CurrentSubstrate.IsMaterialInfoSettingsComplete = true;
 

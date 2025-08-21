@@ -66,9 +66,7 @@ namespace RecipeEditPanelClsLib
             this.cmbPositionModulePointCount.FormattingEnabled = true;
             this.cmbPositionModulePointCount.Items.AddRange(new object[] {
             "1",
-            "2",
-            "3",
-            "4"});
+            "2"});
             this.cmbPositionModulePointCount.Location = new System.Drawing.Point(108, 50);
             this.cmbPositionModulePointCount.Name = "cmbPositionModulePointCount";
             this.cmbPositionModulePointCount.Size = new System.Drawing.Size(121, 20);
@@ -104,7 +102,9 @@ namespace RecipeEditPanelClsLib
             // 
             // groupControl2
             // 
+            this.groupControl2.Controls.Add(this.label3);
             this.groupControl2.Controls.Add(this.groupBox3);
+            this.groupControl2.Controls.Add(this.teSubstrateName);
             this.groupControl2.Controls.Add(this.groupBox2);
             this.groupControl2.Controls.Add(this.ckeMultiSubstrate);
             this.groupControl2.Location = new System.Drawing.Point(3, 3);
@@ -133,9 +133,7 @@ namespace RecipeEditPanelClsLib
             this.cmbPositionSubstratePointCount.FormattingEnabled = true;
             this.cmbPositionSubstratePointCount.Items.AddRange(new object[] {
             "1",
-            "2",
-            "3",
-            "4"});
+            "2"});
             this.cmbPositionSubstratePointCount.Location = new System.Drawing.Point(108, 50);
             this.cmbPositionSubstratePointCount.Name = "cmbPositionSubstratePointCount";
             this.cmbPositionSubstratePointCount.Size = new System.Drawing.Size(121, 20);
@@ -263,15 +261,16 @@ namespace RecipeEditPanelClsLib
             // 
             // teSubstrateName
             // 
-            this.teSubstrateName.Location = new System.Drawing.Point(778, 3);
+            this.teSubstrateName.Location = new System.Drawing.Point(215, 47);
             this.teSubstrateName.Name = "teSubstrateName";
+            this.teSubstrateName.ReadOnly = true;
             this.teSubstrateName.Size = new System.Drawing.Size(100, 22);
             this.teSubstrateName.TabIndex = 15;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(717, 6);
+            this.label3.Location = new System.Drawing.Point(154, 50);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 14);
             this.label3.TabIndex = 16;
@@ -281,8 +280,6 @@ namespace RecipeEditPanelClsLib
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.teSubstrateName);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
             this.Name = "RecipeStep_SubstrateInfoSettings";
@@ -299,7 +296,6 @@ namespace RecipeEditPanelClsLib
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

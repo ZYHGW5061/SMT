@@ -52,6 +52,7 @@ namespace StageControllerClsLib
         IBoardCardController _boardCardController;
         public void AbloluteMoveSync(EnumStageAxis axis, double target)
         {
+            
             if(_boardCardController != null)
             {
                 _boardCardController.MoveAbsoluteSync(axis, target,10);
@@ -199,28 +200,36 @@ namespace StageControllerClsLib
 
         public void WaitAbsoluteMoveDone(EnumStageAxis axis, int timeout = 60000)
         {
-            if (_boardCardController != null)
+            try
             {
-                bool isEnd = false;
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (!isEnd)
+                if (_boardCardController != null)
                 {
-                    var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
-                    if (ret)
+                    bool isEnd = false;
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    while (!isEnd)
                     {
-                        isEnd = true;
-                        break;
+                        var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
+                        if (ret)
+                        {
+                            isEnd = true;
+                            break;
+                        }
+                        if (sw.ElapsedMilliseconds > timeout)
+                        {
+                            sw.Stop();
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待绝对移动结束超时.");
+                            isEnd = true;
+                            break;
+                        }
+                        Thread.Sleep(10);
                     }
-                    if (sw.ElapsedMilliseconds > timeout)
-                    {
-                        sw.Stop();
-                        throw new Exception("WaitAbsoluteMoveDone-Timeout.");
-                        isEnd = true;
-                        break;
-                    }
-                    Thread.Sleep(50);
                 }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待绝对移动结束错误.", ex);
             }
         }
 
@@ -231,28 +240,37 @@ namespace StageControllerClsLib
 
         public void WaitRelativeMoveDone(EnumStageAxis axis, int timeout = 60000)
         {
-            if (_boardCardController != null)
+            try
             {
-                bool isEnd = false;
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (!isEnd)
+                if (_boardCardController != null)
                 {
-                    var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
-                    if (ret)
+                    bool isEnd = false;
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    while (!isEnd)
                     {
-                        isEnd = true;
-                        break;
+                        var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
+                        if (ret)
+                        {
+                            isEnd = true;
+                            break;
+                        }
+                        if (sw.ElapsedMilliseconds > timeout)
+                        {
+                            sw.Stop();
+                            //throw new Exception("WaitAbsoluteMoveDone-Timeout.");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待相对移动结束超时.");
+                            isEnd = true;
+                            break;
+                        }
+                        Thread.Sleep(10);
                     }
-                    if (sw.ElapsedMilliseconds > timeout)
-                    {
-                        sw.Stop();
-                        throw new Exception("WaitAbsoluteMoveDone-Timeout.");
-                        isEnd = true;
-                        break;
-                    }
-                    Thread.Sleep(50);
                 }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待相对移动结束错误.", ex);
             }
         }
 
@@ -319,33 +337,45 @@ namespace StageControllerClsLib
         /// </summary>
         public void Home(EnumStageAxis axis)
         {
-            if (_boardCardController != null)
+            try
             {
-                if ( axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ)
+                if (_boardCardController != null)
                 {
-                    _boardCardController.Home(axis, 18);
+                    if (axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ)
+                    {
+                        _boardCardController.Home(axis, 18);
+                    }
+                    //else if (axis == EnumStageAxis.WaferTableX||axis==EnumStageAxis.NeedleZ)
+                    else if (axis == EnumStageAxis.NeedleZ)
+                    {
+                        _boardCardController.Home(axis, 17);
+                    }
+                    else if (axis == EnumStageAxis.WaferTableY)
+                    {
+                        _boardCardController.Home(axis, 18);
+                    }
+                    else if (axis == EnumStageAxis.WaferTableX)
+                    {
+                        _boardCardController.Home(axis, 17);
+                    }
+                    else if (axis == EnumStageAxis.SubmountPPZ)
+                    {
+                        _boardCardController.Home(axis, 101);
+                    }
+                    else if (axis == EnumStageAxis.SubmountPPT)
+                    {
+                        _boardCardController.Home(axis, 33);
+                    }
+                    else
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴没有回零方式.");
+                    }
                 }
-                //else if (axis == EnumStageAxis.WaferTableX||axis==EnumStageAxis.NeedleZ)
-                else if (axis==EnumStageAxis.NeedleZ)
-                {
-                    _boardCardController.Home(axis, 17);
-                }
-                else if(axis == EnumStageAxis.WaferTableY)
-                {
-                    _boardCardController.Home(axis, 18);
-                }
-                else if(axis == EnumStageAxis.WaferTableX)
-                {
-                    _boardCardController.Home(axis, 17);
-                }
-                else if (axis == EnumStageAxis.SubmountPPZ)
-                {
-                    _boardCardController.Home(axis, 101);
-                }
-                else if (axis == EnumStageAxis.SubmountPPT)
-                {
-                    _boardCardController.Home(axis, 33);
-                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴回零错误.", ex);
             }
         }
 
@@ -362,31 +392,48 @@ namespace StageControllerClsLib
         /// </summary>
         public int GetAxisState(EnumStageAxis axis)
         {
-            if (_boardCardController != null)
+            try
             {
-                return _boardCardController.GetAxisState(axis);
+                if (_boardCardController != null)
+                {
+                    return _boardCardController.GetAxisState(axis);
+                }
+                return 0;
             }
-            return 0;
+            catch(Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴读取状态失败.", ex);
+                return 0;
+            }
+           
         }
 
         public void SetAxisErrPosBind(EnumStageAxis axis, int band = 50, int time = 50)
         {
-            int err = 0;
-            if (axis == EnumStageAxis.BondX || axis == EnumStageAxis.BondY || axis == EnumStageAxis.BondZ)
+            try
             {
-                _boardCardController.SetAxisErrPosBind(axis, out err, 50, time);
+                int err = 0;
+                if (axis == EnumStageAxis.BondX || axis == EnumStageAxis.BondY || axis == EnumStageAxis.BondZ)
+                {
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 50, time);
 
-            }
-            else if (axis == EnumStageAxis.ChipPPT)
-            {
-                _boardCardController.SetAxisErrPosBind(axis, out err, 50, 50);
-            }
-            else
-            {
+                }
+                else if (axis == EnumStageAxis.ChipPPT)
+                {
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 50, 50);
+                }
+                else
+                {
 
-                _boardCardController.SetAxisErrPosBind(axis, out err, 100, 100);
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 100, 100);
+                }
+                _boardCardController.ClrAlarm(axis);
             }
-            _boardCardController.ClrAlarm(axis);
+            catch(Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴设置误差带错误.", ex);
+            }
+            
         }
 
         /// <summary>

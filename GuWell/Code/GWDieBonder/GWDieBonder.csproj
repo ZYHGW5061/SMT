@@ -207,6 +207,10 @@
       <Project>{f0d61c4f-2bbc-4af2-bc39-a79ad118758d}</Project>
       <Name>StageCtrlPanelLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GUI\SystemGUILib\SystemGUILib.csproj">
+      <Project>{64E4FE8B-5EF8-4819-A251-818941D7E581}</Project>
+      <Name>SystemGUILib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GUI\VisionGUI\VisionGUI.csproj">
       <Project>{5A415076-754D-4525-B9B6-808AF1B3E6FB}</Project>
       <Name>VisionGUI</Name>

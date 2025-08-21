@@ -45,6 +45,7 @@ namespace RecipeEditPanelClsLib
             this.step1Sign = new System.Windows.Forms.PictureBox();
             this.step6Sign = new System.Windows.Forms.PictureBox();
             this.panelControlCameraAera = new DevExpress.XtraEditors.PanelControl();
+            this.step7Sign = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox5)).BeginInit();
@@ -56,6 +57,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.step1Sign)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.step6Sign)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControlCameraAera)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.step7Sign)).BeginInit();
             this.SuspendLayout();
             // 
             // repositoryItemComboBox1
@@ -81,17 +83,19 @@ namespace RecipeEditPanelClsLib
             // 
             // panelStepOperate
             // 
-            this.panelStepOperate.Location = new System.Drawing.Point(724, 7);
+            this.panelStepOperate.Location = new System.Drawing.Point(827, 9);
+            this.panelStepOperate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelStepOperate.Name = "panelStepOperate";
-            this.panelStepOperate.Size = new System.Drawing.Size(362, 659);
+            this.panelStepOperate.Size = new System.Drawing.Size(414, 847);
             this.panelStepOperate.TabIndex = 42;
             // 
             // step5Sign
             // 
             this.step5Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.step5Sign.Location = new System.Drawing.Point(360, 641);
+            this.step5Sign.Location = new System.Drawing.Point(411, 824);
+            this.step5Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step5Sign.Name = "step5Sign";
-            this.step5Sign.Size = new System.Drawing.Size(70, 70);
+            this.step5Sign.Size = new System.Drawing.Size(79, 89);
             this.step5Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step5Sign.TabIndex = 40;
             this.step5Sign.TabStop = false;
@@ -99,18 +103,20 @@ namespace RecipeEditPanelClsLib
             // step4Sign
             // 
             this.step4Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.step4Sign.Location = new System.Drawing.Point(274, 641);
+            this.step4Sign.Location = new System.Drawing.Point(313, 824);
+            this.step4Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step4Sign.Name = "step4Sign";
-            this.step4Sign.Size = new System.Drawing.Size(70, 70);
+            this.step4Sign.Size = new System.Drawing.Size(79, 89);
             this.step4Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step4Sign.TabIndex = 40;
             this.step4Sign.TabStop = false;
             // 
             // btnPrevious
             // 
-            this.btnPrevious.Location = new System.Drawing.Point(723, 681);
+            this.btnPrevious.Location = new System.Drawing.Point(826, 876);
+            this.btnPrevious.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnPrevious.Name = "btnPrevious";
-            this.btnPrevious.Size = new System.Drawing.Size(116, 30);
+            this.btnPrevious.Size = new System.Drawing.Size(133, 39);
             this.btnPrevious.TabIndex = 39;
             this.btnPrevious.Text = "上一步";
             this.btnPrevious.UseVisualStyleBackColor = true;
@@ -118,9 +124,10 @@ namespace RecipeEditPanelClsLib
             // 
             // btnNext
             // 
-            this.btnNext.Location = new System.Drawing.Point(970, 681);
+            this.btnNext.Location = new System.Drawing.Point(1109, 876);
+            this.btnNext.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(116, 30);
+            this.btnNext.Size = new System.Drawing.Size(133, 39);
             this.btnNext.TabIndex = 39;
             this.btnNext.Text = "下一步";
             this.btnNext.UseVisualStyleBackColor = true;
@@ -129,9 +136,10 @@ namespace RecipeEditPanelClsLib
             // step3Sign
             // 
             this.step3Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.step3Sign.Location = new System.Drawing.Point(188, 641);
+            this.step3Sign.Location = new System.Drawing.Point(215, 824);
+            this.step3Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step3Sign.Name = "step3Sign";
-            this.step3Sign.Size = new System.Drawing.Size(70, 70);
+            this.step3Sign.Size = new System.Drawing.Size(79, 89);
             this.step3Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step3Sign.TabIndex = 40;
             this.step3Sign.TabStop = false;
@@ -139,9 +147,10 @@ namespace RecipeEditPanelClsLib
             // step2Sign
             // 
             this.step2Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.step2Sign.Location = new System.Drawing.Point(102, 641);
+            this.step2Sign.Location = new System.Drawing.Point(117, 824);
+            this.step2Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step2Sign.Name = "step2Sign";
-            this.step2Sign.Size = new System.Drawing.Size(70, 70);
+            this.step2Sign.Size = new System.Drawing.Size(79, 89);
             this.step2Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step2Sign.TabIndex = 40;
             this.step2Sign.TabStop = false;
@@ -150,9 +159,10 @@ namespace RecipeEditPanelClsLib
             // 
             this.step1Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.step1Sign.InitialImage = null;
-            this.step1Sign.Location = new System.Drawing.Point(16, 641);
+            this.step1Sign.Location = new System.Drawing.Point(18, 824);
+            this.step1Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step1Sign.Name = "step1Sign";
-            this.step1Sign.Size = new System.Drawing.Size(70, 70);
+            this.step1Sign.Size = new System.Drawing.Size(79, 89);
             this.step1Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step1Sign.TabIndex = 40;
             this.step1Sign.TabStop = false;
@@ -160,24 +170,38 @@ namespace RecipeEditPanelClsLib
             // step6Sign
             // 
             this.step6Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.step6Sign.Location = new System.Drawing.Point(446, 641);
+            this.step6Sign.Location = new System.Drawing.Point(510, 824);
+            this.step6Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.step6Sign.Name = "step6Sign";
-            this.step6Sign.Size = new System.Drawing.Size(70, 70);
+            this.step6Sign.Size = new System.Drawing.Size(79, 89);
             this.step6Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.step6Sign.TabIndex = 40;
             this.step6Sign.TabStop = false;
             // 
             // panelControlCameraAera
             // 
-            this.panelControlCameraAera.Location = new System.Drawing.Point(16, 7);
+            this.panelControlCameraAera.Location = new System.Drawing.Point(18, 9);
+            this.panelControlCameraAera.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelControlCameraAera.Name = "panelControlCameraAera";
-            this.panelControlCameraAera.Size = new System.Drawing.Size(675, 612);
+            this.panelControlCameraAera.Size = new System.Drawing.Size(771, 787);
             this.panelControlCameraAera.TabIndex = 44;
+            // 
+            // step7Sign
+            // 
+            this.step7Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.step7Sign.Location = new System.Drawing.Point(607, 824);
+            this.step7Sign.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.step7Sign.Name = "step7Sign";
+            this.step7Sign.Size = new System.Drawing.Size(79, 89);
+            this.step7Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.step7Sign.TabIndex = 45;
+            this.step7Sign.TabStop = false;
             // 
             // RecipeStep_ComponentPositionSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.step7Sign);
             this.Controls.Add(this.panelControlCameraAera);
             this.Controls.Add(this.panelStepOperate);
             this.Controls.Add(this.step6Sign);
@@ -188,8 +212,9 @@ namespace RecipeEditPanelClsLib
             this.Controls.Add(this.step3Sign);
             this.Controls.Add(this.step2Sign);
             this.Controls.Add(this.step1Sign);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "RecipeStep_ComponentPositionSettings";
-            this.Size = new System.Drawing.Size(1105, 719);
+            this.Size = new System.Drawing.Size(1263, 924);
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox5)).EndInit();
@@ -201,6 +226,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.step1Sign)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.step6Sign)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControlCameraAera)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.step7Sign)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -219,5 +245,6 @@ namespace RecipeEditPanelClsLib
         private PanelControl panelStepOperate;
         private System.Windows.Forms.PictureBox step6Sign;
         private PanelControl panelControlCameraAera;
+        private System.Windows.Forms.PictureBox step7Sign;
     }
 }

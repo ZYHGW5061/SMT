@@ -21,6 +21,9 @@ namespace RecipeEditPanelClsLib
         private int _numbersofRows;
         public float _rowPitchMM;
         public float _columnPitchMM;
+        /// <summary>
+        /// 第一个模块坐标
+        /// </summary>
         public PointF FirstMaterialPosition { get; set; }
         public PointF LastColumnMaterialPosition { get; set; }
         public PointF LastRowMaterialPosition { get; set; }

@@ -85,6 +85,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FrmAddESTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAddESTool.Designer.cs">
+      <DependentUpon>FrmAddESTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmAddPPTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAddPPTool.Designer.cs">
+      <DependentUpon>FrmAddPPTool.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\NeedleSystemMaintain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,6 +189,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FrmAddESTool.resx">
+      <DependentUpon>FrmAddESTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAddPPTool.resx">
+      <DependentUpon>FrmAddPPTool.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\NeedleSystemMaintain.resx">
       <DependentUpon>NeedleSystemMaintain.cs</DependentUpon>
     </EmbeddedResource>
@@ -240,6 +258,10 @@
       <Project>{13D295AA-B633-4622-8B1A-D5FC2D1523B3}</Project>
       <Name>VisionClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Control\Calibration\SystemCalibrationClsLib\SystemCalibrationClsLib.csproj">
+      <Project>{8A97DB83-A47B-4BD8-A22D-7D9CD3A2273B}</Project>
+      <Name>SystemCalibrationClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Control\Position\PositioningSystemClsLib\PositioningSystemClsLib.csproj">
       <Project>{b80d9f07-da4d-437f-90f1-67722b0883fa}</Project>
       <Name>PositioningSystemClsLib</Name>
@@ -247,6 +269,10 @@
     <ProjectReference Include="..\..\Control\Process\RecipeClsLib\RecipeClsLib.csproj">
       <Project>{633b7024-d607-496e-9800-84284c801d06}</Project>
       <Name>RecipeClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\UserManagement\UserManagerClsLib\UserManagerClsLib.csproj">
+      <Project>{C8603800-C34D-4A21-9047-DBB78750CBBA}</Project>
+      <Name>UserManagerClsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Global\GlobalDataDefineClsLib\GlobalDataDefineClsLib.csproj">
       <Project>{B0F0BD56-7EFF-414B-9D41-F4E7ACA2A8B2}</Project>

@@ -126,6 +126,14 @@
       <Project>{da64843c-df4e-45fd-940b-23aff39fc8e3}</Project>
       <Name>IOUtilityClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LaserSensor\LaserSensorControllerClsLib\LaserSensorControllerClsLib.csproj">
+      <Project>{CA11F95C-D9F8-4BA1-8971-2C0251D689ED}</Project>
+      <Name>LaserSensorControllerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hardware\LaserSensor\LaserSensorManagerClsLib\LaserSensorManagerClsLib.csproj">
+      <Project>{1D36CD4F-2598-43E3-B268-BF7A0842416F}</Project>
+      <Name>LaserSensorManagerClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Hardware\LightSource\LightControllerManagerClsLib\LightControllerManagerClsLib.csproj">
       <Project>{7C3A5CFD-D90A-4317-A596-12261EAF2D10}</Project>
       <Name>LightControllerManagerClsLib</Name>

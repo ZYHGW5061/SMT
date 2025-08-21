@@ -55,6 +55,11 @@ namespace RecipeEditPanelClsLib
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
+            if (_editRecipe.CurrentSubstrate.PositionModulePointCount == 1)
+            {
+                step7Sign.Visible = false;
+            }
+
         }
 
         /// <summary>
@@ -217,15 +222,31 @@ namespace RecipeEditPanelClsLib
             //{
             //    this.btnNext.Visible = true;
             //}
-            if (currentStepPage.CurrentStep == EnumDefineSetupRecipeModulePositionStep.VisionPosition)
+            if(_editRecipe.CurrentSubstrate.PositionModulePointCount == 1)
             {
-                this.btnNext.Text = "完成";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeModulePositionStep.VisionPosition)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
             else
             {
-                this.btnNext.Visible = true;
-                this.btnNext.Text = "下一步";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeModulePositionStep.VisionPosition2)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
+            
             //this.labelStepInfo.Text = currentStepPage.StepDescription;
             //LoadStepParameters(currentTeachStepPage.CurrentStep);
         }
@@ -254,6 +275,9 @@ namespace RecipeEditPanelClsLib
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.VisionPosition:
                     ret = new ModulePositionStep_VisionPosition(_parentCameraWnd);
+                    break;
+                case EnumDefineSetupRecipeModulePositionStep.VisionPosition2:
+                    ret = new ModulePositionStep_VisionPosition2(_parentCameraWnd);
                     break;
                 default:
                     break;
@@ -334,6 +358,24 @@ namespace RecipeEditPanelClsLib
                     }
 
                     break;
+                case EnumDefineSetupRecipeModulePositionStep.VisionPosition2:
+                    //var shapeMatchParam = _editRecipe.SubstrateInfos.PositionModuleVisionParameters.ShapeMatchParameters.FirstOrDefault();
+                    var shapeMatchParam2 = _editRecipe.CurrentSubstrate.PositionModuleVisionParameters.ShapeMatchParameters[1];
+
+                    if (shapeMatchParam2 != null)
+                    {
+                        shapeMatchParam2.OrigionAngle = _rotateAngle;
+                        //此处更新模板的特征和物料中心的偏移
+                        shapeMatchParam2.PatternOffsetWithMaterialCenter.X = _centerCoor.X - currentStepPage.PositionOfPattern.X;
+                        shapeMatchParam2.PatternOffsetWithMaterialCenter.Y = _centerCoor.Y - currentStepPage.PositionOfPattern.Y;
+
+                        shapeMatchParam2.PositionOfMaterialCenter.X = _centerCoor.X;
+                        shapeMatchParam2.PositionOfMaterialCenter.Y = _centerCoor.Y;
+                        shapeMatchParam2.BondTablePositionOfCreatePattern.X = currentStepPage.PositionOfPattern.X;
+                        shapeMatchParam2.BondTablePositionOfCreatePattern.Y = currentStepPage.PositionOfPattern.Y;
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -371,6 +413,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.SetLeftUpperCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -379,6 +422,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.SetRightUpperCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -387,6 +431,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.SetRightLowerCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -395,6 +440,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.SetLeftLowerCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -403,6 +449,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_done;
                     step5Sign.Image = Properties.Resources.loc_left_bottom;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeModulePositionStep.VisionPosition:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -411,6 +458,16 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_done;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_done;
                     step6Sign.Image = Properties.Resources.recognize;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
+                    break;
+                case EnumDefineSetupRecipeModulePositionStep.VisionPosition2:
+                    step1Sign.Image = Properties.Resources.height_done;
+                    step2Sign.Image = Properties.Resources.loc_left_top_done;
+                    step3Sign.Image = Properties.Resources.loc_right_top_done;
+                    step4Sign.Image = Properties.Resources.loc_right_bottom_done;
+                    step5Sign.Image = Properties.Resources.loc_left_bottom_done;
+                    step6Sign.Image = Properties.Resources.recognize_done;
+                    step7Sign.Image = Properties.Resources.recognize;
                     break;
                 default:
                     break;
@@ -425,6 +482,7 @@ namespace RecipeEditPanelClsLib
             step4Sign.Image = Properties.Resources.loc_right_bottom_done;
             step5Sign.Image = Properties.Resources.loc_left_bottom_done;
             step6Sign.Image = Properties.Resources.recognize_done;
+            step7Sign.Image = Properties.Resources.recognize_done;
         }
     }
 }

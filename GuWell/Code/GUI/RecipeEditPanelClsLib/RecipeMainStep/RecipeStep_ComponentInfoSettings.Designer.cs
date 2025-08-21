@@ -51,6 +51,14 @@ namespace RecipeEditPanelClsLib
             this.label9 = new System.Windows.Forms.Label();
             this.btnManageMaterialBoxTool = new DevExpress.XtraEditors.SimpleButton();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cmbCalibrationAfterPPVisionMethod = new System.Windows.Forms.ComboBox();
+            this.cmbCalibrationAfterPPMethod = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.cmbPositionMarkPointCount = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.cmbCalibrationAfterPPMarkPointCount = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.seComponentThicknessMM.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seCarrierThicknessMM.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
@@ -116,7 +124,7 @@ namespace RecipeEditPanelClsLib
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(73, 312);
+            this.label2.Location = new System.Drawing.Point(73, 355);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 14);
             this.label2.TabIndex = 3;
@@ -126,7 +134,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cmbRelatedPPTool.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbRelatedPPTool.FormattingEnabled = true;
-            this.cmbRelatedPPTool.Location = new System.Drawing.Point(145, 310);
+            this.cmbRelatedPPTool.Location = new System.Drawing.Point(145, 353);
             this.cmbRelatedPPTool.Name = "cmbRelatedPPTool";
             this.cmbRelatedPPTool.Size = new System.Drawing.Size(121, 20);
             this.cmbRelatedPPTool.TabIndex = 2;
@@ -135,7 +143,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cmbRelatedESTool.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbRelatedESTool.FormattingEnabled = true;
-            this.cmbRelatedESTool.Location = new System.Drawing.Point(145, 352);
+            this.cmbRelatedESTool.Location = new System.Drawing.Point(145, 395);
             this.cmbRelatedESTool.Name = "cmbRelatedESTool";
             this.cmbRelatedESTool.Size = new System.Drawing.Size(121, 20);
             this.cmbRelatedESTool.TabIndex = 2;
@@ -143,7 +151,7 @@ namespace RecipeEditPanelClsLib
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(73, 354);
+            this.label3.Location = new System.Drawing.Point(73, 397);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(67, 14);
             this.label3.TabIndex = 3;
@@ -254,6 +262,7 @@ namespace RecipeEditPanelClsLib
             // 
             // cmbVisionPosUsedCamera
             // 
+            this.cmbVisionPosUsedCamera.Enabled = false;
             this.cmbVisionPosUsedCamera.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbVisionPosUsedCamera.FormattingEnabled = true;
             this.cmbVisionPosUsedCamera.Location = new System.Drawing.Point(145, 221);
@@ -265,42 +274,132 @@ namespace RecipeEditPanelClsLib
             // 
             this.cmbMaterialBoxTool.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbMaterialBoxTool.FormattingEnabled = true;
-            this.cmbMaterialBoxTool.Location = new System.Drawing.Point(145, 399);
+            this.cmbMaterialBoxTool.Location = new System.Drawing.Point(145, 442);
             this.cmbMaterialBoxTool.Name = "cmbMaterialBoxTool";
             this.cmbMaterialBoxTool.Size = new System.Drawing.Size(121, 20);
             this.cmbMaterialBoxTool.TabIndex = 2;
+            this.cmbMaterialBoxTool.Visible = false;
             this.cmbMaterialBoxTool.SelectedIndexChanged += new System.EventHandler(this.cmbMaterialBoxTool_SelectedIndexChanged);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(73, 401);
+            this.label9.Location = new System.Drawing.Point(73, 444);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(67, 14);
             this.label9.TabIndex = 3;
             this.label9.Text = "抽匣工具：";
+            this.label9.Visible = false;
             // 
             // btnManageMaterialBoxTool
             // 
             this.btnManageMaterialBoxTool.AllowFocus = false;
-            this.btnManageMaterialBoxTool.Location = new System.Drawing.Point(276, 397);
+            this.btnManageMaterialBoxTool.Location = new System.Drawing.Point(276, 440);
             this.btnManageMaterialBoxTool.Name = "btnManageMaterialBoxTool";
             this.btnManageMaterialBoxTool.Size = new System.Drawing.Size(66, 23);
             this.btnManageMaterialBoxTool.TabIndex = 44;
             this.btnManageMaterialBoxTool.Text = "管理...";
+            this.btnManageMaterialBoxTool.Visible = false;
             this.btnManageMaterialBoxTool.Click += new System.EventHandler(this.btnManageMaterialBoxTool_Click);
             // 
             // panelControl2
             // 
-            this.panelControl2.Location = new System.Drawing.Point(573, 29);
+            this.panelControl2.Location = new System.Drawing.Point(759, 31);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(247, 485);
+            this.panelControl2.Size = new System.Drawing.Size(194, 485);
             this.panelControl2.TabIndex = 45;
+            this.panelControl2.Visible = false;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(272, 314);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(127, 14);
+            this.label10.TabIndex = 48;
+            this.label10.Text = "贴片后定位识别方式：";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(36, 314);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(103, 14);
+            this.label11.TabIndex = 49;
+            this.label11.Text = "贴片后定位相机：";
+            // 
+            // cmbCalibrationAfterPPVisionMethod
+            // 
+            this.cmbCalibrationAfterPPVisionMethod.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cmbCalibrationAfterPPVisionMethod.FormattingEnabled = true;
+            this.cmbCalibrationAfterPPVisionMethod.Location = new System.Drawing.Point(400, 308);
+            this.cmbCalibrationAfterPPVisionMethod.Name = "cmbCalibrationAfterPPVisionMethod";
+            this.cmbCalibrationAfterPPVisionMethod.Size = new System.Drawing.Size(121, 20);
+            this.cmbCalibrationAfterPPVisionMethod.TabIndex = 46;
+            // 
+            // cmbCalibrationAfterPPMethod
+            // 
+            this.cmbCalibrationAfterPPMethod.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cmbCalibrationAfterPPMethod.FormattingEnabled = true;
+            this.cmbCalibrationAfterPPMethod.Location = new System.Drawing.Point(145, 308);
+            this.cmbCalibrationAfterPPMethod.Name = "cmbCalibrationAfterPPMethod";
+            this.cmbCalibrationAfterPPMethod.Size = new System.Drawing.Size(121, 20);
+            this.cmbCalibrationAfterPPMethod.TabIndex = 47;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(538, 227);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(79, 14);
+            this.label12.TabIndex = 51;
+            this.label12.Text = "定位点数量：";
+            // 
+            // cmbPositionMarkPointCount
+            // 
+            this.cmbPositionMarkPointCount.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cmbPositionMarkPointCount.FormattingEnabled = true;
+            this.cmbPositionMarkPointCount.Items.AddRange(new object[] {
+            "1",
+            "2"});
+            this.cmbPositionMarkPointCount.Location = new System.Drawing.Point(623, 224);
+            this.cmbPositionMarkPointCount.Name = "cmbPositionMarkPointCount";
+            this.cmbPositionMarkPointCount.Size = new System.Drawing.Size(121, 20);
+            this.cmbPositionMarkPointCount.TabIndex = 50;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(538, 311);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(79, 14);
+            this.label13.TabIndex = 53;
+            this.label13.Text = "定位点数量：";
+            // 
+            // cmbCalibrationAfterPPMarkPointCount
+            // 
+            this.cmbCalibrationAfterPPMarkPointCount.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cmbCalibrationAfterPPMarkPointCount.FormattingEnabled = true;
+            this.cmbCalibrationAfterPPMarkPointCount.Items.AddRange(new object[] {
+            "1",
+            "2"});
+            this.cmbCalibrationAfterPPMarkPointCount.Location = new System.Drawing.Point(623, 308);
+            this.cmbCalibrationAfterPPMarkPointCount.Name = "cmbCalibrationAfterPPMarkPointCount";
+            this.cmbCalibrationAfterPPMarkPointCount.Size = new System.Drawing.Size(121, 20);
+            this.cmbCalibrationAfterPPMarkPointCount.TabIndex = 52;
             // 
             // RecipeStep_ComponentInfoSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.cmbCalibrationAfterPPMarkPointCount);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.cmbPositionMarkPointCount);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.cmbCalibrationAfterPPVisionMethod);
+            this.Controls.Add(this.cmbCalibrationAfterPPMethod);
             this.Controls.Add(this.panelControl2);
             this.Controls.Add(this.btnManageMaterialBoxTool);
             this.Controls.Add(this.label8);
@@ -357,5 +456,13 @@ namespace RecipeEditPanelClsLib
         private System.Windows.Forms.Label label9;
         private DevExpress.XtraEditors.SimpleButton btnManageMaterialBoxTool;
         private DevExpress.XtraEditors.PanelControl panelControl2;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox cmbCalibrationAfterPPVisionMethod;
+        private System.Windows.Forms.ComboBox cmbCalibrationAfterPPMethod;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ComboBox cmbPositionMarkPointCount;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox cmbCalibrationAfterPPMarkPointCount;
     }
 }

@@ -176,18 +176,16 @@ namespace RecipeEditPanelClsLib
                     //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
                     //}
 
-                    VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.FirstOrDefault();
-                    if (visionMarkParam == null)
+                    VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters;
+                    if (EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters == null || EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Count < 1)
                     {
-                        visionMarkParam = new VisionParameters();
-                        visionMarkParam.ShapeMatchParameters.Clear();
-                        visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
-                        EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                        //EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
                     }
                     else
                     {
-                        visionMarkParam.ShapeMatchParameters.Clear();
-                        visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
                     }
                 }
                 finished = true;

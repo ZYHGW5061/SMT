@@ -58,6 +58,10 @@
     <Compile Include="AxisControllers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Control\UserManagement\UserManagerClsLib\UserManagerClsLib.csproj">
+      <Project>{C8603800-C34D-4A21-9047-DBB78750CBBA}</Project>
+      <Name>UserManagerClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
       <Project>{2c9db70d-ae7f-4908-b6e7-c00701b9b6bc}</Project>
       <Name>ConfigurationClsLib</Name>

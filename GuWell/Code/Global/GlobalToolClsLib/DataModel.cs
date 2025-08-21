@@ -320,6 +320,23 @@ namespace GlobalToolClsLib
             }
         }
 
+
+        private bool stageRead;
+        /// <summary>
+        /// 电机读取
+        /// </summary>
+        public bool StageRead
+        {
+            get { return stageRead; }
+            set
+            {
+                if (stageRead != value)
+                {
+                    stageRead = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Bond头Y轴
         /// </summary>
@@ -2612,7 +2629,23 @@ namespace GlobalToolClsLib
         #endregion
 
 
-        
+        private string curPPtoolName;
+        /// <summary>
+        /// 当前吸嘴名称
+        /// </summary>
+        public string CurPPtoolName
+        {
+            get { return curPPtoolName; }
+            set
+            {
+                if (curPPtoolName != value)
+                {
+                    curPPtoolName = value;
+                    OnPropertyChanged(nameof(CurPPtoolName));
+                }
+            }
+        }
+
 
         #endregion
 

@@ -139,4 +139,25 @@ namespace GlobalToolClsLib
 		}
 		
 	}
+
+	public static class EnumExtensions
+	{
+		// 获取枚举的Description属性
+		public static string GetDescription(this Enum value)
+		{
+			FieldInfo field = value.GetType().GetField(value.ToString());
+			DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
+			return attribute?.Description ?? value.ToString();
+		}
+
+		// 创建用于ComboBox的数据源
+		public static List<KeyValuePair<Enum, string>> GetEnumDataSource<T>() where T : Enum
+		{
+			return Enum.GetValues(typeof(T))
+				.Cast<Enum>()
+				.Select(e => new KeyValuePair<Enum, string>(e, e.GetDescription()))
+				.ToList();
+		}
+	}
+
 }

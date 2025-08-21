@@ -23,11 +23,6 @@ namespace ControlPanelClsLib
         {
             get { return PositioningSystem.Instance; }
         }
-        public FrmEjectionSystemTool()
-        {
-            InitializeComponent();
-            LoadExistESTool();
-        }
         private string _currentToolName;
         /// <summary>
         /// 系统配置
@@ -36,6 +31,12 @@ namespace ControlPanelClsLib
         {
             get { return SystemConfiguration.Instance; }
         }
+        public FrmEjectionSystemTool()
+        {
+            InitializeComponent();
+            LoadExistESTool();
+        }
+        
         private void LoadExistESTool()
         {
             cmbExistESTool.Items.Clear();

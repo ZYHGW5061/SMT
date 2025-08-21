@@ -33,7 +33,7 @@
             this.textEditRecipeName = new DevExpress.XtraEditors.TextEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            this.cmbSelectAxis = new System.Windows.Forms.ComboBox();
+            this.cmbExistESTool = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.textEditRecipeName.Properties)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -76,21 +76,21 @@
             // 
             this.labelControl2.Location = new System.Drawing.Point(59, 47);
             this.labelControl2.Name = "labelControl2";
-            this.labelControl2.Size = new System.Drawing.Size(36, 14);
+            this.labelControl2.Size = new System.Drawing.Size(48, 14);
             this.labelControl2.TabIndex = 13;
-            this.labelControl2.Text = "模板：";
+            this.labelControl2.Text = "点胶器：";
             // 
-            // cmbSelectAxis
+            // cmbExistESTool
             // 
-            this.cmbSelectAxis.FormattingEnabled = true;
-            this.cmbSelectAxis.Location = new System.Drawing.Point(115, 43);
-            this.cmbSelectAxis.Name = "cmbSelectAxis";
-            this.cmbSelectAxis.Size = new System.Drawing.Size(162, 22);
-            this.cmbSelectAxis.TabIndex = 14;
+            this.cmbExistESTool.FormattingEnabled = true;
+            this.cmbExistESTool.Location = new System.Drawing.Point(115, 43);
+            this.cmbExistESTool.Name = "cmbExistESTool";
+            this.cmbExistESTool.Size = new System.Drawing.Size(162, 22);
+            this.cmbExistESTool.TabIndex = 14;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.cmbSelectAxis);
+            this.groupBox1.Controls.Add(this.cmbExistESTool);
             this.groupBox1.Controls.Add(this.labelControl2);
             this.groupBox1.Location = new System.Drawing.Point(43, 101);
             this.groupBox1.Name = "groupBox1";
@@ -133,7 +133,7 @@
         private DevExpress.XtraEditors.TextEdit textEditRecipeName;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
-        private System.Windows.Forms.ComboBox cmbSelectAxis;
+        private System.Windows.Forms.ComboBox cmbExistESTool;
         private System.Windows.Forms.GroupBox groupBox1;
     }
 }

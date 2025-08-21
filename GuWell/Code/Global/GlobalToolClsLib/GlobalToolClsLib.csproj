@@ -86,6 +86,7 @@
     <Compile Include="CounterHelper.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="DeepCopyByExpressionTrees.cs" />
+    <Compile Include="ExecutionController.cs" />
     <Compile Include="GlobalCommFunc.cs" />
     <Compile Include="GlobalCommFuncExtend.cs" />
     <Compile Include="IOManager.cs" />

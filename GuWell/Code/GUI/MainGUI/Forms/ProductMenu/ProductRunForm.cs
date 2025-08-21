@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagerClsLib;
 using WestDragon.Framework.UtilityHelper;
 using static GlobalToolClsLib.GlobalCommFunc;
 
@@ -276,19 +277,22 @@ namespace MainGUI.Forms.ProductMenu
                     int vkCode = Marshal.ReadInt32(lParam);
                     if (vkCode == 120)  //F9开启单步
                     {
-                        ProductExecutor.Instance.SingleStepRun = true;
-                        SingleStepRunUtility.Instance.EnableSingleStep = true;
+                        //ProductExecutor.Instance.SingleStepRun = true;
+                        //SingleStepRunUtility.Instance.EnableSingleStep = true;
+                        ExecutionController.Instance.Pause();
                     }
                     else if(vkCode == 121)   //F10下一步
                     {
-                        ProductExecutor.Instance.SetEventWaitForNext();
-                        SingleStepRunUtility.Instance.Continue();
+                        //ProductExecutor.Instance.SetEventWaitForNext();
+                        //SingleStepRunUtility.Instance.Continue();
+                        ExecutionController.Instance.Step();
                     }
                     else if (vkCode == 119)   //F8取消单步
                     {
-                        ProductExecutor.Instance.SingleStepRun = false;
-                        SingleStepRunUtility.Instance.EnableSingleStep = false;
-                        ProductExecutor.Instance.SetEventWaitForNext();
+                        //ProductExecutor.Instance.SingleStepRun = false;
+                        //SingleStepRunUtility.Instance.EnableSingleStep = false;
+                        //ProductExecutor.Instance.SetEventWaitForNext();
+                        ExecutionController.Instance.Continue();
                     }
                 }
                 else if (wParam == (IntPtr)WM_KEYUP)
@@ -413,6 +417,7 @@ namespace MainGUI.Forms.ProductMenu
                 ProductExecutor.Instance.ManualSettedProcessCount = Int32.Parse(seProcessCount.Text);
                 ProductExecutor.Instance.CurChipNum = Int32.Parse(seStartChipIndex.Text);
                 ProductExecutor.Instance.IsProcessPart = ckeIsProcessPart.Checked;
+                LogRecorder.RecordUserOperationLog($"开始自动生产:{recipeName}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                 Task.Factory.StartNew(new Action(() =>
                 {
                     //productExecutor.MoveToSafePos();
@@ -427,6 +432,23 @@ namespace MainGUI.Forms.ProductMenu
             productExecutor.RunStat = EnumProductRunStat.UserAbort;
             productExecutor.RunningActionIndex = 0;
             productExecutor.ResetActionStat();
+            LogRecorder.RecordUserOperationLog($"停止自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void cbProductList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string recipeName = cbProductList.Text.ToString();
+            LogRecorder.RecordUserOperationLog($"用户选择配方:{recipeName}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void btnAutoPause_Click(object sender, EventArgs e)
+        {
+            LogRecorder.RecordUserOperationLog($"暂停自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void btnAutoContinue_Click(object sender, EventArgs e)
+        {
+            LogRecorder.RecordUserOperationLog($"继续自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
         }
     }
 }

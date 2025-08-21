@@ -18,6 +18,7 @@ using ConfigurationClsLib;
 using LaserSensorManagerClsLib;
 using DynamometerManagerClsLib;
 using WestDragon.Framework.BaseLoggerClsLib;
+using UserManagerClsLib;
 
 namespace ControlPanelClsLib
 {
@@ -190,6 +191,7 @@ namespace ControlPanelClsLib
             {
                 string labelName = clickedLabel.Name;
                 short bit = 1;
+                LogRecorder.RecordUserOperationLog($"切换{labelName}状态", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                 switch (labelName)
                 {
                     case "ChipPPVaccumSwitch":

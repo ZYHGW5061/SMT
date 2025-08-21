@@ -639,7 +639,30 @@ namespace VisionGUI
 
         public void SetVisualParam(GlobalDataDefineClsLib.MatchIdentificationParam param)
         {
-            if(param.RingLightintensity < 254)
+            ContourPatCreateScaleMode _ScaleMode = ContourPatCreateScaleMode.Auto;
+            float _ScaleLevel = 5;
+            uint _ScaleRLevel = 1;
+            ContourPatCreateThresholdMode _ThresMode = ContourPatCreateThresholdMode.Auto;
+            uint _ThresValue = 15;
+            ContourPatCreateWeightFlag _WeightFlag = ContourPatCreateWeightFlag.False;
+            ContourPatCreateChainFlag _ChainFlag = ContourPatCreateChainFlag.Auto;
+            int _MinChain = 4;
+
+            ContourPatternCreateParam param2 = new ContourPatternCreateParam()
+            {
+                ScaleMode = _ScaleMode,
+                ScaleLevel = _ScaleLevel,
+                ScaleRLevel = _ScaleRLevel,
+                ThresMode = _ThresMode,
+                ThresValue = _ThresValue,
+                WeightFlag = _WeightFlag,
+                ChainFlag = _ChainFlag,
+                MinChain = _MinChain,
+            };
+
+            UpdatePatCreateParasView(param2);
+
+            if (param.RingLightintensity < 254)
             {
                 this.RingLightintensity = param.RingLightintensity;
             }
@@ -730,14 +753,14 @@ namespace VisionGUI
                 }
 
             }
-            if (param.Runxml == null)
-            {
-                this.MatchRunfilepath = "";
-            }
-            else
-            {
-                this.MatchRunfilepath = param.Runxml;
-            }
+            //if (param.Runxml == null)
+            //{
+            //    this.MatchRunfilepath = "";
+            //}
+            //else
+            //{
+            //    this.MatchRunfilepath = param.Runxml;
+            //}
         }
 
         public GlobalDataDefineClsLib.MatchIdentificationParam GetVisualParam()
@@ -758,6 +781,7 @@ namespace VisionGUI
             param1.SearchRoi = this.SearchRoi;
             //param1.Templateresult = this.Templateresult;
             param1.Templatexml = this.MatchTemplatefilepath;
+            param1.TemplateParamxml = this.MatchTemplateParampath;
             param1.Runxml = this.MatchRunfilepath;
 
             return param1;

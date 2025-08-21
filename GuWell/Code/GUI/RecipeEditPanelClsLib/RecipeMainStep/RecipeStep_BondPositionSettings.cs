@@ -58,6 +58,7 @@ namespace RecipeEditPanelClsLib
         public override void LoadEditedRecipe(BondRecipe recipe) 
         { 
             _editRecipe = recipe;
+            _editRecipe.CurrentBondPosition.VisionParametersForFindBondPosition.VisionPositionUsedCamera = EnumCameraType.BondCamera;
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
@@ -72,7 +73,11 @@ namespace RecipeEditPanelClsLib
             currengStep = EnumRecipeStep.BondPosition;
 
             _editRecipe.CurrentBondPosition.IsComplete = true;
-            _editRecipe.CurrentBondPosition.BondPositionCompensation = _bondPositionCompensation;
+            
+            //_editRecipe.CurrentBondPosition.BondPositionCompensation = _bondPositionCompensation;
+            //_editRecipe.CurrentBondPosition.BondPositionCompensation.X = _bondPositionCompensation.X - _centerCoor.X;
+            
+            //_bondPositionOffset.X = 
             //精准模式即需要视觉识别
             if (_editRecipe.CurrentBondPosition.FindBondPositionMethod==EnumFindBondPositionMethod.Accuracy)
             {

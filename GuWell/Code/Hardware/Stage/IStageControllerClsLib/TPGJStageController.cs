@@ -1,5 +1,6 @@
 ﻿using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using UserManagerClsLib;
 using WestDragon.Framework.UtilityHelper;
 
 namespace StageControllerClsLib
@@ -349,20 +351,26 @@ namespace StageControllerClsLib
         /// </summary>
         public void Home()
         {
-            foreach (EnumStageAxis axis in Enum.GetValues(typeof(EnumStageAxis)))
-            {
-                if (axis == EnumStageAxis.None)
-                {
-                    continue;
-                }
+            LogRecorder.RecordUserOperationLog($"启动系统初始化", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+            //foreach (EnumStageAxis axis in Enum.GetValues(typeof(EnumStageAxis)))
+            //{
+            //    if (axis == EnumStageAxis.None)
+            //    {
+            //        continue;
+            //    }
 
 
-                if (axis == EnumStageAxis.WaferTableX || axis == EnumStageAxis.WaferTableY || axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ || axis == EnumStageAxis.NeedleZ)
-                {
-                    this[axis].Home();
-                }
+            //    if (axis == EnumStageAxis.WaferTableX || axis == EnumStageAxis.WaferTableY || axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ || axis == EnumStageAxis.NeedleZ)
+            //    {
+            //        this[axis].Home();
+            //    }
 
-            }
+            //}
+            this[EnumStageAxis.ESZ].Home();
+            this[EnumStageAxis.NeedleZ].Home();
+            this[EnumStageAxis.WaferTableY].Home();
+            this[EnumStageAxis.WaferTableX].Home();
+            this[EnumStageAxis.WaferTableZ].Home();
 
         }
 

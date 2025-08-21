@@ -129,6 +129,44 @@ namespace MainGUI.UserControls.Product
                 return ret;
             }
         }
+
+        public float CurrentSlowTravelBeforePickupMM
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowTravelBeforePickupMM.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowSpeedBeforePickup
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowSpeedBeforePickup.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowTravelAfterPickupMM
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowTravelAfterPickupMM.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowSpeedAfterPickup
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowSpeedAfterPickup.Text, out ret);
+                return ret;
+            }
+        }
+
         public string CurrentRelatedPPTool
         {
             get

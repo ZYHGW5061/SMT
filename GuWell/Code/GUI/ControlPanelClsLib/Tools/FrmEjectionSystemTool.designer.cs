@@ -35,6 +35,8 @@ namespace ControlPanelClsLib
             this.ejectionSystemTool_NeedleZero1 = new ControlPanelClsLib.EjectionSystemTool_NeedleZero();
             this.tabNavigationPageNeedleAlign = new DevExpress.XtraBars.Navigation.TabNavigationPage();
             this.ejectionSystemTool_XYMeasuring1 = new ControlPanelClsLib.EjectionSystemTool_XYMeasuring();
+            this.tabNavigationPagePPESH = new DevExpress.XtraBars.Navigation.TabNavigationPage();
+            this.ppesHeight1 = new ControlPanelClsLib.PPESHeight();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
             this.btnSave = new System.Windows.Forms.Button();
@@ -42,18 +44,16 @@ namespace ControlPanelClsLib
             this.cmbExistESTool = new System.Windows.Forms.ComboBox();
             this.btnNewESTool = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl21 = new DevExpress.XtraEditors.LabelControl();
-            this.tabNavigationPagePPESH = new DevExpress.XtraBars.Navigation.TabNavigationPage();
-            this.ppesHeight1 = new ControlPanelClsLib.PPESHeight();
             ((System.ComponentModel.ISupportInitialize)(this.tabPane)).BeginInit();
             this.tabPane.SuspendLayout();
             this.tabNavigationPageNeedleZero.SuspendLayout();
             this.tabNavigationPageNeedleAlign.SuspendLayout();
+            this.tabNavigationPagePPESH.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
             this.panelControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
-            this.tabNavigationPagePPESH.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPane
@@ -94,15 +94,32 @@ namespace ControlPanelClsLib
             this.tabNavigationPageNeedleAlign.Caption = "    顶针XY原点确定    ";
             this.tabNavigationPageNeedleAlign.Controls.Add(this.ejectionSystemTool_XYMeasuring1);
             this.tabNavigationPageNeedleAlign.Name = "tabNavigationPageNeedleAlign";
-            this.tabNavigationPageNeedleAlign.Size = new System.Drawing.Size(1365, 686);
+            this.tabNavigationPageNeedleAlign.Size = new System.Drawing.Size(1365, 653);
             // 
             // ejectionSystemTool_XYMeasuring1
             // 
             this.ejectionSystemTool_XYMeasuring1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ejectionSystemTool_XYMeasuring1.Location = new System.Drawing.Point(0, 0);
             this.ejectionSystemTool_XYMeasuring1.Name = "ejectionSystemTool_XYMeasuring1";
-            this.ejectionSystemTool_XYMeasuring1.Size = new System.Drawing.Size(1365, 686);
+            this.ejectionSystemTool_XYMeasuring1.Size = new System.Drawing.Size(1365, 653);
             this.ejectionSystemTool_XYMeasuring1.TabIndex = 0;
+            // 
+            // tabNavigationPagePPESH
+            // 
+            this.tabNavigationPagePPESH.Caption = "顶针座测高";
+            this.tabNavigationPagePPESH.Controls.Add(this.ppesHeight1);
+            this.tabNavigationPagePPESH.Name = "tabNavigationPagePPESH";
+            this.tabNavigationPagePPESH.Size = new System.Drawing.Size(1365, 653);
+            // 
+            // ppesHeight1
+            // 
+            this.ppesHeight1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ppesHeight1.ESStageHeight = 0F;
+            this.ppesHeight1.ESZSystemHeight = 0F;
+            this.ppesHeight1.Location = new System.Drawing.Point(0, 0);
+            this.ppesHeight1.Name = "ppesHeight1";
+            this.ppesHeight1.Size = new System.Drawing.Size(1365, 653);
+            this.ppesHeight1.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
@@ -177,23 +194,6 @@ namespace ControlPanelClsLib
             this.labelControl21.TabIndex = 22;
             this.labelControl21.Text = "已有工具:";
             // 
-            // tabNavigationPagePPESH
-            // 
-            this.tabNavigationPagePPESH.Caption = "顶针座测高";
-            this.tabNavigationPagePPESH.Controls.Add(this.ppesHeight1);
-            this.tabNavigationPagePPESH.Name = "tabNavigationPagePPESH";
-            this.tabNavigationPagePPESH.Size = new System.Drawing.Size(1365, 686);
-            // 
-            // ppesHeight1
-            // 
-            this.ppesHeight1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ppesHeight1.ESStageHeight = 0F;
-            this.ppesHeight1.Location = new System.Drawing.Point(0, 0);
-            this.ppesHeight1.Name = "ppesHeight1";
-            this.ppesHeight1.ESZSystemHeight = 0F;
-            this.ppesHeight1.Size = new System.Drawing.Size(1365, 686);
-            this.ppesHeight1.TabIndex = 0;
-            // 
             // FrmEjectionSystemTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -209,13 +209,13 @@ namespace ControlPanelClsLib
             this.tabPane.ResumeLayout(false);
             this.tabNavigationPageNeedleZero.ResumeLayout(false);
             this.tabNavigationPageNeedleAlign.ResumeLayout(false);
+            this.tabNavigationPagePPESH.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).EndInit();
             this.panelControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
             this.panelControl1.PerformLayout();
-            this.tabNavigationPagePPESH.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

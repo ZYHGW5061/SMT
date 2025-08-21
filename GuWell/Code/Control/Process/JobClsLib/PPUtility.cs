@@ -439,12 +439,13 @@ namespace JobClsLib
                 //        return false;
                 //    }
                 //}
-
+                
                 if (param.PPtoolName != null)
                 {
                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                     if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                         {
                             if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
@@ -487,17 +488,20 @@ namespace JobClsLib
                 //        return false;
                 //    }
                 //}
+
                 var terminal = param.WorkHeight - param.PickupStress;
                 //var terminal = param.WorkHeight;
                 var quickTravelTarget = terminal + param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
                      LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-下降-Start.");
+                     ExecutionController.Instance.WaitIfPaused();
                      //快速下降
                      if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, quickTravelTarget, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
                      {
                          return false;
                      }
+                     ExecutionController.Instance.WaitIfPaused();
                      //慢速下降
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedBeforePickup);
                      //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, terminal, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -536,7 +540,7 @@ namespace JobClsLib
                      //        return false;
                      //    }
                      //}
-
+                     ExecutionController.Instance.WaitIfPaused();
                      var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                      //开真空
                      if (!IOUtilityHelper.Instance.OpenPPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally) && _systemConfig.JobConfig.EnableVaccumConfirm)
@@ -557,6 +561,7 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.NeedleZ, param.NeedleSpeed);
                         //NeedleZ上升时绝对坐标变小
                         var actualAngle = param.NeedleUpHeight / (8f / 360f);
@@ -583,6 +588,7 @@ namespace JobClsLib
                 var slowTravelTargetAfterPickup = terminal + param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
+                     ExecutionController.Instance.WaitIfPaused();
                      LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-上升-Start.");
                      //慢速上升
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedAfterPickup);
@@ -596,6 +602,8 @@ namespace JobClsLib
                      {
                          return false;
                      }
+
+                     ExecutionController.Instance.WaitIfPaused();
                      //快速抬升
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                      //if (param.UsedPP == EnumUsedPP.SubmountPP)
@@ -628,6 +636,7 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         var actualAngle = param.NeedleUpHeight / (8f / 360f);
                         if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, -actualAngle, EnumCoordSetType.Relative) == StageMotionResult.Fail)
                         {
@@ -735,6 +744,7 @@ namespace JobClsLib
                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                     if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                         {
                             if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
@@ -765,11 +775,13 @@ namespace JobClsLib
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                 {
                     LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-下降-Start.");
+                    ExecutionController.Instance.WaitIfPaused();
                     //快速下降
                     if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, quickTravelTarget, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
                     {
                         return false;
                     }
+                    ExecutionController.Instance.WaitIfPaused();
                     //慢速下降
                     _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedBeforePickup);
                     //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, terminal, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -815,10 +827,13 @@ namespace JobClsLib
 
                          var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                          //关真空
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.ClosePPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally);
                          Thread.Sleep(10);
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.OpenPPtoolBlow(pptool.PPBlowSwitch);
                          Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.ClosePPtoolBlow(pptool.PPBlowSwitch);
 
                          //Thread.Sleep((int)param.DelayMSForVaccum);
@@ -837,6 +852,7 @@ namespace JobClsLib
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
                         LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-上升-Start.");
+                        ExecutionController.Instance.WaitIfPaused();
                         //慢速上升
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedAfterPickup);
                         //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, slowTravelTargetAfterPickup, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -847,6 +863,7 @@ namespace JobClsLib
                         {
                             return false;
                         }
+                        ExecutionController.Instance.WaitIfPaused();
                         //快速上升
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                         //if (param.UsedPP == EnumUsedPP.SubmountPP)
@@ -908,36 +925,110 @@ namespace JobClsLib
         }
 
 
-
-
-        public void LoadPPTool(string ppToolName)
+        public bool UnloadPPTool(string ppToolName)
         {
+            bool res = false;
             PPToolSettings currentTool = null;
             if (!string.IsNullOrEmpty(ppToolName))
             {
                 currentTool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppToolName);
             }
+            else
+            {
+                return res;
+            }
             if (currentTool != null)
             {
-                //旋转PPTool转台
-                PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.PPtoolBankTheta, currentTool.RotationTablePos4LoadPP, EnumCoordSetType.Absolute);
-                //
-            }
+                var result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                if (result == StageMotionResult.Success)
+                {
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    multiAxis[2] = EnumStageAxis.ChipPPT;
 
+                    double[] target1 = new double[3];
+                    target1[0] = currentTool.ChipPPPosBracket.X;
+                    target1[1] = currentTool.ChipPPPosBracket.Y - 45;
+                    target1[2] = currentTool.ChipPPPosBracket.Theta;
+
+                    result = _positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Absolute);
+                    if (result == StageMotionResult.Success)
+                    {
+                        result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentTool.ChipPPPosBracket.Z, EnumCoordSetType.Absolute);
+                        if (result == StageMotionResult.Success)
+                        {
+                            result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondY, currentTool.ChipPPPosBracket.Y, EnumCoordSetType.Absolute);
+
+                            if (result == StageMotionResult.Success)
+                            {
+                                result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                                if (result == StageMotionResult.Success)
+                                {
+                                    result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                    res = true;
+                                    DataModel.Instance.CurPPtoolName = ppToolName;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            return res;
         }
-        public void UnloadPPTool(string ppToolName)
+
+
+        public bool LoadPPTool(string ppToolName)
         {
+            bool res = false;
             PPToolSettings currentTool = null;
             if (!string.IsNullOrEmpty(ppToolName))
             {
                 currentTool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppToolName);
             }
+            else
+            {
+                return res;
+            }
             if (currentTool != null)
             {
-                //旋转PPTool转台
-                PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.PPtoolBankTheta, currentTool.RotationTablePos4LoadPP, EnumCoordSetType.Absolute);
-                //
+                var result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                if (result == StageMotionResult.Success)
+                {
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    multiAxis[2] = EnumStageAxis.ChipPPT;
+                    double[] target1 = new double[3];
+                    target1[0] = currentTool.ChipPPPosBracket.X;
+                    target1[1] = currentTool.ChipPPPosBracket.Y;
+                    target1[2] = currentTool.ChipPPPosBracket.Theta;
+                    result = _positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Absolute);
+                    if (result == StageMotionResult.Success)
+                    {
+                        result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentTool.ChipPPPosBracket.Z, EnumCoordSetType.Absolute);
+                        if (result == StageMotionResult.Success)
+                        {
+                            result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondY, currentTool.ChipPPPosBracket.Y - 45, EnumCoordSetType.Absolute);
+
+                            if (result == StageMotionResult.Success)
+                            {
+                                result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                                if (result == StageMotionResult.Success)
+                                {
+                                    result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                    res = true;
+                                    DataModel.Instance.CurPPtoolName = "";
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            return res;
         }
+
+
     }
 }

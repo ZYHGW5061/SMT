@@ -51,6 +51,9 @@ namespace RecipeEditPanelClsLib
             this.labelControl8 = new DevExpress.XtraEditors.LabelControl();
             this.cmbDispensePattern = new System.Windows.Forms.ComboBox();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl12 = new DevExpress.XtraEditors.LabelControl();
+            this.cmbExistESTool = new System.Windows.Forms.ComboBox();
+            this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
             this.panelControl2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -63,6 +66,9 @@ namespace RecipeEditPanelClsLib
             // 
             // panelControl2
             // 
+            this.panelControl2.Controls.Add(this.simpleButton1);
+            this.panelControl2.Controls.Add(this.labelControl12);
+            this.panelControl2.Controls.Add(this.cmbExistESTool);
             this.panelControl2.Controls.Add(this.labelControl1);
             this.panelControl2.Controls.Add(this.groupBox4);
             this.panelControl2.Controls.Add(this.seDispensePatternHeight);
@@ -375,6 +381,48 @@ namespace RecipeEditPanelClsLib
             this.labelControl6.TabIndex = 14;
             this.labelControl6.Text = "mm";
             // 
+            // labelControl12
+            // 
+            this.labelControl12.Location = new System.Drawing.Point(354, 35);
+            this.labelControl12.Name = "labelControl12";
+            this.labelControl12.Size = new System.Drawing.Size(52, 14);
+            this.labelControl12.TabIndex = 21;
+            this.labelControl12.Text = "点胶工具:";
+            // 
+            // cmbExistESTool
+            // 
+            this.cmbExistESTool.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbExistESTool.FormattingEnabled = true;
+            this.cmbExistESTool.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15"});
+            this.cmbExistESTool.Location = new System.Drawing.Point(414, 32);
+            this.cmbExistESTool.Name = "cmbExistESTool";
+            this.cmbExistESTool.Size = new System.Drawing.Size(94, 22);
+            this.cmbExistESTool.TabIndex = 20;
+            // 
+            // simpleButton1
+            // 
+            this.simpleButton1.Location = new System.Drawing.Point(537, 31);
+            this.simpleButton1.Name = "simpleButton1";
+            this.simpleButton1.Size = new System.Drawing.Size(94, 23);
+            this.simpleButton1.TabIndex = 22;
+            this.simpleButton1.Text = "点胶工具管理";
+            this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
+            // 
             // RecipeStep_EpoxyApplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -419,5 +467,8 @@ namespace RecipeEditPanelClsLib
         private DevExpress.XtraEditors.LabelControl labelControl8;
         private DevExpress.XtraEditors.LabelControl labelControl6;
         private DevExpress.XtraEditors.SimpleButton btnSetDispenseParam;
+        private DevExpress.XtraEditors.LabelControl labelControl12;
+        private System.Windows.Forms.ComboBox cmbExistESTool;
+        private DevExpress.XtraEditors.SimpleButton simpleButton1;
     }
 }

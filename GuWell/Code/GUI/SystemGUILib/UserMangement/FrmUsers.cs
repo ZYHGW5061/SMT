@@ -1,6 +1,7 @@
 ﻿using CommonPanelClsLib;
 using DevExpress.XtraEditors;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -109,6 +110,7 @@ namespace SystemGUILib.UserMangement
                 WarningBox.FormShow("失败!", "添加账户失败!", "Tips");
                 return;
             }
+            LogRecorder.RecordUserOperationLog($"添加用户:{Name} 权限:{userTypeID}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
             this.DialogResult = DialogResult.OK;
         }
 
@@ -135,6 +137,7 @@ namespace SystemGUILib.UserMangement
                 WarningBox.FormShow("失败!", "账户信息修改失败!", "Tips");
                 return;
             }
+            LogRecorder.RecordUserOperationLog($"修改用户:{Name} 权限:{userTypeID}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
             this.DialogResult = DialogResult.OK;
         }
     }

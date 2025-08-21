@@ -56,9 +56,12 @@ namespace VisionGUI
         #region 算法参数
 
         private int _RingLightintensity = 0;
+        private EnumDirectLightSourceType _DirectLightType = EnumDirectLightSourceType.SingleR;
         private int _DirectLightintensity = 0;
+        private int _DirectLightintensityRed = 0;
+        private int _DirectLightintensityGreen = 0;
+        private int _DirectLightintensityBlue = 0;
         private float _Score = 0.5f;
-
         /// <summary>
         /// 环光强度
         /// </summary>
@@ -87,6 +90,33 @@ namespace VisionGUI
         /// <summary>
         /// 直光强度
         /// </summary>
+        public EnumDirectLightSourceType DirectLightType
+        {
+            get
+            {
+                return _DirectLightType;
+            }
+            set
+            {
+                _DirectLightType = value;
+                if (_DirectLightType == EnumDirectLightSourceType.SingleR)
+                {
+                    comboBoxDirectColor.Visible = false;
+                    comboBoxDirectColor.Enabled = false;
+                }
+                else
+                {
+                    comboBoxDirectColor.Visible = true;
+                    comboBoxDirectColor.Enabled = true;
+                    comboBoxDirectColor.SelectedIndex = 0;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
         public int DirectLightintensity
         {
             get
@@ -104,6 +134,80 @@ namespace VisionGUI
                     if (value > -1 && value < 256)
                     {
                         VisualApp.SetDirectLightintensity(value);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityRed
+        {
+            get
+            {
+                return _DirectLightintensityRed;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityRed = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityGreen
+        {
+            get
+            {
+                return _DirectLightintensityGreen;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityGreen = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityBlue
+        {
+            get
+            {
+                return _DirectLightintensityBlue;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityBlue = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
                     }
                 }
             }
@@ -229,6 +333,8 @@ namespace VisionGUI
         public string DownEdgefilepath { get; set; }
         public string LeftEdgefilepath { get; set; }
         public string RightEdgefilepath { get; set; }
+
+        public RectangleFA Rectresult { get; set; } = null;
 
         #endregion
 
@@ -378,8 +484,33 @@ namespace VisionGUI
 
         public void SetVisualParam(GlobalDataDefineClsLib.LineFindIdentificationParam param)
         {
-            this.RingLightintensity = param.RingLightintensity;
-            this.DirectLightintensity = param.DirectLightintensity;
+            if (param.RingLightintensity < 254)
+            {
+                this.RingLightintensity = param.RingLightintensity;
+            }
+            else
+            {
+                this.RingLightintensity = 0;
+            }
+            this.DirectLightType = param.DirectLightType;
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (param.DirectLightintensity < 254)
+                {
+                    this.DirectLightintensity = param.DirectLightintensity;
+                }
+                else
+                {
+                    this.DirectLightintensity = 0;
+                }
+
+            }
+            else
+            {
+                this.DirectLightintensityRed = param.DirectRedLightintensity;
+                this.DirectLightintensityGreen = param.DirectGreenLightintensity;
+                this.DirectLightintensityBlue = param.DirectBlueLightintensity;
+            }
             this.UpEdgefilepath = param.UpEdgefilepath;
             if (param.UpEdgefilepath == null)
             {
@@ -485,7 +616,11 @@ namespace VisionGUI
             GlobalDataDefineClsLib.LineFindIdentificationParam param1 = new GlobalDataDefineClsLib.LineFindIdentificationParam();
 
             param1.RingLightintensity = this.RingLightintensity;
+            param1.DirectLightType = this.DirectLightType;
             param1.DirectLightintensity = this.DirectLightintensity;
+            param1.DirectRedLightintensity = this.DirectLightintensityRed;
+            param1.DirectGreenLightintensity = this.DirectLightintensityGreen;
+            param1.DirectBlueLightintensity = this.DirectLightintensityBlue;
             param1.UpEdgefilepath = this.UpEdgefilepath;
             param1.DownEdgefilepath = this.DownEdgefilepath;
             param1.LeftEdgefilepath = this.LeftEdgefilepath;
@@ -1456,6 +1591,23 @@ namespace VisionGUI
 
 
                 Lines = VisualApp.LineFindAsync(LinesFile, Scores, ROIs, Scans);
+                Rectresult = new RectangleFA();
+                if (Lines.Count > 3)
+                {
+                    var line1 = CameraWindowGUI.CalculateLineEquation(Lines[0].Startpoint, Lines[0].Endpoint);
+                    var line2 = CameraWindowGUI.CalculateLineEquation(Lines[1].Startpoint, Lines[1].Endpoint);
+                    var line3 = CameraWindowGUI.CalculateLineEquation(Lines[2].Startpoint, Lines[2].Endpoint);
+                    var line4 = CameraWindowGUI.CalculateLineEquation(Lines[3].Startpoint, Lines[3].Endpoint);
+
+                    // 计算交点
+                    var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
+                    var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
+                    var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
+                    var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
+
+                    Rectresult = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+
+                }
 
                 if (Lines != null && CameraWindow != null)
                 {

@@ -45,6 +45,7 @@ namespace ConfigurationClsLib
             CalibrationConfig = new CalibrationConfig();
             PPToolSettings = new List<PPToolSettings>();
             ESToolSettings = new List<ESToolSettings>();
+            DispenserSettings = new List<DispenserSettings>();
             SystemCalibrationConfig = new SystemCalibrationConfig();
         }
         private static SystemConfiguration LoadConfig()
@@ -74,6 +75,19 @@ namespace ConfigurationClsLib
                 if (!string.IsNullOrEmpty(JobConfig.RawDataSavingPath))
                 {
                     ret = JobConfig.RawDataSavingPath;
+                }
+                return ret;
+            }
+        }
+        [XmlIgnore]
+        public string SQliteDataSavePath
+        {
+            get
+            {
+                var ret = @"D:\GWWell\Logs\SQLiteData\";
+                if (!string.IsNullOrEmpty(JobConfig.SQliteDataSavingPath))
+                {
+                    ret = JobConfig.SQliteDataSavingPath;
                 }
                 return ret;
             }
@@ -130,6 +144,10 @@ namespace ConfigurationClsLib
         [XmlArray("ESToolSettings"), XmlArrayItem(typeof(ESToolSettings))]
         //[XmlIgnore]
         public List<ESToolSettings> ESToolSettings { get; set; }
+        [XmlArray("DispenserSettings"), XmlArrayItem(typeof(DispenserSettings))]
+        //[XmlIgnore]
+        public List<DispenserSettings> DispenserSettings { get; set; }
+        
 
         [XmlElement("TuningTimeMS")]
         public int TuningTimeMS { get; set; }
@@ -163,6 +181,9 @@ namespace ConfigurationClsLib
         [XmlElement("RawDataSavingPath")]
         public string RawDataSavingPath { get; set; }
 
+        [XmlElement("SQliteDataSavingPath")]
+        public string SQliteDataSavingPath { get; set; }
+
         [XmlElement("RecognizeFailSavingPath")]
         public string RecognizeFailSavingPath { get; set; }
         [XmlElement("RecognizeSuccessSavingPath")]
@@ -185,6 +206,47 @@ namespace ConfigurationClsLib
         /// </summary>
         [XmlElement("CurChipNGNumMax")]
         public int CurChipNGNumMax { get; set; }
+
+        /// <summary>
+        /// 晶圆或晶圆华夫盒快速贴片模式（定位芯片采用并行方式）
+        /// </summary>
+        [XmlElement("WaferQuickMode")]
+        public bool WaferQuickMode { get; set; }
+
+        /// <summary>
+        /// 是否有传片动作
+        /// </summary>
+        [XmlElement("IsTransport")]
+        public bool IsTransport { get; set; }
+
+        /// <summary>
+        /// 总贴片计数
+        /// </summary>
+        [XmlElement("TotalBondCounter")]
+        public int TotalBondCounter { get; set; }
+        /// <summary>
+        /// 点胶计数
+        /// </summary>
+        [XmlElement("DispenserCounter")]
+        public int DispenserCounter { get; set; }
+
+        /// <summary>
+        /// 是否有贴片后识别动作
+        /// </summary>
+        [XmlElement("IsComponentCalibrationAfterPP")]
+        public bool IsComponentCalibrationAfterPP { get; set; }
+
+        /// <summary>
+        /// 当前吸嘴名称
+        /// </summary>
+        [XmlElement("CurPPtoolName")]
+        public string CurPPtoolName { get; set; }
+
+        /// <summary>
+        /// 是否有激光扫描高度
+        /// </summary>
+        [XmlElement("IsLaserScanningHeight")]
+        public bool IsLaserScanningHeight { get; set; }
 
     }
     /// <summary>
@@ -575,6 +637,7 @@ namespace ConfigurationClsLib
     {
         public SystemCalibrationConfig()
         {
+            BMCPPtoolParam = new PPWorkParameters();
             BondIdentifyBMCMatch = new MatchIdentificationParam();
             BondIdentifyBMCMatch2 = new MatchIdentificationParam();
             BondIdentifyBMCMatchoffset = new XYZTCoordinateConfig();
@@ -607,6 +670,12 @@ namespace ConfigurationClsLib
             BondIdentifyBondPositionMatch = new MatchIdentificationParam();
             BondIdentifyCuttingPositionMatch = new MatchIdentificationParam();
         }
+
+        /// <summary>
+        /// BMC吸嘴参数
+        /// </summary>
+        [XmlElement("BMCPPtoolParam")]
+        public PPWorkParameters BMCPPtoolParam { get; set; }
 
         /// <summary>
         /// BMC次数

@@ -53,7 +53,11 @@ namespace VisionGUI
         #region 算法参数
 
         private int _RingLightintensity = 0;
+        private EnumDirectLightSourceType _DirectLightType = EnumDirectLightSourceType.SingleR;
         private int _DirectLightintensity = 0;
+        private int _DirectLightintensityRed = 0;
+        private int _DirectLightintensityGreen = 0;
+        private int _DirectLightintensityBlue = 0;
 
         private float _Score = 0.5f;
         public int MinR { get; set; } = 10;
@@ -121,6 +125,33 @@ namespace VisionGUI
         /// <summary>
         /// 直光强度
         /// </summary>
+        public EnumDirectLightSourceType DirectLightType
+        {
+            get
+            {
+                return _DirectLightType;
+            }
+            set
+            {
+                _DirectLightType = value;
+                if (_DirectLightType == EnumDirectLightSourceType.SingleR)
+                {
+                    comboBoxDirectColor.Visible = false;
+                    comboBoxDirectColor.Enabled = false;
+                }
+                else
+                {
+                    comboBoxDirectColor.Visible = true;
+                    comboBoxDirectColor.Enabled = true;
+                    comboBoxDirectColor.SelectedIndex = 0;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
         public int DirectLightintensity
         {
             get
@@ -138,6 +169,80 @@ namespace VisionGUI
                     if (value > -1 && value < 256)
                     {
                         VisualApp.SetDirectLightintensity(value);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityRed
+        {
+            get
+            {
+                return _DirectLightintensityRed;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityRed = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityGreen
+        {
+            get
+            {
+                return _DirectLightintensityGreen;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityGreen = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 直光强度
+        /// </summary>
+        public int DirectLightintensityBlue
+        {
+            get
+            {
+                return _DirectLightintensityBlue;
+            }
+            set
+            {
+
+                DirectLightBar.Value = value;
+                DirectLightNumlabel.Text = value.ToString();
+                _DirectLightintensityBlue = value;
+                if (VisualApp != null)
+                {
+                    if (value > -1 && value < 256)
+                    {
+                        VisualApp.SetRGBDirectLightintensity(_DirectLightintensityRed, _DirectLightintensityGreen, _DirectLightintensityBlue);
                     }
                 }
             }
@@ -160,6 +265,8 @@ namespace VisionGUI
                 _Score = ((float)value / 100);
             }
         }
+
+        public CircleResult results { get; set; } = new CircleResult();
 
         #endregion
 
@@ -293,15 +400,50 @@ namespace VisionGUI
 
         public void SetVisualParam(GlobalDataDefineClsLib.CircleFindIdentificationParam param)
         {
-            this.RingLightintensity = param.RingLightintensity;
-            this.DirectLightintensity = param.DirectLightintensity;
+            if (param.RingLightintensity < 254)
+            {
+                this.RingLightintensity = param.RingLightintensity;
+            }
+            else
+            {
+                this.RingLightintensity = 0;
+            }
+            this.DirectLightType = param.DirectLightType;
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (param.DirectLightintensity < 254)
+                {
+                    this.DirectLightintensity = param.DirectLightintensity;
+                }
+                else
+                {
+                    this.DirectLightintensity = 0;
+                }
+
+            }
+            else
+            {
+                this.DirectLightintensityRed = param.DirectRedLightintensity;
+                this.DirectLightintensityGreen = param.DirectGreenLightintensity;
+                this.DirectLightintensityBlue = param.DirectBlueLightintensity;
+            }
             this.CircleFindTemplatefilepath = param.CircleFindTemplatefilepath;
             this.Score = param.Score;
             this.MinR = param.MinR;
             this.MaxR = param.MaxR;
+
+            _SearchRoi = new RectangleF(CameraWindow.ImageWidth / 6, CameraWindow.ImageHeight / 6, CameraWindow.ImageWidth / 3 * 2, CameraWindow.ImageHeight / 3 * 2);
+            if (param.SearchRoi == null || (param.SearchRoi.X == 0 && param.SearchRoi.Y == 0 && param.SearchRoi.Width == 0 && param.SearchRoi.Height == 0))
+            {
+                this.SearchRoi = new RectangleFV() { X = _SearchRoi.X, Y = _SearchRoi.Y, Height = _SearchRoi.Height, Width = _SearchRoi.Width };
+            }
+            else
+            {
+                this.SearchRoi = param.SearchRoi;
+            }
             this.TemplateRoiCenter = param.TemplateRoiCenter;
             this.TemplateRoiR = param.TemplateRoiR;
-            this.SearchRoi = param.SearchRoi;
+            //this.SearchRoi = param.SearchRoi;
         }
 
         public GlobalDataDefineClsLib.CircleFindIdentificationParam GetVisualParam()
@@ -309,7 +451,11 @@ namespace VisionGUI
             GlobalDataDefineClsLib.CircleFindIdentificationParam param1 = new GlobalDataDefineClsLib.CircleFindIdentificationParam();
 
             param1.RingLightintensity = this.RingLightintensity;
+            param1.DirectLightType = this.DirectLightType;
             param1.DirectLightintensity = this.DirectLightintensity;
+            param1.DirectRedLightintensity = this.DirectLightintensityRed;
+            param1.DirectGreenLightintensity = this.DirectLightintensityGreen;
+            param1.DirectBlueLightintensity = this.DirectLightintensityBlue;
             param1.CircleFindTemplatefilepath = this.CircleFindTemplatefilepath;
             param1.Score = this.Score;
             param1.MinR = this.MinR;
@@ -607,7 +753,7 @@ namespace VisionGUI
         {
             if (VisualApp != null)
             {
-                CircleResult results = new CircleResult();
+                
 
                 VisualApp.ContinuousGetImage(false);
 

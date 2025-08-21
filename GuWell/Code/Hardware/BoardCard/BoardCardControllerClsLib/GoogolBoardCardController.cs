@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using ConfigurationClsLib;
+using GlobalToolClsLib;
+using WestDragon.Framework.BaseLoggerClsLib;
 
 namespace BoardCardControllerClsLib
 {
@@ -524,21 +526,29 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void JogNegative(EnumStageAxis axis, float speed)
         {
-            if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            try
             {
-                speed = -speed;
+                if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+                {
+                    speed = -speed;
+                }
+                ClrAlarm(axis);
+                //speed= (float)(speed*MMToPulse(axis)/1000);
+                //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = -Math.Abs(speed);
+                //AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
+                //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
+                //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart);
+                speed = (float)(speed * MMToPulse(axis) / 1000);
+                //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = -Math.Abs(speed);
+                AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
+                                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
+                                          -speed);
             }
-            ClrAlarm(axis);
-            //speed= (float)(speed*MMToPulse(axis)/1000);
-            //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = -Math.Abs(speed);
-            //AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
-            //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
-            //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart);
-            speed = (float)(speed * MMToPulse(axis) / 1000);
-            //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = -Math.Abs(speed);
-            AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
-                                      MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
-                                      -speed);
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴速度{speed}反向点动错误.", ex);
+            }
+            
         }
         #endregion
 
@@ -548,21 +558,30 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void JogPositive(EnumStageAxis axis, float speed)
         {
-            if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            
+            try
             {
-                speed = -speed;
+                if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+                {
+                    speed = -speed;
+                }
+                //speed = (float)(speed * MMToPulse(axis) / 1000);
+                //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
+                //AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc , 
+                //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
+                //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart);
+                ClrAlarm(axis);
+                speed = (float)(speed * MMToPulse(axis) / 1000);
+                //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
+                AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
+                                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
+                                          speed);
+
             }
-            //speed = (float)(speed * MMToPulse(axis) / 1000);
-            //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
-            //AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc , 
-            //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
-            //                          MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart);
-            ClrAlarm(axis);
-            speed = (float)(speed * MMToPulse(axis) / 1000);
-            //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
-            AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
-                                      MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smooth,
-                                      speed);
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴速度{speed}正向点动错误.", ex);
+            }
         }
         #endregion
 
@@ -598,26 +617,34 @@ namespace BoardCardControllerClsLib
         /// <param name="Pos">位置</param>
         public void MoveAbsoluteSync(EnumStageAxis axis, double targetPos, double Speed, int millisecondsTimeout = -1)
         {
-            ClrAlarm(axis);
+            try
+            {
+                ClrAlarm(axis);
 
-            AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-            if (_axisConfig.StageType == EnumStageType.S)
-            {
-                double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
-                S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
+                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+                if (_axisConfig.StageType == EnumStageType.S)
+                {
+                    double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
+                    S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
+                }
+                else if (_axisConfig.StageType == EnumStageType.None)
+                {
+                    //Speed = Speed * MMToPulse(axis) / 1000;
+                    targetPos = targetPos * MMToPulse(axis);
+                    AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID,
+                                                   MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
+                                                  MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec,
+                                                //Speed,
+                                                MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart,
+                                                MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime,
+                                                (int)targetPos);
+                }
             }
-            else if(_axisConfig.StageType == EnumStageType.None)
+            catch (Exception ex)
             {
-                //Speed = Speed * MMToPulse(axis) / 1000;
-                targetPos = targetPos * MMToPulse(axis);
-                AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID,
-                                               MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
-                                              MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec,
-                                            //Speed,
-                                            MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart,
-                                            MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime,
-                                            (int)targetPos);
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴速度{Speed}绝对移动到{targetPos}错误.", ex);
             }
+            
         }
 
         public void MoveAbsoluteSync(EnumStageAxis axis, double targetPos, double Speed, double acc, out short err)
@@ -641,32 +668,41 @@ namespace BoardCardControllerClsLib
         /// <param name="Pos">位置</param>
         public void MoveRelativeSync(EnumStageAxis axis, double distance, double Speed, int millisecondsTimeout = -1)
         {
-            if (axis == EnumStageAxis.BondZ)
+            try
             {
-                distance = -distance;
+                if (axis == EnumStageAxis.BondZ)
+                {
+                    distance = -distance;
+                }
+
+                ClrAlarm(axis);
+
+                AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
+                if (_axisConfig.StageType == EnumStageType.S)
+                {
+                    double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
+                    double targetPos = GetCurrentPosition(axis) + distance;
+                    S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
+                }
+                else if (_axisConfig.StageType == EnumStageType.None)
+                {
+                    Speed = Speed * MMToPulse(axis) / 1000;
+                    distance = distance * MMToPulse(axis);
+                    AxisControl.mc.MC_MoveRelative(MotorPara.AxisMotionPara[(int)axis].EactID,
+                                                   MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
+                                                  MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec,
+                                                 //Speed,
+                                                 MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart,
+                                                MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime,
+                                                (int)distance);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴速度{Speed}相对移动{distance}错误.", ex);
             }
 
-            ClrAlarm(axis);
-
-            AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
-            if (_axisConfig.StageType == EnumStageType.S)
-            {
-                double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
-                double targetPos = GetCurrentPosition(axis) + distance;
-                S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
-            }
-            else if (_axisConfig.StageType == EnumStageType.None)
-            {
-                Speed = Speed * MMToPulse(axis) / 1000;
-                distance = distance * MMToPulse(axis);
-                AxisControl.mc.MC_MoveRelative(MotorPara.AxisMotionPara[(int)axis].EactID,
-                                               MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
-                                              MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec,
-                                             //Speed,
-                                             MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart,
-                                            MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.smoothTime,
-                                            (int)distance);
-            }
+            
 
         }
 
@@ -741,6 +777,8 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void SetSoftLeftAndRightLimit(EnumStageAxis axis, double Pvalue, double Nvalue)
         {
+            _hardwareConfig.StageConfig.GetAixsConfigByType(axis).SoftLeftLimit = Nvalue;
+            _hardwareConfig.StageConfig.GetAixsConfigByType(axis).SoftRightLimit = Pvalue;
             Pvalue = Pvalue * MMToPulse(axis);
             Nvalue = Nvalue * MMToPulse(axis);
             AxisControl.mc.MC_SetSoftLimitNegativeAndPostive((short)axis, (Int32)Pvalue, (Int32)Nvalue);

@@ -45,6 +45,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Data.v21.2.dll</HintPath>
     </Reference>
+    <Reference Include="DevExpress.Printing.v21.2.Core, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Utils.v21.2, Version=21.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\DevExpress 21.2\Components\Bin\Framework\DevExpress.Utils.v21.2.dll</HintPath>
@@ -152,6 +153,12 @@
     <Compile Include="FrmAlarm.designer.cs">
       <DependentUpon>FrmAlarm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmSingleStepRun2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSingleStepRun2.Designer.cs">
+      <DependentUpon>FrmSingleStepRun2.cs</DependentUpon>
+    </Compile>
     <Compile Include="IOMaintainPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -164,17 +171,35 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tools\FrmAddEpoxtTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmAddEpoxtTool.Designer.cs">
+      <DependentUpon>FrmAddEpoxtTool.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\FrmCalibrationTable.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tools\FrmCalibrationTable.designer.cs">
       <DependentUpon>FrmCalibrationTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\FrmEjectionSystemTool2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmEjectionSystemTool2.Designer.cs">
+      <DependentUpon>FrmEjectionSystemTool2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools\FrmEpoxtTool.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tools\FrmEpoxtTool.Designer.cs">
       <DependentUpon>FrmEpoxtTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmEpoxtTool2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tools\FrmEpoxtTool2.Designer.cs">
+      <DependentUpon>FrmEpoxtTool2.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\FrmMaterialBoxTool.cs">
       <SubType>Form</SubType>
@@ -281,6 +306,10 @@
       <Project>{633b7024-d607-496e-9800-84284c801d06}</Project>
       <Name>RecipeClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Control\UserManagement\UserManagerClsLib\UserManagerClsLib.csproj">
+      <Project>{C8603800-C34D-4A21-9047-DBB78750CBBA}</Project>
+      <Name>UserManagerClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
       <Project>{6cbe338a-1abb-4397-bba8-bc8477b1a21d}</Project>
       <Name>ConfigurationClsLib</Name>
@@ -366,6 +395,9 @@
     <EmbeddedResource Include="FrmAlarm.resx">
       <DependentUpon>FrmAlarm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmSingleStepRun2.resx">
+      <DependentUpon>FrmSingleStepRun2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="IOMaintainPanel.resx">
       <DependentUpon>IOMaintainPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -374,11 +406,20 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmAddEpoxtTool.resx">
+      <DependentUpon>FrmAddEpoxtTool.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\FrmCalibrationTable.resx">
       <DependentUpon>FrmCalibrationTable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmEjectionSystemTool2.resx">
+      <DependentUpon>FrmEjectionSystemTool2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\FrmEpoxtTool.resx">
       <DependentUpon>FrmEpoxtTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmEpoxtTool2.resx">
+      <DependentUpon>FrmEpoxtTool2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\FrmMaterialBoxTool.resx">
       <DependentUpon>FrmMaterialBoxTool.cs</DependentUpon>

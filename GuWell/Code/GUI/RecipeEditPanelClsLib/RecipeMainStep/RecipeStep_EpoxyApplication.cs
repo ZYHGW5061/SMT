@@ -1,8 +1,10 @@
 ﻿using CommonPanelClsLib;
 using ConfigurationClsLib;
+using ControlPanelClsLib.Tools;
 using DispensingMachineControllerClsLib;
 using DispensingMachineManagerClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using RecipeClsLib;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,10 @@ namespace RecipeEditPanelClsLib
 {
     public partial class RecipeStep_EpoxyApplication : RecipeStepBase
     {
+
+        
+
+
         public RecipeStep_EpoxyApplication()
         {
             InitializeComponent();
@@ -30,6 +36,13 @@ namespace RecipeEditPanelClsLib
             {
                 cmbDispensePattern.Items.Add(item);
             }
+
+            cmbExistESTool.Items.Clear();
+            foreach (var item in _systemConfig.ESToolSettings)
+            {
+                cmbExistESTool.Items.Add(item.Name);
+            }
+
         }
         /// <summary>
         /// 点胶机控制器
@@ -61,6 +74,9 @@ namespace RecipeEditPanelClsLib
             seDispensePressure.Text = dispenseInfo.Pressure.ToString();
             seDispenseVaccumPressure.Text = dispenseInfo.Vacuum.ToString();
             seDispenseTimeS.Text = dispenseInfo.Time.ToString();
+
+            cmbExistESTool.Text = _editRecipe.CurrentEpoxyApplication.DispenserName;
+
         }
 
         /// <summary>
@@ -73,6 +89,9 @@ namespace RecipeEditPanelClsLib
             _editRecipe.CurrentEpoxyApplication.DispenserRecipeName = cmbSelDispenserRecipe.Text;
 
             _editRecipe.CurrentEpoxyApplication.DispensePattern = (EnumDispensePattern)Enum.Parse(typeof(EnumDispensePattern), cmbDispensePattern.Text);
+
+            _editRecipe.CurrentEpoxyApplication.DispenserName = cmbExistESTool.Text;
+
             _editRecipe.CurrentEpoxyApplication.DispensePatternWidthMM = float.Parse(seDispensePatternWidth.Text.Trim());
             _editRecipe.CurrentEpoxyApplication.DispensePatternHeightMM = float.Parse(seDispensePatternHeight.Text.Trim());
             //_editRecipe.CurrentComponent.ThicknessMM = float.Parse(seComponentThicknessMM.Text.Trim());
@@ -178,6 +197,24 @@ namespace RecipeEditPanelClsLib
             seDispensePressure.Text = dispenseInfo.Pressure.ToString();
             seDispenseVaccumPressure.Text = dispenseInfo.Vacuum.ToString();
             seDispenseTimeS.Text = dispenseInfo.Time.ToString();
+        }
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            FrmEpoxtTool2 form = (Application.OpenForms["FrmEpoxtTool2"]) as FrmEpoxtTool2;
+            if (form == null)
+            {
+                form = new FrmEpoxtTool2();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开点胶工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "");
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活点胶工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "");
+                form.Activate();
+            }
         }
     }
 }

@@ -94,6 +94,7 @@ namespace MainGUI.Forms.ProductMenu
             this.btnAutoPause.Size = new System.Drawing.Size(102, 36);
             this.btnAutoPause.TabIndex = 29;
             this.btnAutoPause.Text = "暂停";
+            this.btnAutoPause.Click += new System.EventHandler(this.btnAutoPause_Click);
             // 
             // btnStop
             // 
@@ -117,6 +118,7 @@ namespace MainGUI.Forms.ProductMenu
             this.btnAutoContinue.Size = new System.Drawing.Size(102, 36);
             this.btnAutoContinue.TabIndex = 30;
             this.btnAutoContinue.Text = "继续";
+            this.btnAutoContinue.Click += new System.EventHandler(this.btnAutoContinue_Click);
             // 
             // label1
             // 
@@ -135,6 +137,7 @@ namespace MainGUI.Forms.ProductMenu
             this.cbProductList.Name = "cbProductList";
             this.cbProductList.Size = new System.Drawing.Size(227, 22);
             this.cbProductList.TabIndex = 2;
+            this.cbProductList.SelectedIndexChanged += new System.EventHandler(this.cbProductList_SelectedIndexChanged);
             // 
             // treeListColumn1
             // 

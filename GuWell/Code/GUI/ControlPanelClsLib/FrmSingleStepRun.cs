@@ -264,7 +264,6 @@ namespace ControlPanelClsLib
                 try
                 {
                     CreateWaitDialog();
-                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.SubmountPPZ, _systemConfig.PositioningConfig.SubmountPPFreeZ, EnumCoordSetType.Absolute);
                     //第一步：衬底吸嘴移动到榜头相机中心(只移XY)
                     _positioningSystem.ChipPPMovetoBondCameraCenter();
                     //计算吸嘴工作高度

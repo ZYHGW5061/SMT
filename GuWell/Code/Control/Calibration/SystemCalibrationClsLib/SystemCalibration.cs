@@ -155,6 +155,9 @@ namespace SystemCalibrationClsLib
 
         public PPToolSettings currentppTool { get; set; }
 
+        public DispenserSettings currentDispenser { get; set; }
+
+
 
         #endregion
 
@@ -618,8 +621,9 @@ namespace SystemCalibrationClsLib
                 UplookingCameraVisual.SetOneMode();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "系统校准：初始化相机失败.", ex);
                 return false;
             }
         }
@@ -904,201 +908,214 @@ namespace SystemCalibrationClsLib
         /// <returns></returns>
         public MatchResult IdentificationAsync(EnumCameraType camera, MatchIdentificationParam param)
         {
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-            //Task.Factory.StartNew(new Action(() =>
-            //{
-
-            if (camera == EnumCameraType.BondCamera)
+            try
             {
-                //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                BondCameraVisual.SetLightintensity(param);
-
-                bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = BondCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
+                if (camera == EnumCameraType.BondCamera)
                 {
-                    return null;
-                }
+                    //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    BondCameraVisual.SetLightintensity(param);
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机设置光源强度 \n");
 
-                List<MatchResult> results = new List<MatchResult>();
+                    bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
 
-                Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+                    Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
 
+                    //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
 
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+                    Bitmap bitmap = BondCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
 
-                if (results != null && results.Count > 0)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机采集图像 \n");
+
+                    bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-
-                    //BondCameraVisual.SetDirectLightintensity(0);
-                    //BondCameraVisual.SetRingLightintensity(0);
-
-                    if (results[0].IsOk)
-                    {
-                        {
-
-                            return results[0];
-                        }
+                        return null;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
 
+                    Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
 
-                }
-            }
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机轮廓识别 \n");
 
-            if (camera == EnumCameraType.WaferCamera)
-            {
-                //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                WaferCameraVisual.SetLightintensity(param);
+                    BondCameraVisual.LightintensityReset(param);
 
-                bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
 
-                Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = WaferCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return null;
-                }
-
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-
-
-                double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
-                double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
-                double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    if (results != null && results.Count > 0)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-
-                    //WaferCameraVisual.SetDirectLightintensity(0);
-                    //WaferCameraVisual.SetRingLightintensity(0);
-
-                    if (results[0].IsOk)
-                    {
+                        Task.Factory.StartNew(new Action(() =>
                         {
-                            return results[0];
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
 
+                        //BondCameraVisual.SetDirectLightintensity(0);
+                        //BondCameraVisual.SetRingLightintensity(0);
+
+                        if (results[0].IsOk)
+                        {
+                            {
+
+                                return results[0];
+                            }
                         }
+
+
+
+                    }
+                }
+
+                if (camera == EnumCameraType.WaferCamera)
+                {
+                    //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    WaferCameraVisual.SetLightintensity(param);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机设置光强 \n");
+
+                    bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = WaferCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机采集图像 \n");
+
+                    bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
+                    {
+                        return null;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
 
+                    Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
 
-                }
-            }
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机轮廓识别 \n");
 
-            if (camera == EnumCameraType.UplookingCamera)
-            {
-                //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                UplookingCameraVisual.SetLightintensity(param);
+                    WaferCameraVisual.LightintensityReset(param);
 
-                bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+                    double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
+                    double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
+                    double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
 
-                Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = UplookingCameraVisual.GetBitmap();
-
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return null;
-                }
-
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    if (results != null && results.Count > 0)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-
-                    //UplookingCameraVisual.SetDirectLightintensity(0);
-                    //UplookingCameraVisual.SetRingLightintensity(0);
-
-                    if (results[0].IsOk)
-                    {
+                        Task.Factory.StartNew(new Action(() =>
                         {
-                            return results[0];
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
 
+                        //WaferCameraVisual.SetDirectLightintensity(0);
+                        //WaferCameraVisual.SetRingLightintensity(0);
+
+                        if (results[0].IsOk)
+                        {
+                            {
+                                return results[0];
+
+                            }
                         }
+
+
+
+                    }
+                }
+
+                if (camera == EnumCameraType.UplookingCamera)
+                {
+                    //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    UplookingCameraVisual.SetLightintensity(param);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机设置光强 \n");
+
+                    bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = UplookingCameraVisual.GetBitmap();
+
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机采集图像 \n");
+
+                    bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
+                    {
+                        return null;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
+
+                    Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机轮廓识别 \n");
+
+                    UplookingCameraVisual.LightintensityReset(param);
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 0)
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+
+                        //UplookingCameraVisual.SetDirectLightintensity(0);
+                        //UplookingCameraVisual.SetRingLightintensity(0);
+
+                        if (results[0].IsOk)
+                        {
+                            {
+                                return results[0];
+
+                            }
+                        }
 
 
+
+                    }
                 }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "识别轮廓失败.", ex);
             }
 
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
-            //}));
+            
+            
             return null;
         }
 
@@ -1110,177 +1127,61 @@ namespace SystemCalibrationClsLib
         /// <returns></returns>
         public XYZTCoordinateConfig IdentificationAsync2(EnumCameraType camera, MatchIdentificationParam param)
         {
-
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
-            XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
-            //string MatchTemplatefilepath;
-
-            //string MatchRunfilepath;
-
-            //RectangleF SearchRoi;
-
-            //Task.Factory.StartNew(new Action(() =>
-            //{
-
-            if (camera == EnumCameraType.BondCamera)
+            try
             {
-                //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
 
-                BondCameraVisual.SetLightintensity(param);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
-
-                sw.Reset();
-                sw.Start();
-
-                bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = BondCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"榜头相机获取图像{sw.ElapsedMilliseconds}ms \n");
-
-                sw.Reset();
-                sw.Start();
-
-                bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
+                if (camera == EnumCameraType.BondCamera)
                 {
-                    return null;
-                }
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
 
-                List<MatchResult> results = new List<MatchResult>();
+                    BondCameraVisual.SetLightintensity(param);
 
-                Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
 
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"榜头相机识别{sw.ElapsedMilliseconds}ms \n");
+                    sw.Reset();
+                    sw.Start();
 
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+                    bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
 
-                if (results != null && results.Count > 0)
-                {
-                    Task.Factory.StartNew(new Action(() =>
-                    {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
+                    Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
 
-                    //BondCameraVisual.SetDirectLightintensity(0);
-                    //BondCameraVisual.SetRingLightintensity(0);
+                    //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
 
-                    if (results[0].IsOk)
-                    {
-                        {
-                            (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
+                    Bitmap bitmap = BondCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
 
-                            offset = new XYZTCoordinateConfig();
-                            offset.X = -BondX;
-                            offset.Y = -BondY;
-                            offset.Z = 0;
-                            offset.Theta = results[0].MatchBox.Angle;
-                            //LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-BondCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                            return offset;
-                        }
-                    }
-                    else
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
                     {
                         return null;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
 
+                    Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
 
-                }
-                else
-                {
-                    Task.Factory.StartNew(new Action(() =>
-                    {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机识别{sw.ElapsedMilliseconds}ms \n");
 
-                    return null;
-                }
-            }
+                    BondCameraVisual.LightintensityReset(param);
 
-            if (camera == EnumCameraType.WaferCamera)
-            {
-                //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
-                WaferCameraVisual.SetLightintensity(param);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
-
-                sw.Reset();
-                sw.Start();
-
-                bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = WaferCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"晶圆相机获取图像{sw.ElapsedMilliseconds}ms \n");
-
-                sw.Reset();
-                sw.Start();
-
-                bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return null;
-                }
-
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"晶圆相机识别{sw.ElapsedMilliseconds}ms \n");
-
-                double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
-                double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
-                double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    if (results[0].IsOk)
+                    if (results != null && results.Count > 0)
                     {
                         Task.Factory.StartNew(new Action(() =>
                         {
@@ -1290,100 +1191,32 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
                         }));
 
-                        //WaferCameraVisual.SetDirectLightintensity(0);
-                        //WaferCameraVisual.SetRingLightintensity(0);
+                        //BondCameraVisual.SetDirectLightintensity(0);
+                        //BondCameraVisual.SetRingLightintensity(0);
 
+                        if (results[0].IsOk)
                         {
-                            (WaferTableX, WaferTableY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
+                            {
+                                (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
 
-                            offset = new XYZTCoordinateConfig();
-                            offset.X = -WaferTableX;
-                            offset.Y = WaferTableY;
-                            offset.Z = 0;
-                            offset.Theta = results[0].MatchBox.Angle;
-                            LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-WaferCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                            return offset;
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = -BondX;
+                                offset.Y = -BondY;
+                                offset.Z = 0;
+                                offset.Theta = results[0].MatchBox.Angle;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-BondCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                return offset;
+                            }
                         }
+                        else
+                        {
+                            return null;
+                        }
+
+
+
                     }
                     else
-                    {
-                        return null;
-                    }
-
-
-
-                }
-                else
-                {
-                    Task.Factory.StartNew(new Action(() =>
-                    {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-
-                    return null;
-                }
-            }
-
-            if (camera == EnumCameraType.UplookingCamera)
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                UplookingCameraVisual.SetLightintensity(param);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
-
-                //Thread.Sleep(2000);
-
-                sw.Reset();
-                sw.Start();
-
-                bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = UplookingCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"仰视相机获取图像{sw.ElapsedMilliseconds}ms \n");
-
-                //Thread.Sleep(2000);
-
-                sw.Reset();
-                sw.Start();
-
-                bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return null;
-                }
-
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-                sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"仰视相机识别{sw.ElapsedMilliseconds}ms \n");
-
-
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    if (results[0].IsOk)
                     {
                         Task.Factory.StartNew(new Action(() =>
                         {
@@ -1393,48 +1226,220 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
                         }));
 
-                        //UplookingCameraVisual.SetDirectLightintensity(0);
-                        //UplookingCameraVisual.SetRingLightintensity(0);
-
-                        {
-                            (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
-
-                            offset = new XYZTCoordinateConfig();
-                            offset.X = BondX;
-                            offset.Y = BondY;
-                            offset.Z = 0;
-                            offset.Theta = results[0].MatchBox.Angle;
-                            //LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-UplookingCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                            return offset;
-                        }
+                        return null;
                     }
-                    else
+                }
+
+                if (camera == EnumCameraType.WaferCamera)
+                {
+                    //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    WaferCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = WaferCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
                     {
                         return null;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
 
-                }
-                else
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机识别{sw.ElapsedMilliseconds}ms \n");
+
+                    WaferCameraVisual.LightintensityReset(param);
+
+                    double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
+                    double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
+                    double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
+
+                    if (results != null && results.Count > 0)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-                    return null;
+                        if (results[0].IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //WaferCameraVisual.SetDirectLightintensity(0);
+                            //WaferCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (WaferTableX, WaferTableY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
+
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = -WaferTableX;
+                                offset.Y = WaferTableY;
+                                offset.Z = 0;
+                                offset.Theta = results[0].MatchBox.Angle;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-WaferCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                return offset;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+
+                        return null;
+                    }
                 }
+
+                if (camera == EnumCameraType.UplookingCamera)
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    UplookingCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    //Thread.Sleep(2000);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = UplookingCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    //Thread.Sleep(2000);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
+                    {
+                        return null;
+                    }
+
+                    List<MatchResult> results = new List<MatchResult>();
+
+                    Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机识别{sw.ElapsedMilliseconds}ms \n");
+
+                    UplookingCameraVisual.LightintensityReset(param);
+
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 0)
+                    {
+                        if (results[0].IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //UplookingCameraVisual.SetDirectLightintensity(0);
+                            //UplookingCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
+
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = BondX;
+                                offset.Y = BondY;
+                                offset.Z = 0;
+                                offset.Theta = results[0].MatchBox.Angle;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-UplookingCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                return offset;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+
+                    }
+                    else
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+                        return null;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "识别轮廓失败.", ex);
             }
 
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
+            
             return null;
         }
 
@@ -1446,263 +1451,283 @@ namespace SystemCalibrationClsLib
         /// <returns></returns>
         public XYZTCoordinateConfig IdentificationAsync2(EnumCameraType camera, LineFindIdentificationParam param)
         {
-
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
-            XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
-            //string MatchTemplatefilepath;
-
-            //string MatchRunfilepath;
-
-            //RectangleF SearchRoi;
-
-            //Task.Factory.StartNew(new Action(() =>
-            //{
-
-            if (camera == EnumCameraType.BondCamera)
+            try
             {
-                BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
 
-                List<int> Scores = new List<int>();
 
-                List<string> LinesFile = new List<string>();
-
-                List<RectangleF> ROIs = new List<RectangleF>();
-                List<bool> Scans = new List<bool>();
-
-                LinesFile.Add(param.UpEdgefilepath);
-                RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.UpEdgeScore);
-
-                LinesFile.Add(param.DownEdgefilepath);
-                rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.DownEdgeScore);
-
-                LinesFile.Add(param.LeftEdgefilepath);
-                rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.LeftEdgeScore);
-
-                LinesFile.Add(param.RightEdgefilepath);
-                rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.RightEdgeScore);
-
-                BondCameraVisual.ContinuousGetImage(false);
-
-                List<LineResult> results = new List<LineResult>();
-
-                Bitmap bitmap = BondCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                int ImageWidth = bitmap.Width;
-                int ImageHeight = bitmap.Height;
-
-                if (LinesFile.Count > 0)
+                if (camera == EnumCameraType.BondCamera)
                 {
-                    int i = 0;
-                    foreach (string LineFindxml in LinesFile)
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    BondCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    List<int> Scores = new List<int>();
+
+                    List<string> LinesFile = new List<string>();
+
+                    List<RectangleF> ROIs = new List<RectangleF>();
+                    List<bool> Scans = new List<bool>();
+
+                    LinesFile.Add(param.UpEdgefilepath);
+                    RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.UpEdgeScore);
+
+                    LinesFile.Add(param.DownEdgefilepath);
+                    rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.DownEdgeScore);
+
+                    LinesFile.Add(param.LeftEdgefilepath);
+                    rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.LeftEdgeScore);
+
+                    LinesFile.Add(param.RightEdgefilepath);
+                    rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.RightEdgeScore);
+
+                    BondCameraVisual.ContinuousGetImage(false);
+
+                    List<LineResult> results = new List<LineResult>();
+
+                    Bitmap bitmap = BondCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    int ImageWidth = bitmap.Width;
+                    int ImageHeight = bitmap.Height;
+
+                    if (LinesFile.Count > 0)
                     {
-                        if (LineFindxml != null)
+                        int i = 0;
+                        foreach (string LineFindxml in LinesFile)
                         {
-                            bool LineFindInited = BondCameraVisual.LineFindLoadRunPara(LineFindxml);
-
-                            if (LineFindInited)
+                            if (LineFindxml != null)
                             {
-                                LineResult result = new LineResult();
-                                bool Done = BondCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
-                                results.Add(result);
-                            }
+                                bool LineFindInited = BondCameraVisual.LineFindLoadRunPara(LineFindxml);
 
-                            i++;
+                                if (LineFindInited)
+                                {
+                                    LineResult result = new LineResult();
+                                    bool Done = BondCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
+                                    results.Add(result);
+                                }
+
+                                i++;
+                            }
                         }
                     }
-                }
 
-                RectangleFA Rect = null;
-                if (results.Count > 3)
-                {
-                    var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
-                    var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
-                    var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
-                    var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
-
-                    // 计算交点
-                    var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
-                    var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
-                    var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
-                    var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
-
-                    Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
-
-                }
-
-
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
-
-                if (results != null && results.Count > 3)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    RectangleFA Rect = null;
+                    if (results.Count > 3)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
-                    }));
+                        var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
+                        var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
+                        var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
+                        var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
 
-                    //BondCameraVisual.SetDirectLightintensity(0);
-                    //BondCameraVisual.SetRingLightintensity(0);
+                        // 计算交点
+                        var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
+                        var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
+                        var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
+                        var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
 
-                    //if (results[0].IsOk)
-                    //{
+                        Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+
+                    }
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机识别边缘{sw.ElapsedMilliseconds}ms \n");
+
+                    BondCameraVisual.LightintensityReset(param);
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 3)
+                    {
+                        Task.Factory.StartNew(new Action(() =>
                         {
-                        (BondX, BondY) = ImageToXY(Rect.Center, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
+                        }));
+
+                        //BondCameraVisual.SetDirectLightintensity(0);
+                        //BondCameraVisual.SetRingLightintensity(0);
+
+                        //if (results[0].IsOk)
+                        //{
+                        {
+                            (BondX, BondY) = ImageToXY(Rect.Center, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
 
                             offset = new XYZTCoordinateConfig();
                             offset.X = -BondX;
                             offset.Y = -BondY;
                             offset.Z = 0;
                             offset.Theta = Rect.Angle;
-                        //LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-BondCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                        return offset;
+                            //LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-BondCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                            return offset;
                         }
-                    //}
-                    //else
-                    //{
-                    //    return null;
-                    //}
+                        //}
+                        //else
+                        //{
+                        //    return null;
+                        //}
 
 
 
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            if (camera == EnumCameraType.WaferCamera)
-            {
-                WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
-
-                List<int> Scores = new List<int>();
-
-                List<string> LinesFile = new List<string>();
-
-                List<RectangleF> ROIs = new List<RectangleF>();
-                List<bool> Scans = new List<bool>();
-
-                LinesFile.Add(param.UpEdgefilepath);
-                RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.UpEdgeScore);
-
-                LinesFile.Add(param.DownEdgefilepath);
-                rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.DownEdgeScore);
-
-                LinesFile.Add(param.LeftEdgefilepath);
-                rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.LeftEdgeScore);
-
-                LinesFile.Add(param.RightEdgefilepath);
-                rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.RightEdgeScore);
-
-                WaferCameraVisual.ContinuousGetImage(false);
-
-                List<LineResult> results = new List<LineResult>();
-
-                Bitmap bitmap = WaferCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                int ImageWidth = bitmap.Width;
-                int ImageHeight = bitmap.Height;
-
-                if (LinesFile.Count > 0)
-                {
-                    int i = 0;
-                    foreach (string LineFindxml in LinesFile)
+                    }
+                    else
                     {
-                        if (LineFindxml != null)
-                        {
-                            bool LineFindInited = WaferCameraVisual.LineFindLoadRunPara(LineFindxml);
-
-                            if (LineFindInited)
-                            {
-                                LineResult result = new LineResult();
-                                bool Done = WaferCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
-                                results.Add(result);
-                            }
-
-                            i++;
-                        }
+                        return null;
                     }
                 }
 
-                RectangleFA Rect = null;
-                if (results.Count > 3)
+                if (camera == EnumCameraType.WaferCamera)
                 {
-                    var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
-                    var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
-                    var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
-                    var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
 
-                    // 计算交点
-                    var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
-                    var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
-                    var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
-                    var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
+                    WaferCameraVisual.SetLightintensity(param);
 
-                    Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
 
-                }
+                    sw.Reset();
+                    sw.Start();
 
+                    List<int> Scores = new List<int>();
 
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+                    List<string> LinesFile = new List<string>();
 
+                    List<RectangleF> ROIs = new List<RectangleF>();
+                    List<bool> Scans = new List<bool>();
 
-                
+                    LinesFile.Add(param.UpEdgefilepath);
+                    RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.UpEdgeScore);
 
-                if (results != null && results.Count > 3)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    LinesFile.Add(param.DownEdgefilepath);
+                    rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.DownEdgeScore);
+
+                    LinesFile.Add(param.LeftEdgefilepath);
+                    rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.LeftEdgeScore);
+
+                    LinesFile.Add(param.RightEdgefilepath);
+                    rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.RightEdgeScore);
+
+                    WaferCameraVisual.ContinuousGetImage(false);
+
+                    List<LineResult> results = new List<LineResult>();
+
+                    Bitmap bitmap = WaferCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    int ImageWidth = bitmap.Width;
+                    int ImageHeight = bitmap.Height;
+
+                    if (LinesFile.Count > 0)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
-                    }));
+                        int i = 0;
+                        foreach (string LineFindxml in LinesFile)
+                        {
+                            if (LineFindxml != null)
+                            {
+                                bool LineFindInited = WaferCameraVisual.LineFindLoadRunPara(LineFindxml);
 
-                    //WaferCameraVisual.SetDirectLightintensity(0);
-                    //WaferCameraVisual.SetRingLightintensity(0);
+                                if (LineFindInited)
+                                {
+                                    LineResult result = new LineResult();
+                                    bool Done = WaferCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
+                                    results.Add(result);
+                                }
 
-                    //if (results[0].IsOk)
-                    //{
+                                i++;
+                            }
+                        }
+                    }
+
+                    RectangleFA Rect = null;
+                    if (results.Count > 3)
+                    {
+                        var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
+                        var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
+                        var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
+                        var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
+
+                        // 计算交点
+                        var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
+                        var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
+                        var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
+                        var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
+
+                        Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+
+                    }
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机识别边缘{sw.ElapsedMilliseconds}ms \n");
+
+                    WaferCameraVisual.LightintensityReset(param);
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 3)
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
+                        }));
+
+                        //WaferCameraVisual.SetDirectLightintensity(0);
+                        //WaferCameraVisual.SetRingLightintensity(0);
+
+                        //if (results[0].IsOk)
+                        //{
                         {
                             (BondX, BondY) = ImageToXY(Rect.Center, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
 
@@ -1711,129 +1736,150 @@ namespace SystemCalibrationClsLib
                             offset.Y = BondY;
                             offset.Z = 0;
                             offset.Theta = Rect.Angle;
-                        LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-WaferCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                        return offset;
+                            LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-WaferCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                            return offset;
                         }
-                    //}
-                    //else
-                    //{
-                    //    return null;
-                    //}
+                        //}
+                        //else
+                        //{
+                        //    return null;
+                        //}
 
 
 
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            if (camera == EnumCameraType.UplookingCamera)
-            {
-                UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
-
-                List<int> Scores = new List<int>();
-
-                List<string> LinesFile = new List<string>();
-
-                List<RectangleF> ROIs = new List<RectangleF>();
-                List<bool> Scans = new List<bool>();
-
-                LinesFile.Add(param.UpEdgefilepath);
-                RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.UpEdgeScore);
-
-                LinesFile.Add(param.DownEdgefilepath);
-                rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(true);
-                Scores.Add(param.DownEdgeScore);
-
-                LinesFile.Add(param.LeftEdgefilepath);
-                rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.LeftEdgeScore);
-
-                LinesFile.Add(param.RightEdgefilepath);
-                rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
-                ROIs.Add(rectangle);
-                Scans.Add(false);
-                Scores.Add(param.RightEdgeScore);
-
-                UplookingCameraVisual.ContinuousGetImage(false);
-
-                List<LineResult> results = new List<LineResult>();
-
-                Bitmap bitmap = UplookingCameraVisual.GetBitmap();
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                int ImageWidth = bitmap.Width;
-                int ImageHeight = bitmap.Height;
-
-                if (LinesFile.Count > 0)
-                {
-                    int i = 0;
-                    foreach (string LineFindxml in LinesFile)
+                    }
+                    else
                     {
-                        if (LineFindxml != null)
-                        {
-                            bool LineFindInited = UplookingCameraVisual.LineFindLoadRunPara(LineFindxml);
-
-                            if (LineFindInited)
-                            {
-                                LineResult result = new LineResult();
-                                bool Done = UplookingCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
-                                results.Add(result);
-                            }
-
-                            i++;
-                        }
+                        return null;
                     }
                 }
 
-                RectangleFA Rect = null;
-                if (results.Count > 3)
+                if (camera == EnumCameraType.UplookingCamera)
                 {
-                    var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
-                    var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
-                    var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
-                    var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    UplookingCameraVisual.SetLightintensity(param);
 
-                    // 计算交点
-                    var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
-                    var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
-                    var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
-                    var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
 
-                    Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+                    //Thread.Sleep(2000);
 
-                }
+                    sw.Reset();
+                    sw.Start();
 
+                    List<int> Scores = new List<int>();
 
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+                    List<string> LinesFile = new List<string>();
 
-                if (results != null && results.Count > 3)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    List<RectangleF> ROIs = new List<RectangleF>();
+                    List<bool> Scans = new List<bool>();
+
+                    LinesFile.Add(param.UpEdgefilepath);
+                    RectangleF rectangle = new RectangleF(param.UpEdgeRoi.X, param.UpEdgeRoi.Y, param.UpEdgeRoi.Width, param.UpEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.UpEdgeScore);
+
+                    LinesFile.Add(param.DownEdgefilepath);
+                    rectangle = new RectangleF(param.DownEdgeRoi.X, param.DownEdgeRoi.Y, param.DownEdgeRoi.Width, param.DownEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(true);
+                    Scores.Add(param.DownEdgeScore);
+
+                    LinesFile.Add(param.LeftEdgefilepath);
+                    rectangle = new RectangleF(param.LeftEdgeRoi.X, param.LeftEdgeRoi.Y, param.LeftEdgeRoi.Width, param.LeftEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.LeftEdgeScore);
+
+                    LinesFile.Add(param.RightEdgefilepath);
+                    rectangle = new RectangleF(param.RightEdgeRoi.X, param.RightEdgeRoi.Y, param.RightEdgeRoi.Width, param.RightEdgeRoi.Height);
+                    ROIs.Add(rectangle);
+                    Scans.Add(false);
+                    Scores.Add(param.RightEdgeScore);
+
+                    UplookingCameraVisual.ContinuousGetImage(false);
+
+                    List<LineResult> results = new List<LineResult>();
+
+                    Bitmap bitmap = UplookingCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    //Thread.Sleep(2000);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    int ImageWidth = bitmap.Width;
+                    int ImageHeight = bitmap.Height;
+
+                    if (LinesFile.Count > 0)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
-                    }));
+                        int i = 0;
+                        foreach (string LineFindxml in LinesFile)
+                        {
+                            if (LineFindxml != null)
+                            {
+                                bool LineFindInited = UplookingCameraVisual.LineFindLoadRunPara(LineFindxml);
 
-                    //UplookingCameraVisual.SetDirectLightintensity(0);
-                    //UplookingCameraVisual.SetRingLightintensity(0);
+                                if (LineFindInited)
+                                {
+                                    LineResult result = new LineResult();
+                                    bool Done = UplookingCameraVisual.LineFindRun(bitmap, Scores[i], ref result, ROIs[i], Scans[i]);
+                                    results.Add(result);
+                                }
 
-                    //if (results[0].IsOk)
-                    //{
+                                i++;
+                            }
+                        }
+                    }
+
+                    RectangleFA Rect = null;
+                    if (results.Count > 3)
+                    {
+                        var line1 = CameraWindowGUI.CalculateLineEquation(results[0].Startpoint, results[0].Endpoint);
+                        var line2 = CameraWindowGUI.CalculateLineEquation(results[1].Startpoint, results[1].Endpoint);
+                        var line3 = CameraWindowGUI.CalculateLineEquation(results[2].Startpoint, results[2].Endpoint);
+                        var line4 = CameraWindowGUI.CalculateLineEquation(results[3].Startpoint, results[3].Endpoint);
+
+                        // 计算交点
+                        var UL_intersection = CameraWindowGUI.FindIntersection(line1, line3);//左上交点
+                        var DL_intersection = CameraWindowGUI.FindIntersection(line2, line3);//左下交点
+                        var UR_intersection = CameraWindowGUI.FindIntersection(line1, line4);//右上交点
+                        var DR_intersection = CameraWindowGUI.FindIntersection(line2, line4);//右下交点
+
+                        Rect = new RectangleFA(UL_intersection, DL_intersection, UR_intersection, DR_intersection);
+
+                    }
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机识别边缘{sw.ElapsedMilliseconds}ms \n");
+
+                    UplookingCameraVisual.LightintensityReset(param);
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 3)
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.line, true);
+                        }));
+
+                        //UplookingCameraVisual.SetDirectLightintensity(0);
+                        //UplookingCameraVisual.SetRingLightintensity(0);
+
+                        //if (results[0].IsOk)
+                        //{
                         {
                             (BondX, BondY) = ImageToXY(Rect.Center, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
 
@@ -1842,33 +1888,329 @@ namespace SystemCalibrationClsLib
                             offset.Y = BondY;
                             offset.Z = 0;
                             offset.Theta = Rect.Angle;
-                        LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-UplookingCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
-                        return offset;
+                            LogRecorder.RecordLog(EnumLogContentType.Info, $"IdentificationAsync2-UplookingCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                            return offset;
                         }
-                    //}
-                    //else
-                    //{
-                    //    return null;
-                    //}
+                        //}
+                        //else
+                        //{
+                        //    return null;
+                        //}
 
 
 
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                else
-                {
-                    return null;
-                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "识别轮廓失败.", ex);
             }
 
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
+            
             return null;
         }
+
+        /// <summary>
+        /// 识别并相对于相机中心的偏移坐标和角度
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public XYZTCoordinateConfig IdentificationAsync2(EnumCameraType camera, CircleFindIdentificationParam param)
+        {
+            try
+            {
+                XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
+
+                if (camera == EnumCameraType.BondCamera)
+                {
+                    //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    BondCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool Done = BondCameraVisual.CircleFindInit(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.CircleFindTemplatefilepath));
+
+                    Bitmap bitmap = BondCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    CircleResult results = new CircleResult();
+
+                    Done = BondCameraVisual.CircleFindRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机识别圆{sw.ElapsedMilliseconds}ms \n");
+
+                    BondCameraVisual.LightintensityReset(param);
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null)
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+
+                        //BondCameraVisual.SetDirectLightintensity(0);
+                        //BondCameraVisual.SetRingLightintensity(0);
+
+                        if (results.IsOk)
+                        {
+                            {
+
+                                (BondX, BondY) = ImageToXY(results.CircleCenter, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
+
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = -BondX;
+                                offset.Y = -BondY;
+                                offset.Z = 0;
+                                offset.Theta = 0;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-BondCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                
+                                
+                                return offset;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+
+                        return null;
+                    }
+                }
+
+                if (camera == EnumCameraType.WaferCamera)
+                {
+                    //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    WaferCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool Done = WaferCameraVisual.CircleFindInit(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.CircleFindTemplatefilepath));
+
+
+                    Bitmap bitmap = WaferCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    sw.Reset();
+                    sw.Start();
+
+                    CircleResult results = new CircleResult();
+
+                    Done = WaferCameraVisual.CircleFindRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机识别圆{sw.ElapsedMilliseconds}ms \n");
+
+                    WaferCameraVisual.LightintensityReset(param);
+
+                    double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
+                    double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
+                    double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
+
+                    if (results != null)
+                    {
+                        if (results.IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //WaferCameraVisual.SetDirectLightintensity(0);
+                            //WaferCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (WaferTableX, WaferTableY) = ImageToXY(results.CircleCenter, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
+
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = -WaferTableX;
+                                offset.Y = WaferTableY;
+                                offset.Z = 0;
+                                offset.Theta = 0;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-WaferCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                return offset;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+
+                        return null;
+                    }
+                }
+
+                if (camera == EnumCameraType.UplookingCamera)
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    UplookingCameraVisual.SetLightintensity(param);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度{sw.ElapsedMilliseconds}ms \n");
+
+                    //Thread.Sleep(2000);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    bool Done = UplookingCameraVisual.CircleFindInit(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.CircleFindTemplatefilepath));
+
+
+                    Bitmap bitmap = UplookingCameraVisual.GetBitmap();
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机获取图像{sw.ElapsedMilliseconds}ms \n");
+
+                    //Thread.Sleep(2000);
+
+                    sw.Reset();
+                    sw.Start();
+
+                    CircleResult results = new CircleResult();
+
+                    Done = UplookingCameraVisual.CircleFindRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+
+                    sw.Stop();
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机识别圆{sw.ElapsedMilliseconds}ms \n");
+
+                    UplookingCameraVisual.LightintensityReset(param);
+
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null)
+                    {
+                        if (results.IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //UplookingCameraVisual.SetDirectLightintensity(0);
+                            //UplookingCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (BondX, BondY) = ImageToXY(results.CircleCenter, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
+
+                                offset = new XYZTCoordinateConfig();
+                                offset.X = BondX;
+                                offset.Y = BondY;
+                                offset.Z = 0;
+                                offset.Theta = 0;
+                                LogRecorder.RecordLog(EnumLogContentType.Debug, $"IdentificationAsync2-UplookingCamera,offsetX:{offset.X},offsetY:{offset.Y},offsetT:{offset.Theta}.");
+                                return offset;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+
+                    }
+                    else
+                    {
+                        Task.Factory.StartNew(new Action(() =>
+                        {
+                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.GraphicDrawInit(results);
+                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                        }));
+                        return null;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "识别圆失败.", ex);
+            }
+
+            
+            return null;
+        }
+
 
 
         /// <summary>
@@ -1879,130 +2221,52 @@ namespace SystemCalibrationClsLib
         /// <returns></returns>
         public bool IdentificationMoveAsync(EnumCameraType camera, MatchIdentificationParam param)
         {
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
-
-            //string MatchTemplatefilepath;
-
-            //string MatchRunfilepath;
-
-            //RectangleF SearchRoi;
-
-            //Task.Factory.StartNew(new Action(() =>
-            //{
-
-            if (camera == EnumCameraType.BondCamera)
+            try
             {
-                //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                BondCameraVisual.SetLightintensity(param);
-
-                bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = BondCameraVisual.GetBitmap();
-                if(bitmap == null)
+                if (camera == EnumCameraType.BondCamera)
                 {
-                    return false;
-                }
+                    //BondCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //BondCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    BondCameraVisual.SetLightintensity(param);
 
-                Bitmap Showbitmap = new Bitmap(bitmap);
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置光源强度 \n");
 
-                bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+                    bool Done = BondCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
 
-                if (!(En1 && En2 && En3))
-                {
-                    return false;
-                }
+                    Done = BondCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
 
-                List<MatchResult> results = new List<MatchResult>();
+                    //var result =  BondCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
 
-                Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    Task.Factory.StartNew(new Action(() =>
+                    Bitmap bitmap = BondCameraVisual.GetBitmap();
+                    if (bitmap == null)
                     {
-                        CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.GraphicDrawInit(results);
-                        CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                    }));
-
-                    //BondCameraVisual.SetDirectLightintensity(0);
-                    //BondCameraVisual.SetRingLightintensity(0);
-
-                    if (results[0].IsOk)
-                    {
-                        {
-                            (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
-
-                            AxisRelativeMove(EnumStageAxis.BondX, -BondX);
-
-                            AxisRelativeMove(EnumStageAxis.BondY, -BondY);
-
-                            return true;
-                        }
+                        return false;
                     }
 
+                    Bitmap Showbitmap = new Bitmap(bitmap);
 
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机采集图像 \n");
 
-                }
-            }
+                    bool En1 = BondCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = BondCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
 
-            if (camera == EnumCameraType.WaferCamera)
-            {
-                //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                WaferCameraVisual.SetLightintensity(param);
+                    if (!(En1 && En2 && En3))
+                    {
+                        return false;
+                    }
 
-                bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+                    List<MatchResult> results = new List<MatchResult>();
 
-                Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+                    Done = BondCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
 
-                //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"榜头相机识别轮廓 \n");
 
-                Bitmap bitmap = WaferCameraVisual.GetBitmap();
-                if (bitmap == null)
-                {
-                    return false;
-                }
-                Bitmap Showbitmap = new Bitmap(bitmap);
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
 
-                bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return false;
-                }
-
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-                double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
-                double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
-                double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
-
-                if (results != null && results.Count > 0)
-                {
-                    if (results[0].IsOk)
+                    if (results != null && results.Count > 0)
                     {
                         Task.Factory.StartNew(new Action(() =>
                         {
@@ -2012,99 +2276,181 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
                         }));
 
-                        //WaferCameraVisual.SetDirectLightintensity(0);
-                        //WaferCameraVisual.SetRingLightintensity(0);
+                        //BondCameraVisual.SetDirectLightintensity(0);
+                        //BondCameraVisual.SetRingLightintensity(0);
 
+                        if (results[0].IsOk)
                         {
-                            (WaferTableX, WaferTableY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
+                            {
+                                (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _BondcameraConfig.WidthPixelSize, _BondcameraConfig.HeightPixelSize);
 
-                            AxisRelativeMove(EnumStageAxis.WaferTableX, -WaferTableX);
+                                AxisRelativeMove(EnumStageAxis.BondX, -BondX);
 
-                            AxisRelativeMove(EnumStageAxis.WaferTableY, WaferTableY);
+                                AxisRelativeMove(EnumStageAxis.BondY, -BondY);
 
-                            return true;
+                                return true;
+                            }
                         }
+
+
+
                     }
-
-
-
-                }
-            }
-
-            if (camera == EnumCameraType.UplookingCamera)
-            {
-                //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
-                //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
-                UplookingCameraVisual.SetLightintensity(param);
-
-                bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
-
-                Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
-
-                //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
-
-                Bitmap bitmap = UplookingCameraVisual.GetBitmap();
-                if (bitmap == null)
-                {
-                    return false;
-                }
-                Bitmap Showbitmap = new Bitmap(bitmap);
-
-                bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
-                bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
-                bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
-
-                if (!(En1 && En2 && En3))
-                {
-                    return false;
                 }
 
-                List<MatchResult> results = new List<MatchResult>();
-
-                Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
-
-                double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
-                double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
-                double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
-
-                if (results != null && results.Count > 0)
+                if (camera == EnumCameraType.WaferCamera)
                 {
-                    if (results[0].IsOk)
+                    //WaferCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //WaferCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    WaferCameraVisual.SetLightintensity(param);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置相机光强 \n");
+
+                    bool Done = WaferCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = WaferCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  WaferCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = WaferCameraVisual.GetBitmap();
+                    if (bitmap == null)
                     {
-                        Task.Factory.StartNew(new Action(() =>
-                        {
-                            CameraWindowGUI.Instance.ShowImage(Showbitmap);
-                            CameraWindowGUI.Instance.ClearGraphicDraw();
-                            CameraWindowGUI.Instance.GraphicDrawInit(results);
-                            CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
-                        }));
+                        return false;
+                    }
+                    Bitmap Showbitmap = new Bitmap(bitmap);
 
-                        //UplookingCameraVisual.SetDirectLightintensity(0);
-                        //UplookingCameraVisual.SetRingLightintensity(0);
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机采集图像 \n");
 
-                        {
-                            (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
+                    bool En1 = WaferCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = WaferCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
 
-                            AxisRelativeMove(EnumStageAxis.BondX, BondX);
-
-                            AxisRelativeMove(EnumStageAxis.BondY, BondY);
-
-                            return true;
-                        }
+                    if (!(En1 && En2 && En3))
+                    {
+                        return false;
                     }
 
+                    List<MatchResult> results = new List<MatchResult>();
+
+                    Done = WaferCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"晶圆相机识别轮廓 \n");
+
+                    double WaferTableX = ReadCurrentAxisposition(EnumStageAxis.WaferTableX);
+                    double WaferTableY = ReadCurrentAxisposition(EnumStageAxis.WaferTableY);
+                    double WaferTableZ = ReadCurrentAxisposition(EnumStageAxis.WaferTableZ);
+
+                    if (results != null && results.Count > 0)
+                    {
+                        if (results[0].IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //WaferCameraVisual.SetDirectLightintensity(0);
+                            //WaferCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (WaferTableX, WaferTableY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _WafercameraConfig.WidthPixelSize, _WafercameraConfig.HeightPixelSize);
+
+                                AxisRelativeMove(EnumStageAxis.WaferTableX, -WaferTableX);
+
+                                AxisRelativeMove(EnumStageAxis.WaferTableY, WaferTableY);
+
+                                return true;
+                            }
+                        }
 
 
+
+                    }
                 }
+
+                if (camera == EnumCameraType.UplookingCamera)
+                {
+                    //UplookingCameraVisual.SetDirectLightintensity(param.DirectLightintensity);
+                    //UplookingCameraVisual.SetRingLightintensity(param.RingLightintensity);
+                    UplookingCameraVisual.SetLightintensity(param);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"设置相机光强 \n");
+
+                    bool Done = UplookingCameraVisual.LoadMatchTrainXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Templatexml));
+
+                    Done = UplookingCameraVisual.LoadMatchRunXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, param.Runxml));
+
+                    //var result =  UplookingCameraVisual.MatchFindAsync(param.Score, param.MinAngle, param.MaxAngle, param.SearchRoi);
+
+                    Bitmap bitmap = UplookingCameraVisual.GetBitmap();
+                    if (bitmap == null)
+                    {
+                        return false;
+                    }
+                    Bitmap Showbitmap = new Bitmap(bitmap);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机采集图像 \n");
+
+                    bool En1 = UplookingCameraVisual.MatchSetRunPara<float>(MatchParas.MinScore, 0.2f);
+                    bool En2 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleStart, param.MinAngle);
+                    bool En3 = UplookingCameraVisual.MatchSetRunPara<int>(MatchParas.AngleEnd, param.MaxAngle);
+
+                    if (!(En1 && En2 && En3))
+                    {
+                        return false;
+                    }
+
+                    List<MatchResult> results = new List<MatchResult>();
+
+                    Done = UplookingCameraVisual.MatchRun(bitmap, param.Score, ref results, param.SearchRoi);
+
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, $"仰视相机识别轮廓 \n");
+
+                    double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                    double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                    double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                    if (results != null && results.Count > 0)
+                    {
+                        if (results[0].IsOk)
+                        {
+                            Task.Factory.StartNew(new Action(() =>
+                            {
+                                CameraWindowGUI.Instance.ShowImage(Showbitmap);
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.GraphicDrawInit(results);
+                                CameraWindowGUI.Instance.GraphicDraw(Graphic.match, true);
+                            }));
+
+                            //UplookingCameraVisual.SetDirectLightintensity(0);
+                            //UplookingCameraVisual.SetRingLightintensity(0);
+
+                            {
+                                (BondX, BondY) = ImageToXY(results[0].MatchBox.Benchmark, new PointF(bitmap.Width / 2, bitmap.Height / 2), _UplookingcameraConfig.WidthPixelSize, _UplookingcameraConfig.HeightPixelSize);
+
+                                AxisRelativeMove(EnumStageAxis.BondX, BondX);
+
+                                AxisRelativeMove(EnumStageAxis.BondY, BondY);
+
+                                return true;
+                            }
+                        }
+
+
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "识别轮廓失败.", ex);
             }
 
 
-            //BondCameraVisual.SetDirectLightintensity(0);
-            //BondCameraVisual.SetRingLightintensity(0);
-            //WaferCameraVisual.SetDirectLightintensity(0);
-            //WaferCameraVisual.SetRingLightintensity(0);
-            //UplookingCameraVisual.SetDirectLightintensity(0);
-            //UplookingCameraVisual.SetRingLightintensity(0);
+
 
             return false;
         }
@@ -3305,11 +3651,11 @@ namespace SystemCalibrationClsLib
 
                 if(currentppTool.UplookingIdentifyPPtoolMatch.Templatexml == null)
                 {
-                    currentppTool.UplookingIdentifyPPtoolMatch.Templatexml = $"Config/SystemConfiguration/{currentppTool.PPName}/Template.contourmxml";
+                    currentppTool.UplookingIdentifyPPtoolMatch.Templatexml = $"Config/SystemConfiguration/{currentppTool.Name}/Template.contourmxml";
                 }
                 if (currentppTool.UplookingIdentifyPPtoolMatch.Runxml == null)
                 {
-                    currentppTool.UplookingIdentifyPPtoolMatch.Runxml = $"Config/SystemConfiguration/{currentppTool.PPName}/Run.contourmxml";
+                    currentppTool.UplookingIdentifyPPtoolMatch.Runxml = $"Config/SystemConfiguration/{currentppTool.Name}/Run.contourmxml";
                 }
 
                 //visualMatch.RingLightintensity = currentppTool.UplookingIdentifyPPtoolMatch.RingLightintensity;
@@ -3551,11 +3897,11 @@ namespace SystemCalibrationClsLib
 
                 if (currentppTool.UplookingIdentifyPPtoolMatch.Templatexml == null)
                 {
-                    currentppTool.UplookingIdentifyPPtoolMatch.Templatexml = $"Config/SystemConfiguration/{currentppTool.PPName}/Template.contourmxml";
+                    currentppTool.UplookingIdentifyPPtoolMatch.Templatexml = $"Config/SystemConfiguration/{currentppTool.Name}/Template.contourmxml";
                 }
                 if (currentppTool.UplookingIdentifyPPtoolMatch.Runxml == null)
                 {
-                    currentppTool.UplookingIdentifyPPtoolMatch.Runxml = $"Config/SystemConfiguration/{currentppTool.PPName}/Run.contourmxml";
+                    currentppTool.UplookingIdentifyPPtoolMatch.Runxml = $"Config/SystemConfiguration/{currentppTool.Name}/Run.contourmxml";
                 }
 
                 //visualMatch.RingLightintensity = currentppTool.UplookingIdentifyPPtoolMatch.RingLightintensity;
@@ -3748,11 +4094,11 @@ namespace SystemCalibrationClsLib
             }
             else if (maskType == EnumMaskType.LookupChipPPOrigion)
             {
-                AxisAbsoluteMove(EnumStageAxis.SubmountPPT, 0);
+                AxisAbsoluteMove(EnumStageAxis.ChipPPT, 0);
             }
             else if (maskType == EnumMaskType.LookupSubmountPPOrigion)
             {
-                AxisAbsoluteMove(EnumStageAxis.ChipPPT, 0);
+                AxisAbsoluteMove(EnumStageAxis.SubmountPPT, 0);
             }
 
 
@@ -3829,9 +4175,9 @@ namespace SystemCalibrationClsLib
 
             if (maskType == EnumMaskType.LookupUCtoolOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
                 
                 _systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -3841,9 +4187,9 @@ namespace SystemCalibrationClsLib
             }
             else if (maskType == EnumMaskType.LookupUCtoolOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
 
                 currentppTool.ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -3853,9 +4199,9 @@ namespace SystemCalibrationClsLib
             }
             else if (maskType == EnumMaskType.LookupSubmountPPOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "SubmountPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "SubmountPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "SubmountPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "SubmountPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
 
                 _systemConfig.CalibrationConfig.SubmountPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -4076,9 +4422,9 @@ namespace SystemCalibrationClsLib
 
             if (maskType == EnumMaskType.LookupUCtoolOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
 
                 _systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -4088,9 +4434,9 @@ namespace SystemCalibrationClsLib
             }
             else if (maskType == EnumMaskType.LookupUCtoolOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "ChipPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
 
                 currentppTool.ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -4100,9 +4446,9 @@ namespace SystemCalibrationClsLib
             }
             else if (maskType == EnumMaskType.LookupSubmountPPOrigion)
             {
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "SubmountPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "SubmountPP").ChipPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
-                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.PPName == "SubmountPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
+                //_systemConfig.PPToolSettings.FirstOrDefault(s => s.Name == "SubmountPP").ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig() { X = BondX180, Y = BondY180, Z = BondZ180 };
 
                 _systemConfig.CalibrationConfig.SubmountPPPosCompensateCoordinate1 = new XYZTCoordinateConfig() { X = BondX0, Y = BondY0, Z = BondZ0 };
 
@@ -5021,7 +5367,8 @@ namespace SystemCalibrationClsLib
                         }
                         else if (BondTool == 0)
                         {
-                            currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            //currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            currentppTool.AltimetryOnMark = (float)BondZ;
                         }
                         else if (BondTool == 2)
                         {
@@ -5182,7 +5529,8 @@ namespace SystemCalibrationClsLib
                         }
                         else if (BondTool == 0)
                         {
-                            currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            //currentppTool.PPAndUCtoolOffset.Z = BondZ - config.TrackChipPPOrigion.Z;
+                            currentppTool.AltimetryOnMark = (float)BondZ;
                         }
                         else if (BondTool == 2)
                         {
@@ -5688,6 +6036,486 @@ namespace SystemCalibrationClsLib
 
             return true;
         }
+
+        private bool BondToEpoxtSpot2(int Mode = 0)
+        {
+            double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+            double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+            double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+            bool Done = false;
+
+            int result0 = ShowMessage("动作确认", "请安装点胶针", "提示");
+            if (result0 == 1)
+            {
+                AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 1);
+
+                if (Mode == 1)
+                {
+                    //ShowStage();
+
+                    if (currentDispenser.TrackEpoxtSpotCoordinate.X != 0 && currentDispenser.TrackEpoxtSpotCoordinate.Y != 0 && currentDispenser.TrackEpoxtSpotCoordinate.Z != 0)
+                    {
+                        //BondX = config.TrackEpoxtSpotCoordinate.X;
+                        //BondY = config.TrackEpoxtSpotCoordinate.Y;
+                        //BondZ = config.TrackEpoxtSpotCoordinate.Z;
+
+                        BondX = currentDispenser.TrackEpoxtSpotCoordinate.X;
+                        BondY = currentDispenser.TrackEpoxtSpotCoordinate.Y;
+                        BondZ = currentDispenser.TrackEpoxtSpotCoordinate.Z;
+                        
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到点胶位置进行点胶", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认点胶", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            //config.TrackEpoxtSpotCoordinate.X = BondX;
+                            //config.TrackEpoxtSpotCoordinate.Y = BondY;
+                            //config.TrackEpoxtSpotCoordinate.Z = BondZ;
+
+                            currentDispenser.TrackEpoxtSpotCoordinate.X = BondX;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Y = BondY;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                    if (currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X != 0 && currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y != 0 && currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z != 0)
+                    {
+                        //BondX = config.TrackBondCameraToEpoxtSpotCoordinate.X;
+                        //BondY = config.TrackBondCameraToEpoxtSpotCoordinate.Y;
+                        //BondZ = config.TrackBondCameraToEpoxtSpotCoordinate.Z;
+
+                        BondX = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X;
+                        BondY = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y;
+                        BondZ = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    result1 = ShowMessageAsync("动作确认", "榜头相机对准点胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                        BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                        BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                        //config.TrackBondCameraToEpoxtSpotCoordinate.X = BondX;
+                        //config.TrackBondCameraToEpoxtSpotCoordinate.Y = BondY;
+                        //config.TrackBondCameraToEpoxtSpotCoordinate.Z = BondZ;
+
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X = BondX;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y = BondY;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z = BondZ;
+
+                        currentDispenser.DispenserPosOffsetXWithBondCamera = -(float)(currentDispenser.TrackEpoxtSpotCoordinate.X - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X);
+                        currentDispenser.DispenserPosOffsetYWithBondCamera = (float)(currentDispenser.TrackEpoxtSpotCoordinate.Y - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y);
+
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+                    result1 = ShowMessageAsync("动作确认", "请移动到基板点胶高度", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认胶针处于点胶高度", "提示");
+                        if (result2 == 1)
+                        {
+                            currentDispenser.DispenserSystemPosZMM = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondZ);
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+                }
+                else if (Mode == 0)
+                {
+                    //ShowStage();
+
+                    if (currentDispenser.TrackEpoxtSpotCoordinate.X != 0 && currentDispenser.TrackEpoxtSpotCoordinate.Y != 0 && currentDispenser.TrackEpoxtSpotCoordinate.Z != 0)
+                    {
+                        //BondX = config.TrackEpoxtSpotCoordinate.X;
+                        //BondY = config.TrackEpoxtSpotCoordinate.Y;
+                        //BondZ = config.TrackEpoxtSpotCoordinate.Z;
+
+                        BondX = currentDispenser.TrackEpoxtSpotCoordinate.X;
+                        BondY = currentDispenser.TrackEpoxtSpotCoordinate.Y;
+                        BondZ = currentDispenser.TrackEpoxtSpotCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到点胶位置进行点胶", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认点胶", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            currentDispenser.TrackEpoxtSpotCoordinate.X = BondX;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Y = BondY;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                    if (currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X != 0 && currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y != 0 && currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z != 0)
+                    {
+                        BondX = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X;
+                        BondY = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y;
+                        BondZ = currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    result1 = ShowMessageAsync("动作确认", "榜头相机对准点胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                        BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                        BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X = BondX;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y = BondY;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z = BondZ;
+
+                        currentDispenser.DispenserPosOffsetXWithBondCamera = -(float)(currentDispenser.TrackEpoxtSpotCoordinate.X - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X);
+                        currentDispenser.DispenserPosOffsetYWithBondCamera = (float)(currentDispenser.TrackEpoxtSpotCoordinate.Y - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y);
+
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+                    result1 = ShowMessageAsync("动作确认", "请移动到基板点胶高度", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认胶针处于点胶高度", "提示");
+                        if (result2 == 1)
+                        {
+                            currentDispenser.DispenserSystemPosZMM = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondZ);
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+                }
+                else if (Mode == 2)
+                {
+                    //ShowStage();
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到点胶位置进行点胶", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认点胶", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            currentDispenser.TrackEpoxtSpotCoordinate.X = BondX;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Y = BondY;
+                            currentDispenser.TrackEpoxtSpotCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                    result1 = ShowMessageAsync("动作确认", "榜头相机对准点胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                        BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                        BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X = BondX;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y = BondY;
+                        currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Z = BondZ;
+
+                        currentDispenser.DispenserPosOffsetXWithBondCamera = -(float)(currentDispenser.TrackEpoxtSpotCoordinate.X - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.X);
+                        currentDispenser.DispenserPosOffsetYWithBondCamera = (float)(currentDispenser.TrackEpoxtSpotCoordinate.Y - currentDispenser.TrackBondCameraToEpoxtSpotCoordinate.Y);
+
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+                    result1 = ShowMessageAsync("动作确认", "请移动到基板点胶高度", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认胶针处于点胶高度", "提示");
+                        if (result2 == 1)
+                        {
+                            currentDispenser.DispenserSystemPosZMM = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondZ);
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+                }
+            }
+            else
+            {
+                return Done;
+            }
+
+            AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+            return true;
+        }
+
+        private bool BondToDippingGlue2(int Mode = 0)
+        {
+            double BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+            double BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+            double BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+            bool Done = false;
+
+            int result0 = ShowMessage("动作确认", "请安装点胶针", "提示");
+            if (result0 == 1)
+            {
+                AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 1);
+
+                if (Mode == 1)
+                {
+                    //ShowStage();
+
+                    if (currentDispenser.EpoxtToDippingglueCoordinate.X != 0 && currentDispenser.EpoxtToDippingglueCoordinate.Y != 0 && currentDispenser.EpoxtToDippingglueCoordinate.Z != 0)
+                    {
+                        BondX = currentDispenser.EpoxtToDippingglueCoordinate.X;
+                        BondY = currentDispenser.EpoxtToDippingglueCoordinate.Y;
+                        BondZ = currentDispenser.EpoxtToDippingglueCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            currentDispenser.EpoxtToDippingglueCoordinate.X = BondX;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Y = BondY;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+
+                }
+                else if (Mode == 0)
+                {
+                    //ShowStage();
+
+                    if (currentDispenser.EpoxtToDippingglueCoordinate.X != 0 && currentDispenser.EpoxtToDippingglueCoordinate.Y != 0 && currentDispenser.EpoxtToDippingglueCoordinate.Z != 0)
+                    {
+                        BondX = currentDispenser.EpoxtToDippingglueCoordinate.X;
+                        BondY = currentDispenser.EpoxtToDippingglueCoordinate.Y;
+                        BondZ = currentDispenser.EpoxtToDippingglueCoordinate.Z;
+
+                        AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ + BondZOffset);
+
+                        BondXYZAbsoluteMove(BondX, BondY, BondZ + BondZOffset);
+
+                        //AxisAbsoluteMove(EnumStageAxis.BondZ, BondZ);
+                    }
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            currentDispenser.EpoxtToDippingglueCoordinate.X = BondX;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Y = BondY;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                }
+                else if (Mode == 2)
+                {
+                    //ShowStage();
+
+                    int result1 = ShowMessageAsync("动作确认", "移动到蘸胶头到蘸胶位置", "提示");
+                    if (result1 == 1)
+                    {
+                        int result2 = ShowMessageAsync("动作确认", "确认蘸胶头处于蘸胶位置", "提示");
+                        if (result2 == 1)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 1);
+                            Thread.Sleep(50);
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtDIS, 0);
+
+                            BondX = ReadCurrentAxisposition(EnumStageAxis.BondX);
+                            BondY = ReadCurrentAxisposition(EnumStageAxis.BondY);
+                            BondZ = ReadCurrentAxisposition(EnumStageAxis.BondZ);
+
+                            currentDispenser.EpoxtToDippingglueCoordinate.X = BondX;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Y = BondY;
+                            currentDispenser.EpoxtToDippingglueCoordinate.Z = BondZ;
+                        }
+                        else
+                        {
+                            return Done;
+                        }
+                    }
+                    else
+                    {
+                        return Done;
+                    }
+
+
+                    AxisAbsoluteMove(EnumStageAxis.BondZ, config.BondSafeLocation.Z);
+                    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
+
+                }
+            }
+            else
+            {
+                return Done;
+            }
+
+
+
+            return true;
+        }
+
 
 
 
@@ -6240,6 +7068,12 @@ namespace SystemCalibrationClsLib
             config.LookupCameraOrigion.Y = BondY;
             config.LookupCameraOrigion.Z = BondZ;
 
+            foreach(var pptool in _systemConfig.PPToolSettings)
+            {
+                pptool.LookupCameraOrigion = config.LookupCameraOrigion;
+
+            }
+
             return Done;
         }
 
@@ -6332,7 +7166,7 @@ namespace SystemCalibrationClsLib
         /// <summary>
         /// 自动校准
         /// </summary>
-        public void AutoRun()
+        public void AutoRun(int Mode = 0)
         {
             config = _systemConfig.PositioningConfig.DeepCopy();
 
@@ -6349,10 +7183,11 @@ namespace SystemCalibrationClsLib
             ShowStage();
             ShowDynamometer();
 
+            LogRecorder.RecordLog(EnumLogContentType.Info, "启动系统自动校准");
+
             Task.Factory.StartNew(new Action(() =>
             {
                 int Done = -1;
-                int Mode = 0;
                 bool Done1 = false;
                 try
                 {
@@ -6362,12 +7197,12 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
 
-                    Debug.WriteLine("榜头相机移动到安全位置");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                     BondToSafeAsync(Mode);
 
                     while(true)
                     {
-                        Debug.WriteLine("榜头相机移动到系统原点，自动对焦，识别");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到系统原点，自动对焦，识别");
                         Done1 = BondCameraIdentifyBondOrigion(Mode);
 
                         if (Done1 == false)
@@ -6403,7 +7238,7 @@ namespace SystemCalibrationClsLib
 
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(Mode);
 
                         //提示安装UC工具
@@ -6422,7 +7257,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                             Done1 = UplookingCameraIdentifyBond1(Mode);
 
                             if (Done1 == false)
@@ -6462,7 +7297,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("仰视相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"仰视相机测量分辨率和角度");
                             Done1 = UplookingCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -6501,7 +7336,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
                             Done1 = UplookingCameraIdentifyBond2(Mode);
 
                             if (Done1 == false)
@@ -6540,7 +7375,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
                             Done1 = UplookingCameraIdentifyLaserSensor(Mode);
 
                             if (Done1 == false)
@@ -6571,7 +7406,7 @@ namespace SystemCalibrationClsLib
 
 
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync();
 
                         UplookingCameraVisual.SetDirectLightintensity(220);
@@ -6598,7 +7433,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到仰视相机中心，自动对焦，识别");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到仰视相机中心，自动对焦，识别");
                             Done1 = BondCameraIdentifyLookupCameraOrigion(Mode);
                             if (Done1 == false)
                             {
@@ -6635,11 +7470,11 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
-                        //Debug.WriteLine("提示取下CCU工具");
+                        //LogRecorder.RecordLog(EnumLogContentType.Debug,"提示取下CCU工具");
                         Done = ShowMessage("动作确认", "去掉CCU工具", "提示");
                         if (Done == 0)
                         {
@@ -6654,7 +7489,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1UC移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1UC移动到仰视相机中心，测量吸嘴偏移");
                             Done1 = UplookingCameraIdentifyBond1RotationCompensation(Mode);
 
                             if (Done1 == false)
@@ -6694,7 +7529,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头2UC移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2UC移动到仰视相机中心，测量吸嘴偏移");
                             Done1 = UplookingCameraIdentifyBond2RotationCompensation(Mode);
 
                             if (Done1 == false)
@@ -6752,7 +7587,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到轨道原点，自动对焦，识别轨道原点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到轨道原点，自动对焦，识别轨道原点");
                             Done1 = BondCameraIdentifyTrackOrigion(Mode);
 
                             if (Done1 == false)
@@ -6794,7 +7629,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机测量分辨率和角度");
                             Done1 = BondCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -6835,7 +7670,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("激光传感器移动到轨道原点，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到轨道原点，测高");
                             //Done1 = BondToHeightmeasurementposition(3, EnumMaskType.TrackOrigion, Mode);
                             Done1 = BondToHeightmeasurementposition(3, EnumMaskType.TrackOrigion, 1);
 
@@ -6876,7 +7711,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到测高位置，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                             Done1 = BondToHeightmeasurementposition(1, EnumMaskType.TrackOrigion, Mode);
 
                             if (Done1 == false)
@@ -6917,7 +7752,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到测高位置，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                             Done1 = BondToHeightmeasurementposition(2, EnumMaskType.TrackOrigion, Mode);
 
                             if (Done1 == false)
@@ -6978,7 +7813,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
                             Done1 = WaferCameraIdentifyWaferOrigion(Mode);
 
                             if (Done1 == false)
@@ -7018,7 +7853,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆相机测量分辨率和角度");
                             Done1 = WaferCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -7059,7 +7894,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
                             Done1 = WaferCameraIdentifyWaferOrigion(Mode);
 
                             if (Done1 == false)
@@ -7099,7 +7934,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到晶圆盘mark，识别晶圆相机中心");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到晶圆盘mark，识别晶圆相机中心");
                             Done1 = BondCameraIdentifyWaferCameraOrigion(Mode);
 
                             if (Done1 == false)
@@ -7149,7 +7984,7 @@ namespace SystemCalibrationClsLib
 
                         //while (true)
                         //{
-                        //    Debug.WriteLine("榜头在晶圆盘mark附近测高");
+                        //    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头在晶圆盘mark附近测高");
                         //    Done1 = BondToHeightmeasurementposition(1, EnumMaskType.WaferCameraOrigion, Mode);
 
                         //    if (Done1 == false)
@@ -7203,7 +8038,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到共晶台，识别共晶台");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到共晶台，识别共晶台");
                             Done1 = BondCameraIdentifyEutecticWeldingOrigion(Mode);
 
                             if (Done1 == false)
@@ -7244,7 +8079,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头在共晶台附近测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头在共晶台附近测高");
                             //Done1 = BondToHeightmeasurementposition(3, EnumMaskType.EutecticWeldingOrigion, Mode);
                             Done1 = BondToHeightmeasurementposition(3, EnumMaskType.EutecticWeldingOrigion, 1);
 
@@ -7290,7 +8125,7 @@ namespace SystemCalibrationClsLib
                     {
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(Mode);
 
                         //提示安装UC工具
@@ -7309,7 +8144,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                             Done1 = UplookingCameraIdentifyBond1(Mode);
 
                             if (Done1 == false)
@@ -7349,7 +8184,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("仰视相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"仰视相机测量分辨率和角度");
                             Done1 = UplookingCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -7388,7 +8223,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
                             Done1 = UplookingCameraIdentifyLaserSensor(Mode);
 
                             if (Done1 == false)
@@ -7419,7 +8254,7 @@ namespace SystemCalibrationClsLib
 
 
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync();
 
                         UplookingCameraVisual.SetDirectLightintensity(220);
@@ -7446,7 +8281,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到仰视相机中心，自动对焦，识别");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到仰视相机中心，自动对焦，识别");
                             Done1 = BondCameraIdentifyLookupCameraOrigion(Mode);
                             if (Done1 == false)
                             {
@@ -7483,11 +8318,11 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
-                        //Debug.WriteLine("提示取下CCU工具");
+                        //LogRecorder.RecordLog(EnumLogContentType.Debug,"提示取下CCU工具");
                         Done = ShowMessage("动作确认", "去掉CCU工具", "提示");
                         if (Done == 0)
                         {
@@ -7502,12 +8337,62 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1UC移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1UC移动到仰视相机中心，测量吸嘴偏移");
                             Done1 = UplookingCameraIdentifyBond1RotationCompensation(Mode);
 
                             if (Done1 == false)
                             {
                                 Done = ShowMessage("校准异常", "仰视相机校准Chip吸嘴旋转偏移失败，是否继续校准", "提示");
+                                if (Done == 0)
+                                {
+                                    Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                    if (Done == 0)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        Mode = 0;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Mode = 1;
+                                    continue;
+                                }
+                            }
+
+
+                            Mode = 0;
+                            break;
+                        }
+
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
+                        BondToSafeAsync();
+
+
+                        //LogRecorder.RecordLog(EnumLogContentType.Debug,"提示取下CCU工具");
+                        Done = ShowMessage("动作确认", "准备校准二次校准平台", "提示");
+                        if (Done == 0)
+                        {
+                            return;
+                        }
+
+                        if (CameraWindowGUI.Instance != null)
+                        {
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.SelectCamera(0);
+                        }
+
+                        while (true)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到校准台，识别校准台");
+                            Done1 = BondCameraIdentifyCalibrationTableOrigion(Mode);
+
+                            if (Done1 == false)
+                            {
+                                Done = ShowMessage("校准异常", "榜头相机移动到校准台，校准校准台失败，是否继续校准", "提示");
                                 if (Done == 0)
                                 {
                                     Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
@@ -7558,7 +8443,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到轨道原点，自动对焦，识别轨道原点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到轨道原点，自动对焦，识别轨道原点");
                             Done1 = BondCameraIdentifyTrackOrigion(Mode);
 
                             if (Done1 == false)
@@ -7600,7 +8485,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机测量分辨率和角度");
                             Done1 = BondCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -7641,7 +8526,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("激光传感器移动到轨道原点，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到轨道原点，测高");
                             //Done1 = BondToHeightmeasurementposition(3, EnumMaskType.TrackOrigion, Mode);
                             Done1 = BondToHeightmeasurementposition(3, EnumMaskType.TrackOrigion, 1);
 
@@ -7682,7 +8567,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到测高位置，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                             Done1 = BondToHeightmeasurementposition(1, EnumMaskType.TrackOrigion, Mode);
 
                             if (Done1 == false)
@@ -7723,7 +8608,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到点胶位置");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到点胶位置");
                             Done1 = BondToEpoxtSpot(Mode);
 
                             if (Done1 == false)
@@ -7784,7 +8669,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
                             Done1 = WaferCameraIdentifyWaferOrigion(Mode);
 
                             if (Done1 == false)
@@ -7824,7 +8709,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆相机测量分辨率和角度");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆相机测量分辨率和角度");
                             Done1 = WaferCameraParamCalibration(Mode);
 
                             if (Done1 == false)
@@ -7865,7 +8750,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"晶圆盘Mark点移动至晶圆相机中心，自动对焦，识别晶圆盘mark点");
                             Done1 = WaferCameraIdentifyWaferOrigion(Mode);
 
                             if (Done1 == false)
@@ -7905,7 +8790,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头相机移动到晶圆盘mark，识别晶圆相机中心");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到晶圆盘mark，识别晶圆相机中心");
                             Done1 = BondCameraIdentifyWaferCameraOrigion(Mode);
 
                             if (Done1 == false)
@@ -7955,7 +8840,7 @@ namespace SystemCalibrationClsLib
 
                         //while (true)
                         //{
-                        //    Debug.WriteLine("榜头在晶圆盘mark附近测高");
+                        //    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头在晶圆盘mark附近测高");
                         //    Done1 = BondToHeightmeasurementposition(1, EnumMaskType.WaferCameraOrigion, Mode);
 
                         //    if (Done1 == false)
@@ -8792,6 +9677,8 @@ namespace SystemCalibrationClsLib
 
             config = _systemConfig.PositioningConfig;
 
+            LogRecorder.RecordLog(EnumLogContentType.Info, "启动系统手动校准");
+
             Task.Factory.StartNew(new Action(() =>
             {
                 int Done = -1;
@@ -8805,14 +9692,14 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
 
-                    Debug.WriteLine("榜头相机移动到系统原点，自动对焦，识别");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到系统原点，自动对焦，识别");
                     BondCameraIdentifyBondOrigion(Mode);
 
                     if(DeviceMode == 0)
                     {
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(Mode);
 
                         //提示安装UC工具
@@ -8828,7 +9715,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                         UplookingCameraIdentifyBond1(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -8837,7 +9724,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("仰视相机测量分辨率和角度");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"仰视相机测量分辨率和角度");
                         UplookingCameraParamCalibration(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -8846,7 +9733,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
                         UplookingCameraIdentifyBond2(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -8855,12 +9742,12 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
                         UplookingCameraIdentifyLaserSensor(Mode);
 
 
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync();
 
                         UplookingCameraVisual.SetDirectLightintensity(220);
@@ -8885,7 +9772,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头相机移动到仰视相机中心，自动对焦，识别");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到仰视相机中心，自动对焦，识别");
                         BondCameraIdentifyLookupCameraOrigion(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -8894,11 +9781,11 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
-                        //Debug.WriteLine("提示取下CCU工具");
+                        //LogRecorder.RecordLog(EnumLogContentType.Debug,"提示取下CCU工具");
                         Done = ShowMessage("动作确认", "去掉CCU工具", "提示");
                         if (Done == 0)
                         {
@@ -8911,7 +9798,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1UC移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1UC移动到仰视相机中心，测量吸嘴偏移");
                         UplookingCameraIdentifyBond1RotationCompensation(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -8920,7 +9807,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头2UC移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2UC移动到仰视相机中心，测量吸嘴偏移");
                         UplookingCameraIdentifyBond2RotationCompensation(Mode);
 
 
@@ -9130,7 +10017,7 @@ namespace SystemCalibrationClsLib
                     {
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(Mode);
 
                         //提示安装UC工具
@@ -9146,7 +10033,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                         UplookingCameraIdentifyBond1(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -9155,7 +10042,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("仰视相机测量分辨率和角度");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"仰视相机测量分辨率和角度");
                         UplookingCameraParamCalibration(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -9164,12 +10051,12 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"激光传感器移动到仰视相机中心，仰视相机自动对焦，识别光斑");
                         UplookingCameraIdentifyLaserSensor(Mode);
 
 
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync();
 
                         UplookingCameraVisual.SetDirectLightintensity(220);
@@ -9194,7 +10081,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头相机移动到仰视相机中心，自动对焦，识别");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到仰视相机中心，自动对焦，识别");
                         BondCameraIdentifyLookupCameraOrigion(Mode);
 
                         if (CameraWindowGUI.Instance != null)
@@ -9203,11 +10090,11 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
-                        //Debug.WriteLine("提示取下CCU工具");
+                        //LogRecorder.RecordLog(EnumLogContentType.Debug,"提示取下CCU工具");
                         Done = ShowMessage("动作确认", "去掉CCU工具", "提示");
                         if (Done == 0)
                         {
@@ -9220,7 +10107,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1UC移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1UC移动到仰视相机中心，测量吸嘴偏移");
                         UplookingCameraIdentifyBond1RotationCompensation(Mode);
 
                         #endregion
@@ -10181,6 +11068,8 @@ namespace SystemCalibrationClsLib
 
         public void ChipRun(string PPtoolname,int Mode = 0)
         {
+            int Mode_org = Mode;
+
             if (CameraWindowGUI.Instance != null)
             {
                 CameraWindowGUI.Instance.SelectCamera(0);
@@ -10195,7 +11084,9 @@ namespace SystemCalibrationClsLib
 
             config = _systemConfig.PositioningConfig;
 
-            if(PPtoolname == "UC")
+            LogRecorder.RecordLog(EnumLogContentType.Info, "启动吸嘴校准");
+
+            if (PPtoolname == "UC")
             {
                 Task.Factory.StartNew(new Action(() =>
                 {
@@ -10211,7 +11102,7 @@ namespace SystemCalibrationClsLib
 
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(0);
 
                         if (CameraWindowGUI.Instance != null)
@@ -10222,7 +11113,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                             Done1 = UplookingCameraIdentifyBond1(Mode);
 
                             if (Done1 == false)
@@ -10237,7 +11128,7 @@ namespace SystemCalibrationClsLib
                                     }
                                     else
                                     {
-                                        Mode = 0;
+                                        Mode = Mode_org;
                                         break;
                                     }
                                 }
@@ -10248,7 +11139,7 @@ namespace SystemCalibrationClsLib
                                 }
                             }
 
-                            Mode = 0;
+                            Mode = Mode_org;
                             break;
                         }
 
@@ -10259,10 +11150,10 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                         while (true)
                         {
-                            Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                             Done1 = UplookingCameraIdentifyBond1RotationCompensation(Mode);
 
                             if (Done1 == false)
@@ -10277,7 +11168,7 @@ namespace SystemCalibrationClsLib
                                     }
                                     else
                                     {
-                                        Mode = 0;
+                                        Mode = Mode_org;
                                         break;
                                     }
                                 }
@@ -10289,7 +11180,7 @@ namespace SystemCalibrationClsLib
                             }
 
 
-                            Mode = 0;
+                            Mode = Mode_org;
                             break;
                         }
 
@@ -10300,7 +11191,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
@@ -10318,7 +11209,7 @@ namespace SystemCalibrationClsLib
                         //榜头移动到测高位置，测高
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到测高位置，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                             Done1 = BondToHeightmeasurementposition(1, EnumMaskType.TrackOrigion, Mode);
 
                             if (Done1 == false)
@@ -10333,7 +11224,7 @@ namespace SystemCalibrationClsLib
                                     }
                                     else
                                     {
-                                        Mode = 0;
+                                        Mode = Mode_org;
                                         break;
                                     }
                                 }
@@ -10345,7 +11236,7 @@ namespace SystemCalibrationClsLib
                             }
 
 
-                            Mode = 0;
+                            Mode = Mode_org;
                             break;
                         }
 
@@ -10394,6 +11285,9 @@ namespace SystemCalibrationClsLib
                         {
                             //_systemConfig.SaveConfig();
                         }
+
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "UC工具校准结束");
+
                     }
                     catch
                     {
@@ -10405,7 +11299,7 @@ namespace SystemCalibrationClsLib
             }
             else
             {
-                currentppTool = _systemConfig.PPToolSettings?.FirstOrDefault(tool => tool.PPName == PPtoolname);
+                currentppTool = _systemConfig.PPToolSettings?.FirstOrDefault(tool => tool.Name == PPtoolname);
 
                 if (currentppTool != null)
                 {
@@ -10423,7 +11317,7 @@ namespace SystemCalibrationClsLib
 
                             #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                            Debug.WriteLine("榜头相机移动到安全位置");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                             BondToSafeAsync(0);
 
                             if (CameraWindowGUI.Instance != null)
@@ -10434,7 +11328,7 @@ namespace SystemCalibrationClsLib
 
                             while (true)
                             {
-                                Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                                LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别PPtool");
                                 Done1 = UplookingCameraIdentifyPPtool(Mode);
 
                                 if (Done1 == false)
@@ -10449,7 +11343,7 @@ namespace SystemCalibrationClsLib
                                         }
                                         else
                                         {
-                                            Mode = 0;
+                                            Mode = Mode_org;
                                             break;
                                         }
                                     }
@@ -10460,7 +11354,7 @@ namespace SystemCalibrationClsLib
                                     }
                                 }
 
-                                Mode = 0;
+                                Mode = Mode_org;
                                 break;
                             }
 
@@ -10471,10 +11365,10 @@ namespace SystemCalibrationClsLib
                                 CameraWindowGUI.Instance.SelectCamera(1);
                             }
 
-                            Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                             while (true)
                             {
-                                Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                                LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                                 Done1 = UplookingCameraIdentifyPPtoolRotationCompensation(Mode);
 
                                 if (Done1 == false)
@@ -10489,7 +11383,7 @@ namespace SystemCalibrationClsLib
                                         }
                                         else
                                         {
-                                            Mode = 0;
+                                            Mode = Mode_org;
                                             break;
                                         }
                                     }
@@ -10501,7 +11395,7 @@ namespace SystemCalibrationClsLib
                                 }
 
 
-                                Mode = 0;
+                                Mode = Mode_org;
                                 break;
                             }
 
@@ -10512,7 +11406,7 @@ namespace SystemCalibrationClsLib
                                 CameraWindowGUI.Instance.SelectCamera(0);
                             }
 
-                            Debug.WriteLine("榜头移动到安全位置");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                             BondToSafeAsync();
 
 
@@ -10530,7 +11424,7 @@ namespace SystemCalibrationClsLib
                             //榜头移动到测高位置，测高
                             while (true)
                             {
-                                Debug.WriteLine("榜头移动到测高位置，测高");
+                                LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                                 Done1 = BondToHeightmeasurementposition(0, EnumMaskType.TrackOrigion, Mode);
 
                                 if (Done1 == false)
@@ -10545,7 +11439,7 @@ namespace SystemCalibrationClsLib
                                         }
                                         else
                                         {
-                                            Mode = 0;
+                                            Mode = Mode_org;
                                             break;
                                         }
                                     }
@@ -10557,7 +11451,7 @@ namespace SystemCalibrationClsLib
                                 }
 
 
-                                Mode = 0;
+                                Mode = Mode_org;
                                 break;
                             }
 
@@ -10593,7 +11487,8 @@ namespace SystemCalibrationClsLib
                             }
                             else
                             {
-                                _systemConfig.PositioningConfig = config;
+                                //_systemConfig.PPToolSettings?.FirstOrDefault(tool => tool.Name == PPtoolname) = currentppTool;
+                                //_systemConfig.PositioningConfig = config;
                                 _systemConfig.SaveConfig();
                             }
                             //提示取下CCU工具
@@ -10606,6 +11501,8 @@ namespace SystemCalibrationClsLib
                             {
                                 //_systemConfig.SaveConfig();
                             }
+
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "吸嘴校准结束");
                         }
                         catch
                         {
@@ -10640,7 +11537,7 @@ namespace SystemCalibrationClsLib
 
             config = _systemConfig.PositioningConfig;
 
-            currentppTool = _systemConfig.PPToolSettings?.FirstOrDefault(tool => tool.PPName == PPtoolname);
+            currentppTool = _systemConfig.PPToolSettings?.FirstOrDefault(tool => tool.Name == PPtoolname);
 
             if (currentppTool != null)
             {
@@ -10658,7 +11555,7 @@ namespace SystemCalibrationClsLib
 
                         #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                        Debug.WriteLine("榜头相机移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                         BondToSafeAsync(0);
 
                         if (CameraWindowGUI.Instance != null)
@@ -10669,7 +11566,7 @@ namespace SystemCalibrationClsLib
 
                         while (true)
                         {
-                            Debug.WriteLine("榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1移动到仰视相机中心，仰视相机自动对焦，识别UC");
                             Done1 = UplookingCameraIdentifyPPtool(Mode);
 
                             if (Done1 == false)
@@ -10706,10 +11603,10 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(1);
                         }
 
-                        Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                         while (true)
                         {
-                            Debug.WriteLine("榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头1吸嘴移动到仰视相机中心，测量吸嘴偏移");
                             Done1 = UplookingCameraIdentifyPPtoolRotationCompensation(Mode);
 
                             if (Done1 == false)
@@ -10747,7 +11644,7 @@ namespace SystemCalibrationClsLib
                             CameraWindowGUI.Instance.SelectCamera(0);
                         }
 
-                        Debug.WriteLine("榜头移动到安全位置");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                         BondToSafeAsync();
 
 
@@ -10765,7 +11662,7 @@ namespace SystemCalibrationClsLib
                         //榜头移动到测高位置，测高
                         while (true)
                         {
-                            Debug.WriteLine("榜头移动到测高位置，测高");
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                             Done1 = BondToHeightmeasurementposition(0, EnumMaskType.TrackOrigion, Mode);
 
                             if (Done1 == false)
@@ -10887,7 +11784,7 @@ namespace SystemCalibrationClsLib
 
                     #region 仰视相机校准 测量榜头X、Y相对位置 吸嘴校准
 
-                    Debug.WriteLine("榜头相机移动到安全位置");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                     BondToSafeAsync(0);
 
                     if (CameraWindowGUI.Instance != null)
@@ -10896,10 +11793,10 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(1);
                     }
 
-                    Debug.WriteLine("榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
                     while (true)
                     {
-                        Debug.WriteLine("榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2移动到仰视相机中心，仰视相机自动对焦，识别UC");
                         Done1 = UplookingCameraIdentifyBond2(Mode);
 
                         if (Done1 == false)
@@ -10934,10 +11831,10 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(1);
                     }
 
-                    Debug.WriteLine("榜头2UC移动到仰视相机中心，测量吸嘴偏移");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2UC移动到仰视相机中心，测量吸嘴偏移");
                     while (true)
                     {
-                        Debug.WriteLine("榜头2UC移动到仰视相机中心，测量吸嘴偏移");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头2UC移动到仰视相机中心，测量吸嘴偏移");
                         Done1 = UplookingCameraIdentifyBond2RotationCompensation(Mode);
 
                         if (Done1 == false)
@@ -10975,7 +11872,7 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
 
-                    Debug.WriteLine("榜头移动到安全位置");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到安全位置");
                     BondToSafeAsync();
 
 
@@ -10993,7 +11890,7 @@ namespace SystemCalibrationClsLib
                     //榜头移动到测高位置，测高
                     while (true)
                     {
-                        Debug.WriteLine("榜头移动到测高位置，测高");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到测高位置，测高");
                         Done1 = BondToHeightmeasurementposition(2, EnumMaskType.TrackOrigion, Mode);
 
                         if (Done1 == false)
@@ -11079,8 +11976,10 @@ namespace SystemCalibrationClsLib
 
         }
 
-        public void EpoxtRun(int Mode = 0)
+        public void EpoxtRun(string Epoxtname, int Mode = 0)
         {
+            int Mode_org = Mode;
+
             if (CameraWindowGUI.Instance != null)
             {
                 CameraWindowGUI.Instance.SelectCamera(0);
@@ -11093,99 +11992,216 @@ namespace SystemCalibrationClsLib
 
             config = _systemConfig.PositioningConfig;
 
-            Task.Factory.StartNew(new Action(() =>
+            LogRecorder.RecordLog(EnumLogContentType.Info, "启动点胶校准");
+
+            if (Epoxtname != null)
             {
-                int Done = -1;
-                bool Done1 = false;
-                try
+                currentDispenser = _systemConfig.DispenserSettings?.FirstOrDefault(tool => tool.Name == Epoxtname);
+
+                if(currentDispenser != null)
                 {
-                    if (CameraWindowGUI.Instance != null)
+                    Task.Factory.StartNew(new Action(() =>
                     {
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.SelectCamera(0);
-                    }
-                    #region 榜头相机校准 榜头测高
-
-                    while (true)
-                    {
-                        Debug.WriteLine("榜头移动到点胶位置");
-                        Done1 = BondToEpoxtSpot(Mode);
-
-                        if (Done1 == false)
+                        int Done = -1;
+                        bool Done1 = false;
+                        try
                         {
-                            Done = ShowMessage("校准异常", "点胶校准失败，是否继续校准", "提示");
+                            if (CameraWindowGUI.Instance != null)
+                            {
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.SelectCamera(0);
+                            }
+                            #region 榜头相机校准 榜头测高
+
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
+                            BondToSafeAsync(0);
+
+                            while (true)
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到点胶位置");
+                                Done1 = BondToEpoxtSpot2(Mode);
+
+                                if (Done1 == false)
+                                {
+                                    Done = ShowMessage("校准异常", "点胶校准失败，是否继续校准", "提示");
+                                    if (Done == 0)
+                                    {
+                                        Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                        if (Done == 0)
+                                        {
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            Mode = Mode_org;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Mode = 1;
+                                        continue;
+                                    }
+                                }
+
+
+                                Mode = Mode_org;
+                                break;
+                            }
+
+                            #endregion
+
+                            //榜头移动到安全位置
+                            BondToSafeAsync();
+
+                            CloseStageAxisMove();
+                            CloseStage();
+                            CloseDynamometer();
+
+
+                            //}
+
+                            //提示取下CCU工具
+                            Done = ShowMessageAsync("动作确认", "是否保存胶针校准", "提示");
                             if (Done == 0)
                             {
-                                Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
-                                if (Done == 0)
-                                {
-                                    return;
-                                }
-                                else
-                                {
-                                    Mode = 0;
-                                    break;
-                                }
+                                //return;
                             }
                             else
                             {
-                                Mode = 1;
-                                continue;
+                                _systemConfig.PositioningConfig = config;
+                                _systemConfig.SaveConfig();
                             }
+                            //提示取下CCU工具
+                            Done = ShowMessage("动作确认", "结束校准", "提示");
+                            if (Done == 0)
+                            {
+                                //return;
+                            }
+                            else
+                            {
+                                //_systemConfig.SaveConfig();
+                            }
+
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "点胶校准结束");
+
+                        }
+                        catch
+                        {
+
                         }
 
-
-                        Mode = 0;
-                        break;
                     }
-
-                    #endregion
-
-                    //榜头移动到安全位置
-                    BondToSafeAsync();
-
-                    CloseStageAxisMove();
-                    CloseStage();
-                    CloseDynamometer();
-
-
-                    //}
-
-                    //提示取下CCU工具
-                    Done = ShowMessageAsync("动作确认", "是否保存胶针校准", "提示");
-                    if (Done == 0)
-                    {
-                        //return;
-                    }
-                    else
-                    {
-                        _systemConfig.PositioningConfig = config;
-                        _systemConfig.SaveConfig();
-                    }
-                    //提示取下CCU工具
-                    Done = ShowMessage("动作确认", "结束校准", "提示");
-                    if (Done == 0)
-                    {
-                        //return;
-                    }
-                    else
-                    {
-                        //_systemConfig.SaveConfig();
-                    }
-
+            ));
                 }
-                catch
+                else
                 {
-
+                    int Done = ShowMessage("动作确认", "该点胶器不存在", "提示");
                 }
 
             }
+            else
+            {
+                Task.Factory.StartNew(new Action(() =>
+                {
+                    int Done = -1;
+                    bool Done1 = false;
+                    try
+                    {
+                        if (CameraWindowGUI.Instance != null)
+                        {
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.SelectCamera(0);
+                        }
+                        #region 榜头相机校准 榜头测高
+
+                        while (true)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到点胶位置");
+                            Done1 = BondToEpoxtSpot(Mode);
+
+                            if (Done1 == false)
+                            {
+                                Done = ShowMessage("校准异常", "点胶校准失败，是否继续校准", "提示");
+                                if (Done == 0)
+                                {
+                                    Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                    if (Done == 0)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        Mode = Mode_org;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Mode = 1;
+                                    continue;
+                                }
+                            }
+
+
+                            Mode = Mode_org;
+                            break;
+                        }
+
+                        #endregion
+
+                        //榜头移动到安全位置
+                        BondToSafeAsync();
+
+                        CloseStageAxisMove();
+                        CloseStage();
+                        CloseDynamometer();
+
+
+                        //}
+
+                        //提示取下CCU工具
+                        Done = ShowMessageAsync("动作确认", "是否保存胶针校准", "提示");
+                        if (Done == 0)
+                        {
+                            //return;
+                        }
+                        else
+                        {
+                            _systemConfig.PositioningConfig = config;
+                            _systemConfig.SaveConfig();
+                        }
+                        //提示取下CCU工具
+                        Done = ShowMessage("动作确认", "结束校准", "提示");
+                        if (Done == 0)
+                        {
+                            //return;
+                        }
+                        else
+                        {
+                            //_systemConfig.SaveConfig();
+                        }
+
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "点胶校准结束");
+
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
             ));
+            }
+
+            
 
         }
 
-        public void DippingglueRun(int Mode = 0)
+        public void DippingglueRun(string Epoxtname, int Mode = 0)
         {
+            int Mode_org = Mode;
+
             if (CameraWindowGUI.Instance != null)
             {
                 CameraWindowGUI.Instance.SelectCamera(0);
@@ -11198,94 +12214,203 @@ namespace SystemCalibrationClsLib
 
             config = _systemConfig.PositioningConfig;
 
-            Task.Factory.StartNew(new Action(() =>
+            LogRecorder.RecordLog(EnumLogContentType.Info, "启动粘胶位置校准");
+
+            if (Epoxtname != null)
             {
-                int Done = -1;
-                bool Done1 = false;
-                try
+                currentDispenser = _systemConfig.DispenserSettings?.FirstOrDefault(tool => tool.Name == Epoxtname);
+
+                if (currentDispenser != null)
                 {
-                    if (CameraWindowGUI.Instance != null)
+                    Task.Factory.StartNew(new Action(() =>
                     {
-                        CameraWindowGUI.Instance.ClearGraphicDraw();
-                        CameraWindowGUI.Instance.SelectCamera(0);
-                    }
-                    #region 榜头相机校准 榜头测高
-
-                    while (true)
-                    {
-                        Debug.WriteLine("榜头移动到蘸胶位置");
-                        Done1 = BondToDippingGlue(Mode);
-
-                        if (Done1 == false)
+                        int Done = -1;
+                        bool Done1 = false;
+                        try
                         {
-                            Done = ShowMessage("校准异常", "蘸胶位置校准失败，是否继续校准", "提示");
+                            if (CameraWindowGUI.Instance != null)
+                            {
+                                CameraWindowGUI.Instance.ClearGraphicDraw();
+                                CameraWindowGUI.Instance.SelectCamera(0);
+                            }
+                            #region 榜头相机校准 榜头测高
+
+                            while (true)
+                            {
+                                LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到蘸胶位置");
+                                Done1 = BondToDippingGlue2(Mode);
+
+                                if (Done1 == false)
+                                {
+                                    Done = ShowMessage("校准异常", "蘸胶位置校准失败，是否继续校准", "提示");
+                                    if (Done == 0)
+                                    {
+                                        Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                        if (Done == 0)
+                                        {
+                                            return;
+                                        }
+                                        else
+                                        {
+                                            Mode = Mode_org;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Mode = 1;
+                                        continue;
+                                    }
+                                }
+
+
+                                Mode = Mode_org;
+                                break;
+                            }
+
+                            #endregion
+
+                            //榜头移动到安全位置
+                            BondToSafeAsync();
+
+                            CloseStageAxisMove();
+                            CloseStage();
+                            CloseDynamometer();
+
+
+                            //}
+
+                            //提示取下CCU工具
+                            Done = ShowMessageAsync("动作确认", "是否保存蘸胶位置校准", "提示");
                             if (Done == 0)
                             {
-                                Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
-                                if (Done == 0)
-                                {
-                                    return;
-                                }
-                                else
-                                {
-                                    Mode = 0;
-                                    break;
-                                }
+                                //return;
                             }
                             else
                             {
-                                Mode = 1;
-                                continue;
+                                _systemConfig.PositioningConfig = config;
+                                _systemConfig.SaveConfig();
                             }
+                            //提示取下CCU工具
+                            Done = ShowMessage("动作确认", "结束校准", "提示");
+                            if (Done == 0)
+                            {
+                                //return;
+                            }
+                            else
+                            {
+                                //_systemConfig.SaveConfig();
+                            }
+
+                            LogRecorder.RecordLog(EnumLogContentType.Info, "粘胶位置校准结束");
+
+                        }
+                        catch
+                        {
+
                         }
 
-
-                        Mode = 0;
-                        break;
                     }
-
-                    #endregion
-
-                    //榜头移动到安全位置
-                    BondToSafeAsync();
-
-                    CloseStageAxisMove();
-                    CloseStage();
-                    CloseDynamometer();
-
-
-                    //}
-
-                    //提示取下CCU工具
-                    Done = ShowMessageAsync("动作确认", "是否保存蘸胶位置校准", "提示");
-                    if (Done == 0)
-                    {
-                        //return;
-                    }
-                    else
-                    {
-                        _systemConfig.PositioningConfig = config;
-                        _systemConfig.SaveConfig();
-                    }
-                    //提示取下CCU工具
-                    Done = ShowMessage("动作确认", "结束校准", "提示");
-                    if (Done == 0)
-                    {
-                        //return;
-                    }
-                    else
-                    {
-                        //_systemConfig.SaveConfig();
-                    }
+));
 
                 }
-                catch
+            }
+            else
+            {
+                Task.Factory.StartNew(new Action(() =>
                 {
+                    int Done = -1;
+                    bool Done1 = false;
+                    try
+                    {
+                        if (CameraWindowGUI.Instance != null)
+                        {
+                            CameraWindowGUI.Instance.ClearGraphicDraw();
+                            CameraWindowGUI.Instance.SelectCamera(0);
+                        }
+                        #region 榜头相机校准 榜头测高
+
+                        while (true)
+                        {
+                            LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头移动到蘸胶位置");
+                            Done1 = BondToDippingGlue(Mode);
+
+                            if (Done1 == false)
+                            {
+                                Done = ShowMessage("校准异常", "蘸胶位置校准失败，是否继续校准", "提示");
+                                if (Done == 0)
+                                {
+                                    Done = ShowMessage("动作确认", "是否继续进行其他坐标校准", "提示");
+                                    if (Done == 0)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        Mode = Mode_org;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Mode = 1;
+                                    continue;
+                                }
+                            }
+
+
+                            Mode = Mode_org;
+                            break;
+                        }
+
+                        #endregion
+
+                        //榜头移动到安全位置
+                        BondToSafeAsync();
+
+                        CloseStageAxisMove();
+                        CloseStage();
+                        CloseDynamometer();
+
+
+                        //}
+
+                        //提示取下CCU工具
+                        Done = ShowMessageAsync("动作确认", "是否保存蘸胶位置校准", "提示");
+                        if (Done == 0)
+                        {
+                            //return;
+                        }
+                        else
+                        {
+                            _systemConfig.PositioningConfig = config;
+                            _systemConfig.SaveConfig();
+                        }
+                        //提示取下CCU工具
+                        Done = ShowMessage("动作确认", "结束校准", "提示");
+                        if (Done == 0)
+                        {
+                            //return;
+                        }
+                        else
+                        {
+                            //_systemConfig.SaveConfig();
+                        }
+
+                        LogRecorder.RecordLog(EnumLogContentType.Info, "粘胶位置校准结束");
+
+                    }
+                    catch
+                    {
+
+                    }
 
                 }
+));
 
             }
-            ));
+
+            
 
         }
 
@@ -11319,7 +12444,7 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
 
-                    Debug.WriteLine("榜头相机移动到安全位置");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                     BondToSafeAsync(Mode);
 
                     #region 共晶台校准 共晶台测高
@@ -11340,7 +12465,7 @@ namespace SystemCalibrationClsLib
 
                     while (true)
                     {
-                        Debug.WriteLine("榜头相机移动到共晶台，识别共晶台");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到共晶台，识别共晶台");
                         Done1 = BondCameraIdentifyEutecticWeldingOrigion(Mode);
 
                         if (Done1 == false)
@@ -11381,7 +12506,7 @@ namespace SystemCalibrationClsLib
 
                     while (true)
                     {
-                        Debug.WriteLine("榜头在共晶台附近测高");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头在共晶台附近测高");
                         Done1 = BondToHeightmeasurementposition(3, EnumMaskType.EutecticWeldingOrigion, Mode);
 
                         if (Done1 == false)
@@ -11569,7 +12694,7 @@ namespace SystemCalibrationClsLib
                         CameraWindowGUI.Instance.SelectCamera(0);
                     }
 
-                    Debug.WriteLine("榜头相机移动到安全位置");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到安全位置");
                     BondToSafeAsync(Mode);
 
                     #region 校准台校准
@@ -11590,7 +12715,7 @@ namespace SystemCalibrationClsLib
 
                     while (true)
                     {
-                        Debug.WriteLine("榜头相机移动到校准台，识别校准台");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug,"榜头相机移动到校准台，识别校准台");
                         Done1 = BondCameraIdentifyCalibrationTableOrigion(Mode);
 
                         if (Done1 == false)

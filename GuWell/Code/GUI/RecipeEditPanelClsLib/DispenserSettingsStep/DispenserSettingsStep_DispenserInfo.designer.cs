@@ -37,6 +37,8 @@ namespace RecipeEditPanelClsLib
             this.repositoryItemComboBox2 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.repositoryItemComboBox5 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
+            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
+            this.combDispensingMode = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.sesePredispensingOffsetY = new DevExpress.XtraEditors.SpinEdit();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
@@ -54,8 +56,8 @@ namespace RecipeEditPanelClsLib
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.teAbsoluteMoveTarget = new DevExpress.XtraEditors.TextEdit();
             this.cmbPredispensingMode = new System.Windows.Forms.ComboBox();
-            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
-            this.combDispensingMode = new System.Windows.Forms.ComboBox();
+            this.seDispensingCount = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl10 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -71,6 +73,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.sePredispensingIntervelMinutes.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sePredispensingTimes.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teAbsoluteMoveTarget.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensingCount.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // panelControl1
@@ -114,6 +117,8 @@ namespace RecipeEditPanelClsLib
             // 
             // panelControl2
             // 
+            this.panelControl2.Controls.Add(this.seDispensingCount);
+            this.panelControl2.Controls.Add(this.labelControl10);
             this.panelControl2.Controls.Add(this.labelControl3);
             this.panelControl2.Controls.Add(this.combDispensingMode);
             this.panelControl2.Controls.Add(this.groupBox2);
@@ -128,6 +133,22 @@ namespace RecipeEditPanelClsLib
             this.panelControl2.Size = new System.Drawing.Size(338, 565);
             this.panelControl2.TabIndex = 41;
             // 
+            // labelControl3
+            // 
+            this.labelControl3.Location = new System.Drawing.Point(25, 46);
+            this.labelControl3.Name = "labelControl3";
+            this.labelControl3.Size = new System.Drawing.Size(52, 14);
+            this.labelControl3.TabIndex = 20;
+            this.labelControl3.Text = "点胶方式:";
+            // 
+            // combDispensingMode
+            // 
+            this.combDispensingMode.FormattingEnabled = true;
+            this.combDispensingMode.Location = new System.Drawing.Point(96, 43);
+            this.combDispensingMode.Name = "combDispensingMode";
+            this.combDispensingMode.Size = new System.Drawing.Size(94, 22);
+            this.combDispensingMode.TabIndex = 19;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.sesePredispensingOffsetY);
@@ -136,7 +157,7 @@ namespace RecipeEditPanelClsLib
             this.groupBox2.Controls.Add(this.labelControl7);
             this.groupBox2.Controls.Add(this.labelControl8);
             this.groupBox2.Controls.Add(this.labelControl9);
-            this.groupBox2.Location = new System.Drawing.Point(24, 315);
+            this.groupBox2.Location = new System.Drawing.Point(25, 349);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(298, 119);
             this.groupBox2.TabIndex = 18;
@@ -235,7 +256,7 @@ namespace RecipeEditPanelClsLib
             this.groupBox1.Controls.Add(this.sePredispensingIntervelSeconds);
             this.groupBox1.Controls.Add(this.sePredispensingIntervelMinutes);
             this.groupBox1.Controls.Add(this.labelControl4);
-            this.groupBox1.Location = new System.Drawing.Point(24, 182);
+            this.groupBox1.Location = new System.Drawing.Point(25, 216);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(298, 115);
             this.groupBox1.TabIndex = 18;
@@ -325,7 +346,7 @@ namespace RecipeEditPanelClsLib
             0,
             0,
             0});
-            this.sePredispensingTimes.Location = new System.Drawing.Point(96, 140);
+            this.sePredispensingTimes.Location = new System.Drawing.Point(96, 157);
             this.sePredispensingTimes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.sePredispensingTimes.Name = "sePredispensingTimes";
             this.sePredispensingTimes.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -350,7 +371,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(24, 144);
+            this.labelControl2.Location = new System.Drawing.Point(24, 161);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(64, 14);
             this.labelControl2.TabIndex = 14;
@@ -358,7 +379,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(25, 105);
+            this.labelControl1.Location = new System.Drawing.Point(25, 122);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(64, 14);
             this.labelControl1.TabIndex = 14;
@@ -375,27 +396,49 @@ namespace RecipeEditPanelClsLib
             // cmbPredispensingMode
             // 
             this.cmbPredispensingMode.FormattingEnabled = true;
-            this.cmbPredispensingMode.Location = new System.Drawing.Point(96, 102);
+            this.cmbPredispensingMode.Location = new System.Drawing.Point(96, 119);
             this.cmbPredispensingMode.Name = "cmbPredispensingMode";
             this.cmbPredispensingMode.Size = new System.Drawing.Size(94, 22);
             this.cmbPredispensingMode.TabIndex = 13;
             this.cmbPredispensingMode.Text = "Off";
             // 
-            // labelControl3
+            // seDispensingCount
             // 
-            this.labelControl3.Location = new System.Drawing.Point(25, 46);
-            this.labelControl3.Name = "labelControl3";
-            this.labelControl3.Size = new System.Drawing.Size(52, 14);
-            this.labelControl3.TabIndex = 20;
-            this.labelControl3.Text = "点胶方式:";
+            this.seDispensingCount.EditValue = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.seDispensingCount.Location = new System.Drawing.Point(96, 74);
+            this.seDispensingCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispensingCount.Name = "seDispensingCount";
+            this.seDispensingCount.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispensingCount.Properties.AutoHeight = false;
+            this.seDispensingCount.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispensingCount.Properties.DisplayFormat.FormatString = "0";
+            this.seDispensingCount.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensingCount.Properties.EditFormat.FormatString = "0";
+            this.seDispensingCount.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensingCount.Properties.IsFloatValue = false;
+            this.seDispensingCount.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.RegExpMaskManager));
+            this.seDispensingCount.Properties.MaskSettings.Set("allowBlankInput", true);
+            this.seDispensingCount.Properties.MaskSettings.Set("mask", "\\d{1,3}?");
+            this.seDispensingCount.Properties.MaxValue = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.seDispensingCount.Size = new System.Drawing.Size(94, 23);
+            this.seDispensingCount.TabIndex = 22;
             // 
-            // combDispensingMode
+            // labelControl10
             // 
-            this.combDispensingMode.FormattingEnabled = true;
-            this.combDispensingMode.Location = new System.Drawing.Point(96, 43);
-            this.combDispensingMode.Name = "combDispensingMode";
-            this.combDispensingMode.Size = new System.Drawing.Size(94, 22);
-            this.combDispensingMode.TabIndex = 19;
+            this.labelControl10.Location = new System.Drawing.Point(24, 78);
+            this.labelControl10.Name = "labelControl10";
+            this.labelControl10.Size = new System.Drawing.Size(52, 14);
+            this.labelControl10.TabIndex = 21;
+            this.labelControl10.Text = "点胶次数:";
             // 
             // DispenserSettingsStep_DispenserInfo
             // 
@@ -424,6 +467,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.sePredispensingIntervelMinutes.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sePredispensingTimes.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teAbsoluteMoveTarget.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensingCount.Properties)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -454,5 +498,7 @@ namespace RecipeEditPanelClsLib
         private LabelControl labelControl2;
         private LabelControl labelControl3;
         private System.Windows.Forms.ComboBox combDispensingMode;
+        private SpinEdit seDispensingCount;
+        private LabelControl labelControl10;
     }
 }

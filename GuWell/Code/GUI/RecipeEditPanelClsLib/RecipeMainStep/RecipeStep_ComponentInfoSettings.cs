@@ -3,6 +3,7 @@ using ConfigurationClsLib;
 using ControlPanelClsLib;
 using DevExpress.Utils.Design;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using RecipeClsLib;
 using System;
 using System.Collections.Generic;
@@ -50,32 +51,77 @@ namespace RecipeEditPanelClsLib
                 cmbComponentCarrierType.Items.Add(item);
             }
             cmbVisionPosUsedCamera.Items.Clear();
-            cmbVisionPosUsedCamera.Items.Add(EnumCameraType.BondCamera);
-            cmbVisionPosUsedCamera.Items.Add(EnumCameraType.WaferCamera);
+            //cmbVisionPosUsedCamera.Items.Add(EnumCameraType.BondCamera);
+            //cmbVisionPosUsedCamera.Items.Add(EnumCameraType.WaferCamera);
+            cmbVisionPosUsedCamera.Items.Add(new KeyValuePair<EnumCameraType, string>(
+        EnumCameraType.BondCamera,
+        EnumCameraType.BondCamera.GetDescription()));
+            cmbVisionPosUsedCamera.Items.Add(new KeyValuePair<EnumCameraType, string>(
+        EnumCameraType.WaferCamera,
+        EnumCameraType.WaferCamera.GetDescription()));
+            cmbVisionPosUsedCamera.DisplayMember = "Value";
 
             cmbVisionPositionMethod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
-            {
-                cmbVisionPositionMethod.Items.Add(item);
-            }
+            cmbVisionPositionMethod.DataSource = EnumExtensions.GetEnumDataSource<EnumVisionPositioningMethod>();
 
-            cmbVisionPositionMethod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
-            {
-                cmbVisionPositionMethod.Items.Add(item);
-            }
+            cmbVisionPositionMethod.DisplayMember = "Value";
+            cmbVisionPositionMethod.ValueMember = "Key";
+
+            //cmbVisionPositionMethod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
+            //{
+            //    cmbVisionPositionMethod.Items.Add(item);
+            //}
 
             cmbAccuracyMethod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumAccuracyMethod)))
-            {
-                cmbAccuracyMethod.Items.Add(item);
-            }
+            cmbAccuracyMethod.DataSource = EnumExtensions.GetEnumDataSource<EnumAccuracyMethod>();
+            cmbAccuracyMethod.DisplayMember = "Value";
+            cmbAccuracyMethod.ValueMember = "Key";
+
+            //cmbAccuracyMethod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumAccuracyMethod)))
+            //{
+            //    cmbAccuracyMethod.Items.Add(item);
+            //}
 
             cmbAccuracyVisionMethod.Items.Clear();
-            foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
-            {
-                cmbAccuracyVisionMethod.Items.Add(item);
-            }
+            cmbAccuracyVisionMethod.DataSource = EnumExtensions.GetEnumDataSource<EnumVisionPositioningMethod>();
+
+            cmbAccuracyVisionMethod.DisplayMember = "Value";
+            cmbAccuracyVisionMethod.ValueMember = "Key";
+
+            //cmbAccuracyVisionMethod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
+            //{
+            //    cmbAccuracyVisionMethod.Items.Add(item);
+            //}
+
+            cmbCalibrationAfterPPMethod.Items.Clear();
+            cmbCalibrationAfterPPMethod.DataSource = EnumExtensions.GetEnumDataSource<EnumCameraType>();
+            cmbCalibrationAfterPPMethod.DisplayMember = "Value";
+            cmbCalibrationAfterPPMethod.ValueMember = "Key";
+
+            cmbCalibrationAfterPPMethod.SelectedValue = EnumCameraType.BondCamera;
+            cmbCalibrationAfterPPMethod.Enabled = false;
+
+            //cmbCalibrationAfterPPMethod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumCameraType)))
+            //{
+            //    cmbCalibrationAfterPPMethod.Items.Add(item);
+            //}
+
+            cmbCalibrationAfterPPVisionMethod.Items.Clear();
+            cmbCalibrationAfterPPVisionMethod.DataSource = EnumExtensions.GetEnumDataSource<EnumVisionPositioningMethod>();
+
+            cmbCalibrationAfterPPVisionMethod.DisplayMember = "Value";
+            cmbCalibrationAfterPPVisionMethod.ValueMember = "Key";
+
+            //cmbCalibrationAfterPPVisionMethod.Items.Clear();
+            //foreach (var item in Enum.GetValues(typeof(EnumVisionPositioningMethod)))
+            //{
+            //    cmbCalibrationAfterPPVisionMethod.Items.Add(item);
+            //}
+
         }
         private void LoadPPTool()
         {
@@ -99,9 +145,14 @@ namespace RecipeEditPanelClsLib
             seComponentThicknessMM.Text = _editRecipe.CurrentComponent.ThicknessMM.ToString();
             cmbComponentCarrierType.Text = _editRecipe.CurrentComponent.CarrierType.ToString();
             seCarrierThicknessMM.Text = _editRecipe.CurrentComponent.CarrierThicknessMM.ToString();
+            cmbPositionMarkPointCount.Text = _editRecipe.CurrentComponent.PositionMarkPointCount.ToString();
             cmbVisionPositionMethod.Text= _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionMethod.ToString();
             cmbAccuracyMethod.Text= _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod.ToString();
             cmbAccuracyVisionMethod.Text= _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod.ToString();
+            _editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.VisionPositionUsedCamera = EnumCameraType.BondCamera;
+            cmbCalibrationAfterPPMethod.Text = _editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.VisionPositionUsedCamera.ToString();
+            cmbCalibrationAfterPPVisionMethod.Text = _editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.VisionPositionMethod.ToString();
+            cmbCalibrationAfterPPMarkPointCount.Text = _editRecipe.CurrentComponent.CalibrationAfterPPMarkPointCount.ToString();
 
             cmbVisionPosUsedCamera.Text = _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera.ToString();
 
@@ -139,11 +190,23 @@ namespace RecipeEditPanelClsLib
             _editRecipe.CurrentComponent.ThicknessMM = float.Parse(seComponentThicknessMM.Text.Trim());
             _editRecipe.CurrentComponent.CarrierType = (EnumCarrierType)Enum.Parse(typeof(EnumCarrierType), cmbComponentCarrierType.Text);
             _editRecipe.CurrentComponent.CarrierThicknessMM = float.Parse(seCarrierThicknessMM.Text.Trim());
-            _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbVisionPositionMethod.Text);
-            _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod = (EnumAccuracyMethod)Enum.Parse(typeof(EnumAccuracyMethod), cmbAccuracyMethod.Text);
-            _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbAccuracyVisionMethod.Text);
+            _editRecipe.CurrentComponent.PositionMarkPointCount = int.Parse(cmbPositionMarkPointCount.Text);
+            //_editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbVisionPositionMethod.Text);
+            //_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod = (EnumAccuracyMethod)Enum.Parse(typeof(EnumAccuracyMethod), cmbAccuracyMethod.Text);
+            //_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbAccuracyVisionMethod.Text);
+            //_editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbCalibrationAfterPPMethod.Text);
+            //_editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)Enum.Parse(typeof(EnumVisionPositioningMethod), cmbCalibrationAfterPPVisionMethod.Text);
 
-            _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbVisionPosUsedCamera.Text);
+            _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionMethod = (EnumVisionPositioningMethod)cmbVisionPositionMethod.SelectedValue;
+            _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod = (EnumAccuracyMethod)cmbAccuracyMethod.SelectedValue;
+            _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)cmbAccuracyVisionMethod.SelectedValue;
+            _editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.VisionPositionUsedCamera = (EnumCameraType)cmbCalibrationAfterPPMethod.SelectedValue;
+            _editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters.AccuracyVisionPositionMethod = (EnumVisionPositioningMethod)cmbCalibrationAfterPPVisionMethod.SelectedValue;
+            _editRecipe.CurrentComponent.CalibrationAfterPPMarkPointCount = int.Parse(cmbCalibrationAfterPPMarkPointCount.Text);
+
+            //_editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera = (EnumCameraType)Enum.Parse(typeof(EnumCameraType), cmbVisionPosUsedCamera.Text);
+
+            _editRecipe.CurrentComponent.PositionComponentVisionParameters.VisionPositionUsedCamera = (EnumCameraType)cmbVisionPosUsedCamera.SelectedValue;
 
             _editRecipe.CurrentComponent.RelatedPPToolName = cmbRelatedPPTool.Text;
             _editRecipe.CurrentComponent.PPSettings.PPtoolName = cmbRelatedPPTool.Text;
@@ -156,12 +219,19 @@ namespace RecipeEditPanelClsLib
 
         private void cmbComponentCarrierType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(cmbComponentCarrierType.SelectedIndex == (int)EnumCarrierType.Wafer)
+            if((EnumCarrierType)cmbComponentCarrierType.SelectedValue == EnumCarrierType.Wafer)
             {
                 panelControl2.Enabled = true;
+                cmbVisionPosUsedCamera.SelectedValue = EnumCameraType.WaferCamera;
             }
-            else
+            else if ((EnumCarrierType)cmbComponentCarrierType.SelectedValue == EnumCarrierType.WaferWafflePack)
             {
+                cmbVisionPosUsedCamera.SelectedValue = EnumCameraType.WaferCamera;
+                panelControl2.Enabled = false;
+            }
+            else if((EnumCarrierType)cmbComponentCarrierType.SelectedValue == EnumCarrierType.WafflePack)
+            {
+                cmbVisionPosUsedCamera.SelectedValue = EnumCameraType.BondCamera;
                 panelControl2.Enabled = false;
             }
         }
