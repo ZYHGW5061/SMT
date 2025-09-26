@@ -1,0 +1,1367 @@
+﻿using CommonPanelClsLib;
+using ConfigurationClsLib;
+using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
+using StageCtrlPanelLib;
+using MainGUI.Forms.ProductMenu;
+using MainGUI.Forms.SysMenu;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using SystemCalibrationClsLib;
+using VisionControlAppClsLib;
+using VisionGUI;
+using PowerControlGUI;
+using ControlPanelClsLib;
+using MainGUI.Forms;
+using PositioningSystemClsLib;
+using AlarmManagementClsLib;
+using RecipeEditPanelClsLib;
+using ControlPanelClsLib.Tools;
+using StageManagerClsLib;
+using StageControllerClsLib;
+using WestDragon.Framework.UtilityHelper;
+using VisionClsLib;
+using DynamometerGUI;
+using SystemGUILib.UserMangement;
+using SystemGUILib.LogUI;
+using UserManagerClsLib;
+using SystemGUILib.Alarm;
+using System.Threading;
+using ProductRunClsLib;
+
+namespace BondTerminal
+{
+    public partial class MainForm : BaseForm
+    {
+
+        #region File
+
+        CameraWindowForm CameraForm;
+
+        private bool toolStripBtnCameraControlChecked = false;
+        private bool CameraWindowGUIInited = false;
+
+        /// <summary>
+        /// 系统配置
+        /// </summary>
+        private SystemConfiguration _systemConfig
+        {
+            get { return SystemConfiguration.Instance; }
+        }
+
+        private VisionControlAppClsLib.VisualControlManager _VisualManager
+        {
+            get { return VisionControlAppClsLib.VisualControlManager.Instance; }
+        }
+        #endregion
+        /// <summary>
+        /// 当前日期时间
+        /// </summary>
+        private System.Windows.Forms.Timer _clockTimer;
+        private System.Windows.Forms.Timer _refreshRunTimeSpanTimer = new System.Windows.Forms.Timer();
+
+        private SynchronizationContext _syncContext;
+
+        public MainForm()
+        {
+            InitializeComponent();
+            GlobalCommFunc.MainForm = this;
+            InitializeVisualForm();
+
+            _syncContext = SynchronizationContext.Current;
+
+            DataModel.Instance.PropertyChanged += DataModel_PropertyChanged;
+        }
+
+        private void DataModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_syncContext == null)
+            {
+                return;
+            }
+
+            if (e.PropertyName == nameof(DataModel.CurPPtoolName))
+            {
+                _syncContext.Post(_ => {
+                    SystemConfiguration.Instance.JobConfig.CurPPtoolName = DataModel.Instance.CurPPtoolName;
+                    toolLabelPPtoolName.Text = "当前吸嘴:" + DataModel.Instance.CurPPtoolName;
+                }, null);
+            }
+
+            if (e.PropertyName == nameof(DataModel.SysRunSta))
+            {
+                _syncContext.Post(_ => {
+                    string description2 = DataModel.Instance.SysRunSta.GetDescription();
+                    toolStripStatusLabelRunStatus.Text = description2;
+                    if (DataModel.Instance.SysRunSta == EnumProductRunStat.Stop || DataModel.Instance.SysRunSta == EnumProductRunStat.UserAbort)
+                    {
+                        toolStripStatusLabelRunStatus.BackColor = Color.Red;
+                    }
+                    else if (DataModel.Instance.SysRunSta == EnumProductRunStat.AutoRun || DataModel.Instance.SysRunSta == EnumProductRunStat.Completed)
+                    {
+                        toolStripStatusLabelRunStatus.BackColor = Color.LimeGreen;
+                        if(ProductExecutor.Instance.ProductRecipe != null)
+                        {
+                            toolStripStatusCurrentRecipe.BackColor = Color.LimeGreen;
+                            toolStripStatusCurrentRecipe.Text = "当前配方：" + ProductExecutor.Instance.ProductRecipe.RecipeName;
+                        }
+                        else
+                        {
+                            toolStripStatusCurrentRecipe.BackColor = Color.Yellow;
+                            toolStripStatusCurrentRecipe.Text = "未选择配方";
+                        }
+                    }
+                    else if (DataModel.Instance.SysRunSta == EnumProductRunStat.NoProd || DataModel.Instance.SysRunSta == EnumProductRunStat.AutoPause || DataModel.Instance.SysRunSta == EnumProductRunStat.StepPause)
+                    {
+                        toolStripStatusLabelRunStatus.BackColor = Color.Yellow;
+                    }
+                    if(DataModel.Instance.SysRunSta == EnumProductRunStat.NoProd)
+                    {
+                        toolStripStatusCurrentRecipe.BackColor = Color.Yellow;
+                        toolStripStatusCurrentRecipe.Text = "未选择配方";
+                    }
+                }, null);
+            }
+
+            if (e.PropertyName == nameof(DataModel.SysAlarmSta))
+            {
+                _syncContext.Post(_ => {
+                    if (DataModel.Instance.SysAlarmSta)
+                    {
+                        toolStripStatusLabelAlarm.BackColor = Color.Red;
+                    }
+                    else
+                    {
+                        toolStripStatusLabelAlarm.BackColor = Color.LimeGreen;
+                    }
+                   
+                }, null);
+            }
+            if (e.PropertyName == nameof(DataModel.SysAlarmStalog))
+            {
+                _syncContext.Post(_ => {
+                    if(DataModel.Instance.SysAlarmStalog != null && DataModel.Instance.SysAlarmStalog != "")
+                    {
+                        toolStripStatusLabelAlarm.Text = "报警:" + DataModel.Instance.SysAlarmStalog;
+                    }
+                    else 
+                    {
+                        toolStripStatusLabelAlarm.Text = "未异常";
+                    }
+
+                }, null);
+            }
+
+
+        }
+
+        private void InitMainForm()
+        {
+            SystemConfiguration.Instance.JobConfig.CurPPtoolName = DataModel.Instance.CurPPtoolName;
+            toolLabelPPtoolName.Text = "当前吸嘴:" + DataModel.Instance.CurPPtoolName;
+
+            string description2 = DataModel.Instance.SysRunSta.GetDescription();
+            toolStripStatusLabelRunStatus.Text = description2;
+            if (DataModel.Instance.SysRunSta == EnumProductRunStat.Stop || DataModel.Instance.SysRunSta == EnumProductRunStat.UserAbort)
+            {
+                toolStripStatusLabelRunStatus.BackColor = Color.Red;
+            }
+            else if (DataModel.Instance.SysRunSta == EnumProductRunStat.AutoRun || DataModel.Instance.SysRunSta == EnumProductRunStat.Completed)
+            {
+                toolStripStatusLabelRunStatus.BackColor = Color.LimeGreen;
+            }
+            else if (DataModel.Instance.SysRunSta == EnumProductRunStat.NoProd || DataModel.Instance.SysRunSta == EnumProductRunStat.AutoPause || DataModel.Instance.SysRunSta == EnumProductRunStat.StepPause)
+            {
+                toolStripStatusLabelRunStatus.BackColor = Color.Yellow;
+            }
+            if (DataModel.Instance.SysRunSta == EnumProductRunStat.NoProd)
+            {
+                toolStripStatusCurrentRecipe.BackColor = Color.Yellow;
+                toolStripStatusCurrentRecipe.Text = "未选择配方";
+            }
+
+            if (DataModel.Instance.SysAlarmSta)
+            {
+                toolStripStatusLabelAlarm.BackColor = Color.Red;
+            }
+            else
+            {
+                toolStripStatusLabelAlarm.BackColor = Color.LimeGreen;
+            }
+
+            if (DataModel.Instance.SysAlarmStalog != null && DataModel.Instance.SysAlarmStalog != "")
+            {
+                toolStripStatusLabelAlarm.Text = "报警:" + DataModel.Instance.SysAlarmStalog;
+            }
+            else
+            {
+                toolStripStatusLabelAlarm.Text = "未异常";
+            }
+
+
+        }
+
+
+        private void InitializeVisualForm()
+        {
+            
+            CameraForm = CameraWindowForm.Instance;
+            FrmAlarm alarmFrmInstance = FrmAlarm.Instance;
+        }
+
+        /// <summary>
+        /// STAGE
+        /// </summary>
+        private IStageController _stageEngine
+        {
+            get { return StageManager.Instance.GetCurrentController(); }
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            FrmInitialize startFrom = new FrmInitialize(this);
+            if (startFrom.ShowDialog(this) == DialogResult.No)
+            {
+                Application.Exit();
+                return;
+            }
+            //释放窗体资源
+            startFrom.Dispose();
+            startFrom = null;
+
+            UpdataControlsEnable();
+            Login login = new Login();
+            if (login.ShowDialog() != DialogResult.OK)
+            {
+                Application.Exit();
+                return;
+            }
+            //释放窗体资源
+            login.Dispose();
+            login = null;
+            UpdateAccessLevel();
+            InitMainForm();
+            if (WarningBox.FormShow("动作确认？", "是否回轴原点？", "提示") == 1)
+            {
+                try
+                {
+                    CreateWaitDialog();
+                    //_stageEngine[EnumStageAxis.ESZ].Home();
+
+                    _stageEngine[EnumStageAxis.ESZ].MoveAbsoluteSync(0);
+                    _stageEngine[EnumStageAxis.NeedleZ].Home();
+                    //_stageEngine[EnumStageAxis.WaferTableY].Home();
+                    //_stageEngine[EnumStageAxis.WaferTableX].Home();
+                    _stageEngine[EnumStageAxis.WaferTableZ].Home();
+                    //_stageEngine[EnumStageAxis.SubmountPPZ].Home();
+                    //_stageEngine[EnumStageAxis.SubmountPPT].Home();
+                    CloseWaitDialog();
+                }
+                catch (Exception ex)
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "轴回原点异常！", ex);
+                    CloseWaitDialog();
+                }
+
+            }
+            this._clockTimer = new System.Windows.Forms.Timer();
+            this._clockTimer.Enabled = true;
+            //this._clockTimer.SynchronizingObject = this;
+            //this._clockTimer.Elapsed += new System.Timers.ElapsedEventHandler(this.ClockTimerElapsedEventHandler);
+            this._clockTimer.Tick += new System.EventHandler(this.ClockTimerElapsedEventHandler);
+            //定时刷新状态
+            this.toolStripStatusLabelRunTime.Text = $"设备已运行：0 分钟";
+            //_refreshRunTimeSpanTimer.AutoReset = true;
+            _refreshRunTimeSpanTimer.Interval = 60000;
+            //_refreshRunTimeSpanTimer.Elapsed += OnTimerElapsedEvt;
+            _refreshRunTimeSpanTimer.Tick += OnTimerElapsedEvt;
+            _refreshRunTimeSpanTimer.Start();
+        }
+
+        /// <summary>
+        /// 系统时间更新
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClockTimerElapsedEventHandler(object sender, System.EventArgs e)
+        {
+            DateTime time = DateTime.Now;
+            this.toolStripStatusLabelNowTime.Text = time.ToShortDateString() +"  "+ time.ToLongTimeString();
+        }
+        private int _systemRunTimeMin = 0;
+        private void OnTimerElapsedEvt(object sender, System.EventArgs e)
+        {
+            try
+            {
+                _systemRunTimeMin++;
+                this.toolStripStatusLabelRunTime.Text = $"设备已运行：{_systemRunTimeMin} 分钟";
+            }
+            finally
+            {
+            }
+        }
+        private void toolStripBtnStageControl_Click(object sender, EventArgs e)
+        {
+            FrmStageControl form = (Application.OpenForms["FrmStageControl"]) as FrmStageControl;
+            if (form == null)
+            {
+                form = new FrmStageControl();
+                form.Location = this.PointToScreen(new Point(1550, 150));
+                form.Owner = this.FindForm();
+                //lightform.StartPosition = FormStartPosition.CenterScreen;
+                LogRecorder.RecordUserOperationLog($"打开轴控制页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活轴控制页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+            //FrmStageAxisMoveControl form1 = (Application.OpenForms["FrmStageAxisMoveControl"]) as FrmStageAxisMoveControl;
+            //if (form1 == null)
+            //{
+            //    form1 = new FrmStageAxisMoveControl();
+            //    form1.Location = this.PointToScreen(new Point(1550, 500));
+            //    //form1.ShowLocation(new Point(1550, 600));
+            //    form1.Owner = this.FindForm();
+            //    form1.Show();
+            //}
+            //else
+            //{
+            //    form1.Activate();
+            //}
+        }
+
+
+        private void toolStripBtnCameraControl_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CameraWindowGUI.Instance != null)
+            {
+                CameraWindowGUI camera = new CameraWindowGUI();
+                camera.InitVisualControl();
+                CameraWindowForm.Instance.InitializeWindow(camera);
+                int CurrentCameraNum = CameraWindowGUI.Instance.CurrentCameraNum;
+
+                CameraWindowGUI.Instance.Size = new Size(909, 755);
+                CameraWindowGUI.Instance.SelectCamera(CurrentCameraNum);
+                CameraWindowForm.Instance.Size = new System.Drawing.Size(933, 800);
+                CameraWindowForm.Instance.ShowLocation(new Point(100, 200));
+                CameraWindowForm.Instance.ControlBox = true;
+                CameraForm.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开相机页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                CameraForm.Show();
+            }
+            else
+            {
+
+                CameraWindowGUI camera = new CameraWindowGUI();
+                camera.InitVisualControl();
+                CameraWindowForm.Instance.InitializeWindow(camera);
+                CameraWindowForm.Instance.Size = new System.Drawing.Size(933, 800);
+                CameraWindowForm.Instance.ShowLocation(new Point(100, 200));
+                CameraWindowForm.Instance.ControlBox = true;
+                CameraForm.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开相机页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                CameraForm.Show();
+
+            }
+        }
+
+        private void 新建ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void 编辑ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                CreateWaitDialog();
+                FrmRecipePrograming form = (Application.OpenForms["FrmRecipePrograming"]) as FrmRecipePrograming;
+                if (form == null)
+                {
+                    form = new FrmRecipePrograming();
+                    //form.Location = this.PointToScreen(new Point(0, 350));
+                    form.Location = new Point(100, 120);
+                    form.Owner = this.FindForm();
+                    LogRecorder.RecordUserOperationLog($"打开配方编辑页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                    form.Show(this);
+                }
+                else
+                {
+                    LogRecorder.RecordUserOperationLog($"激活配方编辑页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                    form.Activate();
+                }
+
+                
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                CloseWaitDialog();
+            }
+        }
+
+        private void 自动校准ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.AutoRun();
+        }
+
+        private void 系统初始化ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //_systemConfig.SaveConfig();
+            //HardwareConfiguration.Instance.SaveConfig();
+            //SystemCalibration.Instance.Initialization();
+        }
+
+        private void toolStripBtnLightControl_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (toolStripBtnLightControl.Checked)
+            //{
+            //    string name = "榜头相机识别";
+            //    string title = "";
+            //    VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+
+            //    visualMatch.InitVisualControl(CameraWindowGUI.Instance, BondCameraVisual);
+
+            //    MatchIdentificationParam param = new MatchIdentificationParam();
+            //    try
+            //    {
+            //        int REF = -1;
+            //        using (VisualControlForm VForm = VisualControlForm.Instance)
+            //        {
+            //            VForm.InitializeGui(visualMatch);
+
+            //            string hh = VForm.showMessage(Name, title, true);
+            //            if (hh == "next")
+            //            {
+            //                REF = 1;
+            //            }
+            //            else
+            //            {
+            //                REF = 0;
+            //            }
+            //        }
+            //        return REF;
+            //    }
+            //    catch
+            //    {
+            //        return -1;
+            //    }
+            //}
+        }
+
+        private void 自动生产ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            //ProductRunForm form = new ProductRunForm();
+            //form.Show();
+
+            ProductRunForm form = (Application.OpenForms["ProductRunForm"]) as ProductRunForm;
+            if (form == null)
+            {
+                form = new ProductRunForm();
+                //form.Location = this.PointToScreen(new Point(1550, 150));
+                form.Owner = this.FindForm();
+                //lightform.StartPosition = FormStartPosition.CenterScreen;
+
+                LogRecorder.RecordUserOperationLog($"打开自动生产页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+
+               
+            }
+            else
+            {
+
+                LogRecorder.RecordUserOperationLog($"激活自动生产页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+
+                
+            }
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F10)
+            {
+                //SingleStepRunUtility.Instance.Continue();
+            }
+        }
+
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            IOTestForm ioTestForm = new IOTestForm();
+            ioTestForm.Show();
+        }
+
+        private void iO测试ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IOTestForm ioTestForm = new IOTestForm();
+            ioTestForm.Show();
+        }
+
+        private void toolStripBtnCameraControl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripBtnLightControl_Click(object sender, EventArgs e)
+        {
+            FrmLightControl form = (Application.OpenForms["FrmLightControl"]) as FrmLightControl;
+            if (form == null)
+            {
+                form = new FrmLightControl();
+                form.Location = this.PointToScreen(new Point(1250, 150));
+                form.Owner = this.FindForm();
+                //lightform.StartPosition = FormStartPosition.CenterScreen;
+                LogRecorder.RecordUserOperationLog($"打开光源页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活光源页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                if (e.CloseReason == CloseReason.UserClosing)
+                {
+                    if (WarningBox.FormShow("确认关闭？", "确认退出软件？", "提示") == 0)
+                    {
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        SystemConfiguration.Instance.SaveConfig();
+                        
+                        e.Cancel = false;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+        }
+
+        private void 共晶台测试ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //PowerControlForm form = (Application.OpenForms["PowerControl"]) as PowerControlForm;
+            //if (form == null)
+            //{
+            //    form = new PowerControlForm();
+            //    form.Location = this.PointToScreen(new Point(700, 150));
+            //    form.ShowLocation(new Point(700, 150));
+            //    form.Owner = this.FindForm();
+            //    //lightform.StartPosition = FormStartPosition.CenterScreen;
+            //    form.Show(this);
+            //}
+            //else
+            //{
+            //    form.Activate();
+            //}
+        }
+
+        private void 单步ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //FrmSingleStepRun form = new FrmSingleStepRun();
+            FrmSingleStepRun2 form = (Application.OpenForms["FrmSingleStepRun2"]) as FrmSingleStepRun2;
+            if (form == null)
+            {
+                form = new FrmSingleStepRun2();
+                //form.Location = this.PointToScreen(new Point(1550, 150));
+                form.Owner = this.FindForm();
+                //lightform.StartPosition = FormStartPosition.CenterScreen;
+
+                LogRecorder.RecordUserOperationLog($"打开单步生产页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+
+                
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活单步生产页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+
+                form.Activate();
+
+                
+            }
+        }
+
+        private void pP工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //FrmPPTool frm = new FrmPPTool();
+            //frm.ShowDialog();
+            //frm.Dispose();
+
+            PPToolTeach form = (Application.OpenForms["PPToolTeach"]) as PPToolTeach;
+            if (form == null)
+            {
+                form = new PPToolTeach();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开PP工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活PP工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void 顶针工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //FrmEjectionSystemTool frm = new FrmEjectionSystemTool();
+            //frm.ShowDialog();
+            //frm.Dispose();
+
+            FrmEjectionSystemTool2 form = (Application.OpenForms["FrmEjectionSystemTool2"]) as FrmEjectionSystemTool2;
+            if (form == null)
+            {
+                form = new FrmEjectionSystemTool2();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+
+                LogRecorder.RecordUserOperationLog($"打开顶针工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活顶针工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+
+        }
+
+        private void 运动ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //FrmStageMaintain form = (Application.OpenForms["FrmStageMaintain"]) as FrmStageMaintain;
+            //if (form == null)
+            //{
+            //    form = new FrmStageMaintain();
+            //    form.Location = this.PointToScreen(new Point(500, 500));
+            //    form.Owner = this.FindForm();
+            //    form.Show(this);
+            //}
+            //else
+            //{
+            //    form.Activate();
+            //}
+
+            FrmStageControl2 form = (Application.OpenForms["FrmStageControl2"]) as FrmStageControl2;
+            if (form == null)
+            {
+                form = new FrmStageControl2();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开运动页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活运动页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void iOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmIOMaintain form = (Application.OpenForms["FrmIOMaintain"]) as FrmIOMaintain;
+            if (form == null)
+            {
+                form = new FrmIOMaintain();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开IO页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"打开IO页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void 学习ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.ManualRun(2);
+        }
+
+        private void 半自动ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.ManualRun(1);
+        }
+
+        private void chip吸嘴ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.ChipRun("UC");
+        }
+        
+        private void submount吸嘴ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //SystemCalibration.Instance.SubmountRun();
+        }
+
+        private void 创建ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BMCProcess.Instance.CreationProcess();
+        }
+
+        private void 运行ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BMCProcess.Instance.Run(_systemConfig.SystemCalibrationConfig.BMCtimes, _systemConfig.SystemCalibrationConfig.BMCdelaytime);
+        }
+
+        private void 系统配置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ParameterConfigForm form = new ParameterConfigForm();
+            LogRecorder.RecordUserOperationLog($"打开系统配置页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+            form.ShowDialog();
+            form.Dispose();
+        }
+
+        private void tsbtnStandby_Click(object sender, EventArgs e)
+        {
+            if (WarningBox.FormShow("动作确认", "是否移动到安全位？", "提示") == 1)
+            {
+                LogRecorder.RecordUserOperationLog($"移动到安全位置", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                PositioningSystem.Instance.BondMovetoSafeLocation();
+            }
+        }
+
+        private void toolStripBtnLogout_Click(object sender, EventArgs e)
+        {
+            if (WarningBox.FormShow("动作确认", "确认登出？ ", "提示") == 1)
+            {
+                //SwitchToMainFunctionalArea();
+                LogRecorder.RecordUserOperationLog($"打开登出页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                Login login = new Login();
+                if (login.ShowDialog() == DialogResult.OK)
+                {
+                    UpdateAccessLevel();
+                }
+                else
+                {
+                    Application.Exit();
+                    return;
+                }
+                //释放窗体资源
+                login.Dispose();
+            }
+        }
+
+        private void UpdataControlsEnable()
+        {
+            生产ToolStripMenuItem.Enabled = false;
+            新建ToolStripMenuItem1.Enabled = false;
+            单步ToolStripMenuItem.Enabled = false;
+            编程ToolStripMenuItem.Enabled = false;
+            编辑ToolStripMenuItem.Enabled = false;
+            系统ToolStripMenuItem.Enabled = false;
+            工具ToolStripMenuItem.Enabled = false;
+            维护ToolStripMenuItem.Enabled = false;
+            系统配置ToolStripMenuItem.Enabled = false;
+            pP工具ToolStripMenuItem.Enabled = false;
+            顶针工具ToolStripMenuItem.Enabled = false;
+            点胶工具ToolStripMenuItem.Enabled = false;
+            运动ToolStripMenuItem.Enabled = false;
+            iOToolStripMenuItem.Enabled = false;
+            用户管理ToolStripMenuItem.Enabled = false;
+            系统日志ToolStripMenuItem.Enabled = false;
+            toolStrip1.Enabled = false;
+            toolStripBtnLogout.Enabled = false;
+            toolStripBtnHome.Enabled = false;
+            tsbtnStandby.Enabled = false;
+            toolStripBtnCameraControl.Enabled = false;
+            toolStripBtnLightControl.Enabled = false;
+            toolStripButton4.Enabled = false;
+            toolStripBtnAlarm.Enabled = false;
+
+
+
+        }
+
+        private void SetLevel(List<FunctionRightsInfo> functionRights, Control control, string name)
+        {
+
+            var ret = functionRights.FirstOrDefault(i => i.FunctionInfoID.ToString() == name);
+            if (ret != null)
+            {
+                control.Enabled = ret.Visible;
+            }
+            else
+            {
+                control.Enabled = false;
+            }
+        }
+
+        private void SetLevel(List<FunctionRightsInfo> functionRights, ToolStripMenuItem control, string name)
+        {
+
+            var ret = functionRights.FirstOrDefault(i => i.FunctionInfoID.ToString() == name);
+            if (ret != null)
+            {
+                control.Enabled = ret.Visible;
+            }
+            else
+            {
+                control.Enabled = false;
+            }
+        }
+
+        private void SetLevel(List<FunctionRightsInfo> functionRights, ToolStripButton control, string name)
+        {
+
+            var ret = functionRights.FirstOrDefault(i => i.FunctionInfoID.ToString() == name);
+            if (ret != null)
+            {
+                control.Enabled = ret.Visible;
+            }
+            else
+            {
+                control.Enabled = false;
+            }
+        }
+
+        private void UpdateAccessLevel()
+        {
+            UpdataControlsEnable();
+            var functionRights = UserRightsManager.Instance.GetFunctionRightsInfoByRightsID(UserManager.Instance.CurrentUserType);
+            var ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "生产");
+            if (ret != null)
+            {
+                生产ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                生产ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "自动生产");
+            if (ret != null)
+            {
+                新建ToolStripMenuItem1.Enabled = ret.Visible;
+            }
+            else
+            {
+                新建ToolStripMenuItem1.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "单步生产");
+            if (ret != null)
+            {
+                单步ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                单步ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "编程");
+            if (ret != null)
+            {
+                编程ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                编程ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "编程");
+            if (ret != null)
+            {
+                编辑ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                编辑ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "系统");
+            if (ret != null)
+            {
+                系统ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                系统ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "工具");
+            if (ret != null)
+            {
+                工具ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                工具ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "维护");
+            if (ret != null)
+            {
+                维护ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                维护ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "系统配置");
+            if (ret != null)
+            {
+                系统配置ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                系统配置ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "PP工具");
+            if (ret != null)
+            {
+                pP工具ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                pP工具ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "顶针工具");
+            if (ret != null)
+            {
+                顶针工具ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                顶针工具ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "点胶工具");
+            if (ret != null)
+            {
+                点胶工具ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                点胶工具ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "运动");
+            if (ret != null)
+            {
+                运动ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                运动ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "IO");
+            if (ret != null)
+            {
+                iOToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                iOToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "用户管理");
+            if (ret != null)
+            {
+                用户管理ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                用户管理ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "系统日志");
+            if (ret != null)
+            {
+                系统日志ToolStripMenuItem.Enabled = ret.Visible;
+            }
+            else
+            {
+                系统日志ToolStripMenuItem.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "快捷菜单");
+            if (ret != null)
+            {
+                toolStrip1.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStrip1.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "登入");
+            if (ret != null)
+            {
+                toolStripBtnLogout.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripBtnLogout.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "回零");
+            if (ret != null)
+            {
+                toolStripBtnHome.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripBtnHome.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "回安全位置");
+            if (ret != null)
+            {
+                tsbtnStandby.Enabled = ret.Visible;
+            }
+            else
+            {
+                tsbtnStandby.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "相机");
+            if (ret != null)
+            {
+                toolStripBtnCameraControl.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripBtnCameraControl.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "光源");
+            if (ret != null)
+            {
+                toolStripBtnLightControl.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripBtnLightControl.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "轴移动");
+            if (ret != null)
+            {
+                toolStripButton4.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripButton4.Enabled = false;
+            }
+            ret = functionRights.FirstOrDefault(i => i.FunctionName.ToString() == "报警");
+            if (ret != null)
+            {
+                toolStripBtnAlarm.Enabled = ret.Visible;
+            }
+            else
+            {
+                toolStripBtnAlarm.Enabled = false;
+            }
+
+        }
+
+        private void toolStripBtnAlarm_Click(object sender, EventArgs e)
+        {
+            //FrmSingleStepRun form = new FrmSingleStepRun();
+            //FrmAlarm form = (Application.OpenForms["FrmAlarm"]) as FrmAlarm;
+            //if (form == null)
+            //{
+            //    form = FrmAlarm.Instance;
+            //    form.Owner = this.FindForm();
+            //    LogRecorder.RecordUserOperationLog($"打开报警页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+            //    form.Show(this);
+            //}
+            //else
+            //{
+            //    LogRecorder.RecordUserOperationLog($"激活报警页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+            //    form.Activate();
+            //}
+            FrmAlarmHistory form = (Application.OpenForms["FrmAlarmHistory"]) as FrmAlarmHistory;
+            if (form == null)
+            {
+                form = new FrmAlarmHistory();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开报警页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活报警页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void 共晶台校准ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.EutecticWeldingRun();
+        }
+
+        private void 单点控制ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IOTestForm ioTestForm = new IOTestForm();
+            ioTestForm.Show();
+        }
+
+        private void 点胶工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmEpoxtTool2 form = (Application.OpenForms["FrmEpoxtTool2"]) as FrmEpoxtTool2;
+            if (form == null)
+            {
+                form = new FrmEpoxtTool2();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开点胶工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活点胶工具页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void 手动创建ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BMCProcess.Instance.CreationProcess(2);
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton7_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripBtnHome_Click(object sender, EventArgs e)
+        {
+            if (WarningBox.FormShow("动作确认？", "是否进行系统初始化？", "提示") == 1)
+            {
+                try
+                {
+                    
+                    CreateWaitDialog();
+                    StageManager.Instance.GetCurrentController().Home();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    CloseWaitDialog();
+                }
+
+            }
+        }
+
+        private void test按钮ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            IOTestForm form = new IOTestForm();
+            form.Show();
+            //int mode = 1;
+            //if (mode == 0)
+            //{
+            //    string name = "榜头相机识别";
+            //    string title = "";
+            //    VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+            //    visualMatch.InitVisualControl(CameraWindowGUI.Instance, BondCameraVisual);
+
+            //    BondCameraVisual.SetLightintensity(_systemConfig.SystemCalibrationConfig.BondIdentifyBMCMatch);
+
+            //    visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.BondIdentifyBMCMatch);
+
+            //    int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+            //}
+            //else if (mode == 1)
+            //{
+            //    string name = "仰视相机识别";
+            //    string title = "";
+            //    VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+            //    visualMatch.InitVisualControl(CameraWindowGUI.Instance, UplookingCameraVisual);
+
+            //    visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.UplookingIdentifyBMCMatch);
+
+            //    int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+            //}
+            //else if (mode == 2)
+            //{
+            //    string name = "晶圆相机识别";
+            //    string title = "";
+            //    VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+            //    visualMatch.InitVisualControl(CameraWindowGUI.Instance, WaferCameraVisual);
+
+            //    visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.WaferIdentifyWaferOrigionMatch);
+
+            //    int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+            //}
+
+        }
+
+        private void t轴校准ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //吸嘴旋转补偿
+            CalibrationAlgorithms PPCalibration = new CalibrationAlgorithms();
+
+            PointF point1 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.Y);
+            PointF point2 = new PointF((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.X, (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.Y);
+
+            PointF point4 = new PointF(((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.X - (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.X),((float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate1.Y - (float)_systemConfig.CalibrationConfig.ChipPPPosCompensateCoordinate2.Y));
+
+            PPCalibration.PPRotateXYDeviationParamCal(point1, point2, 0, 180);
+
+
+            double Angle = PositioningSystem.Instance.ReadCurrentStagePosition(EnumStageAxis.ChipPPT);
+
+            if (Math.Abs(Angle) > 0.1)
+            {
+                //PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, -Angle, EnumCoordSetType.Absolute);
+
+                PointF point3 = PPCalibration.PPXYDeviationCal((float)0, (float)-Angle);
+                XYZTCoordinateConfig offset = new XYZTCoordinateConfig();
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+
+                double[] target1 = new double[2];
+                target1[0] = point3.X;
+                target1[1] = point3.Y;
+
+                PositioningSystem.Instance.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Relative);
+            }
+
+
+           
+        }
+
+        private void 校验工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmCheck frm = new FrmCheck();
+            frm.Show();
+        }
+
+        private void 校准台ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmCalibrationTable frm = new FrmCalibrationTable();
+            frm.ShowDialog();
+        }
+
+        private void 压力校准工具ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PressureCurveForm form = (Application.OpenForms["PressureCurveForm"]) as PressureCurveForm;
+            if (form == null)
+            {
+                form = new PressureCurveForm();
+                form.Location = this.PointToScreen(new Point(500, 500));
+                form.Owner = this.FindForm();
+                form.Show(this);
+            }
+            else
+            {
+                form.Activate();
+            }
+        }
+
+        private void 运行ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.Run(10, 2000);
+        }
+
+        private void 到安全位置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.BondToSafeAsync();
+        }
+
+        private void 到测力位置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ZRProcess.Instance.BondToPressureTableAsync();
+        }
+
+        private void 校准台校准ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemCalibration.Instance.CalibrationTableRun();
+        }
+
+        private void 用户管理ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmUserMangement form = (Application.OpenForms["FrmUserMangement"]) as FrmUserMangement;
+            if (form == null)
+            {
+                form = new FrmUserMangement();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开用户管理页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活用户管理页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        private void 系统日志ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmLog form = (Application.OpenForms["FrmLog"]) as FrmLog;
+            if (form == null)
+            {
+                form = new FrmLog();
+                form.Location = this.PointToScreen(new Point(300, 300));
+                form.Owner = this.FindForm();
+                LogRecorder.RecordUserOperationLog($"打开系统日志页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Show(this);
+            }
+            else
+            {
+                LogRecorder.RecordUserOperationLog($"激活系统日志页面", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+                form.Activate();
+            }
+        }
+
+        //private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    int mode = 0;
+        //    if(mode == 0)
+        //    {
+        //        string name = "榜头相机识别";
+        //        string title = "";
+        //        VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+        //        visualMatch.InitVisualControl(CameraWindowGUI.Instance, BondCameraVisual);
+
+        //        visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.BondIdentifyBMCMatch);
+
+        //        int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+        //    }
+        //    else if(mode == 1)
+        //    {
+        //        string name = "仰视相机识别";
+        //        string title = "";
+        //        VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+        //        visualMatch.InitVisualControl(CameraWindowGUI.Instance, UplookingCameraVisual);
+
+        //        visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.UplookingIdentifyBMCMatch);
+
+        //        int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+        //    }
+        //    else if (mode == 2)
+        //    {
+        //        string name = "晶圆相机识别";
+        //        string title = "";
+        //        VisualMatchControlGUI visualMatch = new VisualMatchControlGUI();
+        //        visualMatch.InitVisualControl(CameraWindowGUI.Instance, WaferCameraVisual);
+
+        //        visualMatch.SetVisualParam(_systemConfig.SystemCalibrationConfig.WaferIdentifyWaferOrigionMatch);
+
+        //        int Done = SystemCalibration.Instance.ShowVisualForm(visualMatch, name, title);
+        //    }
+
+
+        //}
+    }
+}
