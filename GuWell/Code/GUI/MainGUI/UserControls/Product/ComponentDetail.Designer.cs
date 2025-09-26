@@ -106,6 +106,7 @@ namespace MainGUI.UserControls.Product
             this.label42 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label33 = new System.Windows.Forms.Label();
+            this.ckbAlignModule = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.teMaterialName.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teRowCount.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teColumnCount.Properties)).BeginInit();
@@ -556,9 +557,9 @@ namespace MainGUI.UserControls.Product
             this.groupBox1.Controls.Add(this.label34);
             this.groupBox1.Controls.Add(this.teSlowTravelBeforePickupMM);
             this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Location = new System.Drawing.Point(25, 311);
+            this.groupBox1.Location = new System.Drawing.Point(25, 351);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(546, 252);
+            this.groupBox1.Size = new System.Drawing.Size(546, 223);
             this.groupBox1.TabIndex = 108;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "吸嘴工作高度";
@@ -694,6 +695,7 @@ namespace MainGUI.UserControls.Product
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.ckbAlignModule);
             this.groupBox3.Controls.Add(this.teSMPitchColumnMM);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.teSMRowCount);
@@ -714,7 +716,7 @@ namespace MainGUI.UserControls.Product
             this.groupBox3.Controls.Add(this.label42);
             this.groupBox3.Location = new System.Drawing.Point(25, 191);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(546, 112);
+            this.groupBox3.Size = new System.Drawing.Size(546, 154);
             this.groupBox3.TabIndex = 109;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "基板基本参数";
@@ -881,7 +883,7 @@ namespace MainGUI.UserControls.Product
             this.groupBox4.Controls.Add(this.cbNeedleName);
             this.groupBox4.Controls.Add(this.label32);
             this.groupBox4.Controls.Add(this.label31);
-            this.groupBox4.Location = new System.Drawing.Point(26, 566);
+            this.groupBox4.Location = new System.Drawing.Point(26, 596);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(546, 103);
             this.groupBox4.TabIndex = 109;
@@ -897,6 +899,16 @@ namespace MainGUI.UserControls.Product
             this.label33.TabIndex = 21;
             this.label33.Text = "芯片容器类型";
             // 
+            // ckbAlignModule
+            // 
+            this.ckbAlignModule.AutoSize = true;
+            this.ckbAlignModule.Location = new System.Drawing.Point(85, 114);
+            this.ckbAlignModule.Name = "ckbAlignModule";
+            this.ckbAlignModule.Size = new System.Drawing.Size(96, 16);
+            this.ckbAlignModule.TabIndex = 59;
+            this.ckbAlignModule.Text = "模块位置校正";
+            this.ckbAlignModule.UseVisualStyleBackColor = true;
+            // 
             // ComponentDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -911,7 +923,7 @@ namespace MainGUI.UserControls.Product
             this.Controls.Add(this.teMaterialName);
             this.Controls.Add(this.label1);
             this.Name = "ComponentDetail";
-            this.Size = new System.Drawing.Size(590, 681);
+            this.Size = new System.Drawing.Size(590, 710);
             this.Load += new System.EventHandler(this.ComponentDetail_Load);
             ((System.ComponentModel.ISupportInitialize)(this.teMaterialName.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teRowCount.Properties)).EndInit();
@@ -1038,5 +1050,6 @@ namespace MainGUI.UserControls.Product
         private DevExpress.XtraEditors.SpinEdit sePlaceDelayMs;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox ckbAlignModule;
     }
 }

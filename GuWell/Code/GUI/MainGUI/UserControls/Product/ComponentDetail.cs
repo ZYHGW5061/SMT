@@ -129,11 +129,57 @@ namespace MainGUI.UserControls.Product
                 return ret;
             }
         }
+
+        public float CurrentSlowTravelBeforePickupMM
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowTravelBeforePickupMM.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowSpeedBeforePickup
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowSpeedBeforePickup.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowTravelAfterPickupMM
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowTravelAfterPickupMM.Text, out ret);
+                return ret;
+            }
+        }
+        public float CurrentSlowSpeedAfterPickup
+        {
+            get
+            {
+                var ret = 0f;
+                float.TryParse(teSlowSpeedAfterPickup.Text, out ret);
+                return ret;
+            }
+        }
+
         public string CurrentRelatedPPTool
         {
             get
             {
                 return cbPPName.Text;
+            }
+        }
+
+        public bool CurrentIsPositionModules
+        {
+            get
+            {
+                return ckbAlignModule.Checked;
             }
         }
 
@@ -212,6 +258,7 @@ namespace MainGUI.UserControls.Product
                 teSMHeightMM.Text = substrateInfo.HeightMM.ToString();
                 teSMThicknessMM.Text = substrateInfo.ThicknessMM.ToString();
                 teSMWaferThickness.Text = substrateInfo.WaferThickness.ToString();
+                ckbAlignModule.Checked = substrateInfo.IsPositionModules;
 
                 //teSubmountPPPickPos.Text = submountInfo.SubmountPPPickPos.ToString();
                 //teSubmountPPPlacePos.Text = submountInfo.SubmountPPPlacePos.ToString();

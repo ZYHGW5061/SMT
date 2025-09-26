@@ -140,6 +140,9 @@
             this.LaserValue = new System.Windows.Forms.NumericUpDown();
             this.PressureValue1 = new System.Windows.Forms.NumericUpDown();
             this.PressureValue2 = new System.Windows.Forms.NumericUpDown();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.backstageViewClientControl8 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
             this.backstageViewTabItemInputIO = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
             this.backstageViewItemSeparator1 = new DevExpress.XtraBars.Ribbon.BackstageViewItemSeparator();
@@ -158,6 +161,18 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
             this.backstageViewClientControl3 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
+            this.ChipPPtoolVaccumSwitch = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.EpoxtUp = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.EpoxtDown = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.TransportUp = new System.Windows.Forms.Label();
+            this.TransportDown = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.ChipPPtoolVaccumNormally = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.backstageViewControl1)).BeginInit();
             this.backstageViewControl1.SuspendLayout();
             this.backstageViewClientControl1.SuspendLayout();
@@ -204,8 +219,8 @@
             this.backstageViewControl1.Items.Add(this.backstageViewTabItem5);
             this.backstageViewControl1.Location = new System.Drawing.Point(2, 2);
             this.backstageViewControl1.Name = "backstageViewControl1";
-            this.backstageViewControl1.SelectedTab = this.backstageViewTabItem5;
-            this.backstageViewControl1.SelectedTabIndex = 4;
+            this.backstageViewControl1.SelectedTab = this.backstageViewTabItemInputIO;
+            this.backstageViewControl1.SelectedTabIndex = 0;
             this.backstageViewControl1.Size = new System.Drawing.Size(996, 614);
             this.backstageViewControl1.TabIndex = 0;
             this.backstageViewControl1.Text = "backstageViewControl1";
@@ -216,7 +231,7 @@
             this.backstageViewClientControl1.Controls.Add(this.panelControl2);
             this.backstageViewClientControl1.Location = new System.Drawing.Point(142, 0);
             this.backstageViewClientControl1.Name = "backstageViewClientControl1";
-            this.backstageViewClientControl1.Size = new System.Drawing.Size(791, 614);
+            this.backstageViewClientControl1.Size = new System.Drawing.Size(854, 614);
             this.backstageViewClientControl1.TabIndex = 1;
             // 
             // panelControl2
@@ -225,7 +240,7 @@
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl2.Location = new System.Drawing.Point(0, 0);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(791, 614);
+            this.panelControl2.Size = new System.Drawing.Size(854, 614);
             this.panelControl2.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -265,6 +280,16 @@
             this.tableLayoutPanel1.Controls.Add(this.label224, 1, 13);
             this.tableLayoutPanel1.Controls.Add(this.label225, 1, 14);
             this.tableLayoutPanel1.Controls.Add(this.EpoxtREADY, 0, 14);
+            this.tableLayoutPanel1.Controls.Add(this.EpoxtUp, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label9, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.EpoxtDown, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label11, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.TransportUp, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.TransportDown, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label14, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label16, 3, 3);
+            this.tableLayoutPanel1.Controls.Add(this.ChipPPtoolVaccumNormally, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label19, 3, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(2, 2);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
@@ -286,7 +311,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.25F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(787, 610);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(850, 610);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // ChipPPVaccumStatus
@@ -297,7 +322,7 @@
             this.ChipPPVaccumStatus.ForeColor = System.Drawing.Color.DarkGray;
             this.ChipPPVaccumStatus.Location = new System.Drawing.Point(3, 0);
             this.ChipPPVaccumStatus.Name = "ChipPPVaccumStatus";
-            this.ChipPPVaccumStatus.Size = new System.Drawing.Size(33, 38);
+            this.ChipPPVaccumStatus.Size = new System.Drawing.Size(36, 38);
             this.ChipPPVaccumStatus.TabIndex = 0;
             this.ChipPPVaccumStatus.Text = "●";
             // 
@@ -306,9 +331,9 @@
             this.labelChipPPVaccumStatus.AutoSize = true;
             this.labelChipPPVaccumStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelChipPPVaccumStatus.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelChipPPVaccumStatus.Location = new System.Drawing.Point(42, 0);
+            this.labelChipPPVaccumStatus.Location = new System.Drawing.Point(45, 0);
             this.labelChipPPVaccumStatus.Name = "labelChipPPVaccumStatus";
-            this.labelChipPPVaccumStatus.Size = new System.Drawing.Size(348, 38);
+            this.labelChipPPVaccumStatus.Size = new System.Drawing.Size(376, 38);
             this.labelChipPPVaccumStatus.TabIndex = 1;
             this.labelChipPPVaccumStatus.Text = "芯片吸嘴真空状态";
             this.labelChipPPVaccumStatus.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -321,7 +346,7 @@
             this.TransportInPlaceSignal1.ForeColor = System.Drawing.Color.DarkGray;
             this.TransportInPlaceSignal1.Location = new System.Drawing.Point(3, 38);
             this.TransportInPlaceSignal1.Name = "TransportInPlaceSignal1";
-            this.TransportInPlaceSignal1.Size = new System.Drawing.Size(33, 38);
+            this.TransportInPlaceSignal1.Size = new System.Drawing.Size(36, 38);
             this.TransportInPlaceSignal1.TabIndex = 0;
             this.TransportInPlaceSignal1.Text = "●";
             // 
@@ -330,9 +355,9 @@
             this.labelSubmountPPVaccumStatus.AutoSize = true;
             this.labelSubmountPPVaccumStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelSubmountPPVaccumStatus.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSubmountPPVaccumStatus.Location = new System.Drawing.Point(42, 38);
+            this.labelSubmountPPVaccumStatus.Location = new System.Drawing.Point(45, 38);
             this.labelSubmountPPVaccumStatus.Name = "labelSubmountPPVaccumStatus";
-            this.labelSubmountPPVaccumStatus.Size = new System.Drawing.Size(348, 38);
+            this.labelSubmountPPVaccumStatus.Size = new System.Drawing.Size(376, 38);
             this.labelSubmountPPVaccumStatus.TabIndex = 1;
             this.labelSubmountPPVaccumStatus.Text = "传送轨道到位信号1";
             this.labelSubmountPPVaccumStatus.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -345,7 +370,7 @@
             this.TransportInPlaceSignal2.ForeColor = System.Drawing.Color.DarkGray;
             this.TransportInPlaceSignal2.Location = new System.Drawing.Point(3, 76);
             this.TransportInPlaceSignal2.Name = "TransportInPlaceSignal2";
-            this.TransportInPlaceSignal2.Size = new System.Drawing.Size(33, 38);
+            this.TransportInPlaceSignal2.Size = new System.Drawing.Size(36, 38);
             this.TransportInPlaceSignal2.TabIndex = 0;
             this.TransportInPlaceSignal2.Text = "●";
             // 
@@ -354,9 +379,9 @@
             this.labelEutecticComplete.AutoSize = true;
             this.labelEutecticComplete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelEutecticComplete.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelEutecticComplete.Location = new System.Drawing.Point(42, 114);
+            this.labelEutecticComplete.Location = new System.Drawing.Point(45, 114);
             this.labelEutecticComplete.Name = "labelEutecticComplete";
-            this.labelEutecticComplete.Size = new System.Drawing.Size(348, 38);
+            this.labelEutecticComplete.Size = new System.Drawing.Size(376, 38);
             this.labelEutecticComplete.TabIndex = 1;
             this.labelEutecticComplete.Text = "传送轨道到位信号3";
             this.labelEutecticComplete.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -366,9 +391,9 @@
             this.labelEutecticError.AutoSize = true;
             this.labelEutecticError.Dock = System.Windows.Forms.DockStyle.Fill;
             this.labelEutecticError.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelEutecticError.Location = new System.Drawing.Point(42, 76);
+            this.labelEutecticError.Location = new System.Drawing.Point(45, 76);
             this.labelEutecticError.Name = "labelEutecticError";
-            this.labelEutecticError.Size = new System.Drawing.Size(348, 38);
+            this.labelEutecticError.Size = new System.Drawing.Size(376, 38);
             this.labelEutecticError.TabIndex = 1;
             this.labelEutecticError.Text = "传送轨道到位信号2";
             this.labelEutecticError.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -381,7 +406,7 @@
             this.TransportInPlaceSignal3.ForeColor = System.Drawing.Color.DarkGray;
             this.TransportInPlaceSignal3.Location = new System.Drawing.Point(3, 114);
             this.TransportInPlaceSignal3.Name = "TransportInPlaceSignal3";
-            this.TransportInPlaceSignal3.Size = new System.Drawing.Size(33, 38);
+            this.TransportInPlaceSignal3.Size = new System.Drawing.Size(36, 38);
             this.TransportInPlaceSignal3.TabIndex = 0;
             this.TransportInPlaceSignal3.Text = "●";
             // 
@@ -389,265 +414,309 @@
             // 
             this.SafeDoorSensor2.AutoSize = true;
             this.SafeDoorSensor2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SafeDoorSensor2.Enabled = false;
             this.SafeDoorSensor2.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SafeDoorSensor2.ForeColor = System.Drawing.Color.DarkGray;
             this.SafeDoorSensor2.Location = new System.Drawing.Point(3, 228);
             this.SafeDoorSensor2.Name = "SafeDoorSensor2";
-            this.SafeDoorSensor2.Size = new System.Drawing.Size(33, 38);
+            this.SafeDoorSensor2.Size = new System.Drawing.Size(36, 38);
             this.SafeDoorSensor2.TabIndex = 0;
             this.SafeDoorSensor2.Text = "●";
+            this.SafeDoorSensor2.Visible = false;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label5.Enabled = false;
             this.label5.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(42, 228);
+            this.label5.Location = new System.Drawing.Point(45, 228);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(348, 38);
+            this.label5.Size = new System.Drawing.Size(376, 38);
             this.label5.TabIndex = 1;
             this.label5.Text = "安全门信号2";
             this.label5.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label5.Visible = false;
             // 
             // SafeDoorSensor1
             // 
             this.SafeDoorSensor1.AutoSize = true;
             this.SafeDoorSensor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SafeDoorSensor1.Enabled = false;
             this.SafeDoorSensor1.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SafeDoorSensor1.ForeColor = System.Drawing.Color.DarkGray;
             this.SafeDoorSensor1.Location = new System.Drawing.Point(3, 190);
             this.SafeDoorSensor1.Name = "SafeDoorSensor1";
-            this.SafeDoorSensor1.Size = new System.Drawing.Size(33, 38);
+            this.SafeDoorSensor1.Size = new System.Drawing.Size(36, 38);
             this.SafeDoorSensor1.TabIndex = 0;
             this.SafeDoorSensor1.Text = "●";
+            this.SafeDoorSensor1.Visible = false;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Enabled = false;
             this.label2.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(42, 190);
+            this.label2.Location = new System.Drawing.Point(45, 190);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(348, 38);
+            this.label2.Size = new System.Drawing.Size(376, 38);
             this.label2.TabIndex = 1;
             this.label2.Text = "安全门信号1";
             this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label2.Visible = false;
             // 
             // WaferInPlaceSignal1
             // 
             this.WaferInPlaceSignal1.AutoSize = true;
             this.WaferInPlaceSignal1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WaferInPlaceSignal1.Enabled = false;
             this.WaferInPlaceSignal1.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WaferInPlaceSignal1.ForeColor = System.Drawing.Color.DarkGray;
             this.WaferInPlaceSignal1.Location = new System.Drawing.Point(3, 152);
             this.WaferInPlaceSignal1.Name = "WaferInPlaceSignal1";
-            this.WaferInPlaceSignal1.Size = new System.Drawing.Size(33, 38);
+            this.WaferInPlaceSignal1.Size = new System.Drawing.Size(36, 38);
             this.WaferInPlaceSignal1.TabIndex = 2;
             this.WaferInPlaceSignal1.Text = "●";
+            this.WaferInPlaceSignal1.Visible = false;
             // 
             // label194
             // 
             this.label194.AutoSize = true;
             this.label194.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label194.Enabled = false;
             this.label194.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label194.Location = new System.Drawing.Point(42, 152);
+            this.label194.Location = new System.Drawing.Point(45, 152);
             this.label194.Name = "label194";
-            this.label194.Size = new System.Drawing.Size(348, 38);
+            this.label194.Size = new System.Drawing.Size(376, 38);
             this.label194.TabIndex = 3;
             this.label194.Text = "晶圆盘拉到位信号";
             this.label194.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label194.Visible = false;
             // 
             // label212
             // 
             this.label212.AutoSize = true;
             this.label212.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label212.Enabled = false;
             this.label212.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label212.Location = new System.Drawing.Point(42, 266);
+            this.label212.Location = new System.Drawing.Point(45, 266);
             this.label212.Name = "label212";
-            this.label212.Size = new System.Drawing.Size(348, 38);
+            this.label212.Size = new System.Drawing.Size(376, 38);
             this.label212.TabIndex = 5;
             this.label212.Text = "胶针通电中";
             this.label212.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label212.Visible = false;
             // 
             // EpoxtPON
             // 
             this.EpoxtPON.AutoSize = true;
             this.EpoxtPON.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtPON.Enabled = false;
             this.EpoxtPON.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtPON.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtPON.Location = new System.Drawing.Point(3, 266);
             this.EpoxtPON.Name = "EpoxtPON";
-            this.EpoxtPON.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtPON.Size = new System.Drawing.Size(36, 38);
             this.EpoxtPON.TabIndex = 4;
             this.EpoxtPON.Text = "●";
+            this.EpoxtPON.Visible = false;
             // 
             // EpoxtDSO
             // 
             this.EpoxtDSO.AutoSize = true;
             this.EpoxtDSO.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtDSO.Enabled = false;
             this.EpoxtDSO.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtDSO.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtDSO.Location = new System.Drawing.Point(3, 304);
             this.EpoxtDSO.Name = "EpoxtDSO";
-            this.EpoxtDSO.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtDSO.Size = new System.Drawing.Size(36, 38);
             this.EpoxtDSO.TabIndex = 6;
             this.EpoxtDSO.Text = "●";
+            this.EpoxtDSO.Visible = false;
             // 
             // EpoxtEND
             // 
             this.EpoxtEND.AutoSize = true;
             this.EpoxtEND.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtEND.Enabled = false;
             this.EpoxtEND.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtEND.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtEND.Location = new System.Drawing.Point(3, 342);
             this.EpoxtEND.Name = "EpoxtEND";
-            this.EpoxtEND.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtEND.Size = new System.Drawing.Size(36, 38);
             this.EpoxtEND.TabIndex = 7;
             this.EpoxtEND.Text = "●";
+            this.EpoxtEND.Visible = false;
             // 
             // EpoxtERROR
             // 
             this.EpoxtERROR.AutoSize = true;
             this.EpoxtERROR.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtERROR.Enabled = false;
             this.EpoxtERROR.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtERROR.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtERROR.Location = new System.Drawing.Point(3, 380);
             this.EpoxtERROR.Name = "EpoxtERROR";
-            this.EpoxtERROR.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtERROR.Size = new System.Drawing.Size(36, 38);
             this.EpoxtERROR.TabIndex = 8;
             this.EpoxtERROR.Text = "●";
+            this.EpoxtERROR.Visible = false;
             // 
             // EpoxtALARM
             // 
             this.EpoxtALARM.AutoSize = true;
             this.EpoxtALARM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtALARM.Enabled = false;
             this.EpoxtALARM.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtALARM.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtALARM.Location = new System.Drawing.Point(3, 418);
             this.EpoxtALARM.Name = "EpoxtALARM";
-            this.EpoxtALARM.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtALARM.Size = new System.Drawing.Size(36, 38);
             this.EpoxtALARM.TabIndex = 9;
             this.EpoxtALARM.Text = "●";
+            this.EpoxtALARM.Visible = false;
             // 
             // EpoxtALARM2
             // 
             this.EpoxtALARM2.AutoSize = true;
             this.EpoxtALARM2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtALARM2.Enabled = false;
             this.EpoxtALARM2.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtALARM2.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtALARM2.Location = new System.Drawing.Point(3, 456);
             this.EpoxtALARM2.Name = "EpoxtALARM2";
-            this.EpoxtALARM2.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtALARM2.Size = new System.Drawing.Size(36, 38);
             this.EpoxtALARM2.TabIndex = 10;
             this.EpoxtALARM2.Text = "●";
+            this.EpoxtALARM2.Visible = false;
             // 
             // EpoxtRSM
             // 
             this.EpoxtRSM.AutoSize = true;
             this.EpoxtRSM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtRSM.Enabled = false;
             this.EpoxtRSM.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtRSM.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtRSM.Location = new System.Drawing.Point(3, 494);
             this.EpoxtRSM.Name = "EpoxtRSM";
-            this.EpoxtRSM.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtRSM.Size = new System.Drawing.Size(36, 38);
             this.EpoxtRSM.TabIndex = 11;
             this.EpoxtRSM.Text = "●";
+            this.EpoxtRSM.Visible = false;
             // 
             // lab123
             // 
             this.lab123.AutoSize = true;
             this.lab123.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lab123.Enabled = false;
             this.lab123.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lab123.Location = new System.Drawing.Point(42, 304);
+            this.lab123.Location = new System.Drawing.Point(45, 304);
             this.lab123.Name = "lab123";
-            this.lab123.Size = new System.Drawing.Size(348, 38);
+            this.lab123.Size = new System.Drawing.Size(376, 38);
             this.lab123.TabIndex = 12;
             this.lab123.Text = "胶针吐出中";
             this.lab123.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lab123.Visible = false;
             // 
             // label220
             // 
             this.label220.AutoSize = true;
             this.label220.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label220.Enabled = false;
             this.label220.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label220.Location = new System.Drawing.Point(42, 342);
+            this.label220.Location = new System.Drawing.Point(45, 342);
             this.label220.Name = "label220";
-            this.label220.Size = new System.Drawing.Size(348, 38);
+            this.label220.Size = new System.Drawing.Size(376, 38);
             this.label220.TabIndex = 13;
             this.label220.Text = "胶针吐出完成";
             this.label220.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label220.Visible = false;
             // 
             // label221
             // 
             this.label221.AutoSize = true;
             this.label221.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label221.Enabled = false;
             this.label221.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label221.Location = new System.Drawing.Point(42, 380);
+            this.label221.Location = new System.Drawing.Point(45, 380);
             this.label221.Name = "label221";
-            this.label221.Size = new System.Drawing.Size(348, 38);
+            this.label221.Size = new System.Drawing.Size(376, 38);
             this.label221.TabIndex = 14;
             this.label221.Text = "胶针错误";
             this.label221.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label221.Visible = false;
             // 
             // label222
             // 
             this.label222.AutoSize = true;
             this.label222.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label222.Enabled = false;
             this.label222.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label222.Location = new System.Drawing.Point(42, 418);
+            this.label222.Location = new System.Drawing.Point(45, 418);
             this.label222.Name = "label222";
-            this.label222.Size = new System.Drawing.Size(348, 38);
+            this.label222.Size = new System.Drawing.Size(376, 38);
             this.label222.TabIndex = 15;
             this.label222.Text = "胶针报警";
             this.label222.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label222.Visible = false;
             // 
             // label223
             // 
             this.label223.AutoSize = true;
             this.label223.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label223.Enabled = false;
             this.label223.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label223.Location = new System.Drawing.Point(42, 456);
+            this.label223.Location = new System.Drawing.Point(45, 456);
             this.label223.Name = "label223";
-            this.label223.Size = new System.Drawing.Size(348, 38);
+            this.label223.Size = new System.Drawing.Size(376, 38);
             this.label223.TabIndex = 16;
             this.label223.Text = "胶针报警2";
             this.label223.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label223.Visible = false;
             // 
             // label224
             // 
             this.label224.AutoSize = true;
             this.label224.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label224.Enabled = false;
             this.label224.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label224.Location = new System.Drawing.Point(42, 494);
+            this.label224.Location = new System.Drawing.Point(45, 494);
             this.label224.Name = "label224";
-            this.label224.Size = new System.Drawing.Size(348, 38);
+            this.label224.Size = new System.Drawing.Size(376, 38);
             this.label224.TabIndex = 17;
             this.label224.Text = "胶针余量报警";
             this.label224.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label224.Visible = false;
             // 
             // label225
             // 
             this.label225.AutoSize = true;
             this.label225.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label225.Enabled = false;
             this.label225.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label225.Location = new System.Drawing.Point(42, 532);
+            this.label225.Location = new System.Drawing.Point(45, 532);
             this.label225.Name = "label225";
-            this.label225.Size = new System.Drawing.Size(348, 38);
+            this.label225.Size = new System.Drawing.Size(376, 38);
             this.label225.TabIndex = 18;
             this.label225.Text = "胶针准备";
             this.label225.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label225.Visible = false;
             // 
             // EpoxtREADY
             // 
             this.EpoxtREADY.AutoSize = true;
             this.EpoxtREADY.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtREADY.Enabled = false;
             this.EpoxtREADY.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtREADY.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtREADY.Location = new System.Drawing.Point(3, 532);
             this.EpoxtREADY.Name = "EpoxtREADY";
-            this.EpoxtREADY.Size = new System.Drawing.Size(33, 38);
+            this.EpoxtREADY.Size = new System.Drawing.Size(36, 38);
             this.EpoxtREADY.TabIndex = 19;
             this.EpoxtREADY.Text = "●";
+            this.EpoxtREADY.Visible = false;
             // 
             // backstageViewClientControl2
             // 
@@ -714,6 +783,8 @@
             this.tableLayoutPanel2.Controls.Add(this.EpoxtTMS, 2, 10);
             this.tableLayoutPanel2.Controls.Add(this.EpoxtC_CNT, 2, 11);
             this.tableLayoutPanel2.Controls.Add(this.EpoxtRESET, 2, 12);
+            this.tableLayoutPanel2.Controls.Add(this.ChipPPtoolVaccumSwitch, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 1, 3);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
@@ -901,7 +972,7 @@
             this.label199.Name = "label199";
             this.label199.Size = new System.Drawing.Size(378, 38);
             this.label199.TabIndex = 14;
-            this.label199.Text = "传送轨道真空开关1";
+            this.label199.Text = "传送轨道真空开关";
             this.label199.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // label200
@@ -914,7 +985,7 @@
             this.label200.Name = "label200";
             this.label200.Size = new System.Drawing.Size(378, 38);
             this.label200.TabIndex = 15;
-            this.label200.Text = "传送轨道真空开关2";
+            this.label200.Text = "校准平台真空开关";
             this.label200.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // EjectionSystemVaccumSwitch
@@ -970,6 +1041,7 @@
             // WaferFingerCylinder
             // 
             this.WaferFingerCylinder.AutoSize = true;
+            this.WaferFingerCylinder.Enabled = false;
             this.WaferFingerCylinder.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WaferFingerCylinder.ForeColor = System.Drawing.Color.DarkGray;
             this.WaferFingerCylinder.Location = new System.Drawing.Point(3, 380);
@@ -978,11 +1050,13 @@
             this.WaferFingerCylinder.TabIndex = 3;
             this.WaferFingerCylinder.Tag = "Check";
             this.WaferFingerCylinder.Text = "●";
+            this.WaferFingerCylinder.Visible = false;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
             this.label18.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label18.Enabled = false;
             this.label18.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label18.ForeColor = System.Drawing.Color.Black;
             this.label18.Location = new System.Drawing.Point(45, 380);
@@ -991,10 +1065,12 @@
             this.label18.TabIndex = 7;
             this.label18.Text = "晶圆夹爪气缸";
             this.label18.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label18.Visible = false;
             // 
             // WaferClampCylinder
             // 
             this.WaferClampCylinder.AutoSize = true;
+            this.WaferClampCylinder.Enabled = false;
             this.WaferClampCylinder.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WaferClampCylinder.ForeColor = System.Drawing.Color.DarkGray;
             this.WaferClampCylinder.Location = new System.Drawing.Point(3, 418);
@@ -1003,11 +1079,13 @@
             this.WaferClampCylinder.TabIndex = 18;
             this.WaferClampCylinder.Tag = "Check";
             this.WaferClampCylinder.Text = "●";
+            this.WaferClampCylinder.Visible = false;
             // 
             // WaferCassetteCylinder
             // 
             this.WaferCassetteCylinder.AutoSize = true;
             this.WaferCassetteCylinder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WaferCassetteCylinder.Enabled = false;
             this.WaferCassetteCylinder.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WaferCassetteCylinder.ForeColor = System.Drawing.Color.DarkGray;
             this.WaferCassetteCylinder.Location = new System.Drawing.Point(3, 456);
@@ -1017,11 +1095,13 @@
             this.WaferCassetteCylinder.Tag = "Check";
             this.WaferCassetteCylinder.Text = "●";
             this.WaferCassetteCylinder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.WaferCassetteCylinder.Visible = false;
             // 
             // label201
             // 
             this.label201.AutoSize = true;
             this.label201.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label201.Enabled = false;
             this.label201.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label201.ForeColor = System.Drawing.Color.Black;
             this.label201.Location = new System.Drawing.Point(45, 418);
@@ -1030,11 +1110,13 @@
             this.label201.TabIndex = 20;
             this.label201.Text = "晶圆夹持气缸";
             this.label201.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label201.Visible = false;
             // 
             // label202
             // 
             this.label202.AutoSize = true;
             this.label202.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label202.Enabled = false;
             this.label202.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label202.ForeColor = System.Drawing.Color.Black;
             this.label202.Location = new System.Drawing.Point(45, 456);
@@ -1043,6 +1125,7 @@
             this.label202.TabIndex = 21;
             this.label202.Text = "晶圆抽匣气缸";
             this.label202.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label202.Visible = false;
             // 
             // WaferTableVaccumSwitch
             // 
@@ -1092,7 +1175,7 @@
             this.LabelWaffleTableVaccumSwitch.Name = "LabelWaffleTableVaccumSwitch";
             this.LabelWaffleTableVaccumSwitch.Size = new System.Drawing.Size(378, 38);
             this.LabelWaffleTableVaccumSwitch.TabIndex = 6;
-            this.LabelWaffleTableVaccumSwitch.Text = "载物台吸附开关";
+            this.LabelWaffleTableVaccumSwitch.Text = "静态华夫吸附开关";
             this.LabelWaffleTableVaccumSwitch.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.LabelWaffleTableVaccumSwitch.Click += new System.EventHandler(this.LabelWaffleTableVaccumSwitch_Click);
             // 
@@ -1174,6 +1257,7 @@
             // WaferCassetteLiftMotorBrake
             // 
             this.WaferCassetteLiftMotorBrake.AutoSize = true;
+            this.WaferCassetteLiftMotorBrake.Enabled = false;
             this.WaferCassetteLiftMotorBrake.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WaferCassetteLiftMotorBrake.ForeColor = System.Drawing.Color.DarkGray;
             this.WaferCassetteLiftMotorBrake.Location = new System.Drawing.Point(429, 152);
@@ -1182,10 +1266,12 @@
             this.WaferCassetteLiftMotorBrake.TabIndex = 22;
             this.WaferCassetteLiftMotorBrake.Tag = "Check";
             this.WaferCassetteLiftMotorBrake.Text = "●";
+            this.WaferCassetteLiftMotorBrake.Visible = false;
             // 
             // EjectionLiftMotorBrake
             // 
             this.EjectionLiftMotorBrake.AutoSize = true;
+            this.EjectionLiftMotorBrake.Enabled = false;
             this.EjectionLiftMotorBrake.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EjectionLiftMotorBrake.ForeColor = System.Drawing.Color.DarkGray;
             this.EjectionLiftMotorBrake.Location = new System.Drawing.Point(429, 190);
@@ -1194,11 +1280,13 @@
             this.EjectionLiftMotorBrake.TabIndex = 23;
             this.EjectionLiftMotorBrake.Tag = "Check";
             this.EjectionLiftMotorBrake.Text = "●";
+            this.EjectionLiftMotorBrake.Visible = false;
             // 
             // label203
             // 
             this.label203.AutoSize = true;
             this.label203.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label203.Enabled = false;
             this.label203.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label203.ForeColor = System.Drawing.Color.Black;
             this.label203.Location = new System.Drawing.Point(471, 152);
@@ -1207,11 +1295,13 @@
             this.label203.TabIndex = 24;
             this.label203.Text = "晶圆抽匣轴抱闸";
             this.label203.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label203.Visible = false;
             // 
             // label204
             // 
             this.label204.AutoSize = true;
             this.label204.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label204.Enabled = false;
             this.label204.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label204.ForeColor = System.Drawing.Color.Black;
             this.label204.Location = new System.Drawing.Point(471, 190);
@@ -1220,10 +1310,12 @@
             this.label204.TabIndex = 25;
             this.label204.Text = "顶针升降轴抱闸";
             this.label204.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label204.Visible = false;
             // 
             // EpoxtDIS
             // 
             this.EpoxtDIS.AutoSize = true;
+            this.EpoxtDIS.Enabled = false;
             this.EpoxtDIS.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtDIS.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtDIS.Location = new System.Drawing.Point(429, 266);
@@ -1232,11 +1324,13 @@
             this.EpoxtDIS.TabIndex = 3;
             this.EpoxtDIS.Tag = "Check";
             this.EpoxtDIS.Text = "●";
+            this.EpoxtDIS.Visible = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label7.Enabled = false;
             this.label7.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.Black;
             this.label7.Location = new System.Drawing.Point(471, 266);
@@ -1245,11 +1339,13 @@
             this.label7.TabIndex = 7;
             this.label7.Text = "胶针吐出";
             this.label7.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label7.Visible = false;
             // 
             // label193
             // 
             this.label193.AutoSize = true;
             this.label193.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label193.Enabled = false;
             this.label193.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label193.ForeColor = System.Drawing.Color.Black;
             this.label193.Location = new System.Drawing.Point(471, 304);
@@ -1258,11 +1354,13 @@
             this.label193.TabIndex = 26;
             this.label193.Text = "胶针吐出有效";
             this.label193.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label193.Visible = false;
             // 
             // label213
             // 
             this.label213.AutoSize = true;
             this.label213.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label213.Enabled = false;
             this.label213.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label213.ForeColor = System.Drawing.Color.Black;
             this.label213.Location = new System.Drawing.Point(471, 342);
@@ -1271,11 +1369,13 @@
             this.label213.TabIndex = 27;
             this.label213.Text = "胶针指定模式";
             this.label213.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label213.Visible = false;
             // 
             // label214
             // 
             this.label214.AutoSize = true;
             this.label214.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label214.Enabled = false;
             this.label214.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label214.ForeColor = System.Drawing.Color.Black;
             this.label214.Location = new System.Drawing.Point(471, 380);
@@ -1284,11 +1384,13 @@
             this.label214.TabIndex = 28;
             this.label214.Text = "胶针吐出模式切换";
             this.label214.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label214.Visible = false;
             // 
             // label215
             // 
             this.label215.AutoSize = true;
             this.label215.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label215.Enabled = false;
             this.label215.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label215.ForeColor = System.Drawing.Color.Black;
             this.label215.Location = new System.Drawing.Point(471, 418);
@@ -1297,11 +1399,13 @@
             this.label215.TabIndex = 29;
             this.label215.Text = "胶针计数器清除";
             this.label215.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label215.Visible = false;
             // 
             // label216
             // 
             this.label216.AutoSize = true;
             this.label216.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label216.Enabled = false;
             this.label216.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label216.ForeColor = System.Drawing.Color.Black;
             this.label216.Location = new System.Drawing.Point(471, 456);
@@ -1310,10 +1414,12 @@
             this.label216.TabIndex = 30;
             this.label216.Text = "胶针重置";
             this.label216.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.label216.Visible = false;
             // 
             // EpoxtENABLE
             // 
             this.EpoxtENABLE.AutoSize = true;
+            this.EpoxtENABLE.Enabled = false;
             this.EpoxtENABLE.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtENABLE.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtENABLE.Location = new System.Drawing.Point(429, 304);
@@ -1322,10 +1428,12 @@
             this.EpoxtENABLE.TabIndex = 31;
             this.EpoxtENABLE.Tag = "Check";
             this.EpoxtENABLE.Text = "●";
+            this.EpoxtENABLE.Visible = false;
             // 
             // EpoxtTMD
             // 
             this.EpoxtTMD.AutoSize = true;
+            this.EpoxtTMD.Enabled = false;
             this.EpoxtTMD.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtTMD.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtTMD.Location = new System.Drawing.Point(429, 342);
@@ -1334,10 +1442,12 @@
             this.EpoxtTMD.TabIndex = 32;
             this.EpoxtTMD.Tag = "Check";
             this.EpoxtTMD.Text = "●";
+            this.EpoxtTMD.Visible = false;
             // 
             // EpoxtTMS
             // 
             this.EpoxtTMS.AutoSize = true;
+            this.EpoxtTMS.Enabled = false;
             this.EpoxtTMS.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtTMS.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtTMS.Location = new System.Drawing.Point(429, 380);
@@ -1346,10 +1456,12 @@
             this.EpoxtTMS.TabIndex = 33;
             this.EpoxtTMS.Tag = "Check";
             this.EpoxtTMS.Text = "●";
+            this.EpoxtTMS.Visible = false;
             // 
             // EpoxtC_CNT
             // 
             this.EpoxtC_CNT.AutoSize = true;
+            this.EpoxtC_CNT.Enabled = false;
             this.EpoxtC_CNT.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtC_CNT.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtC_CNT.Location = new System.Drawing.Point(429, 418);
@@ -1358,10 +1470,12 @@
             this.EpoxtC_CNT.TabIndex = 34;
             this.EpoxtC_CNT.Tag = "Check";
             this.EpoxtC_CNT.Text = "●";
+            this.EpoxtC_CNT.Visible = false;
             // 
             // EpoxtRESET
             // 
             this.EpoxtRESET.AutoSize = true;
+            this.EpoxtRESET.Enabled = false;
             this.EpoxtRESET.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.EpoxtRESET.ForeColor = System.Drawing.Color.DarkGray;
             this.EpoxtRESET.Location = new System.Drawing.Point(429, 456);
@@ -1370,6 +1484,7 @@
             this.EpoxtRESET.TabIndex = 35;
             this.EpoxtRESET.Tag = "Check";
             this.EpoxtRESET.Text = "●";
+            this.EpoxtRESET.Visible = false;
             // 
             // backstageViewClientControl4
             // 
@@ -1417,6 +1532,9 @@
             this.tableLayoutPanel5.Controls.Add(this.LaserValue, 2, 4);
             this.tableLayoutPanel5.Controls.Add(this.PressureValue1, 2, 5);
             this.tableLayoutPanel5.Controls.Add(this.PressureValue2, 2, 6);
+            this.tableLayoutPanel5.Controls.Add(this.button1, 3, 4);
+            this.tableLayoutPanel5.Controls.Add(this.button2, 3, 5);
+            this.tableLayoutPanel5.Controls.Add(this.button3, 3, 6);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(2);
@@ -1791,6 +1909,36 @@
             this.PressureValue2.TabIndex = 34;
             this.PressureValue2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(258, 123);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 35;
+            this.button1.Text = "读取";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(258, 153);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 36;
+            this.button2.Text = "读取";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(258, 183);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 37;
+            this.button3.Text = "读取";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // backstageViewClientControl8
             // 
             this.backstageViewClientControl8.Location = new System.Drawing.Point(142, 0);
@@ -1804,6 +1952,7 @@
             this.backstageViewTabItemInputIO.Caption = "DI";
             this.backstageViewTabItemInputIO.ContentControl = this.backstageViewClientControl1;
             this.backstageViewTabItemInputIO.Name = "backstageViewTabItemInputIO";
+            this.backstageViewTabItemInputIO.Selected = true;
             // 
             // backstageViewItemSeparator1
             // 
@@ -1825,8 +1974,9 @@
             // 
             this.backstageViewTabItem5.Caption = "Motor";
             this.backstageViewTabItem5.ContentControl = this.backstageViewClientControl8;
+            this.backstageViewTabItem5.Enabled = false;
             this.backstageViewTabItem5.Name = "backstageViewTabItem5";
-            this.backstageViewTabItem5.Selected = true;
+            this.backstageViewTabItem5.Visible = false;
             // 
             // panelControl1
             // 
@@ -1956,6 +2106,151 @@
             this.backstageViewClientControl3.Name = "backstageViewClientControl3";
             this.backstageViewClientControl3.Size = new System.Drawing.Size(1076, 768);
             this.backstageViewClientControl3.TabIndex = 3;
+            // 
+            // ChipPPtoolVaccumSwitch
+            // 
+            this.ChipPPtoolVaccumSwitch.AutoSize = true;
+            this.ChipPPtoolVaccumSwitch.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ChipPPtoolVaccumSwitch.ForeColor = System.Drawing.Color.DarkGray;
+            this.ChipPPtoolVaccumSwitch.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ChipPPtoolVaccumSwitch.Location = new System.Drawing.Point(3, 114);
+            this.ChipPPtoolVaccumSwitch.Name = "ChipPPtoolVaccumSwitch";
+            this.ChipPPtoolVaccumSwitch.Size = new System.Drawing.Size(36, 38);
+            this.ChipPPtoolVaccumSwitch.TabIndex = 36;
+            this.ChipPPtoolVaccumSwitch.Tag = "Check";
+            this.ChipPPtoolVaccumSwitch.Text = "●";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label6.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.Black;
+            this.label6.Location = new System.Drawing.Point(45, 114);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(378, 38);
+            this.label6.TabIndex = 37;
+            this.label6.Text = "吸嘴工具真空";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // EpoxtUp
+            // 
+            this.EpoxtUp.AutoSize = true;
+            this.EpoxtUp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtUp.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.EpoxtUp.ForeColor = System.Drawing.Color.DarkGray;
+            this.EpoxtUp.Location = new System.Drawing.Point(427, 0);
+            this.EpoxtUp.Name = "EpoxtUp";
+            this.EpoxtUp.Size = new System.Drawing.Size(36, 38);
+            this.EpoxtUp.TabIndex = 20;
+            this.EpoxtUp.Text = "●";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label9.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(469, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(378, 38);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "点胶升到位";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // EpoxtDown
+            // 
+            this.EpoxtDown.AutoSize = true;
+            this.EpoxtDown.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EpoxtDown.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.EpoxtDown.ForeColor = System.Drawing.Color.DarkGray;
+            this.EpoxtDown.Location = new System.Drawing.Point(427, 38);
+            this.EpoxtDown.Name = "EpoxtDown";
+            this.EpoxtDown.Size = new System.Drawing.Size(36, 38);
+            this.EpoxtDown.TabIndex = 22;
+            this.EpoxtDown.Text = "●";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label11.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(469, 38);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(378, 38);
+            this.label11.TabIndex = 23;
+            this.label11.Text = "点胶降到位";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // TransportUp
+            // 
+            this.TransportUp.AutoSize = true;
+            this.TransportUp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TransportUp.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TransportUp.ForeColor = System.Drawing.Color.DarkGray;
+            this.TransportUp.Location = new System.Drawing.Point(427, 76);
+            this.TransportUp.Name = "TransportUp";
+            this.TransportUp.Size = new System.Drawing.Size(36, 38);
+            this.TransportUp.TabIndex = 24;
+            this.TransportUp.Text = "●";
+            // 
+            // TransportDown
+            // 
+            this.TransportDown.AutoSize = true;
+            this.TransportDown.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TransportDown.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TransportDown.ForeColor = System.Drawing.Color.DarkGray;
+            this.TransportDown.Location = new System.Drawing.Point(427, 114);
+            this.TransportDown.Name = "TransportDown";
+            this.TransportDown.Size = new System.Drawing.Size(36, 38);
+            this.TransportDown.TabIndex = 25;
+            this.TransportDown.Text = "●";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label14.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(469, 76);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(378, 38);
+            this.label14.TabIndex = 26;
+            this.label14.Text = "轨道升到位";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label16.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(469, 114);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(378, 38);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "轨道降到位";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // ChipPPtoolVaccumNormally
+            // 
+            this.ChipPPtoolVaccumNormally.AutoSize = true;
+            this.ChipPPtoolVaccumNormally.Font = new System.Drawing.Font("Tahoma", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ChipPPtoolVaccumNormally.ForeColor = System.Drawing.Color.DarkGray;
+            this.ChipPPtoolVaccumNormally.Location = new System.Drawing.Point(427, 152);
+            this.ChipPPtoolVaccumNormally.Name = "ChipPPtoolVaccumNormally";
+            this.ChipPPtoolVaccumNormally.Size = new System.Drawing.Size(36, 38);
+            this.ChipPPtoolVaccumNormally.TabIndex = 28;
+            this.ChipPPtoolVaccumNormally.Text = "●";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label19.Font = new System.Drawing.Font("Tahoma", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(469, 152);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(378, 38);
+            this.label19.TabIndex = 29;
+            this.label19.Text = "吸嘴工具真空到位";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // IOMaintainPanel
             // 
@@ -2134,5 +2429,20 @@
         private System.Windows.Forms.Label EpoxtTMS;
         private System.Windows.Forms.Label EpoxtC_CNT;
         private System.Windows.Forms.Label EpoxtRESET;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label ChipPPtoolVaccumSwitch;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label EpoxtUp;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label EpoxtDown;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label TransportUp;
+        private System.Windows.Forms.Label TransportDown;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label ChipPPtoolVaccumNormally;
+        private System.Windows.Forms.Label label19;
     }
 }

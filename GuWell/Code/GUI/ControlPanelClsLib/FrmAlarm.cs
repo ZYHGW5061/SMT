@@ -211,7 +211,7 @@ namespace ControlPanelClsLib
         private void FrmAlarm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
-            this.WindowState = FormWindowState.Minimized;
+            //this.WindowState = FormWindowState.Minimized;
         }
     }
 }

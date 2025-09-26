@@ -59,6 +59,7 @@ namespace VisionGUI
             this.MinimunqualityNumlabel = new System.Windows.Forms.Label();
             this.DirectLightNumlabel = new System.Windows.Forms.Label();
             this.RingLightNumlabel = new System.Windows.Forms.Label();
+            this.comboBoxDirectColor = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.RingLightBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DirectLightBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.QualityBar)).BeginInit();
@@ -85,18 +86,18 @@ namespace VisionGUI
             this.RingLightlabel.AutoSize = true;
             this.RingLightlabel.Location = new System.Drawing.Point(14, 20);
             this.RingLightlabel.Name = "RingLightlabel";
-            this.RingLightlabel.Size = new System.Drawing.Size(57, 14);
+            this.RingLightlabel.Size = new System.Drawing.Size(43, 14);
             this.RingLightlabel.TabIndex = 1;
-            this.RingLightlabel.Text = "RingLight";
+            this.RingLightlabel.Text = "环光源";
             // 
             // DirectLightlabel
             // 
             this.DirectLightlabel.AutoSize = true;
             this.DirectLightlabel.Location = new System.Drawing.Point(14, 92);
             this.DirectLightlabel.Name = "DirectLightlabel";
-            this.DirectLightlabel.Size = new System.Drawing.Size(66, 14);
+            this.DirectLightlabel.Size = new System.Drawing.Size(43, 14);
             this.DirectLightlabel.TabIndex = 3;
-            this.DirectLightlabel.Text = "DirectLight";
+            this.DirectLightlabel.Text = "点光源";
             // 
             // DirectLightBar
             // 
@@ -113,9 +114,9 @@ namespace VisionGUI
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(14, 164);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(90, 14);
+            this.label3.Size = new System.Drawing.Size(55, 14);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Minimun quality";
+            this.label3.Text = "分数阈值";
             // 
             // QualityBar
             // 
@@ -163,7 +164,7 @@ namespace VisionGUI
             this.UpEdgePage.Padding = new System.Windows.Forms.Padding(3);
             this.UpEdgePage.Size = new System.Drawing.Size(285, 128);
             this.UpEdgePage.TabIndex = 0;
-            this.UpEdgePage.Text = "UpEdge";
+            this.UpEdgePage.Text = "上边缘";
             this.UpEdgePage.UseVisualStyleBackColor = true;
             // 
             // UpEdgeResizeBtn
@@ -205,7 +206,7 @@ namespace VisionGUI
             this.DownEdgePage.Padding = new System.Windows.Forms.Padding(3);
             this.DownEdgePage.Size = new System.Drawing.Size(285, 128);
             this.DownEdgePage.TabIndex = 1;
-            this.DownEdgePage.Text = "DownEdge";
+            this.DownEdgePage.Text = "下边缘";
             this.DownEdgePage.UseVisualStyleBackColor = true;
             // 
             // DownEdgeResizeBtn
@@ -247,7 +248,7 @@ namespace VisionGUI
             this.LeftEdgePage.Padding = new System.Windows.Forms.Padding(3);
             this.LeftEdgePage.Size = new System.Drawing.Size(285, 128);
             this.LeftEdgePage.TabIndex = 2;
-            this.LeftEdgePage.Text = "LeftEdge";
+            this.LeftEdgePage.Text = "左边缘";
             this.LeftEdgePage.UseVisualStyleBackColor = true;
             // 
             // LeftEdgeResizeBtn
@@ -289,7 +290,7 @@ namespace VisionGUI
             this.RightEdgePage.Padding = new System.Windows.Forms.Padding(3);
             this.RightEdgePage.Size = new System.Drawing.Size(285, 128);
             this.RightEdgePage.TabIndex = 3;
-            this.RightEdgePage.Text = "RightEdge";
+            this.RightEdgePage.Text = "右边缘";
             this.RightEdgePage.UseVisualStyleBackColor = true;
             // 
             // RightEdgeResizeBtn
@@ -378,10 +379,26 @@ namespace VisionGUI
             this.RingLightNumlabel.TabIndex = 15;
             this.RingLightNumlabel.Text = "0";
             // 
+            // comboBoxDirectColor
+            // 
+            this.comboBoxDirectColor.Enabled = false;
+            this.comboBoxDirectColor.FormattingEnabled = true;
+            this.comboBoxDirectColor.Items.AddRange(new object[] {
+            "红光",
+            "绿光",
+            "蓝光"});
+            this.comboBoxDirectColor.Location = new System.Drawing.Point(189, 85);
+            this.comboBoxDirectColor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxDirectColor.Name = "comboBoxDirectColor";
+            this.comboBoxDirectColor.Size = new System.Drawing.Size(106, 22);
+            this.comboBoxDirectColor.TabIndex = 18;
+            this.comboBoxDirectColor.Visible = false;
+            // 
             // VisualLineFindControlGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.comboBoxDirectColor);
             this.Controls.Add(this.MinimunqualityNumlabel);
             this.Controls.Add(this.DirectLightNumlabel);
             this.Controls.Add(this.RingLightNumlabel);
@@ -447,5 +464,6 @@ namespace VisionGUI
         private System.Windows.Forms.Label MinimunqualityNumlabel;
         private System.Windows.Forms.Label DirectLightNumlabel;
         private System.Windows.Forms.Label RingLightNumlabel;
+        private System.Windows.Forms.ComboBox comboBoxDirectColor;
     }
 }

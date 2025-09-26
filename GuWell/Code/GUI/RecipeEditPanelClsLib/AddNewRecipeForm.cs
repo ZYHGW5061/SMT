@@ -1,4 +1,5 @@
 ﻿using CommonPanelClsLib;
+using ConfigurationClsLib;
 using DevExpress.XtraEditors;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,34 @@ namespace RecipeEditPanelClsLib
             } 
         }
 
+        public string ESToolName
+        {
+            get
+            {
+                return GetValidFileName(cmbExistESTool.Text);
+            }
+        }
+
+        /// <summary>
+        /// 系统配置
+        /// </summary>
+        private SystemConfiguration _systemConfig
+        {
+            get { return SystemConfiguration.Instance; }
+        }
+
         /// <summary>
         /// 页面构造函数，新建Recipe
         /// </summary>
         public AddNewRecipeForm()
         {
             InitializeComponent();
+
+            cmbExistESTool.Items.Clear();
+            foreach (var item in _systemConfig.ESToolSettings)
+            {
+                cmbExistESTool.Items.Add(item.Name);
+            }
         }
 
         /// <summary>

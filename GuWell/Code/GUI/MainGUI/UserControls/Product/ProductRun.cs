@@ -1,4 +1,5 @@
 ﻿using CommonPanelClsLib;
+using GlobalDataDefineClsLib;
 using GlobalToolClsLib;
 using ProductRunClsLib;
 using RecipeClsLib;

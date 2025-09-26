@@ -1,4 +1,5 @@
-﻿using CommonPanelClsLib;
+﻿using BoardCardControllerClsLib;
+using CommonPanelClsLib;
 using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
 using GlobalToolClsLib;
@@ -115,6 +116,7 @@ namespace RecipeEditPanelClsLib
                 try
                 {
                     CreateWaitDialog();
+                    BoardCardManager.Instance.GetCurrentController().IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 0);
                     //将激光测高仪移动到当前相机位置
                     _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, _systemConfig.PositioningConfig.LaserSensorAndBondCameraOffset.X,
                     EnumCoordSetType.Relative);
@@ -137,8 +139,9 @@ namespace RecipeEditPanelClsLib
                     //var curLaserMeasureH = _laserSensor.ReadDistance() / 1000;
                     //根据校准数据及当前的激光测高仪读数计算吸嘴工作高度
                     var curBondZ = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondZ);
-                    var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
-                    var offsetMeasureZ = curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ;
+                    //var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
+                    var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackOrigion.Z;
+                    var offsetMeasureZ = -(curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ);
                     var componentZ = offsetMeasureZ - offsetZ;
                     BondPositionTopplateHigherValueThanMarkTopplate = (float)-componentZ;
 

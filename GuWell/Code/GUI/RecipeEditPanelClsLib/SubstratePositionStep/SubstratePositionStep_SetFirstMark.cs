@@ -90,7 +90,7 @@ namespace RecipeEditPanelClsLib
                     throw new Exception("Recipe is null when execute SubmountPositionStep_VisionPosition LoadEditedRecipe.");
                 }
                 EditRecipe = recipe;
-                var templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\{EnumRecipeType.Bonder.ToString()}\{EditRecipe.RecipeName}\TemplateConfig\";
+                var templateFolderName = $@"{_systemConfig.JobConfig.RecipeSavingPath}Recipes\{EnumRecipeType.Bonder.ToString()}\{EditRecipe.RecipeName}\TemplateConfig\";
                 CommonProcess.EnsureFolderExist(templateFolderName);
 
 
@@ -176,18 +176,16 @@ namespace RecipeEditPanelClsLib
                     //    visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
                     //}
 
-                    VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.FirstOrDefault();
-                    if (visionMarkParam == null)
+                    VisionParameters visionMarkParam = EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters;
+                    if (EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters == null || EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Count < 1)
                     {
-                        visionMarkParam = new VisionParameters();
-                        visionMarkParam.ShapeMatchParameters.Clear();
-                        visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
-                        EditRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.Add(visionMarkParam);
+                        //EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
                     }
                     else
                     {
-                        visionMarkParam.ShapeMatchParameters.Clear();
-                        visionMarkParam.ShapeMatchParameters.Add(shapeMatchParam);
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Clear();
+                        EditRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.Add(shapeMatchParam);
                     }
                 }
                 finished = true;

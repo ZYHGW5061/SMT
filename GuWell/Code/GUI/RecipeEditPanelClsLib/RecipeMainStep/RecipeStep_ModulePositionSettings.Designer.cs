@@ -45,6 +45,7 @@ namespace RecipeEditPanelClsLib
             this.step3Sign = new System.Windows.Forms.PictureBox();
             this.step2Sign = new System.Windows.Forms.PictureBox();
             this.step1Sign = new System.Windows.Forms.PictureBox();
+            this.step7Sign = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox5)).BeginInit();
@@ -56,6 +57,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.step3Sign)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.step2Sign)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.step1Sign)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.step7Sign)).BeginInit();
             this.SuspendLayout();
             // 
             // repositoryItemComboBox1
@@ -173,10 +175,21 @@ namespace RecipeEditPanelClsLib
             this.step1Sign.TabIndex = 46;
             this.step1Sign.TabStop = false;
             // 
-            // RecipeStep_SubmountPositionSettings
+            // step7Sign
+            // 
+            this.step7Sign.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.step7Sign.Location = new System.Drawing.Point(531, 641);
+            this.step7Sign.Name = "step7Sign";
+            this.step7Sign.Size = new System.Drawing.Size(70, 70);
+            this.step7Sign.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.step7Sign.TabIndex = 47;
+            this.step7Sign.TabStop = false;
+            // 
+            // RecipeStep_ModulePositionSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.step7Sign);
             this.Controls.Add(this.step6Sign);
             this.Controls.Add(this.panelControlCameraAera);
             this.Controls.Add(this.step5Sign);
@@ -187,7 +200,7 @@ namespace RecipeEditPanelClsLib
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.step2Sign);
             this.Controls.Add(this.step1Sign);
-            this.Name = "RecipeStep_SubmountPositionSettings";
+            this.Name = "RecipeStep_ModulePositionSettings";
             this.Size = new System.Drawing.Size(1105, 719);
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox2)).EndInit();
@@ -200,6 +213,7 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.step3Sign)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.step2Sign)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.step1Sign)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.step7Sign)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -218,5 +232,6 @@ namespace RecipeEditPanelClsLib
         private System.Windows.Forms.PictureBox step3Sign;
         private System.Windows.Forms.PictureBox step2Sign;
         private System.Windows.Forms.PictureBox step1Sign;
+        private System.Windows.Forms.PictureBox step7Sign;
     }
 }

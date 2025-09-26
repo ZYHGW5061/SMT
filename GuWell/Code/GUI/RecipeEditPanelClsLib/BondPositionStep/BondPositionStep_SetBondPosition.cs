@@ -130,11 +130,42 @@ namespace RecipeEditPanelClsLib
             //var offsetYMMWithCenter=_positioningSystem.ConvertPixelPosToMMCenterPos(selVisionPosY, 1, EnumCameraType.BondCamera);
             //BondPositionOffset.X = offsetMMWithVisionCenter.Item1;
             //BondPositionOffset.Y = offsetMMWithVisionCenter.Item2;
-            BondPositionCompensation.X = CompensationX;
-            BondPositionCompensation.Y = CompensationY;
+
+            BondPositionCompensation.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+            BondPositionCompensation.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
             BondPositionCompensation.Theta = CompensationT;
+
+            BondPositionOffset.X = CompensationX;
+            BondPositionOffset.Y = CompensationY;
+            BondPositionOffset.Theta = CompensationT;
             BondPositionOffset.Theta = float.Parse(seBPRotateTheta.Text.Trim());
             WarningBox.FormShow("成功", "贴装位置计算完成！", "提示");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (WarningBox.FormShow("即将设置贴装位置。", "确认榜头相机已对准到贴装位置？", "提示") == 1)
+            {
+                var shapeMatchParam2 = EditRecipe.CurrentBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault();
+                if (shapeMatchParam2 != null)
+                {
+                    EditRecipe.CurrentBondPosition.BondPositionCompensation.X = BondPositionCompensation.X - shapeMatchParam2.BondTablePositionOfCreatePattern.X;
+                    EditRecipe.CurrentBondPosition.BondPositionCompensation.Y = BondPositionCompensation.Y - shapeMatchParam2.BondTablePositionOfCreatePattern.Y;
+
+                    seBPCompensationX.Text = EditRecipe.CurrentBondPosition.BondPositionCompensation.X.ToString();
+                    seBPCompensationY.Text = EditRecipe.CurrentBondPosition.BondPositionCompensation.Y.ToString();
+                }
+
+                LeftLowerCornerCoor = new PointF((float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX), (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY));
+
+                BondPositionCompensation.X = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondX);
+                BondPositionCompensation.Y = (float)_positioningSystem.ReadCurrentSystemPosition(EnumStageAxis.BondY);
+
+                var CompensationT = float.Parse(seBPCompensationT.Text);
+                BondPositionCompensation.Theta = CompensationT;
+                BondPositionOffset.Theta = float.Parse(seBPRotateTheta.Text.Trim());
+                WarningBox.FormShow("成功", "贴装位置计算完成！", "提示");
+            }
         }
     }
 }

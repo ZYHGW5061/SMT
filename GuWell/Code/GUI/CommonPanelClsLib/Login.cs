@@ -66,11 +66,12 @@ namespace CommonPanelClsLib
             }
             else
             {
-                LogRecorder.RecordUserOperationLog($"User: {txtName.Text} try to login, but failed.");
+                //LogRecorder.RecordUserOperationLog($"User: {txtName.Text} try to login, but failed.");
+                LogRecorder.RecordUserOperationLog($"User: {txtName.Text} try to login, but failed.", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, txtName.Text);
                 WarningBox.FormShow("错误", "用户名或者密码错误！", "提示");
                 return;
             }
-            LogRecorder.RecordUserOperationLog($"User：{UserManager.Instance.CurrentUserName} logined.");
+            LogRecorder.RecordUserOperationLog($"User：{UserManager.Instance.CurrentUserName} logined.", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
             this.DialogResult = DialogResult.OK;
         }
 

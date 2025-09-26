@@ -42,6 +42,9 @@ namespace MainGUI.UserControls.Product
             this.label9 = new System.Windows.Forms.Label();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.techipPositionCompensationZ = new DevExpress.XtraEditors.TextEdit();
@@ -52,6 +55,9 @@ namespace MainGUI.UserControls.Product
             this.label25 = new System.Windows.Forms.Label();
             this.techipPositionCompensationY = new DevExpress.XtraEditors.TextEdit();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.teDispenserPositionCompensationZ = new DevExpress.XtraEditors.TextEdit();
@@ -62,8 +68,11 @@ namespace MainGUI.UserControls.Product
             this.label19 = new System.Windows.Forms.Label();
             this.teDispenserPositionCompensationY = new DevExpress.XtraEditors.TextEdit();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label32 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
             this.teCompensationZ = new DevExpress.XtraEditors.TextEdit();
             this.seBondWorkHeight = new DevExpress.XtraEditors.SpinEdit();
             this.label10 = new System.Windows.Forms.Label();
@@ -197,6 +206,9 @@ namespace MainGUI.UserControls.Product
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label28);
+            this.groupBox3.Controls.Add(this.label27);
+            this.groupBox3.Controls.Add(this.label26);
             this.groupBox3.Controls.Add(this.label20);
             this.groupBox3.Controls.Add(this.label21);
             this.groupBox3.Controls.Add(this.techipPositionCompensationZ);
@@ -212,6 +224,33 @@ namespace MainGUI.UserControls.Product
             this.groupBox3.TabIndex = 115;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "吸芯片位置补偿";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(200, 78);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(55, 14);
+            this.label28.TabIndex = 128;
+            this.label28.Text = "下加上减";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(200, 52);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(55, 14);
+            this.label27.TabIndex = 127;
+            this.label27.Text = "后加前减";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(200, 26);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(55, 14);
+            this.label26.TabIndex = 126;
+            this.label26.Text = "左加右减";
             // 
             // label20
             // 
@@ -290,6 +329,9 @@ namespace MainGUI.UserControls.Product
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label29);
+            this.groupBox2.Controls.Add(this.label30);
+            this.groupBox2.Controls.Add(this.label31);
             this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.teDispenserPositionCompensationZ);
@@ -305,6 +347,33 @@ namespace MainGUI.UserControls.Product
             this.groupBox2.TabIndex = 115;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "点胶位置补偿";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(200, 78);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(55, 14);
+            this.label29.TabIndex = 131;
+            this.label29.Text = "下加上减";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(200, 52);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(55, 14);
+            this.label30.TabIndex = 130;
+            this.label30.Text = "后加前减";
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(200, 26);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(55, 14);
+            this.label31.TabIndex = 129;
+            this.label31.Text = "右加左减";
             // 
             // label14
             // 
@@ -383,8 +452,11 @@ namespace MainGUI.UserControls.Product
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label32);
             this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.label33);
             this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.label34);
             this.groupBox1.Controls.Add(this.teCompensationZ);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label7);
@@ -408,6 +480,15 @@ namespace MainGUI.UserControls.Product
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "贴装位置补偿";
             // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(200, 80);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(55, 14);
+            this.label32.TabIndex = 134;
+            this.label32.Text = "下加上减";
+            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -417,6 +498,15 @@ namespace MainGUI.UserControls.Product
             this.label12.TabIndex = 114;
             this.label12.Text = "Z补偿";
             // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(200, 54);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(55, 14);
+            this.label33.TabIndex = 133;
+            this.label33.Text = "后加前减";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -425,6 +515,15 @@ namespace MainGUI.UserControls.Product
             this.label13.Size = new System.Drawing.Size(27, 14);
             this.label13.TabIndex = 116;
             this.label13.Text = "mm";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(200, 28);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(55, 14);
+            this.label34.TabIndex = 132;
+            this.label34.Text = "右加左减";
             // 
             // teCompensationZ
             // 
@@ -440,7 +539,7 @@ namespace MainGUI.UserControls.Product
             0,
             0,
             0});
-            this.seBondWorkHeight.Location = new System.Drawing.Point(349, 51);
+            this.seBondWorkHeight.Location = new System.Drawing.Point(369, 51);
             this.seBondWorkHeight.Name = "seBondWorkHeight";
             this.seBondWorkHeight.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -471,7 +570,7 @@ namespace MainGUI.UserControls.Product
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(256, 54);
+            this.label10.Location = new System.Drawing.Point(276, 54);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(91, 14);
             this.label10.TabIndex = 112;
@@ -480,7 +579,7 @@ namespace MainGUI.UserControls.Product
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(471, 28);
+            this.label3.Location = new System.Drawing.Point(491, 28);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(13, 14);
             this.label3.TabIndex = 14;
@@ -488,7 +587,7 @@ namespace MainGUI.UserControls.Product
             // 
             // teBPTheta
             // 
-            this.teBPTheta.Location = new System.Drawing.Point(349, 25);
+            this.teBPTheta.Location = new System.Drawing.Point(369, 25);
             this.teBPTheta.Name = "teBPTheta";
             this.teBPTheta.Size = new System.Drawing.Size(119, 20);
             this.teBPTheta.TabIndex = 13;
@@ -496,7 +595,7 @@ namespace MainGUI.UserControls.Product
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(290, 28);
+            this.label2.Location = new System.Drawing.Point(310, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 14);
             this.label2.TabIndex = 12;
@@ -505,7 +604,7 @@ namespace MainGUI.UserControls.Product
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(471, 54);
+            this.label11.Location = new System.Drawing.Point(491, 54);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(27, 14);
             this.label11.TabIndex = 11;
@@ -588,5 +687,14 @@ namespace MainGUI.UserControls.Product
         private DevExpress.XtraEditors.TextEdit teDispenserPositionCompensationX;
         private System.Windows.Forms.Label label19;
         private DevExpress.XtraEditors.TextEdit teDispenserPositionCompensationY;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label34;
     }
 }

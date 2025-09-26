@@ -56,41 +56,28 @@ namespace GlobalToolClsLib
 
         SQLiteConnection m_dbConnection;
 
-        public bool Init()
+        public bool Init(string filePath = null)
         {
             try
             {
                 string DatabasePath = "D:/GuWell/Logs/SQLiteData/GWDieBonderDatabase.db";
+                if (filePath != null)
+                {
+                    DatabasePath = filePath + "GWDieBonderDatabase.db";
+                }
+
                 CreateNewDatabase(DatabasePath);
                 connectToDatabase(DatabasePath);
 
-                string tablename = "VacuumsData";
-                Dictionary<string, SQLData> tableDictionarys = new Dictionary<string, SQLData>
-            {
-                { "Date", new SQLData("", SQLDataType.STRING) },
-                { "Time", new SQLData("", SQLDataType.STRING) },
-                { "Vacuum1", new SQLData(0, SQLDataType.FLOAT) },
-                { "Vacuum2", new SQLData(0, SQLDataType.FLOAT) },
-                { "Vacuum3", new SQLData(0, SQLDataType.FLOAT) },
-            };
-                createTable(tablename, tableDictionarys);
 
-                string tablename2 = "TemperatureData";
-                Dictionary<string, SQLData> tableDictionarys2 = new Dictionary<string, SQLData>
-            {
-                { "Date", new SQLData("", SQLDataType.STRING) },
-                { "Time", new SQLData("", SQLDataType.STRING) },
-                { "Temperature1", new SQLData(0, SQLDataType.FLOAT) },
-                { "Temperature2", new SQLData(0, SQLDataType.FLOAT) },
-            };
-                createTable(tablename2, tableDictionarys2);
 
                 string tablename3 = "ProductionLog";
                 Dictionary<string, SQLData> tableDictionarys3 = new Dictionary<string, SQLData>
             {
                 { "Date", new SQLData("", SQLDataType.STRING) },
                 { "Time", new SQLData("", SQLDataType.STRING) },
-                { "message", new SQLData(0, SQLDataType.STRING) },
+                { "Type", new SQLData(0, SQLDataType.INT) },
+                { "message", new SQLData("", SQLDataType.STRING) },
             };
                 createTable(tablename3, tableDictionarys3);
 
@@ -99,9 +86,31 @@ namespace GlobalToolClsLib
             {
                 { "Date", new SQLData("", SQLDataType.STRING) },
                 { "Time", new SQLData("", SQLDataType.STRING) },
-                { "message", new SQLData(0, SQLDataType.STRING) },
+                { "Type", new SQLData(0, SQLDataType.INT) },
+                { "message", new SQLData("", SQLDataType.STRING) },
             };
                 createTable(tablename4, tableDictionarys4);
+
+                string tablename2 = "AlarmLog";
+                Dictionary<string, SQLData> tableDictionarys2 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData("", SQLDataType.STRING) },
+                { "Time", new SQLData("", SQLDataType.STRING) },
+                { "Type", new SQLData(0, SQLDataType.INT) },
+                { "message", new SQLData("", SQLDataType.STRING) },
+            };
+                createTable(tablename2, tableDictionarys2);
+
+                string tablename1 = "UserOperationLog";
+                Dictionary<string, SQLData> tableDictionarys1 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData("", SQLDataType.STRING) },
+                { "Time", new SQLData("", SQLDataType.STRING) },
+                { "User", new SQLData("", SQLDataType.STRING) },
+                { "Type", new SQLData(0, SQLDataType.INT) },
+                { "message", new SQLData("", SQLDataType.STRING) },
+            };
+                createTable(tablename1, tableDictionarys1);
 
                 string tablename5 = "PressureData";
                 Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
@@ -233,7 +242,7 @@ namespace GlobalToolClsLib
             try
             {
 
-                if (m_dbConnection.State == System.Data.ConnectionState.Open)
+                if (m_dbConnection?.State == System.Data.ConnectionState.Open)
                 {
                     string insertQuery = $"INSERT INTO {tablename} ({tableDictionarys.Keys.First()}";
                     int i = 0;
@@ -336,11 +345,23 @@ namespace GlobalToolClsLib
                                     {
                                         tableDictionary_type.Add(columnName, new SQLData("", SQLDataType.STRING));
                                     }
+                                    if (dataType == " varchar(20)")
+                                    {
+                                        tableDictionary_type.Add(columnName, new SQLData("", SQLDataType.STRING));
+                                    }
                                     else if (dataType == "int")
                                     {
                                         tableDictionary_type.Add(columnName, new SQLData(0, SQLDataType.INT));
                                     }
+                                    else if (dataType == "INT")
+                                    {
+                                        tableDictionary_type.Add(columnName, new SQLData(0, SQLDataType.INT));
+                                    }
                                     else if (dataType == "float")
+                                    {
+                                        tableDictionary_type.Add(columnName, new SQLData(0, SQLDataType.FLOAT));
+                                    }
+                                    else if (dataType == "FLOAT")
                                     {
                                         tableDictionary_type.Add(columnName, new SQLData(0, SQLDataType.FLOAT));
                                     }
@@ -403,6 +424,420 @@ namespace GlobalToolClsLib
             }
 
         }
+
+
+        /// <summary>
+        /// 保存生产日志
+        /// </summary>
+        /// <param name="type">类型 Error = 0,Warn = 1,Info = 2,Debug = 3</param>
+        /// <param name="log">内容</param>
+        public void SaveProductionLog(int type, string log)
+        {
+            string tablename = "ProductionLog";
+
+
+
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string currentTime = DateTime.Now.ToString("HH:mm:ss:FFF");
+
+            Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData(currentDate, SQLDataType.STRING) },
+                { "Time", new SQLData(currentTime, SQLDataType.STRING) },
+                { "Type", new SQLData(type, SQLDataType.INT) },
+                { "message", new SQLData(log, SQLDataType.STRING) },
+            };
+
+            SQLiteProgram.Instance.AddData(tablename, tableDictionarys5);
+        }
+
+        /// <summary>
+        /// 保存系统日志
+        /// </summary>
+        /// <param name="type">类型 Error = 0,Warn = 1,Info = 2,Debug = 3</param>
+        /// <param name="log">内容</param>
+        public void SaveSystemLog(int type, string log)
+        {
+            string tablename = "SystemLog";
+
+
+
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string currentTime = DateTime.Now.ToString("HH:mm:ss:FFF");
+
+            Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData(currentDate, SQLDataType.STRING) },
+                { "Time", new SQLData(currentTime, SQLDataType.STRING) },
+                { "Type", new SQLData(type, SQLDataType.INT) },
+                { "message", new SQLData(log, SQLDataType.STRING) },
+            };
+
+            SQLiteProgram.Instance.AddData(tablename, tableDictionarys5);
+        }
+
+        /// <summary>
+        /// 保存报警日志
+        /// </summary>
+        /// <param name="type">类型 Error = 0,Warn = 1,Info = 2,Debug = 3</param>
+        /// <param name="log">内容</param>
+        public void SaveAlarmLog(int type, string log)
+        {
+            string tablename = "AlarmLog";
+
+
+
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string currentTime = DateTime.Now.ToString("HH:mm:ss:FFF");
+
+            Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData(currentDate, SQLDataType.STRING) },
+                { "Time", new SQLData(currentTime, SQLDataType.STRING) },
+                { "Type", new SQLData(type, SQLDataType.INT) },
+                { "message", new SQLData(log, SQLDataType.STRING) },
+            };
+
+            SQLiteProgram.Instance.AddData(tablename, tableDictionarys5);
+        }
+
+
+        /// <summary>
+        /// 保存用户操作日志
+        /// </summary>
+        /// <param name="type">类型 Error = 0,Warn = 1,Info = 2,Debug = 3</param>
+        /// <param name="log">内容</param>
+        public void SaveUserOperationLog(string user, int type, string log)
+        {
+            string tablename = "UserOperationLog";
+
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string currentTime = DateTime.Now.ToString("HH:mm:ss:FFF");
+
+            Dictionary<string, SQLData> tableDictionarys5 = new Dictionary<string, SQLData>
+            {
+                { "Date", new SQLData(currentDate, SQLDataType.STRING) },
+                { "Time", new SQLData(currentTime, SQLDataType.STRING) },
+                { "User", new SQLData(user, SQLDataType.STRING) },
+                { "Type", new SQLData(type, SQLDataType.INT) },
+                { "message", new SQLData(log, SQLDataType.STRING) },
+            };
+
+            SQLiteProgram.Instance.AddData(tablename, tableDictionarys5);
+        }
+
+        public List<Dictionary<string, SQLData>> ReadAllProductionLog()
+        {
+            string tablename2 = "ProductionLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            ReadData(tablename2, ref tableDictionarys);
+
+            return tableDictionarys;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadDataProductionLog(int Year, int Month, int Day, int Type = -1)
+        {
+            string tablename2 = "ProductionLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            SQLiteProgram.Instance.ReadData(tablename2, ref tableDictionarys);
+
+            DateTime startDate = new DateTime(Year, Month, Day);
+            string targetDate = startDate.ToString("yyyy-MM-dd");
+
+
+            // 安全版本（包含类型验证）  
+            List<Dictionary<string, SQLData>> safeFilteredData = tableDictionarys
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Date", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.STRING &&
+                               dateData.Data is string dateStr &&
+                               dateStr == targetDate;
+                    }
+                    return false;
+                })
+                .ToList();
+
+            if (Type >= 0)
+            {
+                List<Dictionary<string, SQLData>> safeFilteredData2 = safeFilteredData
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Type", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.INT &&
+                               dateData.Data is int dateStr &&
+                               dateStr == Type;
+                    }
+                    return false;
+                })
+                .ToList();
+
+                return safeFilteredData2;
+            }
+
+            return safeFilteredData;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadAllSystemLog()
+        {
+            string tablename2 = "SystemLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            ReadData(tablename2, ref tableDictionarys);
+
+            return tableDictionarys;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadDataSystemLog(int Year, int Month, int Day, int Type = -1)
+        {
+            string tablename2 = "SystemLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            SQLiteProgram.Instance.ReadData(tablename2, ref tableDictionarys);
+
+            DateTime startDate = new DateTime(Year, Month, Day);
+            string targetDate = startDate.ToString("yyyy-MM-dd");
+
+
+            // 安全版本（包含类型验证）  
+            List<Dictionary<string, SQLData>> safeFilteredData = tableDictionarys
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Date", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.STRING &&
+                               dateData.Data is string dateStr &&
+                               dateStr == targetDate;
+                    }
+                    return false;
+                })
+                .ToList();
+
+            if (Type >= 0)
+            {
+                List<Dictionary<string, SQLData>> safeFilteredData2 = safeFilteredData
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Type", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.INT &&
+                               dateData.Data is int dateStr &&
+                               dateStr == Type;
+                    }
+                    return false;
+                })
+                .ToList();
+
+                return safeFilteredData2;
+            }
+
+            return safeFilteredData;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadAllAlarmLog()
+        {
+            string tablename2 = "AlarmLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            ReadData(tablename2, ref tableDictionarys);
+
+            return tableDictionarys;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadDataAlarmLog(int Year, int Month, int Day, int Type = -1)
+        {
+            string tablename2 = "AlarmLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            SQLiteProgram.Instance.ReadData(tablename2, ref tableDictionarys);
+
+            DateTime startDate = new DateTime(Year, Month, Day);
+            string targetDate = startDate.ToString("yyyy-MM-dd");
+
+
+            // 安全版本（包含类型验证）  
+            List<Dictionary<string, SQLData>> safeFilteredData = tableDictionarys
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Date", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.STRING &&
+                               dateData.Data is string dateStr &&
+                               dateStr == targetDate;
+                    }
+                    return false;
+                })
+                .ToList();
+
+            if (Type >= 0)
+            {
+                List<Dictionary<string, SQLData>> safeFilteredData2 = safeFilteredData
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Type", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.INT &&
+                               dateData.Data is int dateStr &&
+                               dateStr == Type;
+                    }
+                    return false;
+                })
+                .ToList();
+
+                return safeFilteredData2;
+            }
+
+            return safeFilteredData;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadAllUserOperationLog()
+        {
+            string tablename2 = "UserOperationLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            ReadData(tablename2, ref tableDictionarys);
+
+            return tableDictionarys;
+
+        }
+
+        public List<Dictionary<string, SQLData>> ReadDataUserOperationLog(int Year, int Month, int Day, string user = null, int Type = -1)
+        {
+            string tablename2 = "UserOperationLog";
+
+            List<Dictionary<string, SQLData>> tableDictionarys = new List<Dictionary<string, SQLData>>();
+            SQLiteProgram.Instance.ReadData(tablename2, ref tableDictionarys);
+
+            DateTime startDate = new DateTime(Year, Month, Day);
+            string targetDate = startDate.ToString("yyyy-MM-dd");
+
+
+            // 安全版本（包含类型验证）  
+            List<Dictionary<string, SQLData>> safeFilteredData = tableDictionarys
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("Date", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.STRING &&
+                               dateData.Data is string dateStr &&
+                               dateStr == targetDate;
+                    }
+                    return false;
+                })
+                .ToList();
+
+            if (user != null)
+            {
+                List<Dictionary<string, SQLData>> safeFilteredData2 = safeFilteredData
+                .Where(dict =>
+                {
+                    if (dict.TryGetValue("User", out SQLData dateData))
+                    {
+                        return dateData.type == SQLDataType.STRING &&
+                               dateData.Data is string dateStr &&
+                               dateStr == user;
+                    }
+                    return false;
+                })
+                .ToList();
+
+                if (Type >= 0)
+                {
+                    List<Dictionary<string, SQLData>> safeFilteredData3 = safeFilteredData2
+                    .Where(dict =>
+                    {
+                        if (dict.TryGetValue("Type", out SQLData dateData))
+                        {
+                            return dateData.type == SQLDataType.INT &&
+                                   dateData.Data is int dateStr &&
+                                   dateStr == Type;
+                        }
+                        return false;
+                    })
+                    .ToList();
+
+                    return safeFilteredData3;
+                }
+
+                return safeFilteredData2;
+            }
+
+            ////排序加转换
+            //if (safeFilteredData.Count > 0)
+            //{
+            //    // 按时间排序（需处理日期时间合并）  
+            //    var sortedData = safeFilteredData
+            //        .OrderBy(dict =>
+            //        {
+            //            // 合并日期和时间创建DateTime  
+            //            var dateStr = dict["Date"].Data as string;
+            //            var timeStr = dict["Time"].Data as string;
+
+            //            if (DateTime.TryParseExact($"{dateStr} {timeStr}",
+            //                "yyyy-MM-dd HH:mm:ss",
+            //                CultureInfo.InvariantCulture,
+            //                DateTimeStyles.None,
+            //                out DateTime combinedTime))
+            //            {
+            //                return combinedTime;
+            //            }
+            //            return DateTime.MaxValue; // 无效数据排到最后  
+            //        })
+            //        .ToList();
+
+            //    // 转换数据到TemperatureData对象  
+            //    datas = new List<TemperatureData>();
+            //    foreach (var dict in sortedData)
+            //    {
+            //        try
+            //        {
+            //            var tempData = new TemperatureData
+            //            {
+            //                // 合并日期时间  
+            //                Time = DateTime.ParseExact(
+            //                    $"{dict["Date"].Data} {dict["Time"].Data}",
+            //                    "yyyy-MM-dd HH:mm:ss",
+            //                    CultureInfo.InvariantCulture),
+
+            //                TempA = Convert.ToDouble(dict["UpTemperature"].Data),
+            //                TempB = Convert.ToDouble(dict["MiddleTemperature"].Data),
+            //                TempC = Convert.ToDouble(dict["DownTemperature"].Data)
+            //            };
+            //            datas.Add(tempData);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            // 处理数据转换异常  
+            //            Debug.WriteLine($"数据转换失败: {ex.Message}");
+            //        }
+            //    }
+
+            //    //绑定数据  
+            //    var data = datas;
+            //    BindChartData(datas);
+
+            //}
+            //else
+            //{
+            //    // 处理空数据情况  
+            //    Debug.WriteLine("没有找到符合条件的数据");
+            //    datas = new List<TemperatureData>(); // 或保持原列表  
+            //}
+
+            return safeFilteredData;
+
+        }
+
 
 
         //插入一些数据

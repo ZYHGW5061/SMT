@@ -7,6 +7,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalToolClsLib;
 
 namespace DispensingMachineManagerClsLib
 {
@@ -116,8 +117,9 @@ namespace DispensingMachineManagerClsLib
         {
             if (_currentController == null)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "当前点胶机为空.");
                 return null;
-                throw new NotSupportedException("Stage controller is not initialized.");
+                //throw new NotSupportedException("Stage controller is not initialized.");
             }
             return _currentController;
         }

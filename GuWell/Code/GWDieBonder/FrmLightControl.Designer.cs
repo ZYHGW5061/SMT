@@ -41,7 +41,7 @@ namespace BondTerminal
             this.cmbSelectLight.Name = "cmbSelectLight";
             this.cmbSelectLight.Size = new System.Drawing.Size(199, 20);
             this.cmbSelectLight.TabIndex = 47;
-            this.cmbSelectLight.Text = "WaferRingField";
+            this.cmbSelectLight.Text = "榜头环光";
             this.cmbSelectLight.SelectedIndexChanged += new System.EventHandler(this.cmbSelectLight_SelectedIndexChanged);
             // 
             // labelControl4

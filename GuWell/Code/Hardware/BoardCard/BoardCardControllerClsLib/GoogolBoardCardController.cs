@@ -18,7 +18,7 @@ namespace BoardCardControllerClsLib
         {
             get { return HardwareConfiguration.Instance; }
         }
-        public bool IsConnect => throw new NotImplementedException();
+        public bool IsConnect => ReadConnect();
         const short CORE = 1;
         short EcatSts;
         static bool[] AxisClsStat = new bool[20];
@@ -405,6 +405,15 @@ namespace BoardCardControllerClsLib
         {
             double OriPosPulse = 0;
             OriPosPulse = AxisControl.mc.MC_GetEncPos((short)axis);
+            //if(axis == EnumStageAxis.ChipPPT)
+            //{
+            //    return ((double)OriPosPulse * PulseToMM(axis) - 180);
+            //}
+            //else
+            //{
+            //    return (double)OriPosPulse * PulseToMM(axis);
+            //}
+
             return (double)OriPosPulse * PulseToMM(axis);
 
         }
@@ -524,10 +533,14 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void JogNegative(EnumStageAxis axis, float speed)
         {
-            if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            if (axis == EnumStageAxis.NeedleZ)
             {
                 speed = -speed;
             }
+            //if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            //{
+            //    speed = -speed;
+            //}
             ClrAlarm(axis);
             //speed= (float)(speed*MMToPulse(axis)/1000);
             //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = -Math.Abs(speed);
@@ -548,10 +561,14 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void JogPositive(EnumStageAxis axis, float speed)
         {
-            if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            if (axis == EnumStageAxis.NeedleZ)
             {
                 speed = -speed;
             }
+            //if (axis == EnumStageAxis.BondZ || axis == EnumStageAxis.NeedleZ)
+            //{
+            //    speed = -speed;
+            //}
             //speed = (float)(speed * MMToPulse(axis) / 1000);
             //MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart = speed;
             //AxisControl.mc.MC_MoveJog(MotorPara.AxisMotionPara[(int)axis].EactID, MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc , 
@@ -606,10 +623,20 @@ namespace BoardCardControllerClsLib
                 double s_v = MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.velStart * 1000 / MMToPulse(axis);
                 S_Movetion(axis, targetPos, s_v, _axisConfig.Smotheda, _axisConfig.Smothedj);
             }
-            else if(_axisConfig.StageType == EnumStageType.None)
+            else if (_axisConfig.StageType == EnumStageType.None)
             {
-                //Speed = Speed * MMToPulse(axis) / 1000;
+                Speed = Speed * MMToPulse(axis) / 1000;
+                //if (axis == EnumStageAxis.ChipPPT)
+                //{
+                //    targetPos = (targetPos + 180) * MMToPulse(axis);
+                //}
+                //else
+                //{
+                //    targetPos = targetPos * MMToPulse(axis);
+                //}
+
                 targetPos = targetPos * MMToPulse(axis);
+
                 AxisControl.mc.MC_MoveAbsolute(MotorPara.AxisMotionPara[(int)axis].EactID,
                                                MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.acc,
                                               MotorPara.AxisMotionPara[(int)axis].DynamicsParaIn.dec,
@@ -641,10 +668,10 @@ namespace BoardCardControllerClsLib
         /// <param name="Pos">位置</param>
         public void MoveRelativeSync(EnumStageAxis axis, double distance, double Speed, int millisecondsTimeout = -1)
         {
-            if (axis == EnumStageAxis.BondZ)
-            {
-                distance = -distance;
-            }
+            //if (axis == EnumStageAxis.BondZ)
+            //{
+            //    distance = -distance;
+            //}
 
             ClrAlarm(axis);
 
@@ -741,6 +768,8 @@ namespace BoardCardControllerClsLib
         /// </summary>
         public void SetSoftLeftAndRightLimit(EnumStageAxis axis, double Pvalue, double Nvalue)
         {
+            _hardwareConfig.StageConfig.GetAixsConfigByType(axis).SoftLeftLimit = Nvalue;
+            _hardwareConfig.StageConfig.GetAixsConfigByType(axis).SoftRightLimit = Pvalue;
             Pvalue = Pvalue * MMToPulse(axis);
             Nvalue = Nvalue * MMToPulse(axis);
             AxisControl.mc.MC_SetSoftLimitNegativeAndPostive((short)axis, (Int32)Pvalue, (Int32)Nvalue);
@@ -1499,7 +1528,7 @@ namespace BoardCardControllerClsLib
             byte[] buffer = new byte[4];    // 复用缓冲区
 
 
-            
+
             // 设置各参数（带物理单位注释）
             SetAxisParameter(0x200A, 0x00, 4, speedPos * scale);       // 快进位置 (mm → 脉冲)
             SetAxisParameter(0x200B, 0x00, 4, switchPos * scale);      // 切换位置 (mm → 脉冲)
@@ -1572,7 +1601,7 @@ namespace BoardCardControllerClsLib
             byte[] byteValue32 = BitConverter.GetBytes(0);
             UInt32 errCode = 0;
             rtn = GTN.mc.GTN_EcatSDODownload(core, 10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);
-           
+
             Thread.Sleep(5); //上升沿要加延时才能保证触发成功
             byteValue32 = BitConverter.GetBytes(2);
             rtn = GTN.mc.GTN_EcatSDODownload(core, 10, 0x2016, 0x00, ref byteValue32[0], 2, out errCode);

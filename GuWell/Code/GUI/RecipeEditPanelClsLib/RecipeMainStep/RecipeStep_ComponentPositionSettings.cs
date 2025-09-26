@@ -63,6 +63,17 @@ namespace RecipeEditPanelClsLib
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
+
+            if (_editRecipe.CurrentComponent.PositionMarkPointCount == 2)
+            {
+
+            }
+            else
+            {
+                step7Sign.Visible = false;
+            }
+
+
         }
 
         /// <summary>
@@ -133,14 +144,29 @@ namespace RecipeEditPanelClsLib
             {
                 this.btnPrevious.Visible = true;
             }
-            if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition)
+            if (_editRecipe.CurrentComponent.PositionMarkPointCount == 2)
             {
-                this.btnNext.Text = "完成";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition2)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Text = "下一步";
+                }
             }
             else
             {
-                this.btnNext.Text = "下一步";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Text = "下一步";
+                }
             }
+                
             //this.labelStepInfo.Text = currentStepPage.StepDescription;
             //LoadStepParameters(currentTeachStepPage.CurrentStep);
         }
@@ -200,10 +226,21 @@ namespace RecipeEditPanelClsLib
             //{
             //    this.btnNext.Visible = true;
             //}
-            if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition)
+            if(_editRecipe.CurrentComponent.PositionMarkPointCount == 2)
             {
-                this.btnNext.Text = "完成";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition2)
+                {
+                    this.btnNext.Text = "完成";
+                }
             }
+            else
+            {
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeComponentPositionStep.VisionPosition)
+                {
+                    this.btnNext.Text = "完成";
+                }
+            }
+           
             //else
             //{
             //    this.btnNext.Visible = true;
@@ -236,6 +273,9 @@ namespace RecipeEditPanelClsLib
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.VisionPosition:
                     ret = new ComponentPositionStep_VisionPosition(_parentCameraWnd);
+                    break;
+                case EnumDefineSetupRecipeComponentPositionStep.VisionPosition2:
+                    ret = new ComponentPositionStep_VisionPosition2(_parentCameraWnd);
                     break;
                 default:
                     break;
@@ -315,6 +355,20 @@ namespace RecipeEditPanelClsLib
                     }
 
                     break;
+                case EnumDefineSetupRecipeComponentPositionStep.VisionPosition2:
+                    var shapeMatchParam2 = _editRecipe.CurrentComponent.PositionComponentVisionParameters.ShapeMatchParameters[1];
+                    if (shapeMatchParam2 != null)
+                    {
+                        shapeMatchParam2.OrigionAngle = _componentRotateAngle;
+                        //此处更新模板的特征中心和物料中心的偏移
+                        shapeMatchParam2.PatternOffsetWithMaterialCenter.X = _centerCoor.X - currentStepPage.PositionOfPattern.X;
+                        shapeMatchParam2.PatternOffsetWithMaterialCenter.Y = _centerCoor.Y - currentStepPage.PositionOfPattern.Y;
+
+                        shapeMatchParam2.PositionOfMaterialCenter.X = _centerCoor.X;
+                        shapeMatchParam2.PositionOfMaterialCenter.Y = _centerCoor.Y;
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -353,6 +407,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.SetComponentLeftUpperCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -361,6 +416,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.SetComponentRightUpperCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -369,6 +425,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_undo;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.SetComponentRightLowerCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -377,6 +434,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_undo;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.SetComponentLeftLowerCorner:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -385,6 +443,7 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_done;
                     step5Sign.Image = Properties.Resources.loc_left_bottom;
                     step6Sign.Image = Properties.Resources.recognize_undo;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
                     break;
                 case EnumDefineSetupRecipeComponentPositionStep.VisionPosition:
                     step1Sign.Image = Properties.Resources.height_done;
@@ -393,6 +452,16 @@ namespace RecipeEditPanelClsLib
                     step4Sign.Image = Properties.Resources.loc_right_bottom_done;
                     step5Sign.Image = Properties.Resources.loc_left_bottom_done;
                     step6Sign.Image = Properties.Resources.recognize;
+                    step7Sign.Image = Properties.Resources.recognize_undo;
+                    break;
+                case EnumDefineSetupRecipeComponentPositionStep.VisionPosition2:
+                    step1Sign.Image = Properties.Resources.height_done;
+                    step2Sign.Image = Properties.Resources.loc_left_top_done;
+                    step3Sign.Image = Properties.Resources.loc_right_top_done;
+                    step4Sign.Image = Properties.Resources.loc_right_bottom_done;
+                    step5Sign.Image = Properties.Resources.loc_left_bottom_done;
+                    step6Sign.Image = Properties.Resources.recognize_done;
+                    step7Sign.Image = Properties.Resources.recognize;
                     break;
                 default:
                     break;
@@ -407,6 +476,7 @@ namespace RecipeEditPanelClsLib
             step4Sign.Image = Properties.Resources.loc_right_bottom_done;
             step5Sign.Image = Properties.Resources.loc_left_bottom_done;
             step6Sign.Image = Properties.Resources.recognize_done;
+            step7Sign.Image = Properties.Resources.recognize_done;
         }
     }
 }

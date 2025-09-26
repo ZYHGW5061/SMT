@@ -66,7 +66,7 @@ namespace RecipeEditPanelClsLib
                 }
                 cmbPredispensingMode.Text = EditRecipe.DispenserSettings.PredispensingMode.ToString();
 
-
+                seDispensingCount.Text = EditRecipe.DispenserSettings.DispensingCount.ToString();
                 sePredispensingTimes.Text= EditRecipe.DispenserSettings.PredispensingCount.ToString();
                 sePredispensingIntervelMinutes.Text= EditRecipe.DispenserSettings.PredispensingIntervalMinute.ToString();
                 sePredispensingIntervelSeconds.Text= EditRecipe.DispenserSettings.PredispensingIntervalSecond.ToString();
@@ -90,6 +90,7 @@ namespace RecipeEditPanelClsLib
 
                 EditRecipe.DispenserSettings.PredispensingMode = (EnumPredispensingMode)Enum.Parse(typeof(EnumPredispensingMode), cmbPredispensingMode.Text);
                 EditRecipe.DispenserSettings.DispensingMode = (EnumDispensingMode)Enum.Parse(typeof(EnumDispensingMode), combDispensingMode.Text);
+                EditRecipe.DispenserSettings.DispensingCount = int.Parse(seDispensingCount.Text);
                 EditRecipe.DispenserSettings.PredispensingCount = int.Parse(sePredispensingTimes.Text);
                 EditRecipe.DispenserSettings.PredispensingIntervalMinute = int.Parse(sePredispensingIntervelMinutes.Text);
                 EditRecipe.DispenserSettings.PredispensingIntervalSecond = int.Parse(sePredispensingIntervelSeconds.Text);

@@ -65,9 +65,9 @@ namespace RecipeEditPanelClsLib
             this.labelStepInfo.Appearance.Options.UseFont = true;
             this.labelStepInfo.Location = new System.Drawing.Point(5, 11);
             this.labelStepInfo.Name = "labelStepInfo";
-            this.labelStepInfo.Size = new System.Drawing.Size(321, 19);
+            this.labelStepInfo.Size = new System.Drawing.Size(296, 19);
             this.labelStepInfo.TabIndex = 4;
-            this.labelStepInfo.Text = "步骤 1/3：Map设定-定位到第一颗Module";
+            this.labelStepInfo.Text = "步骤 1/3：Map设定-定位到第一颗模块";
             // 
             // repositoryItemComboBox1
             // 
@@ -96,7 +96,7 @@ namespace RecipeEditPanelClsLib
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(275, 317);
             this.stageQuickMove1.TabIndex = 40;
             // 

@@ -55,6 +55,11 @@ namespace RecipeEditPanelClsLib
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
+
+            if (_editRecipe.CurrentSubstrate.PositionSubstratePointCount == 1)
+            {
+                stepSetMark2Sign.Visible = false;
+            }
         }
 
         /// <summary>
@@ -132,15 +137,31 @@ namespace RecipeEditPanelClsLib
             {
                 this.btnPrevious.Visible = true;
             }
-            if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark2VisionParam)
+            if (_editRecipe.CurrentSubstrate.PositionSubstratePointCount == 1)
             {
-                this.btnNext.Visible = false;
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark1VisionParam)
+                {
+                    this.btnNext.Visible = false;
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
             else
             {
-                this.btnNext.Visible = true;
-                this.btnNext.Text = "下一步";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark2VisionParam)
+                {
+                    this.btnNext.Visible = false;
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
+                
             //this.labelStepInfo.Text = currentStepPage.StepDescription;
             //LoadStepParameters(currentTeachStepPage.CurrentStep);
         }
@@ -198,15 +219,31 @@ namespace RecipeEditPanelClsLib
             //{
             //    this.btnNext.Visible = true;
             //}
-            if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark2VisionParam)
+            if (_editRecipe.CurrentSubstrate.PositionSubstratePointCount == 1)
             {
-                this.btnNext.Text = "完成";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark1VisionParam)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
             else
             {
-                this.btnNext.Visible = true;
-                this.btnNext.Text = "下一步";
+                if (currentStepPage.CurrentStep == EnumDefineSetupRecipeSubstratePositionStep.SetMark2VisionParam)
+                {
+                    this.btnNext.Text = "完成";
+                }
+                else
+                {
+                    this.btnNext.Visible = true;
+                    this.btnNext.Text = "下一步";
+                }
             }
+            
             //this.labelStepInfo.Text = currentStepPage.StepDescription;
             //LoadStepParameters(currentTeachStepPage.CurrentStep);
         }
@@ -316,7 +353,7 @@ namespace RecipeEditPanelClsLib
                     //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.X = currentStepPage.PositionOfPattern.X;
                     //_editRecipe.SubstrateInfos.SubstrateCoordinateHomePoint.Y = currentStepPage.PositionOfPattern.Y;
 
-                    var shapeMatchParam = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters.FirstOrDefault()?.ShapeMatchParameters.FirstOrDefault();
+                    var shapeMatchParam = _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters.FirstOrDefault();
                     if (shapeMatchParam != null)
                     {
                         shapeMatchParam.OrigionAngle = _substrateRotateAngle;
@@ -350,7 +387,7 @@ namespace RecipeEditPanelClsLib
                     //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.X = currentStepPage.PositionOfPattern.X;
                     //_editRecipe.SubstrateInfos.SubstrateCoordinateHomeSecondPoint.Y = currentStepPage.PositionOfPattern.Y;
 
-                    var shapeMatchParam2 = _editRecipe.CurrentSubstrate.PositionSustrateMarkVisionParameters[1].ShapeMatchParameters.FirstOrDefault();
+                    var shapeMatchParam2 = _editRecipe.CurrentSubstrate.PositionSustrateVisionParameters.ShapeMatchParameters[1];
                     if (shapeMatchParam2 != null)
                     {
                         shapeMatchParam2.OrigionAngle = _substrateRotateAngle;

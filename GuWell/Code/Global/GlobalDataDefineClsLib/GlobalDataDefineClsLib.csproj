@@ -60,12 +60,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Algorithm\Vision\VisionClsLib\VisionClsLib.csproj">
-      <Project>{13D295AA-B633-4622-8B1A-D5FC2D1523B3}</Project>
-      <Name>VisionClsLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

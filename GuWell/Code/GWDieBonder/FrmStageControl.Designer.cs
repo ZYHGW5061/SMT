@@ -38,7 +38,7 @@ namespace BondTerminal
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(269, 317);
             this.stageQuickMove1.TabIndex = 0;
             // 

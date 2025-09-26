@@ -153,8 +153,8 @@
             "贴装位置"}, -1);
             this.treeRecipeNodes.AppendNode(new object[] {
             "芯片"}, -1);
-            this.treeRecipeNodes.AppendNode(new object[] {
-            "划胶器"}, -1);
+            //this.treeRecipeNodes.AppendNode(new object[] {
+            //"划胶器"}, -1);
             this.treeRecipeNodes.AppendNode(new object[] {
             "胶水设置"}, -1);
             this.treeRecipeNodes.AppendNode(new object[] {

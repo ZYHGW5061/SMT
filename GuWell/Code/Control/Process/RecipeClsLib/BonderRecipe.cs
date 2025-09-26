@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using WestDragon.Framework.BaseLoggerClsLib;
 using WestDragon.Framework.UtilityHelper;
 
 namespace RecipeClsLib
@@ -63,6 +64,9 @@ namespace RecipeClsLib
         [XmlElement("DispenserSettings")]
         public DispenserSettings DispenserSettings { get; set; }
 
+        [XmlElement("DispenserName")]
+        public string DispenserName { get; set; }
+
         [XmlIgnore]
         public List<BondingPositionSettings> StepBondingPositionList { get; set; }
 
@@ -94,7 +98,7 @@ namespace RecipeClsLib
         /// Recipe存放系统默认路径
         /// </summary>
         [XmlIgnore]
-        private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
+        private static string SystemDefaultDirectory = SystemConfiguration.Instance.JobConfig.RecipeSavingPath;
         [XmlIgnore]
         private static string _SubmonutSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
         [XmlIgnore]
@@ -180,6 +184,20 @@ namespace RecipeClsLib
                 return ret;
             }
         }
+
+        [XmlIgnore]
+        public DispenserSettings CurrentDispenser
+        {
+            get
+            {
+                DispenserSettings ret = null;
+                if (!string.IsNullOrEmpty(DispenserName))
+                {
+                    ret = SystemConfiguration.Instance.DispenserSettings.FirstOrDefault(i => i.Name == DispenserName);
+                }
+                return ret;
+            }
+        }
         [XmlIgnore]
         public EpoxyApplication CurrentEpoxyApplication
         {
@@ -231,7 +249,28 @@ namespace RecipeClsLib
         {
             try
             {
-
+                var recipeDirectory = string.Format(SystemDefaultDirectory + @"Recipes\{0}\{1}", RecipeType.ToString(), RecipeName);
+                _recipeFullName = string.Format(recipeDirectory + @"\{0}.xml", RecipeName);
+                _recipeFolderFullName = _recipeFullName.Substring(0, _recipeFullName.LastIndexOf("\\"));
+                try
+                {
+                    if (Directory.Exists(_recipeFullName))
+                    {
+                        DeleteDirectory(_recipeFullName);
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("配方 {0} 删除成功", RecipeName));
+                        //return true;
+                    }
+                    else
+                    {
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("配方 {0} 不存在，未删除", RecipeName));
+                        //return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("配方 {0} 删除失败", RecipeName), ex);
+                    //return false;
+                }
             }
             catch (Exception ex)
             {
@@ -269,7 +308,7 @@ namespace RecipeClsLib
             _recipeFolderFullName = _recipeFullName.Substring(0, _recipeFullName.LastIndexOf("\\"));
             if (!File.Exists(_recipeFullName))
             {
-                throw new FileNotFoundException(string.Format("recipe {0} is not found.", _recipeFullName));
+                LogRecorder.RecordLog(EnumLogContentType.Error, string.Format("配方 {0} 不存在", _recipeFullName));
             }
             BondRecipe loadedRecipe = new BondRecipe();
             try
@@ -281,7 +320,7 @@ namespace RecipeClsLib
 
                 if (loadedRecipe.ProductSteps.Count > 0)
                 {
-                    loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.ProductSteps)[0];
+                    //loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.ProductSteps)[0];
                     var substrateInfos = LoadSubstrate(loadedRecipe.ProductSteps);
                     if(substrateInfos != null && substrateInfos.Count>0)
                     {
@@ -299,16 +338,21 @@ namespace RecipeClsLib
                 }
                 else
                 {
-                    //loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
+                    //var submonut = LoadComponents(loadedRecipe.RecipeName);
+                    //if (submonut != null && submonut.Count > 0)
+                    //{
+                    //    loadedRecipe.SubmonutInfos = LoadComponents(loadedRecipe.RecipeName)[0];
+                    //}
+                    
                     //var substrateInfos = LoadSubstrates(loadedRecipe.RecipeName);
                     //if (substrateInfos != null && substrateInfos.Count > 0)
                     //{
                     //    loadedRecipe.SubstrateInfos = LoadSubstrate(loadedRecipe.ProductSteps)[0];
                     //}
-                    ////loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
-                    ////loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
-                    ////loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
-                    ////loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepBondingPositionList = LoadBondPositions(loadedRecipe.RecipeName);
+                    //loadedRecipe.StepEpoxyApplicationList = LoadEpoxyApplications(loadedRecipe.RecipeName);
                 }
                 loadedRecipe.StepSubstrateList = LoadSubstrates(loadedRecipe.RecipeName);
                 loadedRecipe.StepComponentList = LoadComponents(loadedRecipe.RecipeName);
@@ -404,7 +448,7 @@ namespace RecipeClsLib
                     SaveEpoxyApplication();
                     break;
                 case EnumRecipeStep.Module_MaterialMap:
-                    SaveSubstrateMap2();
+                    SaveSubstrate2();
                     break;
                 case EnumRecipeStep.None:
                     break;
@@ -591,6 +635,7 @@ namespace RecipeClsLib
                 var xmlFile = $@"{_SubstrateSavePath}\{fileName}\{fileName}.xml";
                 var comp = XmlSerializeHelper.XmlDeserializeFromFile<ProgramSubstrateSettings>(xmlFile, Encoding.UTF8);
                 comp.SubstrateMapInfos = LoadSubstrateMap(fileName);
+                comp.ModuleMapInfos = LoadModuleMap(fileName);
                 ret.Add(comp);
             }
 
@@ -745,6 +790,24 @@ namespace RecipeClsLib
             }
         }
 
+        public static void SaveComponent(ProgramComponentSettings Component, string ComponentName)
+        {
+            if (Component != null)
+            {
+                var xmlFile = $@"{_componentsSavePath}{ComponentName}\{ComponentName}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(Component, xmlFile, Encoding.UTF8);
+            }
+        }
+
+        public static void SaveSubstrate(ProgramSubstrateSettings Substrate, string SubstrateName)
+        {
+            if (Substrate != null)
+            {
+                var xmlFile = $@"{_SubstrateSavePath}{SubstrateName}\{SubstrateName}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(Substrate, xmlFile, Encoding.UTF8);
+            }
+        }
+
         private void SaveBondPosition()
         {
             if (CurrentBondPosition != null)
@@ -820,6 +883,126 @@ namespace RecipeClsLib
             XmlSerializeHelper.XmlSerializeToFile(this.CurrentSubstrate.SubstrateMapInfos, substrateXmlFile, Encoding.UTF8);
             var moduleXmlFile = $@"{_SubstrateSavePath}{CurrentSubstrate.Name}\ModuleMap.xml";
             XmlSerializeHelper.XmlSerializeToFile(this.CurrentSubstrate.ModuleMapInfos, moduleXmlFile, Encoding.UTF8);
+        }
+
+        static void DeleteDirectory(string targetDir)
+        {
+            // 删除所有文件
+            foreach (var file in Directory.GetFiles(targetDir))
+            {
+                File.SetAttributes(file, FileAttributes.Normal); // 移除只读属性
+                File.Delete(file);
+            }
+
+            // 递归删除所有子目录
+            foreach (var dir in Directory.GetDirectories(targetDir))
+            {
+                DeleteDirectory(dir);
+            }
+
+            // 删除空目录
+            Directory.Delete(targetDir, false);
+        }
+
+        public static bool DeleteSubstrate(string SubstrateName)
+        {
+            var xmlFile = $@"{_SubstrateSavePath}{SubstrateName}";
+            string folderPath = xmlFile; // 替换为要删除的文件夹路径
+
+            try
+            {
+                if (Directory.Exists(folderPath))
+                {
+                    DeleteDirectory(folderPath);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("基板配方 {0} 删除成功", SubstrateName));
+                    return true;
+                }
+                else
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("基板配方 {0} 不存在，未删除", SubstrateName));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("基板配方 {0} 删除失败", SubstrateName), ex);
+                return false;
+            }
+        }
+        public static bool DeleteComponent(string ComponentName)
+        {
+            var xmlFile = $@"{_componentsSavePath}{ComponentName}";
+            string folderPath = xmlFile; // 替换为要删除的文件夹路径
+
+            try
+            {
+                if (Directory.Exists(folderPath))
+                {
+                    DeleteDirectory(folderPath);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("芯片配方 {0} 删除成功", ComponentName));
+                    return true;
+                }
+                else
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("芯片配方 {0} 不存在，未删除", ComponentName));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("芯片配方 {0} 删除失败", ComponentName), ex);
+                return false;
+            }
+        }
+        public static bool DeleteBondPosition(string BondPositionName)
+        {
+            var xmlFile = $@"{_bondPositionSavePath}{BondPositionName}";
+            string folderPath = xmlFile; // 替换为要删除的文件夹路径
+
+            try
+            {
+                if (Directory.Exists(folderPath))
+                {
+                    DeleteDirectory(folderPath);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("贴片位置配方 {0} 删除成功", BondPositionName));
+                    return true;
+                }
+                else
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("贴片位置配方 {0} 不存在，未删除", BondPositionName));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("贴片位置配方 {0} 删除失败", BondPositionName), ex);
+                return false;
+            }
+        }
+        public static bool DeleteEpoxyApplication(string EpoxyApplicationName)
+        {
+            var xmlFile = $@"{_epoxyApplicationSavePath}{EpoxyApplicationName}";
+            string folderPath = xmlFile; // 替换为要删除的文件夹路径
+
+            try
+            {
+                if (Directory.Exists(folderPath))
+                {
+                    DeleteDirectory(folderPath);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("点胶配方 {0} 删除成功", EpoxyApplicationName));
+                    return true;
+                }
+                else
+                {
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("点胶配方 {0} 不存在，未删除", EpoxyApplicationName));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, string.Format("点胶配方 {0} 删除失败", EpoxyApplicationName), ex);
+                return false;
+            }
         }
 
         private static List<MaterialMapInformation> LoadSubstrateMap()
@@ -1091,6 +1274,16 @@ namespace RecipeClsLib
             if (material != null)
             {
                 ret = material.IsMaterialAccuracySettingsComplete;
+            }
+            return ret;
+        }
+        public bool IsStepComplete_ComponentCalibrationAfterPP(string componentName)
+        {
+            var ret = false;
+            var material = StepComponentList.FirstOrDefault(i => i.Name == componentName);
+            if (material != null)
+            {
+                ret = material.IsMaterialCalibrationAfterPPSettingsComplete;
             }
             return ret;
         }

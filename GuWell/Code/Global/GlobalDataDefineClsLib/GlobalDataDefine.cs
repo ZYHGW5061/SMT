@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using VisionClsLib;
 using WestDragon.Framework.UtilityHelper;
 
 namespace GlobalDataDefineClsLib
@@ -18,6 +17,33 @@ namespace GlobalDataDefineClsLib
     [Serializable]
     public enum EnumSystemRole { System_Master, System_Slave1, System_Slave2, System_Slave3, System_Slave4, System_Slave5, System_Slave6, System_Slave7, System_Slave8 }
     public enum EnumSystemMode { Attach=1,Eutectic=0}
+
+
+    public enum EnumProductRunStat
+    {
+        [Description("未加载")]
+        NoProd,
+
+        [Description("未运行")]
+        Stop,
+
+        [Description("自动运行中")]
+        AutoRun,
+
+        [Description("自动运行暂停")]
+        AutoPause,
+
+        [Description("单步运行中")]
+        StepRun,
+
+        [Description("完成单步暂停")]
+        StepPause,
+        [Description("用户终止")]
+        UserAbort,
+        [Description("流程正常结束")]
+        Completed
+    }
+
 
     [Serializable]
     public enum EnumStageAxis
@@ -38,19 +64,19 @@ namespace GlobalDataDefineClsLib
         ChipPPT = 6,
 
         [Description("芯片吸嘴Z轴")]
-        ChipPPZ = 101,
+        ChipPPZ = 7,
 
         [Description("基板吸嘴Theta轴")]
-        SubmountPPT = 14,
+        SubmountPPT = 5,
 
         [Description("基板吸嘴Z轴")]
-        SubmountPPZ = 13,
+        SubmountPPZ = 4,
 
         [Description("吸嘴库Theta轴")]
-        PPtoolBankTheta = 50,
+        PPtoolBankTheta = 8,
 
         [Description("蘸胶轴")]
-        DippingGlue = 60,
+        DippingGlue = 9,
 
         [Description("传送轨道1轴")]
         TransportTrack1 = 12,
@@ -63,39 +89,68 @@ namespace GlobalDataDefineClsLib
 
 
         [Description("晶圆盘Y轴")]
-        WaferTableY = 7,
+        WaferTableY = 13,
 
         [Description("晶圆盘X轴")]
-        WaferTableX = 9,
+        WaferTableX = 14,
 
         [Description("俯视相机轴")]
-        WaferTableZ = 4,
+        WaferTableZ = 15,
 
         [Description("晶圆阔膜轴")]
-        WaferFilm = 130,
+        WaferFilm = 16,
 
         [Description("晶圆夹爪轴")]
-        WaferFinger = 140,
+        WaferFinger = 17,
 
         [Description("晶圆抽匣升降轴")]
-        WaferCassetteLift = 150,
+        WaferCassetteLift = 18,
 
         [Description("顶针底座轴")]
-        ESZ = 8,
+        ESZ = 19,
 
         [Description("顶针轴")]
-        NeedleZ = 5,
+        NeedleZ = 20,
 
         [Description("顶针切换轴")]
-        NeedleSwitch = 180,
+        NeedleSwitch = 21,
 
         [Description("翻转工具Theta轴")]
-        FilpToolTheta = 190,
+        FilpToolTheta = 22,
 
 
 
 
 
+    }
+
+    [Serializable]
+    public enum EnumStageSystem2
+    {
+        [Description("榜头平台")]
+        BondTable,
+        [Description("传送轨道")]
+        Transport,
+        [Description("晶圆平台")]
+        WaferTable,
+        [Description("芯片吸嘴")]
+        ChipPP,
+        [Description("顶针系统")]
+        ES
+    }
+    [Serializable]
+    public enum EnumSystemAxis2
+    {
+        XY,
+        X,
+        Z,
+        NeedleZ,
+        Focus,
+        Theta,
+        WaferFilm,
+        Stage1,
+        Stage2,
+        Stage3,
     }
 
     [Serializable]
@@ -162,9 +217,13 @@ namespace GlobalDataDefineClsLib
     [Serializable]
     public enum EnumCameraType
     {
+        [Description("空")]
         None = 0,
+        [Description("榜头相机")]
         BondCamera = 1,
+        [Description("仰视相机")]
         UplookingCamera = 2,
+        [Description("晶圆相机")]
         WaferCamera = 3,
     }
     [Serializable]
@@ -177,10 +236,30 @@ namespace GlobalDataDefineClsLib
     [Serializable]
     public enum EnumLightSourceType
     {
-        WaferRingField, BondRingField, LookupRingField
-        , WaferDirectField, BondDirectField, LookupDirectField, 
-        WaferDirectRedField, WaferDirectGreenField, WaferDirectBlueField,
-        BondDirectRedField, BondDirectGreenField, BondDirectBlueField
+        [Description("晶圆环光")]
+        WaferRingField,
+        [Description("榜头环光")]
+        BondRingField,
+        [Description("仰视环光")] 
+        LookupRingField,
+        [Description("晶圆直光")]
+        WaferDirectField,
+        [Description("榜头直光")]
+        BondDirectField,
+        [Description("仰视直光")]
+        LookupDirectField,
+        [Description("晶圆直红光")]
+        WaferDirectRedField,
+        [Description("晶圆直绿光")]
+        WaferDirectGreenField,
+        [Description("晶圆直蓝光")]
+        WaferDirectBlueField,
+        [Description("榜头直红光")]
+        BondDirectRedField,
+        [Description("榜头直绿光")]
+        BondDirectGreenField,
+        [Description("榜头直蓝光")]
+        BondDirectBlueField
     }
 
     [Serializable]
@@ -283,7 +362,21 @@ namespace GlobalDataDefineClsLib
         SetComponentRightUpperCorner,
         SetComponentRightLowerCorner,
         SetComponentLeftLowerCorner,
-        VisionPosition
+        VisionPosition,
+        VisionPosition2,
+    }
+
+    [Serializable]
+    public enum EnumDefineSetupRecipeComponentCalibrationAfterPPStep
+    {
+        None,
+        SetWorkHeight,
+        SetComponentLeftUpperCorner,
+        SetComponentRightUpperCorner,
+        SetComponentRightLowerCorner,
+        SetComponentLeftLowerCorner,
+        VisionPosition,
+        VisionPosition2,
     }
 
 
@@ -334,7 +427,8 @@ namespace GlobalDataDefineClsLib
         SetRightUpperCorner,
         SetRightLowerCorner,
         SetLeftLowerCorner,
-        VisionPosition
+        VisionPosition,
+        VisionPosition2
     }
 
     [Serializable]
@@ -477,27 +571,39 @@ namespace GlobalDataDefineClsLib
         PPtool1,
 
         [Description("基底吸嘴")]
-        PPtool2
+        PPtool2,
+
+        [Description("ZR吸嘴")]
+        ZRPPtool
     }
     [Serializable]
     public enum EnumVisionPositioningMethod
     {
+        [Description("轮廓识别")]
         PatternSearch,
+        [Description("圆识别")]
         CircleSearch,
+        [Description("边缘识别")]
         EdgeSearch
     }
     [Serializable]
     public enum EnumAccuracyMethod
     {
+        [Description("空")]
         None,
+        [Description("仰视相机")]
         UplookingCamera,
+        [Description("校准平台")]
         CalibrationTable
     }
     [Serializable]
     public enum EnumDispensePattern
     {
+        [Description("点")]
         Point,
+        [Description("正十字")]
         GreekCross,
+        [Description("斜十字")]
         DiagonalCross
     }
     [Serializable]
@@ -884,7 +990,7 @@ namespace GlobalDataDefineClsLib
         #endregion
 
         /// <summary>
-        /// Wafer坐标系的坐标值
+        /// 每个模块的中心坐标相对于基板第一个特征点的坐标
         /// </summary>
         public PointF MaterialLocation;
         /// <summary>
@@ -1131,6 +1237,8 @@ namespace GlobalDataDefineClsLib
             ChipPPPosCompensateCoordinate2 = new XYZTCoordinateConfig();
             PPESAltimetryParameter = new PPESAltimetryParameters();
 
+            ChipPPPosBracket = new XYZTCoordinateConfig();
+
         }
         [XmlElement("Name")]
         public string Name { get; set; }
@@ -1212,6 +1320,14 @@ namespace GlobalDataDefineClsLib
         /// </summary>
         [XmlElement("PPosCompensateCoordinate2")]
         public XYZTCoordinateConfig ChipPPPosCompensateCoordinate2 { get; set; }
+
+        /// <summary>
+        /// 吸嘴支架
+        /// </summary>
+        [XmlElement("ChipPPPosBracket")]
+        public XYZTCoordinateConfig ChipPPPosBracket { get; set; }
+        [XmlElement("BracketIndex")]
+        public int BracketIndex { get; set; }
 
         /// <summary>
         /// 榜头与榜头相机中心的偏移
@@ -1301,7 +1417,54 @@ namespace GlobalDataDefineClsLib
     }
 
     [Serializable]
-    public class MatchIdentificationParam
+    public  class VisionIdentificationParam
+    {
+        public VisionIdentificationParam()
+        {
+            BondTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PositionOfMaterialCenter = new XYZTCoordinateConfig();
+            WaferTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PatternOffsetWithMaterialCenter = new XYZTCoordinateConfig();
+
+            BondTablePosition = new XYZTCoordinateConfig();
+            WaferTablePosition = new XYZTCoordinateConfig();
+        }
+
+        /// <summary>
+        /// 创建模板时BondTable的位置
+        /// </summary>
+        [XmlElement("BondTablePositionOfCreatePattern")]
+        public XYZTCoordinateConfig BondTablePositionOfCreatePattern { get; set; }
+        /// <summary>
+        /// 创建模板时物料中心的系统坐标位
+        /// </summary>
+        [XmlElement("PositionOfMaterialCenter")]
+        public XYZTCoordinateConfig PositionOfMaterialCenter { get; set; }
+        /// <summary>
+        /// 创建Pattern时的坐标系和物料中心的偏移（系统坐标系）
+        /// </summary>
+        [XmlElement("PatternOffsetWithMaterialCenter")]
+        public XYZTCoordinateConfig PatternOffsetWithMaterialCenter { get; set; }
+        /// <summary>
+        /// 创建模板时WaferTable的位置
+        /// </summary>
+        [XmlElement("WaferTablePositionOfCreatePattern")]
+        public XYZTCoordinateConfig WaferTablePositionOfCreatePattern { get; set; }
+
+        [XmlElement("BondTablePosition")]
+        public XYZTCoordinateConfig BondTablePosition { get; set; }
+        [XmlElement("WaferTablePosition")]
+        public XYZTCoordinateConfig WaferTablePosition { get; set; }
+        [XmlElement("CameraZWorkPosition")]
+        public float CameraZWorkPosition { get; set; }
+        [XmlElement("CameraZChipSystemWorkPosition")]
+        public float CameraZChipSystemWorkPosition { get; set; }
+        [XmlElement("OrigionAngle")]
+        public float OrigionAngle { get; set; }
+    }
+
+    [Serializable]
+    public class MatchIdentificationParam : VisionIdentificationParam
     {
         public MatchIdentificationParam()
         {
@@ -1310,10 +1473,6 @@ namespace GlobalDataDefineClsLib
             TemplateRoi = new RectangleFV();
             SearchRoi = new RectangleFV();
             MaskSetting = new List<RecogniseMaskSetting>();
-            BondTablePositionOfCreatePattern = new XYZTCoordinateConfig();
-            PositionOfMaterialCenter = new XYZTCoordinateConfig();
-            WaferTablePositionOfCreatePattern = new XYZTCoordinateConfig();
-            PatternOffsetWithMaterialCenter = new XYZTCoordinateConfig();
             //Templateresult = new MatchTemplateResult();
         }
 
@@ -1362,33 +1521,6 @@ namespace GlobalDataDefineClsLib
         public string Name { get; set; }
 
 
-        [XmlElement("CameraZWorkPosition")]
-        public float CameraZWorkPosition { get; set; }
-        [XmlElement("CameraZChipSystemWorkPosition")]
-        public float CameraZChipSystemWorkPosition { get; set; }
-        [XmlElement("OrigionAngle")]
-        public float OrigionAngle { get; set; }
-        /// <summary>
-        /// 创建模板时BondTable的位置
-        /// </summary>
-        [XmlElement("BondTablePositionOfCreatePattern")]
-        public XYZTCoordinateConfig BondTablePositionOfCreatePattern { get; set; }
-        /// <summary>
-        /// 创建模板时物料中心的系统坐标位
-        /// </summary>
-        [XmlElement("PositionOfMaterialCenter")]
-        public XYZTCoordinateConfig PositionOfMaterialCenter { get; set; }
-        /// <summary>
-        /// 创建Pattern时的坐标系和物料中心的偏移（系统坐标系）
-        /// </summary>
-        [XmlElement("PatternOffsetWithMaterialCenter")]
-        public XYZTCoordinateConfig PatternOffsetWithMaterialCenter { get; set; }
-        /// <summary>
-        /// 创建模板时WaferTable的位置
-        /// </summary>
-        [XmlElement("WaferTablePositionOfCreatePattern")]
-        public XYZTCoordinateConfig WaferTablePositionOfCreatePattern { get; set; }
-
         [XmlArray("MaskSetting"), XmlArrayItem(typeof(RecogniseMaskSetting))]
         public List<RecogniseMaskSetting> MaskSetting { get; set; }
         //[XmlElement("Templateresult")]
@@ -1396,7 +1528,7 @@ namespace GlobalDataDefineClsLib
     }
 
     [Serializable]
-    public class LineFindIdentificationParam
+    public class LineFindIdentificationParam : VisionIdentificationParam
     {
         public LineFindIdentificationParam()
         {
@@ -1411,11 +1543,26 @@ namespace GlobalDataDefineClsLib
             MaskSetting = new List<RecogniseMaskSetting>();
             BondTablePosition = new XYZTCoordinateConfig();
             WaferTablePosition = new XYZTCoordinateConfig();
+            BondTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PositionOfMaterialCenter = new XYZTCoordinateConfig();
+            WaferTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PatternOffsetWithMaterialCenter = new XYZTCoordinateConfig();
         }
         [XmlElement("RingLightintensity")]
         public int RingLightintensity { get; set; }
+
+        [XmlElement("DirectLightType")]
+        public EnumDirectLightSourceType DirectLightType { get; set; }
+
         [XmlElement("DirectLightintensity")]
         public int DirectLightintensity { get; set; }
+
+        [XmlElement("DirectRedLightintensity")]
+        public int DirectRedLightintensity { get; set; }
+        [XmlElement("DirectGreenLightintensity")]
+        public int DirectGreenLightintensity { get; set; }
+        [XmlElement("DirectBlueLightintensity")]
+        public int DirectBlueLightintensity { get; set; }
 
         [XmlElement("UpEdgefilepath")]
         public string UpEdgefilepath { get; set; }
@@ -1452,23 +1599,15 @@ namespace GlobalDataDefineClsLib
 
         //[XmlElement("UsedCamera")]
         //public EnumCameraType UsedCamera { get; set; }
-        [XmlElement("BondTablePosition")]
-        public XYZTCoordinateConfig BondTablePosition { get; set; }
-        [XmlElement("WaferTablePosition")]
-        public XYZTCoordinateConfig WaferTablePosition { get; set; }
-        [XmlElement("CameraZWorkPosition")]
-        public float CameraZWorkPosition { get; set; }
-        [XmlElement("CameraZChipSystemWorkPosition")]
-        public float CameraZChipSystemWorkPosition { get; set; }
-        [XmlElement("OrigionAngle")]
-        public float OrigionAngle { get; set; }
+        
+
         [XmlArray("MaskSetting"), XmlArrayItem(typeof(RecogniseMaskSetting))]
         //[XmlIgnore]
         public List<RecogniseMaskSetting> MaskSetting { get; set; }
     }
 
     [Serializable]
-    public class CircleFindIdentificationParam
+    public class CircleFindIdentificationParam : VisionIdentificationParam
     {
         public CircleFindIdentificationParam()
         {
@@ -1478,11 +1617,26 @@ namespace GlobalDataDefineClsLib
             MaskSetting = new List<RecogniseMaskSetting>();
             BondTablePosition = new XYZTCoordinateConfig();
             WaferTablePosition = new XYZTCoordinateConfig();
+            BondTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PositionOfMaterialCenter = new XYZTCoordinateConfig();
+            WaferTablePositionOfCreatePattern = new XYZTCoordinateConfig();
+            PatternOffsetWithMaterialCenter = new XYZTCoordinateConfig();
         }
         [XmlElement("RingLightintensity")]
         public int RingLightintensity { get; set; }
+
+        [XmlElement("DirectLightType")]
+        public EnumDirectLightSourceType DirectLightType { get; set; }
+
         [XmlElement("DirectLightintensity")]
         public int DirectLightintensity { get; set; }
+
+        [XmlElement("DirectRedLightintensity")]
+        public int DirectRedLightintensity { get; set; }
+        [XmlElement("DirectGreenLightintensity")]
+        public int DirectGreenLightintensity { get; set; }
+        [XmlElement("DirectBlueLightintensity")]
+        public int DirectBlueLightintensity { get; set; }
         [XmlElement("CircleFindTemplatefilepath")]
         public string CircleFindTemplatefilepath { get; set; }
 
@@ -1508,14 +1662,8 @@ namespace GlobalDataDefineClsLib
 
         //[XmlElement("UsedCamera")]
         //public EnumCameraType UsedCamera { get; set; }
-        [XmlElement("BondTablePosition")]
-        public XYZTCoordinateConfig BondTablePosition { get; set; }
-        [XmlElement("WaferTablePosition")]
-        public XYZTCoordinateConfig WaferTablePosition { get; set; }
-        [XmlElement("CameraZWorkPosition")]
-        public float CameraZWorkPosition { get; set; }
-        [XmlElement("OrigionAngle")]
-        public float OrigionAngle { get; set; }
+
+
         [XmlArray("MaskSetting"), XmlArrayItem(typeof(RecogniseMaskSetting))]
         public List<RecogniseMaskSetting> MaskSetting { get; set; }
     }
@@ -1523,60 +1671,40 @@ namespace GlobalDataDefineClsLib
     public enum EnumBoardcardDefineOutputIO
     {
         #region 榜头
-
         ChipPPVaccumSwitch = 0,
         ChipPPBlowSwitch = 1,
-        EpoxtliftCylinder = 2,
-
-        
-
-        
+        EpoxtliftCylinder = 3,
+        ChipPPtoolVaccumSwitch = 9,
 
         #endregion
 
         #region 传送轨道
-
-        TransportCylinder1 = 3,
-        TransportCylinder2 = 4,
-        TransportVaccumSwitch1 = 5,
-        TransportVaccumSwitch2 = 6,
-
-
-
-        
-        
-
+        TransportCylinder1 = 2,
+        TransportCylinder2 = 104,
+        TransportVaccumSwitch1 = 6,
+        TransportVaccumSwitch2 = 5,
         #endregion
 
         #region 晶圆系统
-
         EjectionSystemVaccumSwitch = 7,
         EjectionSystemBlowSwitch = 8,
-        WaferFingerCylinder = 9,
-        WaferClampCylinder = 10,
-        WaferCassetteCylinder = 11,
-        
+        WaferFingerCylinder = 109,
+        WaferClampCylinder = 110,
+        WaferCassetteCylinder = 111,
         StatisticWaffleVaccumSwitch = 12,
-
-        TowerGreenLight = 13,
-
+        WaferVaccumSwitch = 13,
         #endregion
 
         #region 塔灯
-
-
+        TowerGreenLight = 13,
         TowerYellowLight = 14,
         TowerRedLight = 15,
         //TowerRedLight = 16,
-
-
         #endregion
 
         #region 电机
-
         WaferCassetteLiftMotorBrake = 17,
         EjectionLiftMotorBrake = 18,
-
         #endregion
 
         #region 点胶
@@ -1610,50 +1738,43 @@ namespace GlobalDataDefineClsLib
     public enum EnumBoardcardDefineInputIO
     {
         #region 榜头
-
         ChipPPVaccumNormally = 0,
-        
-        
+        ChipPPExists = 1,
 
         #endregion
 
         #region 传送轨道
+        TransportInPlaceSignal1 = 6,
+        TransportInPlaceSignal2 = 4,
+        TransportInPlaceSignal3 = 5,
 
-        TransportInPlaceSignal1 = 3,
-        TransportInPlaceSignal2 = 2,
-        TransportInPlaceSignal3 = 1,
-
-
-        
+        TransportUp = 7,
+        TransportDown = 8,
 
         #endregion
 
         #region 晶圆系统
-
-        WaferInPlaceSignal1 = 4,
-
-
+        WaferInPlaceSignal1 = 104,
         #endregion
 
-
         #region 点胶
-
-        EpoxtPON = 5,
-        EpoxtDSO = 6,
-        EpoxtEND = 7,
-        EpoxtERROR = 8,
-        EpoxtALARM = 9,
-        EpoxtALARM2 = 10,
-        EpoxtRSM = 11,
-        EpoxtREADY = 12,
+        EpoxtUp = 2,
+        EpoxtDown = 3,
 
 
+        EpoxtPON = 105,
+        EpoxtDSO = 106,
+        EpoxtEND = 107,
+        EpoxtERROR = 108,
+        EpoxtALARM = 109,
+        EpoxtALARM2 = 110,
+        EpoxtRSM = 111,
+        EpoxtREADY = 112,
         #endregion
 
         #region 其他
-
-        SubmountPPVaccumNormally = 13,
-        EutecticError = 14,
+        SubmountPPVaccumNormally = 113,
+        EutecticError = 114,
         EutecticComplete,
 
         SafeDoorSensor1,
@@ -1675,6 +1796,7 @@ namespace GlobalDataDefineClsLib
         Dispense,
         BondDie,
         BondDie2,
+        CalibrationAfterPP,
 
         [Description("共晶")]
         Eutectic
@@ -1883,6 +2005,18 @@ namespace GlobalDataDefineClsLib
         public EnumUsedPP UsedPP;
 
         /// <summary>
+        /// ZR模式
+        /// </summary>
+        [XmlElement("ZRmode")]
+        public bool ZRmode { get; set; }
+
+        /// <summary>
+        /// ZR参数
+        /// </summary>
+        [XmlElement("ZRWorkParameters")]
+        public ZRWorkParameters ZRWorkParameters { get; set; }
+
+        /// <summary>
         /// 使用的吸嘴
         /// </summary>
         [XmlElement("PPtoolName")]
@@ -1974,9 +2108,69 @@ namespace GlobalDataDefineClsLib
         public float UpDistanceMMAfterPicked { get; set; }
         public PPWorkParameters()
         {
+            ZRWorkParameters = new ZRWorkParameters();
+        }
+    }
+
+    [Serializable]
+    public class ZRWorkParameters
+    {
+        /// <summary>
+        /// 快进位置
+        /// </summary>
+        [XmlElement("speedPos")]
+        double speedPos { get; set; }
+        /// <summary>
+        /// 保压时间
+        /// </summary>
+        [XmlElement("keepTime")]
+        double keepTime { get; set; }
+        /// <summary>
+        /// 速度切换位置
+        /// </summary>
+        [XmlElement("switchPos")]
+        double switchPos { get; set; }
+        /// <summary>
+        /// 回退位置
+        /// </summary>
+        [XmlElement("backPos")]
+        double backPos { get; set; }
+        /// <summary>
+        /// 快进速度
+        /// </summary>
+        [XmlElement("speed")]
+        double speed { get; set; }
+        /// <summary>
+        /// 一段速度
+        /// </summary>
+        [XmlElement("firstSpeed")]
+        double firstSpeed { get; set; }
+        /// <summary>
+        /// 二段速度
+        /// </summary>
+        [XmlElement("secondSpeed")]
+        double secondSpeed { get; set; }
+        /// <summary>
+        /// 扭矩限制
+        /// </summary>
+        [XmlElement("currentLimit")]
+        double currentLimit { get; set; }
+
+
+        public ZRWorkParameters()
+        {
+            speedPos = 5;
+            keepTime = 1000;
+            switchPos = 5;
+            backPos = 5;
+            speed = 20;
+            firstSpeed = 5;
+            secondSpeed = 5;
+            currentLimit = 30;
 
         }
     }
+
 
     //生产步骤
     [Serializable]
@@ -1984,6 +2178,17 @@ namespace GlobalDataDefineClsLib
     {
         [XmlElement("StepName")]
         public string StepName { get; set; }
+
+        /// <summary>
+        /// 是否点胶
+        /// </summary>
+        [XmlElement("IsDispense")]
+        public bool IsDispense { get; set; }
+        /// <summary>
+        /// 是否贴片
+        /// </summary>
+        [XmlElement("IsBondDie")]
+        public bool IsBondDie { get; set; }
 
         /// <summary>
         /// 步骤类型
@@ -2259,6 +2464,7 @@ namespace GlobalDataDefineClsLib
             MarkPoint = new XYZTCoordinateConfig();
             PositionComponentVisionParameters = new VisionParameters();
             AccuracyComponentPositionVisionParameters = new VisionParameters();
+            CalibrationAfterPPComponentPositionVisionParameters = new VisionParameters();
 
             FirstComponentLocation = new XYZTCoordinateConfig();
             FirstSubmountLocation = new XYZTCoordinateConfig();
@@ -2285,6 +2491,14 @@ namespace GlobalDataDefineClsLib
         public bool IsMaterialMapSettingsComplete { get; set; }
         [XmlElement("IsMaterialAccuracySettingsComplete")]
         public bool IsMaterialAccuracySettingsComplete { get; set; }
+        [XmlElement("IsMaterialCalibrationAfterPPSettingsComplete")]
+        public bool IsMaterialCalibrationAfterPPSettingsComplete { get; set; }
+
+        [XmlElement("PositionMarkPointCount")]
+        public int PositionMarkPointCount { get; set; }
+        [XmlElement("CalibrationAfterPPMarkPointCount")]
+        public int CalibrationAfterPPMarkPointCount { get; set; }
+
         [XmlElement("MarkPoint")]
         public XYZTCoordinateConfig MarkPoint { get; set; }
         //按系统坐标系记录
@@ -2416,8 +2630,16 @@ namespace GlobalDataDefineClsLib
         [XmlElement("AccuracyComponentPositionVisionParameters")]
         public VisionParameters AccuracyComponentPositionVisionParameters { get; set; }
 
+        /// <summary>
+        /// 芯片贴片后定位的视觉参数
+        /// </summary>
+        [XmlElement("CalibrationAfterPPComponentPositionVisionParameters")]
+        public VisionParameters CalibrationAfterPPComponentPositionVisionParameters { get; set; }
 
 
+        [XmlElement("ProduceCount")]
+        //生产计数
+        public int ProduceCount { get; set; }
 
         //Bond头相机工作高度
         //wafer相机工作高度
@@ -2461,6 +2683,9 @@ namespace GlobalDataDefineClsLib
             ModuleMapInfosWithBondPositionInfos = new List<List<Tuple<MaterialMapInformation, List<BondingPositionSettings>>>>();
             FirstSubstrateCenterSystemLocation = new XYZTCoordinateConfig();
             FirstModuleCenterSystemLocation = new XYZTCoordinateConfig();
+
+            PositionSubstratePointCount = 2;
+            PositionModulePointCount = 1;
         }
         #region 
         [XmlElement("IsMultiSubstrates")]
@@ -2493,16 +2718,28 @@ namespace GlobalDataDefineClsLib
         [XmlElement("MarkPoint")]
         public XYZTCoordinateConfig MarkPoint { get; set; }
 
+        /// <summary>
+        /// 第一个基板的坐标
+        /// </summary>
         [XmlElement("FirstSubstrateHomeSystemLocation")]
         public XYZTCoordinateConfig FirstSubstrateHomeSystemLocation { get; set; }
 
+        /// <summary>
+        /// 第一个模块的坐标
+        /// </summary>
         [XmlElement("FirstModuleHomeSystemLocation")]
         public XYZTCoordinateConfig FirstModuleHomeSystemLocation { get; set; }
         [XmlElement("FirstSubstrateCenterSystemLocation")]
         public XYZTCoordinateConfig FirstSubstrateCenterSystemLocation { get; set; }
+        /// <summary>
+        /// 第一个模块的中心坐标
+        /// </summary>
         [XmlElement("FirstModuleCenterSystemLocation")]
         public XYZTCoordinateConfig FirstModuleCenterSystemLocation { get; set; }
 
+        /// <summary>
+        /// 基板的第一个Mark点坐标
+        /// </summary>
         [XmlElement("SubstrateCoordinateHomePoint")]
         public XYZTCoordinateConfig SubstrateCoordinateHomePoint { get; set; }
         [XmlElement("SubstrateCoordinateHomeSecondPoint")]
@@ -2556,13 +2793,20 @@ namespace GlobalDataDefineClsLib
         //物料竖高
         public float ModuleHeightMM { get; set; }
 
-        [XmlElement("ModulePitchColumnMM")]
+        [XmlElement("ModulePitchColumnMMX")]
         //列间距
-        public float ModulePitchColumnMM { get; set; }
+        public float ModulePitchColumnMMX { get; set; }
 
-        [XmlElement("ModulePitchRowMM")]
+        [XmlElement("ModulePitchRowMMX")]
         //行间距
-        public float ModulePitchRowMM { get; set; }
+        public float ModulePitchRowMMX { get; set; }
+        [XmlElement("ModulePitchColumnMMY")]
+        //列间距
+        public float ModulePitchColumnMMY { get; set; }
+
+        [XmlElement("ModulePitchRowMMY")]
+        //行间距
+        public float ModulePitchRowMMY { get; set; }
         [XmlElement("ModuleRowCount")]
         //行数
         public int ModuleRowCount { get; set; }
@@ -2599,7 +2843,7 @@ namespace GlobalDataDefineClsLib
         [XmlArray("PositionSustrateMarkVisionParameters"), XmlArrayItem(typeof(VisionParameters))]
         public List<VisionParameters> PositionSustrateMarkVisionParameters { get; set; }
         /// <summary>
-        /// 衬底视觉定位时的参数
+        /// 模块视觉定位时的参数
         /// </summary>
         [XmlElement("PositionModuleVisionParameters")]
         //[XmlArray("PositionSustrateVisionParameters"), XmlArrayItem(typeof(VisionParameters))]
@@ -2612,7 +2856,9 @@ namespace GlobalDataDefineClsLib
         [XmlElement("ModuleTopZSystemPos")]
         public float ModuleTopZSystemPos { get; set; }
 
-
+        [XmlElement("ProduceCount")]
+        //生产计数
+        public int ProduceCount { get; set; }
 
         //Bond头相机工作高度
         //wafer相机工作高度
@@ -2697,6 +2943,8 @@ namespace GlobalDataDefineClsLib
         public EnumAccuracyMethod AccuracyMethod { get; set; }
         [XmlElement("AccuracyVisionPositionMethod")]
         public EnumVisionPositioningMethod AccuracyVisionPositionMethod { get; set; }
+
+        
 
 
 
@@ -2806,6 +3054,8 @@ namespace GlobalDataDefineClsLib
     [Serializable]
     public class DispenserSettings
     {
+        [XmlElement("Name")]
+        public string Name { get; set; }
         [XmlElement("IsCompleted")]
         public bool IsCompleted { get; set; }
         [XmlElement("PredispensingMode")]
@@ -2813,6 +3063,9 @@ namespace GlobalDataDefineClsLib
 
         [XmlElement("DispensingMode")]
         public EnumDispensingMode DispensingMode { get; set; }
+
+        [XmlElement("DispensingCount")]
+        public int DispensingCount { get; set; }
 
         [XmlElement("PredispensingCount")]
         public int PredispensingCount { get; set; }
@@ -2837,9 +3090,29 @@ namespace GlobalDataDefineClsLib
         public float DispenserPosOffsetXWithBondCamera { get; set; }
         [XmlElement("DispenserPosOffsetYWithBondCamera")]
         public float DispenserPosOffsetYWithBondCamera { get; set; }
+
+        /// <summary>
+        /// 点胶针点胶坐标
+        /// </summary>
+        [XmlElement("TrackEpoxtSpotCoordinate")]
+        public XYZTCoordinateConfig TrackEpoxtSpotCoordinate { get; set; }
+
+        /// <summary>
+        /// 相机对准点胶位置坐标
+        /// </summary>
+        [XmlElement("TrackBondCameraToEpoxtSpotCoordinate")]
+        public XYZTCoordinateConfig TrackBondCameraToEpoxtSpotCoordinate { get; set; }
+
+        /// <summary>
+        /// 沾胶坐标
+        /// </summary>
+        [XmlElement("EpoxtToDippingglueCoordinate")]
+        public XYZTCoordinateConfig EpoxtToDippingglueCoordinate { get; set; }
         public DispenserSettings()
         {
-
+            TrackEpoxtSpotCoordinate = new XYZTCoordinateConfig();
+            TrackBondCameraToEpoxtSpotCoordinate = new XYZTCoordinateConfig();
+            EpoxtToDippingglueCoordinate = new XYZTCoordinateConfig();
         }
     }
 
@@ -2848,6 +3121,8 @@ namespace GlobalDataDefineClsLib
     {
         [XmlElement("Name")]
         public string Name { get; set; }
+        [XmlElement("DispenserName")]
+        public string DispenserName { get; set; }
         [XmlElement("IsCompleted")]
         public bool IsCompleted { get; set; }
         [XmlElement("EpoxyExudationMode")]
@@ -2872,6 +3147,10 @@ namespace GlobalDataDefineClsLib
         public float DispensePatternWidthMM { get; set; }
         [XmlElement("DispensePatternHeightMM")]
         public float DispensePatternHeightMM { get; set; }
+        [XmlElement("DispenserSystemPosZMM")]
+        public float DispenserSystemPosZMM { get; set; }
+        [XmlElement("DispenserSpeed")]
+        public float DispenserSpeed { get; set; }
         public EpoxyApplication()
         {
 
@@ -2918,4 +3197,6 @@ namespace GlobalDataDefineClsLib
         public float Vaccum { get; set; }
         public float ShotTimespan { get; set; }
     }
+
+
 }

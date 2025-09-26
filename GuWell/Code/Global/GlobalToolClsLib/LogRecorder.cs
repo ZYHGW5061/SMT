@@ -46,7 +46,7 @@ namespace GlobalToolClsLib
         }
 
         /// <summary>
-        /// 系统远程交互事件日志
+        /// 系统关键动作日志
         /// </summary>
         private static IBaseLogger _keyActionLogger
         {
@@ -72,12 +72,68 @@ namespace GlobalToolClsLib
         {
             get { return LoggerManager.GetHandler().GetFileLogger("HardwarePLCLogger"); }
         }
+
+        /// <summary>
+        /// 数据库日志
+        /// </summary>
+        private static SQLiteProgram _SQLiteProgram
+        {
+            get { return SQLiteProgram.Instance; }
+        }
+
         /// <summary>
         /// 记录全局日志
         /// </summary>
         /// <param name="sender">窗体控件名称</param>
         /// <param name="caption">日志标题</param>
         public static void RecordLog(EnumLogContentType logType, string log, Exception ex = null)
+        {
+            if (_systemLogger == null) return;
+
+            switch (logType)
+            {
+                case EnumLogContentType.Debug:
+                    _systemLogger.AddDebugContent(log);
+                    break;
+
+                case EnumLogContentType.Error:
+                    _systemLogger.AddErrorContent(log, ex);
+                    break;
+
+                case EnumLogContentType.Info:
+                    _systemLogger.AddInfoContent(log);
+                    break;
+                case EnumLogContentType.Warn:
+                    _systemLogger.AddWarnContent(log, ex);
+                    break;
+            }
+
+            if (_SQLiteProgram != null)
+            {
+                var logcontent = string.Format("{0}, {1}", log, ex == null ? "" : ex.ToString());
+                _SQLiteProgram.SaveSystemLog((int)logType, logcontent);
+            }
+
+            if (LastSystemLogList.Count > 1000)
+            {
+                LastSystemLogList.RemoveAt(LastSystemLogList.Count - 1);
+            }
+
+            LastSystemLogList.Insert(0, new LogContent() { Object = "System", Message = log, Time = DateTime.Now, Level = logType.ToString() });
+
+            if (GlobalLogAct != null)
+            {
+                GlobalLogAct(logType, log + ex ?? "");
+            }
+        }
+
+
+        /// <summary>
+        /// 记录生产日志
+        /// </summary>
+        /// <param name="sender">窗体控件名称</param>
+        /// <param name="caption">日志标题</param>
+        public static void ProductionLog(EnumLogContentType logType, string log, Exception ex = null)
         {
             if (_systemLogger == null) return;
 
@@ -97,6 +153,11 @@ namespace GlobalToolClsLib
                 case EnumLogContentType.Warn:
                     _systemLogger.AddWarnContent(log, ex);
                     break;
+            }
+
+            if (_SQLiteProgram != null)
+            {
+                _SQLiteProgram.SaveProductionLog((int)logType, log);
             }
 
             if (LastSystemLogList.Count > 1000)
@@ -169,18 +230,38 @@ namespace GlobalToolClsLib
             //    ModuleLogAct(logType, Module, log);
             //}
         }
+
+        public static void RecordAlarmLog(EnumLogContentType logType, string log, Exception ex = null)
+        {
+            var logcontent = string.Format("{0}, {1}", log, ex == null ? "" : ex.ToString());
+
+            if (_SQLiteProgram != null)
+            {
+                _SQLiteProgram.SaveAlarmLog((int)logType, logcontent);
+            }
+
+            //if (ModuleLogAct != null)
+            //{
+            //    ModuleLogAct(logType, Module, log);
+            //}
+        }
+
         /// <summary>
         /// 记录用户的行为
         /// </summary>
         /// <param name="log"></param>
-        public static void RecordUserOperationLog(string log, string operatorUser = null)
+        public static void RecordUserOperationLog(string log, EnumLogContentType logType = EnumLogContentType.Debug, string operatorUser = null)
         {
             _systemLogger.AddDebugContent($"UserOperation：{log}");
-            //_userOperationLogger.AddRecord(log, operatorUser);
+            ////_userOperationLogger.AddRecord(log, operatorUser);
 
-            if (UserOperationLogAct!=null)
+            //if (UserOperationLogAct != null)
+            //{
+            //    UserOperationLogAct(EnumLogContentType.Info, log);
+            //}
+            if (_SQLiteProgram != null)
             {
-                UserOperationLogAct(EnumLogContentType.Info, log);
+                _SQLiteProgram.SaveUserOperationLog(operatorUser, (int)logType, log);
             }
         }
 

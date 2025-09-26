@@ -1,6 +1,7 @@
 ﻿using ConfigurationClsLib;
 using DynamometerControllerClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -121,8 +122,8 @@ namespace DynamometerManagerClsLib
         {
             if (_currentController == null)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "当前测力传感器为空.");
                 return null;
-                throw new NotSupportedException("Stage controller is not initialized.");
             }
             return _currentController;
         }

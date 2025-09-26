@@ -1397,14 +1397,21 @@ namespace StageControllerClsLib
         /// <param name="millisecondsTimeout"></param>
         public void MoveAbsoluteSync(double[] targetPos, int millisecondsTimeout = -1)
         {
-
-            double[] EndPoints = new double[targetPos.Length];
-            for (int i = 0; i < targetPos.Length; i++)
+            try
             {
-                EndPoints[i] = targetPos[i];
-            }
+                double[] EndPoints = new double[targetPos.Length];
+                for (int i = 0; i < targetPos.Length; i++)
+                {
+                    EndPoints[i] = targetPos[i];
+                }
 
-            StageCore.AbloluteMoveSync(Axises, EndPoints);
+                StageCore.AbloluteMoveSync(Axises, EndPoints);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         /// <summary>
@@ -1414,12 +1421,20 @@ namespace StageControllerClsLib
         /// <param name="millisecondsTimeout"></param>
         public void MoveRelativeSync(double[] distance, int millisecondsTimeout = -1)
         {
-            double[] EndPoints = new double[distance.Length];
-            for (int i = 0; i < distance.Length; i++)
+            try
             {
-                EndPoints[i] = distance[i];
+                double[] EndPoints = new double[distance.Length];
+                for (int i = 0; i < distance.Length; i++)
+                {
+                    EndPoints[i] = distance[i];
+                }
+                StageCore.RelativeMoveSync(Axises, EndPoints);
             }
-            StageCore.RelativeMoveSync(Axises, EndPoints);
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         /// <summary>

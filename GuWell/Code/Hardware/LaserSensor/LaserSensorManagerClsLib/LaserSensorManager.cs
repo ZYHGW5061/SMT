@@ -1,5 +1,6 @@
 ﻿using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using LaserSensorControllerClsLib;
 using System;
 using System.Collections.Generic;
@@ -130,8 +131,9 @@ namespace LaserSensorManagerClsLib
         {
             if (_currentController == null)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "当前激光传感器为空.");
                 return null;
-                throw new NotSupportedException("Stage controller is not initialized.");
+                //throw new NotSupportedException("Stage controller is not initialized.");
             }
             return _currentController;
         }

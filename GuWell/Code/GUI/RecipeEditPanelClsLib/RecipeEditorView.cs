@@ -49,7 +49,7 @@ namespace RecipeEditPanelClsLib
             get { return LoggerManager.GetHandler().GetFileLogger(GlobalParameterSetting.SYSTEM_DEBUG_LOGGER_ID); }
         }
 
-        private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
+        private static string SystemDefaultDirectory = SystemConfiguration.Instance.JobConfig.RecipeSavingPath;
         private static string _substrateSavePath = string.Format(@"{0}Recipes\Substrate\", SystemDefaultDirectory);
         private static string _componentsSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
         private static string _bondPositionSavePath = string.Format(@"{0}Recipes\BondPositions\", SystemDefaultDirectory);
@@ -246,11 +246,11 @@ namespace RecipeEditPanelClsLib
                 {
                     switch (nodeCaption)
                     {
-                        case "划胶器":
-                            //recipeRootStep = EnumRecipeRootStep.Configuration;
-                            funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_DispenserSettings));// { Dock = DockStyle.Fill };
-                            funcClient.Visible = false;
-                            break;
+                        //case "划胶器":
+                        //    //recipeRootStep = EnumRecipeRootStep.Configuration;
+                        //    funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_DispenserSettings));// { Dock = DockStyle.Fill };
+                        //    funcClient.Visible = false;
+                        //    break;
                         case "工艺列表":
                             funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ProductStep), recipeRootStep);// { Dock = DockStyle.Fill };
                             funcClient.Visible = false;
@@ -349,6 +349,18 @@ namespace RecipeEditPanelClsLib
                             funcClient.Visible = false;
                         }
                         break;
+                    case "基板Map设置":
+                        if (recipeRootStep == EnumRecipeRootStep.Substrate)
+                        {
+                            funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_SubstrateMapSettings), recipeRootStep);// { Dock = DockStyle.Fill };
+                            funcClient.Visible = false;
+                        }
+                        else
+                        {
+                            funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ComponentMapSettings), recipeRootStep);// { Dock = DockStyle.Fill };
+                            funcClient.Visible = false;
+                        }
+                        break;
                     case "拾取设置":
                             funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ComponentPPSettings), recipeRootStep);// { Dock = DockStyle.Fill };
                             funcClient.Visible = false;                       
@@ -359,13 +371,19 @@ namespace RecipeEditPanelClsLib
                             funcClient.Visible = false;
                        
                         break;
-                    case "Module定位设置":
+                    case "贴片后定位":
+
+                        funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ComponentCalibrationAfterPPSettings), recipeRootStep);// { Dock = DockStyle.Fill };
+                        funcClient.Visible = false;
+
+                        break;
+                    case "模块定位设置":
 
                         funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ModulePositionSettings), recipeRootStep);// { Dock = DockStyle.Fill };
                         funcClient.Visible = false;
 
                         break;
-                    case "Module Map设置":
+                    case "模块Map设置":
 
                         funcClient = new RecipeNodeControl(_editRecipe, typeof(RecipeStep_ModuleMapSettings), recipeRootStep);// { Dock = DockStyle.Fill };
                         funcClient.Visible = false;
@@ -488,13 +506,13 @@ namespace RecipeEditPanelClsLib
                         isCompleted = _editRecipe.IsStepComplete_BlankingSettings();
 
                     }
-                    else if (funncType == "划胶器")
-                    {
-                        node.Tag = isActive;
-                        isCompleted = _editRecipe.IsStepComplete_DispenserSettings();
+                    //else if (funncType == "划胶器")
+                    //{
+                    //    node.Tag = isActive;
+                    //    isCompleted = _editRecipe.IsStepComplete_DispenserSettings();
 
 
-                    }
+                    //}
                     else if (funncType == "胶水设置")
                     {
                         node.Tag = isActive;
@@ -570,7 +588,7 @@ namespace RecipeEditPanelClsLib
                     //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
                     else
                     {
-                        isCompleted = _editRecipe.IsStepComplete_SubstrateInfo();
+                        isCompleted = _editRecipe.IsStepComplete_SubstrateInfo(_mainTreeCurNodeCaption);
                     }
                 }
                 else if (funncType == "定位设置")
@@ -582,7 +600,7 @@ namespace RecipeEditPanelClsLib
                     //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
                     else
                     {
-                        isCompleted = _editRecipe.IsStepComplete_SubstratePosition();
+                        isCompleted = _editRecipe.IsStepComplete_SubstratePosition(_mainTreeCurNodeCaption);
                     }
                 }
                 else if (funncType == "Map设置")
@@ -594,7 +612,19 @@ namespace RecipeEditPanelClsLib
                     //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
                     else
                     {
-                        isCompleted = _editRecipe.IsStepComplete_SubstrateMap();
+                        isCompleted = _editRecipe.IsStepComplete_SubstrateMap(_mainTreeCurNodeCaption);
+                    }
+                }
+                else if (funncType == "基板Map设置")
+                {
+                    if (SelectedRootStep == EnumRecipeRootStep.Component)
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_ComponentMap(_mainTreeCurNodeCaption);
+                    }
+                    //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
+                    else
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_SubstrateMap(_mainTreeCurNodeCaption);
                     }
                 }
                 else if (funncType == "拾取设置")
@@ -621,16 +651,28 @@ namespace RecipeEditPanelClsLib
                         isCompleted = _editRecipe.IsStepComplete_SubmountAccuracy();
                     }
                 }
-                else if (funncType == "Module定位设置")
+                else if (funncType == "贴片后定位")
+                {
+                    if (SelectedRootStep == EnumRecipeRootStep.Component)
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_ComponentCalibrationAfterPP(_mainTreeCurNodeCaption);
+                    }
+                    //else if (SelectedRootStep == EnumRecipeRootStep.Submount)
+                    else
+                    {
+                        isCompleted = _editRecipe.IsStepComplete_SubmountAccuracy();
+                    }
+                }
+                else if (funncType == "模块定位设置")
                 {
 
-                    isCompleted = _editRecipe.IsStepComplete_ModulePosition();
+                    isCompleted = _editRecipe.IsStepComplete_ModulePosition(_mainTreeCurNodeCaption);
 
                 }
-                else if (funncType == "Module Map设置")
+                else if (funncType == "模块Map设置")
                 {
 
-                    isCompleted = _editRecipe.IsStepComplete_ModuleMap();
+                    isCompleted = _editRecipe.IsStepComplete_ModuleMap(_mainTreeCurNodeCaption);
 
                 }
                 if (isCompleted)
@@ -667,7 +709,7 @@ namespace RecipeEditPanelClsLib
                     nextStepRootCaption = "基板";
                     break;
                 case EnumRecipeStep.Substrate_PositionSettings:
-                    nextStepCaption = "Map设置";
+                    nextStepCaption = "基板Map设置";
                     nextStepRootCaption = "基板";
                     break;
                 case EnumRecipeStep.Substrate_MaterialMap:
@@ -911,10 +953,10 @@ namespace RecipeEditPanelClsLib
                         //选中芯片的子节点时，子节点树显示内容，并更新当前芯片模组名称
                         if (node.ParentNode.GetDisplayText(0) == "芯片")
                         {
-                            RefreshChildNodesTree();
+                            
                             _editRecipe.CurrentComponentInfosName = _mainTreeCurNodeCaption;
-         
-                                node.SelectImageIndex = node.ImageIndex;
+                            RefreshChildNodesTree();
+                            node.SelectImageIndex = node.ImageIndex;
                                 return;
                             
 
@@ -1101,6 +1143,25 @@ namespace RecipeEditPanelClsLib
                 }
             }
         }
+        private void ParentTreeListDeleteSubstrateChildNode(string nodeName)
+        {
+            foreach (TreeListNode node in treeRecipeNodes.Nodes)
+            {
+                if (node.GetDisplayText(0) == "基板")
+                {
+                    foreach (TreeListNode cnode in node.Nodes)
+                    {
+                        if (cnode.GetDisplayText(0) == nodeName)
+                        {
+                            cnode.Remove();
+                            _mainTreeCurNodeCaption = "";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         private void ParentTreeListAddComponentListNode(string nodeName)
         {
             foreach (TreeListNode node in treeRecipeNodes.Nodes)
@@ -1223,21 +1284,21 @@ namespace RecipeEditPanelClsLib
                     node1.Tag = true;
 
                     var node2 = treeChildNodes.Nodes.Add();
-                    node2.SetValue(0, "Map设置");
+                    node2.SetValue(0, "基板Map设置");
                     node2.StateImageIndex = -1;
                     node2.ImageIndex = 4;
                     node2.SelectImageIndex = 4;
                     node2.Tag = true;
 
                     var node3 = treeChildNodes.Nodes.Add();
-                    node3.SetValue(0, "Module定位设置");
+                    node3.SetValue(0, "模块定位设置");
                     node3.StateImageIndex = -1;
                     node3.ImageIndex = 4;
                     node3.SelectImageIndex = 4;
                     node3.Tag = true;
 
                     var node4 = treeChildNodes.Nodes.Add();
-                    node4.SetValue(0, "Module Map设置");
+                    node4.SetValue(0, "模块Map设置");
                     node4.StateImageIndex = -1;
                     node4.ImageIndex = 4;
                     node4.SelectImageIndex = 4;
@@ -1273,12 +1334,28 @@ namespace RecipeEditPanelClsLib
                     node3.SelectImageIndex = 4;
                     node3.Tag = true;
 
-                    var node4 = treeChildNodes.Nodes.Add();
-                    node4.SetValue(0, "二次定位");
-                    node4.StateImageIndex = -1;
-                    node4.ImageIndex = 4;
-                    node4.SelectImageIndex = 4;
-                    node4.Tag = true;
+                    if(_editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.UplookingCamera ||
+                        _editRecipe.CurrentComponent.AccuracyComponentPositionVisionParameters.AccuracyMethod == EnumAccuracyMethod.CalibrationTable)
+                    {
+                        var node4 = treeChildNodes.Nodes.Add();
+                        node4.SetValue(0, "二次定位");
+                        node4.StateImageIndex = -1;
+                        node4.ImageIndex = 4;
+                        node4.SelectImageIndex = 4;
+                        node4.Tag = true;
+                    }
+                    if (_editRecipe.CurrentComponent.CalibrationAfterPPComponentPositionVisionParameters?.VisionPositionUsedCamera ==  EnumCameraType.BondCamera)
+                    {
+                        var node5 = treeChildNodes.Nodes.Add();
+                        node5.SetValue(0, "贴片后定位");
+                        node5.StateImageIndex = -1;
+                        node5.ImageIndex = 4;
+                        node5.SelectImageIndex = 4;
+                        node5.Tag = true;
+                    }
+
+
+                    
                 }
 
                 RefreshChildTreeNodeStatus();
@@ -1301,7 +1378,21 @@ namespace RecipeEditPanelClsLib
                     {
                         _editRecipe.StepComponentList.Remove(removeItem);
                     }
+                    BondRecipe.DeleteComponent(_mainTreeCurNodeCaption);
                     ParentTreeListDeleteComponentChildNode(_mainTreeCurNodeCaption);
+                    
+                }
+                else if (_mainTreeCurNodeParentNodeCaption == "基板")
+                {
+
+                    var removeItem = _editRecipe.StepSubstrateList.FirstOrDefault(c => c.Name == _mainTreeCurNodeCaption);
+                    if (removeItem != null)
+                    {
+                        _editRecipe.StepSubstrateList.Remove(removeItem);
+                    }
+                    BondRecipe.DeleteSubstrate(_mainTreeCurNodeCaption);
+                    ParentTreeListDeleteSubstrateChildNode(_mainTreeCurNodeCaption);
+                    
                 }
                 else if (_mainTreeCurNodeParentNodeCaption == "贴装位置")
                 {
@@ -1310,7 +1401,9 @@ namespace RecipeEditPanelClsLib
                     {
                         _editRecipe.StepBondingPositionList.Remove(removeItem);
                     }
+                    BondRecipe.DeleteBondPosition(_mainTreeCurNodeCaption);
                     ParentTreeListDeleteBondPositionChildNode(_mainTreeCurNodeCaption);
+                    
                 }
                 else if (_mainTreeCurNodeParentNodeCaption == "胶水设置")
                 {
@@ -1319,7 +1412,9 @@ namespace RecipeEditPanelClsLib
                     {
                         _editRecipe.StepEpoxyApplicationList.Remove(removeItem);
                     }
+                    BondRecipe.DeleteEpoxyApplication(_mainTreeCurNodeCaption);
                     ParentTreeListDeleteEpoxyApplicationChildNode(_mainTreeCurNodeCaption);
+                    
                 }
                 _editRecipe.SaveRecipe();
                 RefreshChildNodesTree(true);

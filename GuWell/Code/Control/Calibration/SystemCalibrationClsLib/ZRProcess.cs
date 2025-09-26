@@ -281,7 +281,10 @@ namespace SystemCalibrationClsLib
         }
 
 
-
+        public float PressToZRcurrentLimit()
+        {
+            return 0;
+        }
 
 
 

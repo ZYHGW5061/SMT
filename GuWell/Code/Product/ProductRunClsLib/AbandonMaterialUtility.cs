@@ -65,8 +65,9 @@ namespace ProductRunClsLib
 
                         double X = _systemConfig.PositioningConfig.AbandonMaterialPosition.X + _systemConfig.PositioningConfig.PP1AndBondCameraOffset.X;
                         double Y = _systemConfig.PositioningConfig.AbandonMaterialPosition.Y + _systemConfig.PositioningConfig.PP1AndBondCameraOffset.Y;
-
+                        ExecutionController.Instance.WaitIfPaused();
                         IOUtilityHelper.Instance.UpDispenserCylinder();
+                        ExecutionController.Instance.WaitIfPaused();
                         StageMotionResult xdone = _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, X, EnumCoordSetType.Absolute);
                         StageMotionResult ydone = _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, Y, EnumCoordSetType.Absolute);
                         if (xdone == StageMotionResult.Success && ydone == StageMotionResult.Success)
@@ -99,9 +100,10 @@ namespace ProductRunClsLib
                         }
                         else
                         {
+                            ExecutionController.Instance.WaitIfPaused();
                             IOUtilityHelper.Instance.UpDispenserCylinder();
                         }
-                        
+                        ExecutionController.Instance.WaitIfPaused();
                         StageMotionResult xdone = _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, X, EnumCoordSetType.Absolute);
                         StageMotionResult ydone = _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, Y, EnumCoordSetType.Absolute);
 
@@ -119,6 +121,7 @@ namespace ProductRunClsLib
                         
                         if (xdone == StageMotionResult.Success && ydone == StageMotionResult.Success && zzdone == StageMotionResult.Success)
                         {
+                            ExecutionController.Instance.WaitIfPaused();
                             //关真空
                             IOUtilityHelper.Instance.ClosePPtoolVaccum(ppTool.PPVaccumSwitch, ppTool.PPVaccumNormally);
                             Thread.Sleep(10);

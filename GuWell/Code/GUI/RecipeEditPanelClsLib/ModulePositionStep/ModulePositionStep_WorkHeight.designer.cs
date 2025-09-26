@@ -58,7 +58,7 @@ namespace RecipeEditPanelClsLib
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(275, 317);
             this.stageQuickMove1.TabIndex = 5;
             // 
@@ -78,7 +78,7 @@ namespace RecipeEditPanelClsLib
             this.labelStepInfo.Name = "labelStepInfo";
             this.labelStepInfo.Size = new System.Drawing.Size(221, 19);
             this.labelStepInfo.TabIndex = 4;
-            this.labelStepInfo.Text = "步骤 1/6：确认吸嘴工作高度";
+            this.labelStepInfo.Text = "步骤 1/7：确认吸嘴工作高度";
             // 
             // ctrlLight1
             // 
@@ -161,7 +161,7 @@ namespace RecipeEditPanelClsLib
             this.btnAutoFocus.UseVisualStyleBackColor = true;
             this.btnAutoFocus.Click += new System.EventHandler(this.btnAutoFocus_Click);
             // 
-            // SubmountPositionStep_WorkHeight
+            // ModulePositionStep_WorkHeight
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -171,7 +171,7 @@ namespace RecipeEditPanelClsLib
             this.Controls.Add(this.btnESUpDown);
             this.Controls.Add(this.btnAutoFocus);
             this.Controls.Add(this.btnLaserMeasureHeight);
-            this.Name = "SubmountPositionStep_WorkHeight";
+            this.Name = "ModulePositionStep_WorkHeight";
             this.Size = new System.Drawing.Size(359, 647);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);

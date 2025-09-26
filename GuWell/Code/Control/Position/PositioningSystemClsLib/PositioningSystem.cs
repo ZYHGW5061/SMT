@@ -1,6 +1,7 @@
 ﻿using CameraControllerClsLib;
 using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using IOUtilityClsLib;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace PositioningSystemClsLib
     /*
      * BondX stage坐标： 零点在右，向左为正；system坐标： 零点在系统原点，向右为正
      * BondY stage坐标： 零点在前，向后为正；system坐标： 零点在系统原点，向后为正
-     * BondZ stage坐标： 零点在下，向上为正；system坐标： 零点在系统原点，向上为正
+     * BondZ stage坐标： 零点在上，向下为正；system坐标： 零点在系统原点，向下为正
      * ChipPPT stage坐标： 零点在前，顺时针为正；system坐标： 零点在系统原点，顺时针为正
      * TransportTrack1 stage坐标： 零点在左，向右为正；
      * TransportTrack2 stage坐标： 零点在左，向右为正；
@@ -172,30 +173,40 @@ namespace PositioningSystemClsLib
         /// <returns></returns>
         public StageMotionResult MoveChipPPToSystemCoord(string ppName,double target, EnumCoordSetType type)
         {
-            var ret = StageMotionResult.Success;
-            float stagePos = 0f;
-            var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppName);
-            if (pptool != null)
+            try
             {
-                stagePos = (float)(target + pptool.AltimetryOnMark);
+                var ret = StageMotionResult.Success;
+                float stagePos = 0f;
+                var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppName);
+                if (pptool != null)
+                {
+                    stagePos = (float)(target + pptool.AltimetryOnMark);
+                }
+                else
+                {
+                    stagePos = (float)(target + _systemConfig.PositioningConfig.TrackChipPPOrigion.Z);
+                }
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, stagePos);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(EnumStageAxis.BondZ, target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "MoveChipPPToSystemCoord,Axis:BondZ,Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
             }
-            else
+            catch(Exception ex)
             {
-                stagePos = (float)(target + _systemConfig.PositioningConfig.TrackChipPPOrigion.Z);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "MoveChipPPToSystemCoord,Axis:BondZ,Run-Exception.",ex);
+                return StageMotionResult.Fail;
             }
-            if (type == EnumCoordSetType.Absolute)
-            {
-                ret = _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, stagePos);
-            }
-            else
-            {
-                ret = _stageMotionControl.RelativeMovingSync(EnumStageAxis.BondZ, target);
-            }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:BondZ,Run-Exception.");
-            }
-            return ret;
+            
         }
         /// <summary>
         /// 读取所有轴的Stage位置
@@ -221,11 +232,27 @@ namespace PositioningSystemClsLib
         /// <param name="speed"></param>
         public void JogPositive(EnumStageAxis axis,float speed)
         {
-            _stageMotionControl.JogPositive(axis, speed);
+            try
+            {
+                _stageMotionControl.JogPositive(axis, speed);
+            }
+            catch(Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"JogPositive,Axis:{axis},Run-Exception.", ex);
+            }
+            
         }
         public void StopJogPositive(EnumStageAxis axis)
         {
-            _stageMotionControl.StopJogPositive(axis);
+            try
+            {
+                _stageMotionControl.StopJogPositive(axis);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"StopJogPositive,Axis:{axis},Run-Exception.", ex);
+            }
+            
         }
         /// <summary>
         /// Jog-
@@ -234,12 +261,28 @@ namespace PositioningSystemClsLib
         /// <param name="speed"></param>
         public void JogNegative(EnumStageAxis axis, float speed)
         {
-            _stageMotionControl.JogNegative(axis, speed);
+            try
+            {
+                _stageMotionControl.JogNegative(axis, speed);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"JogNegative,Axis:{axis},Run-Exception.", ex);
+            }
+            
         }
 
         public void StopJogNegative(EnumStageAxis axis)
         {
-            _stageMotionControl.StopJogNegative(axis);
+            try
+            {
+                _stageMotionControl.StopJogNegative(axis);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"StopJogNegative,Axis:{axis},Run-Exception.", ex);
+            }
+            
         }      
 
         /// <summary>
@@ -250,39 +293,59 @@ namespace PositioningSystemClsLib
         /// <param name="type">绝对移动或者相对移动</param>
         public StageMotionResult MoveAixsToStageCoord(EnumStageAxis axis,double target, EnumCoordSetType type)
         {
-            var ret = StageMotionResult.Success;
-            //var targetPos = new MillimeterUnitValue<double>() { Value = target };
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(axis, target);
+                var ret = StageMotionResult.Success;
+                //var targetPos = new MillimeterUnitValue<double>() { Value = target };
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(axis, target);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(axis, target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
             }
-            else
+            catch (Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(axis, target);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.", ex);
+                return StageMotionResult.Fail;
             }
-            if(ret==StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:{axis},Run-Exception.");
-            }
-            return ret;
+            
         }
         public StageMotionResult MoveAixsToStageCoord(EnumStageAxis[] axis, double[] target, EnumCoordSetType type)
         {
-            var ret = StageMotionResult.Success;
-            //var targetPos = new MillimeterUnitValue<double>() { Value = target };
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(axis, target);
+                var ret = StageMotionResult.Success;
+                //var targetPos = new MillimeterUnitValue<double>() { Value = target };
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(axis, target);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(axis, target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
             }
-            else
+            catch(Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(axis, target);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.",ex);
+                return StageMotionResult.Fail;
             }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:{axis},Run-Exception.");
-            }
-            return ret;
+           
         }
         public StageMotionResult MoveAxisToSystemCoord(EnumStageAxis axis, double target, EnumCoordSetType type)
         {
@@ -326,20 +389,30 @@ namespace PositioningSystemClsLib
                 default:
                     break;
             }
-            var ret = StageMotionResult.Success;
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(axis, stageAbsoluteTarget);
+                var ret = StageMotionResult.Success;
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(axis, stageAbsoluteTarget);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(axis, stageRelativeTarget);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
             }
-            else
+            catch(Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(axis, stageRelativeTarget);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.",ex);
+                return StageMotionResult.Fail;
             }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:{axis},Run-Exception.");
-            }
-            return ret;
+            
         }
 
         public StageMotionResult MoveAxisToSystemCoord(EnumStageAxis[] axis, double[] target, EnumCoordSetType type)
@@ -393,22 +466,31 @@ namespace PositioningSystemClsLib
                 }
             }
 
-
-            var ret = StageMotionResult.Success;
-            //var targetPos = new MillimeterUnitValue<double>() { Value = target };
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(axis, stageAbsoluteTarget);
+                var ret = StageMotionResult.Success;
+                //var targetPos = new MillimeterUnitValue<double>() { Value = target };
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(axis, stageAbsoluteTarget);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(axis, stageRelativeTarget);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
             }
-            else
+            catch (Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(axis, stageRelativeTarget);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:{axis} Targe:{target} Type:{type},Run-Exception.", ex);
+                return StageMotionResult.Fail;
             }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:{axis},Run-Exception.");
-            }
-            return ret;
+            
         }
         /// <summary>
         /// 
@@ -943,34 +1025,50 @@ namespace PositioningSystemClsLib
         /// </summary>
         public void ChipPPMovetoBondCameraCenter()
         {
-            var offset=_systemConfig.PositioningConfig.PP1AndBondCameraOffset;
-            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
-            multiAxis[0] = EnumStageAxis.BondX;
-            multiAxis[1] = EnumStageAxis.BondY;
+            try
+            {
+                var offset = _systemConfig.PositioningConfig.PP1AndBondCameraOffset;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
 
-            double[] target1 = new double[2];
-            target1[0] = offset.X;
-            target1[1] = offset.Y;
-            _stageMotionControl.RelativeMovingSync(multiAxis, target1);
-            //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondX, offset.X);
-            //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondY, offset.Y);
+                double[] target1 = new double[2];
+                target1[0] = offset.X;
+                target1[1] = offset.Y;
+                _stageMotionControl.RelativeMovingSync(multiAxis, target1);
+                //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondX, offset.X);
+                //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondY, offset.Y);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"ChipPPMovetoBondCameraCenter", ex);
+            }
+            
         }
         /// <summary>
         /// 衬底吸嘴移动到榜头相机中心（只移XY）
         /// </summary>
         public void SubmountPPMovetoBondCameraCenter()
         {
-            var offset = _systemConfig.PositioningConfig.PP2AndBondCameraOffset;
-            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
-            multiAxis[0] = EnumStageAxis.BondX;
-            multiAxis[1] = EnumStageAxis.BondY;
+            try
+            {
+                var offset = _systemConfig.PositioningConfig.PP2AndBondCameraOffset;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
 
-            double[] target1 = new double[2];
-            target1[0] = offset.X;
-            target1[1] = offset.Y;
-            _stageMotionControl.RelativeMovingSync(multiAxis, target1);
-            //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondX, offset.X);
-            //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondY, offset.Y);
+                double[] target1 = new double[2];
+                target1[0] = offset.X;
+                target1[1] = offset.Y;
+                _stageMotionControl.RelativeMovingSync(multiAxis, target1);
+                //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondX, offset.X);
+                //_stageMotionControl.RelativeMovingSync(EnumStageAxis.BondY, offset.Y);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"SubmountPPMovetoBondCameraCenter", ex);
+            }
+           
         }
 
         /// <summary>
@@ -1299,8 +1397,9 @@ namespace PositioningSystemClsLib
                 
                 return _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"PPMovetoSafeLocation", ex);
                 return StageMotionResult.Fail;
             }
 
@@ -1308,77 +1407,150 @@ namespace PositioningSystemClsLib
         }
         public StageMotionResult BondXYUnionMovetoSystemCoor(double xTarget, double yTarget, EnumCoordSetType type)
         {
-            double[] stageAbsoluteTarget = new double[2];
-            double[] stageRelativeTarget = new double[2];
-
-            stageAbsoluteTarget[0] = _systemConfig.PositioningConfig.BondOrigion.X - xTarget;
-            stageRelativeTarget[0] = -xTarget;
-
-            stageAbsoluteTarget[1] = yTarget + _systemConfig.PositioningConfig.BondOrigion.Y;
-            stageRelativeTarget[1] = yTarget;
-
-
-            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
-            multiAxis[0] = EnumStageAxis.BondX;
-            multiAxis[1] = EnumStageAxis.BondY;
-            var ret = StageMotionResult.Success;
-            //var targetPos = new MillimeterUnitValue<double>() { Value = target };
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(multiAxis, stageAbsoluteTarget);
-            }
-            else
-            {
-                ret = _stageMotionControl.RelativeMovingSync(multiAxis, stageRelativeTarget);
-            }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"BondXYUnionMovetoSystemCoor,Run-Exception.");
-            }
-            return ret;
+                double[] stageAbsoluteTarget = new double[2];
+                double[] stageRelativeTarget = new double[2];
 
+                stageAbsoluteTarget[0] = _systemConfig.PositioningConfig.BondOrigion.X - xTarget;
+                stageRelativeTarget[0] = -xTarget;
+
+                stageAbsoluteTarget[1] = yTarget + _systemConfig.PositioningConfig.BondOrigion.Y;
+                stageRelativeTarget[1] = yTarget;
+
+
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+                var ret = StageMotionResult.Success;
+                //var targetPos = new MillimeterUnitValue<double>() { Value = target };
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(multiAxis, stageAbsoluteTarget);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(multiAxis, stageRelativeTarget);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoSystemCoor,Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoSystemCoor,Run-Exception.",ex);
+                return StageMotionResult.Fail;
+            }
+           
         }
         public StageMotionResult BondXYUnionMovetoStageCoor(double xTarget, double yTarget, EnumCoordSetType type)
         {
-            double[] Target = new double[2];
-            Target[0] = xTarget;
-            Target[1] = yTarget;
-            EnumStageAxis[] multiAxis = new EnumStageAxis[2];
-            multiAxis[0] = EnumStageAxis.BondX;
-            multiAxis[1] = EnumStageAxis.BondY;
-            var ret = StageMotionResult.Success;
-            if (type == EnumCoordSetType.Absolute)
+            try
             {
-                ret = _stageMotionControl.AbsoluteMovingSync(multiAxis, Target);
+                double[] Target = new double[2];
+                Target[0] = xTarget;
+                Target[1] = yTarget;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[2];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+                var ret = StageMotionResult.Success;
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(multiAxis, Target);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(multiAxis, Target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoStageCoor,Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
+
             }
-            else
+            catch (Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(multiAxis, Target);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoStageCoor,Run-Exception.",ex);
+                return StageMotionResult.Fail;
             }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"BondXYUnionMovetoStageCoor,Run-Exception.");
-            }
-            return ret;
+
+            
         }
+
+        public StageMotionResult BondXYUnionMovetoStageCoor(double xTarget, double yTarget, double tTarget, EnumCoordSetType type)
+        {
+            try
+            {
+                double[] Target = new double[3];
+                Target[0] = xTarget;
+                Target[1] = yTarget;
+                Target[2] = tTarget;
+                EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                multiAxis[0] = EnumStageAxis.BondX;
+                multiAxis[1] = EnumStageAxis.BondY;
+                multiAxis[2] = EnumStageAxis.ChipPPT;
+                var ret = StageMotionResult.Success;
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(multiAxis, Target);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(multiAxis, Target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoStageCoor,Run-Exception.");
+                    return StageMotionResult.Fail;
+
+                }
+                return ret;
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"BondXYUnionMovetoStageCoor,Run-Exception.", ex);
+                return StageMotionResult.Fail;
+            }
+            
+        }
+
+
         public StageMotionResult MoveChipPPToSystemCoord(double zero, double target, EnumCoordSetType type)
         {
-            var ret = StageMotionResult.Success;
-            float stagePos = (float)(target + zero);
+            try
+            {
+                var ret = StageMotionResult.Success;
+                float stagePos = (float)(target + zero);
 
-            if (type == EnumCoordSetType.Absolute)
-            {
-                ret = _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, stagePos);
+                if (type == EnumCoordSetType.Absolute)
+                {
+                    ret = _stageMotionControl.AbsoluteMovingSync(EnumStageAxis.BondZ, stagePos);
+                }
+                else
+                {
+                    ret = _stageMotionControl.RelativeMovingSync(EnumStageAxis.BondZ, target);
+                }
+                if (ret == StageMotionResult.Fail)
+                {
+                    LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:BondZ,Run-Exception.");
+                    return StageMotionResult.Fail;
+                }
+                return ret;
+
             }
-            else
+            catch (Exception ex)
             {
-                ret = _stageMotionControl.RelativeMovingSync(EnumStageAxis.BondZ, target);
+                LogRecorder.RecordAlarmLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, $"MoveAixsToStageCoord,Axis:BondZ,Run-Exception.", ex);
+                return StageMotionResult.Fail;
             }
-            if (ret == StageMotionResult.Fail)
-            {
-                throw new Exception($"MoveAixsToStageCoord,Axis:BondZ,Run-Exception.");
-            }
-            return ret;
+            
         }
 
 

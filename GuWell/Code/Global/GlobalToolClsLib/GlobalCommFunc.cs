@@ -139,4 +139,101 @@ namespace GlobalToolClsLib
 		}
 		
 	}
+
+
+
+	public static class EnumExtensions
+	{
+		public static string GetDescription(this Enum value)
+		{
+			var field = value.GetType().GetField(value.ToString());
+			var attribute = (DescriptionAttribute)field?
+				.GetCustomAttributes(typeof(DescriptionAttribute), false)
+				.FirstOrDefault();
+			return attribute?.Description ?? value.ToString();
+		}
+	}
+
+	public class EnumComboBoxItem<T> where T : Enum
+	{
+		public T Value { get; set; }
+		public string Description { get; set; }
+
+		public override string ToString()
+		{
+			return Description;
+		}
+	}
+
+	// ComboBox扩展方法
+	public static class ComboBoxExtensions
+	{
+		// 绑定枚举到ComboBox - 无默认值版本
+		public static void BindToEnum<T>(this ComboBox comboBox) where T : Enum
+		{
+			comboBox.Items.Clear();
+
+			var items = Enum.GetValues(typeof(T))
+						   .Cast<T>()
+						   .Select(e => new EnumComboBoxItem<T>
+						   {
+							   Value = e,
+							   Description = e.GetDescription()
+						   })
+						   .ToArray();
+
+			comboBox.Items.AddRange(items);
+
+			// 设置默认选择为第一项
+			if (comboBox.Items.Count > 0)
+			{
+				comboBox.SelectedIndex = 0;
+			}
+		}
+
+		// 绑定枚举到ComboBox - 有默认值版本
+		public static void BindToEnum<T>(this ComboBox comboBox, T defaultValue) where T : Enum
+		{
+			comboBox.Items.Clear();
+
+			var items = Enum.GetValues(typeof(T))
+						   .Cast<T>()
+						   .Select(e => new EnumComboBoxItem<T>
+						   {
+							   Value = e,
+							   Description = e.GetDescription()
+						   })
+						   .ToArray();
+
+			comboBox.Items.AddRange(items);
+
+			// 设置默认选择
+			comboBox.SetSelectedEnum(defaultValue);
+		}
+
+		// 获取选中的枚举值
+		public static T GetSelectedEnum<T>(this ComboBox comboBox) where T : Enum
+		{
+			if (comboBox.SelectedItem is EnumComboBoxItem<T> selectedItem)
+			{
+				return selectedItem.Value;
+			}
+			return default;
+		}
+
+		// 设置选中的枚举值
+		public static void SetSelectedEnum<T>(this ComboBox comboBox, T value) where T : Enum
+		{
+			for (int i = 0; i < comboBox.Items.Count; i++)
+			{
+				if (comboBox.Items[i] is EnumComboBoxItem<T> item &&
+					item.Value.Equals(value))
+				{
+					comboBox.SelectedIndex = i;
+					return;
+				}
+			}
+		}
+	}
+
 }

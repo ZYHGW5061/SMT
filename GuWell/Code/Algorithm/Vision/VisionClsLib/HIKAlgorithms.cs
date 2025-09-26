@@ -21,6 +21,7 @@ using VisionDesigner.CircleFind;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using VisionClsLib;
+using GlobalToolClsLib;
 
 namespace VisionClsLib
 {
@@ -2462,8 +2463,9 @@ namespace VisionClsLib
                     return TrainResults;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "轮廓算法训练失败.", ex);
                 return null;
             }
         }
@@ -2563,12 +2565,14 @@ namespace VisionClsLib
             }
             catch (MvdException ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "轮廓算法初始化失败.",ex);
                 //MessageBox.Show("TrainFrom Load Failed! Error code : 0x" + ex.ErrorCode.ToString("X"));
                 Inited = false;
                 return false;
             }
             catch (System.Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "轮廓算法初始化失败.", ex);
                 //MessageBox.Show("TrainFrom Load Failed! Exception : " + ex.Message);
                 Inited = false;
                 return false;
@@ -2906,8 +2910,9 @@ namespace VisionClsLib
 
                 return Results;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "轮廓算法识别失败.", ex);
                 return null;
             }
         }
@@ -3069,8 +3074,9 @@ namespace VisionClsLib
                 Inited = true;
                 return true;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "边缘算法初始化失败.", ex);
                 Inited = false;
                 return false;
             }
@@ -3376,8 +3382,9 @@ namespace VisionClsLib
 
                 return result;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "边缘算法识别失败.", ex);
                 return null;
             }
         }
@@ -3541,15 +3548,16 @@ namespace VisionClsLib
                     }
                     else
                     {
-                        throw ex;
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "圆查找算法初始化失败.", ex);
                     }
                 }
                 UpdateParamList(runParamConfigBytes, runParamConfigDataLength);
                 Inited = true;
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "圆查找算法初始化失败.", ex);
                 Inited = false;
                 return false;
             }
@@ -3860,8 +3868,9 @@ namespace VisionClsLib
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "圆算法识别失败.", ex);
                 return null;
             }
         }

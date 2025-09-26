@@ -67,6 +67,10 @@
       <Project>{CC883785-57AF-47E9-A607-1E9AF227727B}</Project>
       <Name>DispensingMachineControllerClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Dynamometer\DynamometerControllerClsLib\DynamometerControllerClsLib.csproj">
+      <Project>{FD65B6B1-69A7-4A94-8B7A-33D3EDD70162}</Project>
+      <Name>DynamometerControllerClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dynamometer\DynamometerManagerClsLib\DynamometerManagerClsLib.csproj">
       <Project>{7201f770-650a-45e8-93df-c7fbee592ce6}</Project>
       <Name>DynamometerManagerClsLib</Name>

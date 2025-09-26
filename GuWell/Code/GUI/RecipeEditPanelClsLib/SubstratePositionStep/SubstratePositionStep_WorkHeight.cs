@@ -143,8 +143,9 @@ namespace RecipeEditPanelClsLib
 
                     //根据校准数据及当前的激光测高仪读数计算吸嘴工作高度
                     var curBondZ = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondZ);
-                    var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
-                    var offsetMeasureZ = curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ;
+                    //var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackLaserSensorOrigion.Z;
+                    var offsetZ = curBondZ - _systemConfig.PositioningConfig.TrackOrigion.Z;
+                    var offsetMeasureZ = -(curLaserMeasureH - _systemConfig.PositioningConfig.TrackLaserSensorZ);
                     var componentZ = offsetMeasureZ - offsetZ;
                     //PPWorkHeight = (float)(_systemConfig.PositioningConfig.TrackSubmountPPOrigion.Z - offsetMeasureZ + offsetZ);
                     //转为系统坐标系存储

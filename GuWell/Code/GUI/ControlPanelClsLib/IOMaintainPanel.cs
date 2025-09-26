@@ -18,6 +18,7 @@ using ConfigurationClsLib;
 using LaserSensorManagerClsLib;
 using DynamometerManagerClsLib;
 using WestDragon.Framework.BaseLoggerClsLib;
+using UserManagerClsLib;
 
 namespace ControlPanelClsLib
 {
@@ -111,6 +112,13 @@ namespace ControlPanelClsLib
             TransportInPlaceSignal2.ForeColor = (DataModel.Instance.TransportInPlaceSignal2 ? true : false) ? Color.Green : Color.DarkGray;
             TransportInPlaceSignal3.ForeColor = (DataModel.Instance.TransportInPlaceSignal3 ? true : false) ? Color.Green : Color.DarkGray;
             WaferInPlaceSignal1.ForeColor = (DataModel.Instance.WaferInPlaceSignal1 ? true : false) ? Color.Green : Color.DarkGray;
+            ChipPPtoolVaccumNormally.ForeColor = (DataModel.Instance.ChipPPtoolVaccumNormally ? true : false) ? Color.Green : Color.DarkGray;
+
+            EpoxtUp.ForeColor = (DataModel.Instance.EpoxtUp ? true : false) ? Color.Green : Color.DarkGray;
+            EpoxtDown.ForeColor = (DataModel.Instance.EpoxtDown ? true : false) ? Color.Green : Color.DarkGray;
+            TransportUp.ForeColor = (DataModel.Instance.TransportUp ? true : false) ? Color.Green : Color.DarkGray;
+            TransportDown.ForeColor = (DataModel.Instance.TransportDown ? true : false) ? Color.Green : Color.DarkGray;
+
             SafeDoorSensor1.ForeColor = (DataModel.Instance.SafeDoorSensor1 ? true : false) ? Color.Green : Color.DarkGray;
             SafeDoorSensor2.ForeColor = (DataModel.Instance.SafeDoorSensor2 ? true : false) ? Color.Green : Color.DarkGray;
             EpoxtPON.ForeColor = (DataModel.Instance.EpoxtPON ? true : false) ? Color.Green : Color.DarkGray;
@@ -134,7 +142,13 @@ namespace ControlPanelClsLib
             ChipPPVaccumSwitch.ForeColor = (DataModel.Instance.ChipPPVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray;
             ChipPPBlowSwitch.ForeColor = (DataModel.Instance.ChipPPBlowSwitch ? true : false) ? Color.Green : Color.DarkGray;
             EpoxtliftCylinder.ForeColor = (DataModel.Instance.EpoxtliftCylinder ? true : false) ? Color.Green : Color.DarkGray;
+            ChipPPtoolVaccumSwitch.ForeColor = (DataModel.Instance.ChipPPtoolVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray;
             TransportCylinder1.ForeColor = (DataModel.Instance.TransportCylinder1 ? true : false) ? Color.Green : Color.DarkGray;
+            TransportCylinder2.ForeColor = (DataModel.Instance.TransportCylinder2 ? true : false) ? Color.Green : Color.DarkGray;
+            TransportVaccumSwitch1.ForeColor = (DataModel.Instance.TransportVaccumSwitch1 ? true : false) ? Color.Green : Color.DarkGray;
+            TransportVaccumSwitch2.ForeColor = (DataModel.Instance.TransportVaccumSwitch2 ? true : false) ? Color.Green : Color.DarkGray;
+
+            WaferTableVaccumSwitch.ForeColor = (DataModel.Instance.WaferTableVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray;
             MaterialPlatformVaccumSwitch.ForeColor = (DataModel.Instance.MaterialPlatformVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray;
             EjectionSystemVaccumSwitch.ForeColor = (DataModel.Instance.EjectionSystemVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray;
             WaferFingerCylinder.ForeColor = (DataModel.Instance.WaferFingerCylinder ? true : false) ? Color.Green : Color.DarkGray;
@@ -190,6 +204,7 @@ namespace ControlPanelClsLib
             {
                 string labelName = clickedLabel.Name;
                 short bit = 1;
+                LogRecorder.RecordUserOperationLog($"切换{labelName}状态", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                 switch (labelName)
                 {
                     case "ChipPPVaccumSwitch":
@@ -220,6 +235,16 @@ namespace ControlPanelClsLib
                         else
                         {
                             _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder, 1);
+                        }
+                        break;
+                    case "ChipPPtoolVaccumSwitch":
+                        if (DataModel.Instance.ChipPPtoolVaccumSwitch)
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.ChipPPtoolVaccumSwitch, 0);
+                        }
+                        else
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.ChipPPtoolVaccumSwitch, 1);
                         }
                         break;
                     case "EpoxtDIS":
@@ -375,22 +400,22 @@ namespace ControlPanelClsLib
                     case "WaferTableVaccumSwitch":
                         if (DataModel.Instance.WaferTableVaccumSwitch)
                         {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.WaferVaccumSwitch, 0);
+                        }
+                        else
+                        {
+                            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.WaferVaccumSwitch, 1);
+                        }
+                        break;
+                    case "MaterialPlatformVaccumSwitch":
+                        if (DataModel.Instance.MaterialPlatformVaccumSwitch)
+                        {
                             _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.StatisticWaffleVaccumSwitch, 0);
                         }
                         else
                         {
                             _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.StatisticWaffleVaccumSwitch, 1);
                         }
-                        break;
-                    case "MaterialPlatformVaccumSwitch":
-                        //if (DataModel.Instance.MaterialPlatformVaccumSwitch)
-                        //{
-                        //    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.TowerYellowLight, 0);
-                        //}
-                        //else
-                        //{
-                        //    _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.TowerYellowLight, 1);
-                        //}
                         break;
                     case "TowerYellowLight":
                         if (DataModel.Instance.TowerYellowLight)
@@ -1150,6 +1175,10 @@ namespace ControlPanelClsLib
             {
                 _syncContext.Post(_ => EpoxtliftCylinder.ForeColor = (DataModel.Instance.EpoxtliftCylinder ? true : false) ? Color.Green : Color.DarkGray, null);
             }
+            if (e.PropertyName == nameof(DataModel.ChipPPtoolVaccumSwitch))
+            {
+                _syncContext.Post(_ => ChipPPtoolVaccumSwitch.ForeColor = (DataModel.Instance.ChipPPtoolVaccumSwitch ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
             if (e.PropertyName == nameof(DataModel.EpoxtDIS))
             {
                 _syncContext.Post(_ => EpoxtDIS.ForeColor = (DataModel.Instance.EpoxtDIS ? true : false) ? Color.Green : Color.DarkGray, null);
@@ -1242,6 +1271,27 @@ namespace ControlPanelClsLib
             #endregion
 
             #region InputIO
+
+            if (e.PropertyName == nameof(DataModel.TransportUp))
+            {
+                _syncContext.Post(_ => TransportUp.ForeColor = (DataModel.Instance.TransportUp ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
+            if (e.PropertyName == nameof(DataModel.TransportDown))
+            {
+                _syncContext.Post(_ => TransportDown.ForeColor = (DataModel.Instance.TransportDown ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
+            if (e.PropertyName == nameof(DataModel.EpoxtUp))
+            {
+                _syncContext.Post(_ => EpoxtUp.ForeColor = (DataModel.Instance.EpoxtUp ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
+            if (e.PropertyName == nameof(DataModel.EpoxtDown))
+            {
+                _syncContext.Post(_ => EpoxtDown.ForeColor = (DataModel.Instance.EpoxtDown ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
+            if (e.PropertyName == nameof(DataModel.ChipPPtoolVaccumNormally))
+            {
+                _syncContext.Post(_ => ChipPPtoolVaccumNormally.ForeColor = (DataModel.Instance.ChipPPtoolVaccumNormally ? true : false) ? Color.Green : Color.DarkGray, null);
+            }
 
             if (e.PropertyName == nameof(DataModel.ChipPPVaccumNormally))
             {
@@ -1474,6 +1524,54 @@ namespace ControlPanelClsLib
 
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (_LaserSensorManager.GetCurrentHardware() != null && _LaserSensorManager.GetCurrentHardware().IsConnect)
+            {
+                double distance = -1;
+                distance = (double)_LaserSensorManager.GetCurrentHardware().ReadDistance();
+                if (distance >= 0)
+                {
+                    DataModel.Instance.LaserValue = distance / 10000.0f;
+                }
+                else
+                {
+                    DataModel.Instance.LaserValue = 0;
+                }
 
+                DataModel.Instance.LaserIsconnect = true;
+                Thread.Sleep(50);
+            }
+            else
+            {
+                DataModel.Instance.LaserIsconnect = false;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (_DynamometerManager.GetCurrentHardware() != null && _DynamometerManager.GetCurrentHardware().IsConnect)
+            {
+                double[] pressure;
+                pressure = _DynamometerManager.GetCurrentHardware().ReadAllValue();
+                if (pressure?.Length > 1)
+                {
+                    DataModel.Instance.PressureValue1 = pressure[0];
+                    DataModel.Instance.PressureValue2 = pressure[1];
+                }
+
+                DataModel.Instance.PressureIsconnect = true;
+                Thread.Sleep(50);
+            }
+            else
+            {
+                DataModel.Instance.PressureIsconnect = false;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

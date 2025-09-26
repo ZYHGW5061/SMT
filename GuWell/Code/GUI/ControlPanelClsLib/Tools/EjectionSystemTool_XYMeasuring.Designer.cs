@@ -195,7 +195,7 @@ namespace ControlPanelClsLib
             this.stageQuickMove2.Name = "stageQuickMove2";
             this.stageQuickMove2.PositiveQucikMoveAct = null;
             this.stageQuickMove2.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove2.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove2.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove2.Size = new System.Drawing.Size(267, 317);
             this.stageQuickMove2.TabIndex = 58;
             // 

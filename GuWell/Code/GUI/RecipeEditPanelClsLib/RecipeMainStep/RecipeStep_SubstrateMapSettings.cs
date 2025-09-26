@@ -593,13 +593,26 @@ namespace RecipeEditPanelClsLib
                 //    _editRecipe.SubstrateInfos.SubstrateMapInfos.Add(material);
                 //}
 
-                if (_numbersofColumns != 1 && _numbersofRows != 1)
+                if (_numbersofColumns != 0 && _numbersofRows != 0)
                 {
                     _editRecipe.CurrentSubstrate.SubstrateMapInfos.Clear();
                     mapAngle = Math.Atan((LastColumnMaterialPosition.Y - FirstMaterialPosition.Y) / (LastColumnMaterialPosition.X - FirstMaterialPosition.X));
-
-                    _rowPitchMM = (float)(Math.Abs((LastRowMaterialPosition.Y - LastColumnMaterialPosition.Y) * Math.Cos(mapAngle)) / (_numbersofRows - 1));
-                    _columnPitchMM = (float)(Math.Abs((LastColumnMaterialPosition.X - FirstMaterialPosition.X) * Math.Cos(mapAngle)) / (_numbersofColumns - 1));
+                    if(_numbersofRows == 1)
+                    {
+                        _rowPitchMM = 0.00001f;
+                    }
+                    else
+                    {
+                        _rowPitchMM = (float)(Math.Abs((LastRowMaterialPosition.Y - LastColumnMaterialPosition.Y) * Math.Cos(mapAngle)) / (_numbersofRows - 1));
+                    }
+                    if (_numbersofColumns == 1)
+                    {
+                        _columnPitchMM = 0.00001f;
+                    }
+                    else
+                    {
+                        _columnPitchMM = (float)(Math.Abs((LastColumnMaterialPosition.X - FirstMaterialPosition.X) * Math.Cos(mapAngle)) / (_numbersofColumns - 1));
+                    }
                     //var columnSpace = Math.Abs(LastRowComponentPosition.X - FirstComponentPosition.X) / (_numbersofColumns - 1);
                     //var rowSpace = Math.Abs(LastColumnComponentPosition.Y - LastRowComponentPosition.Y) / (_numbersofRows - 1);
                     //var componentWidth = _editRecipe.CurrentComponent.WidthMM;

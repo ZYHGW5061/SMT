@@ -43,6 +43,20 @@ namespace RecipeEditPanelClsLib
             this.label11 = new System.Windows.Forms.Label();
             this.tabNavigationPage4 = new DevExpress.XtraBars.Navigation.TabNavigationPage();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+            this.seDispenserSystemPosZMM = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl24 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl25 = new DevExpress.XtraEditors.LabelControl();
+            this.seDispenseSpeed = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl16 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl18 = new DevExpress.XtraEditors.LabelControl();
+            this.seDispensePatternHeight = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl19 = new DevExpress.XtraEditors.LabelControl();
+            this.cmbDispensePattern = new System.Windows.Forms.ComboBox();
+            this.seDispensePatternWidth = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl20 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl21 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl22 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl23 = new DevExpress.XtraEditors.LabelControl();
             this.btnSetDispenseParam = new DevExpress.XtraEditors.SimpleButton();
             this.cmbSelDispenserRecipe = new System.Windows.Forms.ComboBox();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
@@ -56,6 +70,10 @@ namespace RecipeEditPanelClsLib
             this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl10 = new DevExpress.XtraEditors.LabelControl();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
+            this.labelControl17 = new DevExpress.XtraEditors.LabelControl();
+            this.cmbSelRecipe = new System.Windows.Forms.ComboBox();
+            this.seDispensingCount = new DevExpress.XtraEditors.SpinEdit();
+            this.labelControl15 = new DevExpress.XtraEditors.LabelControl();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.sesePredispensingOffsetY = new DevExpress.XtraEditors.SpinEdit();
             this.labelControl6 = new DevExpress.XtraEditors.LabelControl();
@@ -80,6 +98,8 @@ namespace RecipeEditPanelClsLib
             this.label3 = new System.Windows.Forms.Label();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbStepTypeDispense = new System.Windows.Forms.RadioButton();
+            this.rbStepTypeBondDie = new System.Windows.Forms.RadioButton();
             this.label12 = new System.Windows.Forms.Label();
             this.cbSubmonutList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -89,9 +109,8 @@ namespace RecipeEditPanelClsLib
             this.label6 = new System.Windows.Forms.Label();
             this.cbPickupOrder = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.rbStepTypeDispense = new System.Windows.Forms.RadioButton();
-            this.rbStepTypeBondDie = new System.Windows.Forms.RadioButton();
-            this.rbTypeEutectic = new System.Windows.Forms.RadioButton();
+            this.chStepTypeBondDie = new System.Windows.Forms.CheckBox();
+            this.chStepTypeDispense = new System.Windows.Forms.CheckBox();
             this.teStepName = new DevExpress.XtraEditors.TextEdit();
             this.label5 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -108,6 +127,8 @@ namespace RecipeEditPanelClsLib
             this.separatorControl1 = new DevExpress.XtraEditors.SeparatorControl();
             this.label2 = new System.Windows.Forms.Label();
             this.cbComponentList = new System.Windows.Forms.ComboBox();
+            this.rbStepTypeCalibrationAfterPP = new System.Windows.Forms.RadioButton();
+            this.rbTypeEutectic = new System.Windows.Forms.RadioButton();
             this.rbTypeMaterial = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tabPane1)).BeginInit();
@@ -118,11 +139,16 @@ namespace RecipeEditPanelClsLib
             this.tabNavigationPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispenserSystemPosZMM.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispenseSpeed.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensePatternHeight.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensePatternWidth.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispenseTimeS.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispensePressure.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispenseVaccumPressure.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).BeginInit();
             this.panelControl2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensingCount.Properties)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sesePredispensingOffsetY.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sesePredispensingOffsetX.Properties)).BeginInit();
@@ -187,7 +213,7 @@ namespace RecipeEditPanelClsLib
             this.curComponentDetail.AutoScroll = true;
             this.curComponentDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.curComponentDetail.Location = new System.Drawing.Point(0, 0);
-            this.curComponentDetail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.curComponentDetail.Margin = new System.Windows.Forms.Padding(4);
             this.curComponentDetail.Name = "curComponentDetail";
             this.curComponentDetail.Size = new System.Drawing.Size(712, 551);
             this.curComponentDetail.TabIndex = 0;
@@ -197,16 +223,16 @@ namespace RecipeEditPanelClsLib
             this.tabNavigationPage2.Caption = "  贴装位置参数  ";
             this.tabNavigationPage2.Controls.Add(this.positionDetail1);
             this.tabNavigationPage2.Name = "tabNavigationPage2";
-            this.tabNavigationPage2.Size = new System.Drawing.Size(712, 584);
+            this.tabNavigationPage2.Size = new System.Drawing.Size(712, 551);
             // 
             // positionDetail1
             // 
             this.positionDetail1.AutoScroll = true;
             this.positionDetail1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.positionDetail1.Location = new System.Drawing.Point(0, 0);
-            this.positionDetail1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.positionDetail1.Margin = new System.Windows.Forms.Padding(4);
             this.positionDetail1.Name = "positionDetail1";
-            this.positionDetail1.Size = new System.Drawing.Size(712, 584);
+            this.positionDetail1.Size = new System.Drawing.Size(712, 551);
             this.positionDetail1.TabIndex = 0;
             // 
             // tabNavigationPage3
@@ -267,6 +293,20 @@ namespace RecipeEditPanelClsLib
             // 
             // panelControl1
             // 
+            this.panelControl1.Controls.Add(this.seDispenserSystemPosZMM);
+            this.panelControl1.Controls.Add(this.labelControl24);
+            this.panelControl1.Controls.Add(this.labelControl25);
+            this.panelControl1.Controls.Add(this.seDispenseSpeed);
+            this.panelControl1.Controls.Add(this.labelControl16);
+            this.panelControl1.Controls.Add(this.labelControl18);
+            this.panelControl1.Controls.Add(this.seDispensePatternHeight);
+            this.panelControl1.Controls.Add(this.labelControl19);
+            this.panelControl1.Controls.Add(this.cmbDispensePattern);
+            this.panelControl1.Controls.Add(this.seDispensePatternWidth);
+            this.panelControl1.Controls.Add(this.labelControl20);
+            this.panelControl1.Controls.Add(this.labelControl21);
+            this.panelControl1.Controls.Add(this.labelControl22);
+            this.panelControl1.Controls.Add(this.labelControl23);
             this.panelControl1.Controls.Add(this.btnSetDispenseParam);
             this.panelControl1.Controls.Add(this.cmbSelDispenserRecipe);
             this.panelControl1.Controls.Add(this.labelControl1);
@@ -281,12 +321,201 @@ namespace RecipeEditPanelClsLib
             this.panelControl1.Controls.Add(this.labelControl10);
             this.panelControl1.Location = new System.Drawing.Point(356, 11);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(338, 374);
+            this.panelControl1.Size = new System.Drawing.Size(338, 498);
             this.panelControl1.TabIndex = 43;
+            // 
+            // seDispenserSystemPosZMM
+            // 
+            this.seDispenserSystemPosZMM.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.seDispenserSystemPosZMM.Location = new System.Drawing.Point(70, 188);
+            this.seDispenserSystemPosZMM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispenserSystemPosZMM.Name = "seDispenserSystemPosZMM";
+            this.seDispenserSystemPosZMM.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispenserSystemPosZMM.Properties.AutoHeight = false;
+            this.seDispenserSystemPosZMM.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispenserSystemPosZMM.Properties.DisplayFormat.FormatString = "0.000";
+            this.seDispenserSystemPosZMM.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispenserSystemPosZMM.Properties.EditFormat.FormatString = "0.000";
+            this.seDispenserSystemPosZMM.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispenserSystemPosZMM.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.seDispenserSystemPosZMM.Properties.MaskSettings.Set("mask", "f3");
+            this.seDispenserSystemPosZMM.Size = new System.Drawing.Size(75, 23);
+            this.seDispenserSystemPosZMM.TabIndex = 38;
+            // 
+            // labelControl24
+            // 
+            this.labelControl24.Location = new System.Drawing.Point(5, 192);
+            this.labelControl24.Name = "labelControl24";
+            this.labelControl24.Size = new System.Drawing.Size(59, 14);
+            this.labelControl24.TabIndex = 36;
+            this.labelControl24.Text = "*点胶高度:";
+            // 
+            // labelControl25
+            // 
+            this.labelControl25.Location = new System.Drawing.Point(150, 192);
+            this.labelControl25.Name = "labelControl25";
+            this.labelControl25.Size = new System.Drawing.Size(20, 14);
+            this.labelControl25.TabIndex = 37;
+            this.labelControl25.Text = "mm";
+            // 
+            // seDispenseSpeed
+            // 
+            this.seDispenseSpeed.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.seDispenseSpeed.Location = new System.Drawing.Point(224, 134);
+            this.seDispenseSpeed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispenseSpeed.Name = "seDispenseSpeed";
+            this.seDispenseSpeed.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispenseSpeed.Properties.AutoHeight = false;
+            this.seDispenseSpeed.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispenseSpeed.Properties.DisplayFormat.FormatString = "0.000";
+            this.seDispenseSpeed.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispenseSpeed.Properties.EditFormat.FormatString = "0.000";
+            this.seDispenseSpeed.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispenseSpeed.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.seDispenseSpeed.Properties.MaskSettings.Set("mask", "f3");
+            this.seDispenseSpeed.Size = new System.Drawing.Size(75, 23);
+            this.seDispenseSpeed.TabIndex = 35;
+            // 
+            // labelControl16
+            // 
+            this.labelControl16.Location = new System.Drawing.Point(189, 138);
+            this.labelControl16.Name = "labelControl16";
+            this.labelControl16.Size = new System.Drawing.Size(28, 14);
+            this.labelControl16.TabIndex = 33;
+            this.labelControl16.Text = "速度:";
+            // 
+            // labelControl18
+            // 
+            this.labelControl18.Location = new System.Drawing.Point(305, 138);
+            this.labelControl18.Name = "labelControl18";
+            this.labelControl18.Size = new System.Drawing.Size(30, 14);
+            this.labelControl18.TabIndex = 34;
+            this.labelControl18.Text = "mm/s";
+            // 
+            // seDispensePatternHeight
+            // 
+            this.seDispensePatternHeight.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.seDispensePatternHeight.Location = new System.Drawing.Point(224, 99);
+            this.seDispensePatternHeight.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispensePatternHeight.Name = "seDispensePatternHeight";
+            this.seDispensePatternHeight.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispensePatternHeight.Properties.AutoHeight = false;
+            this.seDispensePatternHeight.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispensePatternHeight.Properties.DisplayFormat.FormatString = "0.000";
+            this.seDispensePatternHeight.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensePatternHeight.Properties.EditFormat.FormatString = "0.000";
+            this.seDispensePatternHeight.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensePatternHeight.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.seDispensePatternHeight.Properties.MaskSettings.Set("mask", "f3");
+            this.seDispensePatternHeight.Size = new System.Drawing.Size(75, 23);
+            this.seDispensePatternHeight.TabIndex = 30;
+            // 
+            // labelControl19
+            // 
+            this.labelControl19.Location = new System.Drawing.Point(201, 103);
+            this.labelControl19.Name = "labelControl19";
+            this.labelControl19.Size = new System.Drawing.Size(16, 14);
+            this.labelControl19.TabIndex = 25;
+            this.labelControl19.Text = "高:";
+            // 
+            // cmbDispensePattern
+            // 
+            this.cmbDispensePattern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDispensePattern.FormattingEnabled = true;
+            this.cmbDispensePattern.Location = new System.Drawing.Point(224, 5);
+            this.cmbDispensePattern.Name = "cmbDispensePattern";
+            this.cmbDispensePattern.Size = new System.Drawing.Size(75, 22);
+            this.cmbDispensePattern.TabIndex = 24;
+            // 
+            // seDispensePatternWidth
+            // 
+            this.seDispensePatternWidth.EditValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.seDispensePatternWidth.Location = new System.Drawing.Point(224, 64);
+            this.seDispensePatternWidth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispensePatternWidth.Name = "seDispensePatternWidth";
+            this.seDispensePatternWidth.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispensePatternWidth.Properties.AutoHeight = false;
+            this.seDispensePatternWidth.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispensePatternWidth.Properties.DisplayFormat.FormatString = "0.000";
+            this.seDispensePatternWidth.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensePatternWidth.Properties.EditFormat.FormatString = "0.000";
+            this.seDispensePatternWidth.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensePatternWidth.Properties.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.seDispensePatternWidth.Properties.MaskSettings.Set("mask", "f3");
+            this.seDispensePatternWidth.Size = new System.Drawing.Size(75, 23);
+            this.seDispensePatternWidth.TabIndex = 31;
+            // 
+            // labelControl20
+            // 
+            this.labelControl20.Location = new System.Drawing.Point(305, 68);
+            this.labelControl20.Name = "labelControl20";
+            this.labelControl20.Size = new System.Drawing.Size(20, 14);
+            this.labelControl20.TabIndex = 26;
+            this.labelControl20.Text = "mm";
+            // 
+            // labelControl21
+            // 
+            this.labelControl21.Location = new System.Drawing.Point(201, 68);
+            this.labelControl21.Name = "labelControl21";
+            this.labelControl21.Size = new System.Drawing.Size(16, 14);
+            this.labelControl21.TabIndex = 27;
+            this.labelControl21.Text = "宽:";
+            // 
+            // labelControl22
+            // 
+            this.labelControl22.Location = new System.Drawing.Point(305, 103);
+            this.labelControl22.Name = "labelControl22";
+            this.labelControl22.Size = new System.Drawing.Size(20, 14);
+            this.labelControl22.TabIndex = 28;
+            this.labelControl22.Text = "mm";
+            // 
+            // labelControl23
+            // 
+            this.labelControl23.Location = new System.Drawing.Point(166, 8);
+            this.labelControl23.Name = "labelControl23";
+            this.labelControl23.Size = new System.Drawing.Size(52, 14);
+            this.labelControl23.TabIndex = 29;
+            this.labelControl23.Text = "划胶模板:";
             // 
             // btnSetDispenseParam
             // 
-            this.btnSetDispenseParam.Location = new System.Drawing.Point(135, 213);
+            this.btnSetDispenseParam.Location = new System.Drawing.Point(138, 349);
             this.btnSetDispenseParam.Name = "btnSetDispenseParam";
             this.btnSetDispenseParam.Size = new System.Drawing.Size(75, 23);
             this.btnSetDispenseParam.TabIndex = 20;
@@ -312,14 +541,14 @@ namespace RecipeEditPanelClsLib
             "13",
             "14",
             "15"});
-            this.cmbSelDispenserRecipe.Location = new System.Drawing.Point(128, 30);
+            this.cmbSelDispenserRecipe.Location = new System.Drawing.Point(70, 5);
             this.cmbSelDispenserRecipe.Name = "cmbSelDispenserRecipe";
-            this.cmbSelDispenserRecipe.Size = new System.Drawing.Size(94, 22);
+            this.cmbSelDispenserRecipe.Size = new System.Drawing.Size(75, 22);
             this.cmbSelDispenserRecipe.TabIndex = 21;
             // 
             // labelControl1
             // 
-            this.labelControl1.Location = new System.Drawing.Point(68, 33);
+            this.labelControl1.Location = new System.Drawing.Point(10, 8);
             this.labelControl1.Name = "labelControl1";
             this.labelControl1.Size = new System.Drawing.Size(52, 14);
             this.labelControl1.TabIndex = 22;
@@ -327,7 +556,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl5
             // 
-            this.labelControl5.Location = new System.Drawing.Point(226, 128);
+            this.labelControl5.Location = new System.Drawing.Point(151, 103);
             this.labelControl5.Name = "labelControl5";
             this.labelControl5.Size = new System.Drawing.Size(19, 14);
             this.labelControl5.TabIndex = 14;
@@ -340,7 +569,7 @@ namespace RecipeEditPanelClsLib
             0,
             0,
             0});
-            this.seDispenseTimeS.Location = new System.Drawing.Point(128, 159);
+            this.seDispenseTimeS.Location = new System.Drawing.Point(70, 134);
             this.seDispenseTimeS.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.seDispenseTimeS.Name = "seDispenseTimeS";
             this.seDispenseTimeS.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -358,12 +587,12 @@ namespace RecipeEditPanelClsLib
             65536});
             this.seDispenseTimeS.Properties.MaskSettings.Set("mask", "f3");
             this.seDispenseTimeS.Properties.ReadOnly = true;
-            this.seDispenseTimeS.Size = new System.Drawing.Size(94, 23);
+            this.seDispenseTimeS.Size = new System.Drawing.Size(75, 23);
             this.seDispenseTimeS.TabIndex = 17;
             // 
             // labelControl4
             // 
-            this.labelControl4.Location = new System.Drawing.Point(226, 93);
+            this.labelControl4.Location = new System.Drawing.Point(151, 68);
             this.labelControl4.Name = "labelControl4";
             this.labelControl4.Size = new System.Drawing.Size(19, 14);
             this.labelControl4.TabIndex = 14;
@@ -371,7 +600,7 @@ namespace RecipeEditPanelClsLib
             // 
             // 出胶时长
             // 
-            this.出胶时长.Location = new System.Drawing.Point(69, 163);
+            this.出胶时长.Location = new System.Drawing.Point(11, 138);
             this.出胶时长.Name = "出胶时长";
             this.出胶时长.Size = new System.Drawing.Size(52, 14);
             this.出胶时长.TabIndex = 14;
@@ -379,7 +608,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl2
             // 
-            this.labelControl2.Location = new System.Drawing.Point(226, 163);
+            this.labelControl2.Location = new System.Drawing.Point(151, 138);
             this.labelControl2.Name = "labelControl2";
             this.labelControl2.Size = new System.Drawing.Size(5, 14);
             this.labelControl2.TabIndex = 14;
@@ -392,7 +621,7 @@ namespace RecipeEditPanelClsLib
             0,
             0,
             0});
-            this.seDispensePressure.Location = new System.Drawing.Point(128, 89);
+            this.seDispensePressure.Location = new System.Drawing.Point(70, 64);
             this.seDispensePressure.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.seDispensePressure.Name = "seDispensePressure";
             this.seDispensePressure.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -410,7 +639,7 @@ namespace RecipeEditPanelClsLib
             65536});
             this.seDispensePressure.Properties.MaskSettings.Set("mask", "f3");
             this.seDispensePressure.Properties.ReadOnly = true;
-            this.seDispensePressure.Size = new System.Drawing.Size(94, 23);
+            this.seDispensePressure.Size = new System.Drawing.Size(75, 23);
             this.seDispensePressure.TabIndex = 17;
             // 
             // seDispenseVaccumPressure
@@ -420,7 +649,7 @@ namespace RecipeEditPanelClsLib
             0,
             0,
             0});
-            this.seDispenseVaccumPressure.Location = new System.Drawing.Point(128, 124);
+            this.seDispenseVaccumPressure.Location = new System.Drawing.Point(70, 99);
             this.seDispenseVaccumPressure.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.seDispenseVaccumPressure.Name = "seDispenseVaccumPressure";
             this.seDispenseVaccumPressure.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -438,12 +667,12 @@ namespace RecipeEditPanelClsLib
             65536});
             this.seDispenseVaccumPressure.Properties.MaskSettings.Set("mask", "f3");
             this.seDispenseVaccumPressure.Properties.ReadOnly = true;
-            this.seDispenseVaccumPressure.Size = new System.Drawing.Size(94, 23);
+            this.seDispenseVaccumPressure.Size = new System.Drawing.Size(75, 23);
             this.seDispenseVaccumPressure.TabIndex = 17;
             // 
             // labelControl3
             // 
-            this.labelControl3.Location = new System.Drawing.Point(93, 93);
+            this.labelControl3.Location = new System.Drawing.Point(35, 68);
             this.labelControl3.Name = "labelControl3";
             this.labelControl3.Size = new System.Drawing.Size(28, 14);
             this.labelControl3.TabIndex = 14;
@@ -451,7 +680,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl10
             // 
-            this.labelControl10.Location = new System.Drawing.Point(92, 128);
+            this.labelControl10.Location = new System.Drawing.Point(34, 103);
             this.labelControl10.Name = "labelControl10";
             this.labelControl10.Size = new System.Drawing.Size(28, 14);
             this.labelControl10.TabIndex = 14;
@@ -459,6 +688,10 @@ namespace RecipeEditPanelClsLib
             // 
             // panelControl2
             // 
+            this.panelControl2.Controls.Add(this.labelControl17);
+            this.panelControl2.Controls.Add(this.cmbSelRecipe);
+            this.panelControl2.Controls.Add(this.seDispensingCount);
+            this.panelControl2.Controls.Add(this.labelControl15);
             this.panelControl2.Controls.Add(this.groupBox3);
             this.panelControl2.Controls.Add(this.groupBox5);
             this.panelControl2.Controls.Add(this.sePredispensingTimes);
@@ -467,8 +700,64 @@ namespace RecipeEditPanelClsLib
             this.panelControl2.Controls.Add(this.cmbPredispensingMode);
             this.panelControl2.Location = new System.Drawing.Point(12, 11);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(338, 374);
+            this.panelControl2.Size = new System.Drawing.Size(338, 498);
             this.panelControl2.TabIndex = 42;
+            // 
+            // labelControl17
+            // 
+            this.labelControl17.Location = new System.Drawing.Point(33, 11);
+            this.labelControl17.Name = "labelControl17";
+            this.labelControl17.Size = new System.Drawing.Size(40, 14);
+            this.labelControl17.TabIndex = 60;
+            this.labelControl17.Text = "点胶器:";
+            // 
+            // cmbSelRecipe
+            // 
+            this.cmbSelRecipe.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cmbSelRecipe.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSelRecipe.FormattingEnabled = true;
+            this.cmbSelRecipe.Location = new System.Drawing.Point(93, 8);
+            this.cmbSelRecipe.Name = "cmbSelRecipe";
+            this.cmbSelRecipe.Size = new System.Drawing.Size(94, 22);
+            this.cmbSelRecipe.TabIndex = 59;
+            // 
+            // seDispensingCount
+            // 
+            this.seDispensingCount.EditValue = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.seDispensingCount.Location = new System.Drawing.Point(93, 39);
+            this.seDispensingCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.seDispensingCount.Name = "seDispensingCount";
+            this.seDispensingCount.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
+            this.seDispensingCount.Properties.AutoHeight = false;
+            this.seDispensingCount.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.seDispensingCount.Properties.DisplayFormat.FormatString = "0";
+            this.seDispensingCount.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensingCount.Properties.EditFormat.FormatString = "0";
+            this.seDispensingCount.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.seDispensingCount.Properties.IsFloatValue = false;
+            this.seDispensingCount.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.RegExpMaskManager));
+            this.seDispensingCount.Properties.MaskSettings.Set("allowBlankInput", true);
+            this.seDispensingCount.Properties.MaskSettings.Set("mask", "\\d{1,3}?");
+            this.seDispensingCount.Properties.MaxValue = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.seDispensingCount.Size = new System.Drawing.Size(94, 23);
+            this.seDispensingCount.TabIndex = 26;
+            // 
+            // labelControl15
+            // 
+            this.labelControl15.Location = new System.Drawing.Point(21, 43);
+            this.labelControl15.Name = "labelControl15";
+            this.labelControl15.Size = new System.Drawing.Size(52, 14);
+            this.labelControl15.TabIndex = 25;
+            this.labelControl15.Text = "点胶次数:";
             // 
             // groupBox3
             // 
@@ -478,7 +767,7 @@ namespace RecipeEditPanelClsLib
             this.groupBox3.Controls.Add(this.labelControl7);
             this.groupBox3.Controls.Add(this.labelControl8);
             this.groupBox3.Controls.Add(this.labelControl9);
-            this.groupBox3.Location = new System.Drawing.Point(19, 238);
+            this.groupBox3.Location = new System.Drawing.Point(21, 286);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(298, 119);
             this.groupBox3.TabIndex = 18;
@@ -577,7 +866,7 @@ namespace RecipeEditPanelClsLib
             this.groupBox5.Controls.Add(this.sePredispensingIntervelSeconds);
             this.groupBox5.Controls.Add(this.sePredispensingIntervelMinutes);
             this.groupBox5.Controls.Add(this.labelControl12);
-            this.groupBox5.Location = new System.Drawing.Point(19, 105);
+            this.groupBox5.Location = new System.Drawing.Point(21, 153);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(298, 115);
             this.groupBox5.TabIndex = 18;
@@ -667,7 +956,7 @@ namespace RecipeEditPanelClsLib
             0,
             0,
             0});
-            this.sePredispensingTimes.Location = new System.Drawing.Point(91, 63);
+            this.sePredispensingTimes.Location = new System.Drawing.Point(93, 111);
             this.sePredispensingTimes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.sePredispensingTimes.Name = "sePredispensingTimes";
             this.sePredispensingTimes.Properties.AllowNullInput = DevExpress.Utils.DefaultBoolean.False;
@@ -692,7 +981,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl13
             // 
-            this.labelControl13.Location = new System.Drawing.Point(19, 67);
+            this.labelControl13.Location = new System.Drawing.Point(21, 115);
             this.labelControl13.Name = "labelControl13";
             this.labelControl13.Size = new System.Drawing.Size(64, 14);
             this.labelControl13.TabIndex = 14;
@@ -700,7 +989,7 @@ namespace RecipeEditPanelClsLib
             // 
             // labelControl14
             // 
-            this.labelControl14.Location = new System.Drawing.Point(20, 28);
+            this.labelControl14.Location = new System.Drawing.Point(22, 76);
             this.labelControl14.Name = "labelControl14";
             this.labelControl14.Size = new System.Drawing.Size(64, 14);
             this.labelControl14.TabIndex = 14;
@@ -708,12 +997,12 @@ namespace RecipeEditPanelClsLib
             // 
             // cmbPredispensingMode
             // 
+            this.cmbPredispensingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPredispensingMode.FormattingEnabled = true;
-            this.cmbPredispensingMode.Location = new System.Drawing.Point(91, 25);
+            this.cmbPredispensingMode.Location = new System.Drawing.Point(93, 73);
             this.cmbPredispensingMode.Name = "cmbPredispensingMode";
             this.cmbPredispensingMode.Size = new System.Drawing.Size(94, 22);
             this.cmbPredispensingMode.TabIndex = 13;
-            this.cmbPredispensingMode.Text = "Off";
             // 
             // tabNavigationPage5
             // 
@@ -729,7 +1018,7 @@ namespace RecipeEditPanelClsLib
             // 
             this.cursubmonutDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cursubmonutDetail.Location = new System.Drawing.Point(0, 0);
-            this.cursubmonutDetail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cursubmonutDetail.Margin = new System.Windows.Forms.Padding(4);
             this.cursubmonutDetail.Name = "cursubmonutDetail";
             this.cursubmonutDetail.Size = new System.Drawing.Size(712, 551);
             this.cursubmonutDetail.TabIndex = 0;
@@ -781,6 +1070,8 @@ namespace RecipeEditPanelClsLib
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbStepTypeDispense);
+            this.groupBox1.Controls.Add(this.rbStepTypeBondDie);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.cbSubmonutList);
             this.groupBox1.Controls.Add(this.label1);
@@ -812,6 +1103,30 @@ namespace RecipeEditPanelClsLib
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "生产步骤";
+            // 
+            // rbStepTypeDispense
+            // 
+            this.rbStepTypeDispense.AutoSize = true;
+            this.rbStepTypeDispense.Location = new System.Drawing.Point(111, 0);
+            this.rbStepTypeDispense.Name = "rbStepTypeDispense";
+            this.rbStepTypeDispense.Size = new System.Drawing.Size(49, 18);
+            this.rbStepTypeDispense.TabIndex = 51;
+            this.rbStepTypeDispense.TabStop = true;
+            this.rbStepTypeDispense.Text = "点胶";
+            this.rbStepTypeDispense.UseVisualStyleBackColor = true;
+            this.rbStepTypeDispense.Visible = false;
+            // 
+            // rbStepTypeBondDie
+            // 
+            this.rbStepTypeBondDie.AutoSize = true;
+            this.rbStepTypeBondDie.Location = new System.Drawing.Point(201, 0);
+            this.rbStepTypeBondDie.Name = "rbStepTypeBondDie";
+            this.rbStepTypeBondDie.Size = new System.Drawing.Size(49, 18);
+            this.rbStepTypeBondDie.TabIndex = 50;
+            this.rbStepTypeBondDie.TabStop = true;
+            this.rbStepTypeBondDie.Text = "贴片";
+            this.rbStepTypeBondDie.UseVisualStyleBackColor = true;
+            this.rbStepTypeBondDie.Visible = false;
             // 
             // label12
             // 
@@ -895,48 +1210,32 @@ namespace RecipeEditPanelClsLib
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.rbStepTypeDispense);
-            this.panel1.Controls.Add(this.rbStepTypeBondDie);
-            this.panel1.Controls.Add(this.rbTypeEutectic);
+            this.panel1.Controls.Add(this.chStepTypeBondDie);
+            this.panel1.Controls.Add(this.chStepTypeDispense);
             this.panel1.Location = new System.Drawing.Point(91, 53);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(189, 29);
             this.panel1.TabIndex = 50;
             // 
-            // rbStepTypeDispense
+            // chStepTypeBondDie
             // 
-            this.rbStepTypeDispense.AutoSize = true;
-            this.rbStepTypeDispense.Location = new System.Drawing.Point(15, 5);
-            this.rbStepTypeDispense.Name = "rbStepTypeDispense";
-            this.rbStepTypeDispense.Size = new System.Drawing.Size(49, 18);
-            this.rbStepTypeDispense.TabIndex = 51;
-            this.rbStepTypeDispense.TabStop = true;
-            this.rbStepTypeDispense.Text = "划胶";
-            this.rbStepTypeDispense.UseVisualStyleBackColor = true;
+            this.chStepTypeBondDie.AutoSize = true;
+            this.chStepTypeBondDie.Location = new System.Drawing.Point(115, 5);
+            this.chStepTypeBondDie.Name = "chStepTypeBondDie";
+            this.chStepTypeBondDie.Size = new System.Drawing.Size(50, 18);
+            this.chStepTypeBondDie.TabIndex = 1;
+            this.chStepTypeBondDie.Text = "贴片";
+            this.chStepTypeBondDie.UseVisualStyleBackColor = true;
             // 
-            // rbStepTypeBondDie
+            // chStepTypeDispense
             // 
-            this.rbStepTypeBondDie.AutoSize = true;
-            this.rbStepTypeBondDie.Location = new System.Drawing.Point(70, 5);
-            this.rbStepTypeBondDie.Name = "rbStepTypeBondDie";
-            this.rbStepTypeBondDie.Size = new System.Drawing.Size(49, 18);
-            this.rbStepTypeBondDie.TabIndex = 50;
-            this.rbStepTypeBondDie.TabStop = true;
-            this.rbStepTypeBondDie.Text = "贴片";
-            this.rbStepTypeBondDie.UseVisualStyleBackColor = true;
-            // 
-            // rbTypeEutectic
-            // 
-            this.rbTypeEutectic.AutoSize = true;
-            this.rbTypeEutectic.Location = new System.Drawing.Point(125, 5);
-            this.rbTypeEutectic.Name = "rbTypeEutectic";
-            this.rbTypeEutectic.Size = new System.Drawing.Size(49, 18);
-            this.rbTypeEutectic.TabIndex = 49;
-            this.rbTypeEutectic.TabStop = true;
-            this.rbTypeEutectic.Text = "共晶";
-            this.rbTypeEutectic.UseVisualStyleBackColor = true;
-            this.rbTypeEutectic.Visible = false;
-            this.rbTypeEutectic.CheckedChanged += new System.EventHandler(this.rbTypeEutectic_CheckedChanged);
+            this.chStepTypeDispense.AutoSize = true;
+            this.chStepTypeDispense.Location = new System.Drawing.Point(20, 5);
+            this.chStepTypeDispense.Name = "chStepTypeDispense";
+            this.chStepTypeDispense.Size = new System.Drawing.Size(50, 18);
+            this.chStepTypeDispense.TabIndex = 0;
+            this.chStepTypeDispense.Text = "点胶";
+            this.chStepTypeDispense.UseVisualStyleBackColor = true;
             // 
             // teStepName
             // 
@@ -1092,6 +1391,31 @@ namespace RecipeEditPanelClsLib
             this.cbComponentList.Size = new System.Drawing.Size(189, 22);
             this.cbComponentList.TabIndex = 2;
             // 
+            // rbStepTypeCalibrationAfterPP
+            // 
+            this.rbStepTypeCalibrationAfterPP.AutoSize = true;
+            this.rbStepTypeCalibrationAfterPP.Location = new System.Drawing.Point(219, 3);
+            this.rbStepTypeCalibrationAfterPP.Name = "rbStepTypeCalibrationAfterPP";
+            this.rbStepTypeCalibrationAfterPP.Size = new System.Drawing.Size(73, 18);
+            this.rbStepTypeCalibrationAfterPP.TabIndex = 52;
+            this.rbStepTypeCalibrationAfterPP.TabStop = true;
+            this.rbStepTypeCalibrationAfterPP.Text = "贴后识别";
+            this.rbStepTypeCalibrationAfterPP.UseVisualStyleBackColor = true;
+            this.rbStepTypeCalibrationAfterPP.Visible = false;
+            // 
+            // rbTypeEutectic
+            // 
+            this.rbTypeEutectic.AutoSize = true;
+            this.rbTypeEutectic.Location = new System.Drawing.Point(166, 3);
+            this.rbTypeEutectic.Name = "rbTypeEutectic";
+            this.rbTypeEutectic.Size = new System.Drawing.Size(49, 18);
+            this.rbTypeEutectic.TabIndex = 49;
+            this.rbTypeEutectic.TabStop = true;
+            this.rbTypeEutectic.Text = "共晶";
+            this.rbTypeEutectic.UseVisualStyleBackColor = true;
+            this.rbTypeEutectic.Visible = false;
+            this.rbTypeEutectic.CheckedChanged += new System.EventHandler(this.rbTypeEutectic_CheckedChanged);
+            // 
             // rbTypeMaterial
             // 
             this.rbTypeMaterial.AutoSize = true;
@@ -1109,8 +1433,10 @@ namespace RecipeEditPanelClsLib
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.rbStepTypeCalibrationAfterPP);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.rbTypeMaterial);
+            this.Controls.Add(this.rbTypeEutectic);
             this.Controls.Add(this.groupBox1);
             this.Name = "RecipeStep_ProductStep";
             this.Size = new System.Drawing.Size(1105, 719);
@@ -1126,12 +1452,17 @@ namespace RecipeEditPanelClsLib
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);
             this.panelControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispenserSystemPosZMM.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispenseSpeed.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensePatternHeight.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensePatternWidth.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispenseTimeS.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispensePressure.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.seDispenseVaccumPressure.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl2)).EndInit();
             this.panelControl2.ResumeLayout(false);
             this.panelControl2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seDispensingCount.Properties)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sesePredispensingOffsetY.Properties)).EndInit();
@@ -1234,5 +1565,26 @@ namespace RecipeEditPanelClsLib
         private System.Windows.Forms.ComboBox cbSubmonutList;
         private DevExpress.XtraBars.Navigation.TabNavigationPage tabNavigationPage5;
         private ComponentDetail cursubmonutDetail;
+        private DevExpress.XtraEditors.SpinEdit seDispensingCount;
+        private DevExpress.XtraEditors.LabelControl labelControl15;
+        private DevExpress.XtraEditors.LabelControl labelControl17;
+        private System.Windows.Forms.ComboBox cmbSelRecipe;
+        private System.Windows.Forms.RadioButton rbStepTypeCalibrationAfterPP;
+        private System.Windows.Forms.CheckBox chStepTypeBondDie;
+        private System.Windows.Forms.CheckBox chStepTypeDispense;
+        private DevExpress.XtraEditors.SpinEdit seDispenseSpeed;
+        private DevExpress.XtraEditors.LabelControl labelControl16;
+        private DevExpress.XtraEditors.LabelControl labelControl18;
+        private DevExpress.XtraEditors.SpinEdit seDispensePatternHeight;
+        private DevExpress.XtraEditors.LabelControl labelControl19;
+        private System.Windows.Forms.ComboBox cmbDispensePattern;
+        private DevExpress.XtraEditors.SpinEdit seDispensePatternWidth;
+        private DevExpress.XtraEditors.LabelControl labelControl20;
+        private DevExpress.XtraEditors.LabelControl labelControl21;
+        private DevExpress.XtraEditors.LabelControl labelControl22;
+        private DevExpress.XtraEditors.LabelControl labelControl23;
+        private DevExpress.XtraEditors.SpinEdit seDispenserSystemPosZMM;
+        private DevExpress.XtraEditors.LabelControl labelControl24;
+        private DevExpress.XtraEditors.LabelControl labelControl25;
     }
 }

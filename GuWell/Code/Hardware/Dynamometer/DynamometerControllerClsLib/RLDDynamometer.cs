@@ -13,11 +13,11 @@ namespace DynamometerControllerClsLib
         /// <summary>
         /// 测量值
         /// </summary>
-        Measurementvalue1 = 450,
+        Measurementvalue1 = 80,
         /// <summary>
         /// 测量值
         /// </summary>
-        Measurementvalue2 = 452,
+        Measurementvalue2 = 82,
         /// <summary>
         /// 小数点 0 个位 1 十分位 2 百分位 3 千分位
         /// </summary>
@@ -564,9 +564,17 @@ namespace DynamometerControllerClsLib
             {
                 byte[] BTData1 = ExtractByteArray(BTData, 0, 4);
                 int Data1 = ByteToSignedInt16(BTData1);
+                if(Data1 < 0)
+                {
+                    Data1 = 0;
+                }
 
                 byte[] BTData2 = ExtractByteArray(BTData, 4, 4);
                 int Data2 = ByteToSignedInt16(BTData2);
+                if (Data2 < 0)
+                {
+                    Data2 = 0;
+                }
                 return new double[2] { Data1, Data2 };
             }
 

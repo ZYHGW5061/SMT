@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalToolClsLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,6 +55,8 @@ namespace BoardCardControllerClsLib
         {
             if (_CurrentBoardControl == null)
             {
+                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "当前板卡为空.");
+                return null;
             }
             return _CurrentBoardControl;
         }

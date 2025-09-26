@@ -34,11 +34,13 @@ namespace RecipeEditPanelClsLib
             this.label6 = new System.Windows.Forms.Label();
             this.cmbPositionModuleMehtod = new System.Windows.Forms.ComboBox();
             this.groupControl2 = new DevExpress.XtraEditors.GroupControl();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cmbPositionSubstratePointCount = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cmbPositionSubstrateMehtod = new System.Windows.Forms.ComboBox();
+            this.teSubstrateName = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkButton2 = new DevExpress.XtraEditors.CheckButton();
             this.checkButton1 = new DevExpress.XtraEditors.CheckButton();
@@ -48,8 +50,6 @@ namespace RecipeEditPanelClsLib
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
             this.ckbMultiModule = new System.Windows.Forms.CheckBox();
             this.ckbAlignModule = new System.Windows.Forms.CheckBox();
-            this.teSubstrateName = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl2)).BeginInit();
             this.groupControl2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -62,13 +62,12 @@ namespace RecipeEditPanelClsLib
             // cmbPositionModulePointCount
             // 
             this.cmbPositionModulePointCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPositionModulePointCount.Enabled = false;
             this.cmbPositionModulePointCount.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbPositionModulePointCount.FormattingEnabled = true;
             this.cmbPositionModulePointCount.Items.AddRange(new object[] {
             "1",
-            "2",
-            "3",
-            "4"});
+            "2"});
             this.cmbPositionModulePointCount.Location = new System.Drawing.Point(108, 50);
             this.cmbPositionModulePointCount.Name = "cmbPositionModulePointCount";
             this.cmbPositionModulePointCount.Size = new System.Drawing.Size(121, 20);
@@ -77,7 +76,7 @@ namespace RecipeEditPanelClsLib
             // RingLightlabel
             // 
             this.RingLightlabel.AutoSize = true;
-            this.RingLightlabel.Location = new System.Drawing.Point(28, 53);
+            this.RingLightlabel.Location = new System.Drawing.Point(23, 53);
             this.RingLightlabel.Name = "RingLightlabel";
             this.RingLightlabel.Size = new System.Drawing.Size(79, 14);
             this.RingLightlabel.TabIndex = 3;
@@ -86,7 +85,7 @@ namespace RecipeEditPanelClsLib
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 99);
+            this.label6.Location = new System.Drawing.Point(11, 99);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 14);
             this.label6.TabIndex = 3;
@@ -95,6 +94,7 @@ namespace RecipeEditPanelClsLib
             // cmbPositionModuleMehtod
             // 
             this.cmbPositionModuleMehtod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPositionModuleMehtod.Enabled = false;
             this.cmbPositionModuleMehtod.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbPositionModuleMehtod.FormattingEnabled = true;
             this.cmbPositionModuleMehtod.Location = new System.Drawing.Point(108, 96);
@@ -104,7 +104,9 @@ namespace RecipeEditPanelClsLib
             // 
             // groupControl2
             // 
+            this.groupControl2.Controls.Add(this.label3);
             this.groupControl2.Controls.Add(this.groupBox3);
+            this.groupControl2.Controls.Add(this.teSubstrateName);
             this.groupControl2.Controls.Add(this.groupBox2);
             this.groupControl2.Controls.Add(this.ckeMultiSubstrate);
             this.groupControl2.Location = new System.Drawing.Point(3, 3);
@@ -112,6 +114,15 @@ namespace RecipeEditPanelClsLib
             this.groupControl2.Size = new System.Drawing.Size(344, 554);
             this.groupControl2.TabIndex = 14;
             this.groupControl2.Text = "基板";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(154, 50);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 14);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "基板名称";
             // 
             // groupBox3
             // 
@@ -129,13 +140,12 @@ namespace RecipeEditPanelClsLib
             // cmbPositionSubstratePointCount
             // 
             this.cmbPositionSubstratePointCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPositionSubstratePointCount.Enabled = false;
             this.cmbPositionSubstratePointCount.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbPositionSubstratePointCount.FormattingEnabled = true;
             this.cmbPositionSubstratePointCount.Items.AddRange(new object[] {
             "1",
-            "2",
-            "3",
-            "4"});
+            "2"});
             this.cmbPositionSubstratePointCount.Location = new System.Drawing.Point(108, 50);
             this.cmbPositionSubstratePointCount.Name = "cmbPositionSubstratePointCount";
             this.cmbPositionSubstratePointCount.Size = new System.Drawing.Size(121, 20);
@@ -144,30 +154,39 @@ namespace RecipeEditPanelClsLib
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 53);
+            this.label1.Location = new System.Drawing.Point(16, 53);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 14);
+            this.label1.Size = new System.Drawing.Size(86, 14);
             this.label1.TabIndex = 3;
-            this.label1.Text = "定位点数量：";
+            this.label1.Text = "*定位点数量：";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 99);
+            this.label2.Location = new System.Drawing.Point(4, 99);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(91, 14);
+            this.label2.Size = new System.Drawing.Size(98, 14);
             this.label2.TabIndex = 3;
-            this.label2.Text = "定位识别方式：";
+            this.label2.Text = "*定位识别方式：";
             // 
             // cmbPositionSubstrateMehtod
             // 
             this.cmbPositionSubstrateMehtod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPositionSubstrateMehtod.Enabled = false;
             this.cmbPositionSubstrateMehtod.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.cmbPositionSubstrateMehtod.FormattingEnabled = true;
             this.cmbPositionSubstrateMehtod.Location = new System.Drawing.Point(108, 96);
             this.cmbPositionSubstrateMehtod.Name = "cmbPositionSubstrateMehtod";
             this.cmbPositionSubstrateMehtod.Size = new System.Drawing.Size(121, 20);
             this.cmbPositionSubstrateMehtod.TabIndex = 2;
+            // 
+            // teSubstrateName
+            // 
+            this.teSubstrateName.Location = new System.Drawing.Point(215, 47);
+            this.teSubstrateName.Name = "teSubstrateName";
+            this.teSubstrateName.ReadOnly = true;
+            this.teSubstrateName.Size = new System.Drawing.Size(100, 22);
+            this.teSubstrateName.TabIndex = 15;
             // 
             // groupBox2
             // 
@@ -215,6 +234,7 @@ namespace RecipeEditPanelClsLib
             this.ckeMultiSubstrate.TabIndex = 0;
             this.ckeMultiSubstrate.Text = "多基板";
             this.ckeMultiSubstrate.UseVisualStyleBackColor = true;
+            this.ckeMultiSubstrate.Visible = false;
             this.ckeMultiSubstrate.CheckedChanged += new System.EventHandler(this.ckeMultiSubstrate_CheckedChanged);
             // 
             // groupBox1
@@ -250,6 +270,7 @@ namespace RecipeEditPanelClsLib
             this.ckbMultiModule.TabIndex = 0;
             this.ckbMultiModule.Text = "多模块";
             this.ckbMultiModule.UseVisualStyleBackColor = true;
+            this.ckbMultiModule.Visible = false;
             // 
             // ckbAlignModule
             // 
@@ -260,29 +281,12 @@ namespace RecipeEditPanelClsLib
             this.ckbAlignModule.TabIndex = 0;
             this.ckbAlignModule.Text = "模块位置校正";
             this.ckbAlignModule.UseVisualStyleBackColor = true;
-            // 
-            // teSubstrateName
-            // 
-            this.teSubstrateName.Location = new System.Drawing.Point(778, 3);
-            this.teSubstrateName.Name = "teSubstrateName";
-            this.teSubstrateName.Size = new System.Drawing.Size(100, 22);
-            this.teSubstrateName.TabIndex = 15;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(717, 6);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(55, 14);
-            this.label3.TabIndex = 16;
-            this.label3.Text = "基板名称";
+            this.ckbAlignModule.Visible = false;
             // 
             // RecipeStep_SubstrateInfoSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.teSubstrateName);
             this.Controls.Add(this.groupControl1);
             this.Controls.Add(this.groupControl2);
             this.Name = "RecipeStep_SubstrateInfoSettings";
@@ -299,7 +303,6 @@ namespace RecipeEditPanelClsLib
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

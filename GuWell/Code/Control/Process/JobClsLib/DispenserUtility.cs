@@ -1,4 +1,5 @@
-﻿using DispensingMachineControllerClsLib;
+﻿using ConfigurationClsLib;
+using DispensingMachineControllerClsLib;
 using DispensingMachineManagerClsLib;
 using GlobalDataDefineClsLib;
 using PositioningSystemClsLib;
@@ -36,6 +37,12 @@ namespace JobClsLib
         private DispenserUtility()
         {
         }
+
+        private HardwareConfiguration _hardwareConfig
+        {
+            get { return HardwareConfiguration.Instance; }
+        }
+
         /// <summary>
         /// 点胶机控制器
         /// </summary>
@@ -62,7 +69,7 @@ namespace JobClsLib
                 {
                     ret = _currentDispenseController.Set(MUSASHICommandenum.TIMED模式切换) & _currentDispenseController.Set(MUSASHICommandenum.通道加载, recipeName) & _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
                     var dispenseInfo = _currentDispenseController.ReadDispensingParameters(Int32.Parse(recipeName));
-                    Thread.Sleep((int)(dispenseInfo.Time*1000));
+                    Thread.Sleep((int)(dispenseInfo.Time*1000)+100);
 
                 }
                 return ret;
@@ -115,47 +122,45 @@ namespace JobClsLib
         /// <param name="upCylinderAfterDispense"></param>
         /// <param name="upBondZAfterDispense"></param>
         /// <returns></returns>
-        public bool DrawCross(float width,float height,bool upCylinderAfterDispense=false, bool upBondZAfterDispense = true)
+        public bool DrawCross(float width,float height, float speed = 0.5f, bool upCylinderAfterDispense=false, bool upBondZAfterDispense = true)
         {
             try
             {
                 var ret = false;
                 if (_currentDispenseController != null && _currentDispenseController.IsConnect)
                 {
-                    if (_positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, 0.3f) &&
-                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, 0.3f))
-                    {
-                        _currentDispenseController.Set(MUSASHICommandenum.MANUAL模式切换);
+                    var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                    float Zspeed_init = (float)axisConfig.AxisSpeed;
+                    float Zspeed_slow = (float)axisConfig.LowAxisSpeed;
+                    axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondX);
+                    float Xspeed_init = (float)axisConfig.AxisSpeed;
+                    float Xspeed_slow = (float)axisConfig.LowAxisSpeed;
+                    axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondY);
+                    float Yspeed_init = (float)axisConfig.AxisSpeed;
+                    float Yspeed_slow = (float)axisConfig.LowAxisSpeed;
 
-                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
-                        //画横线
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                    if (_positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, speed) &&
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, speed))
+                    {
+                        var curStageCoorX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
+                        var curStageCoorY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
+
+                        _currentDispenseController.Set(MUSASHICommandenum.MANUAL模式切换);
+                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        System.Threading.Thread.Sleep(100);
+                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
                         {
-                            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                            System.Threading.Thread.Sleep(500);
                             if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, width, EnumCoordSetType.Relative) == StageMotionResult.Success)
                             {
-                                _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-
-                                //回归原点
-                                if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
-                                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                 {
-
-                                    //画竖线
-                                    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative) == StageMotionResult.Success
-                                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                     {
-                                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                                        System.Threading.Thread.Sleep(500);
                                         if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, height, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                         {
-                                            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                                            //回归原点
-                                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -height / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
                                             {
-                                                _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative);
+                                                _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
                                                 ret = true;
                                             }
                                         }
@@ -163,7 +168,50 @@ namespace JobClsLib
                                 }
                             }
                         }
+
+
+                        //    _currentDispenseController.Set(MUSASHICommandenum.MANUAL模式切换);
+
+                        //    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
+                        //    //画横线
+                        //    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success
+                        //    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //    {
+                        //        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //        System.Threading.Thread.Sleep(500);
+                        //        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, width, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //        {
+                        //            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+
+                        //            //回归原点
+                        //            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
+                        //            && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondX, -width / 2, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //            {
+
+                        //                //画竖线
+                        //                if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative) == StageMotionResult.Success
+                        //                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //                {
+                        //                    _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //                    System.Threading.Thread.Sleep(500);
+                        //                    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, height, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //                    {
+                        //                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //                        //回归原点
+                        //                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //                        {
+                        //                            _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative);
+                        //                            ret = true;
+                        //                        }
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //    }
                     }
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
                 }
                 return ret;
             }
@@ -176,7 +224,7 @@ namespace JobClsLib
                 if(upBondZAfterDispense)
                 {
                     //Z抬升
-                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -2, EnumCoordSetType.Relative);
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -5, EnumCoordSetType.Relative);
                 }
             }
             
@@ -190,15 +238,24 @@ namespace JobClsLib
         /// <param name="upCylinderAfterDispense"></param>
         /// <param name="upBondZAfterDispense"></param>
         /// <returns></returns>
-        public bool DrawGreekCross(float width, float height, bool upCylinderAfterDispense = false, bool upBondZAfterDispense = true)
+        public bool DrawGreekCross(float width, float height, float speed = 0.5f, bool upCylinderAfterDispense = false, bool upBondZAfterDispense = true)
         {
             try
             {
                 var ret = false;
                 if (_currentDispenseController != null && _currentDispenseController.IsConnect)
                 {
-                    if (_positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, 0.3f) &&
-                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, 0.3f))
+                    var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                    float Zspeed_init = (float)axisConfig.AxisSpeed;
+                    float Zspeed_slow = (float)axisConfig.LowAxisSpeed;
+                    axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondX);
+                    float Xspeed_init = (float)axisConfig.AxisSpeed;
+                    float Xspeed_slow = (float)axisConfig.LowAxisSpeed;
+                    axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondY);
+                    float Yspeed_init = (float)axisConfig.AxisSpeed;
+                    float Yspeed_slow = (float)axisConfig.LowAxisSpeed;
+                    if (_positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, speed) &&
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, speed))
                     {
                         var curStageCoorX = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondX);
                         var curStageCoorY = _positioningSystem.ReadCurrentStagePosition(EnumStageAxis.BondY);
@@ -214,34 +271,21 @@ namespace JobClsLib
                         var line2EndPosY = curStageCoorY + height / 2;
 
                         _currentDispenseController.Set(MUSASHICommandenum.MANUAL模式切换);
-                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
-                        //画第一条线
-                        && _positioningSystem.BondXYUnionMovetoStageCoor(line1StartPosX, line1StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                        && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        System.Threading.Thread.Sleep(100);
+                        if(_positioningSystem.BondXYUnionMovetoStageCoor(line1StartPosX, line1StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                         {
-                            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                            System.Threading.Thread.Sleep(500);
                             if (_positioningSystem.BondXYUnionMovetoStageCoor(line1EndPosX, line1EndPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                             {
-                                _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-
-                                //回归原点
-                                if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                if (_positioningSystem.BondXYUnionMovetoStageCoor(curStageCoorX, curStageCoorY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                 {
-
-                                    //画第二条线
-                                    if (_positioningSystem.BondXYUnionMovetoStageCoor(line2StartPosX, line2StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success
-                                    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                    if (_positioningSystem.BondXYUnionMovetoStageCoor(line2StartPosX, line2StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                     {
-                                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                                        System.Threading.Thread.Sleep(500);
                                         if (_positioningSystem.BondXYUnionMovetoStageCoor(line2EndPosX, line2EndPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                         {
-                                            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
-                                            //回归原点
-                                            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                                            if (_positioningSystem.BondXYUnionMovetoStageCoor(curStageCoorX, curStageCoorY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
                                             {
-                                                //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative);
+                                                _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
                                                 ret = true;
                                             }
                                         }
@@ -249,8 +293,51 @@ namespace JobClsLib
                                 }
                             }
                         }
+
+
+
+                        //    if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success
+                        //    //画第一条线
+                        //    && _positioningSystem.BondXYUnionMovetoStageCoor(line1StartPosX, line1StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //    && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //    {
+                        //        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //        System.Threading.Thread.Sleep(100);
+                        //        if (_positioningSystem.BondXYUnionMovetoStageCoor(line1EndPosX, line1EndPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                        //        {
+                        //            _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+
+                        //            //回归原点
+                        //            if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //            {
+
+                        //                //画第二条线
+                        //                if (_positioningSystem.BondXYUnionMovetoStageCoor(line2StartPosX, line2StartPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success
+                        //                && _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, 3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //                {
+                        //                    _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //                    System.Threading.Thread.Sleep(500);
+                        //                    if (_positioningSystem.BondXYUnionMovetoStageCoor(line2EndPosX, line2EndPosY, EnumCoordSetType.Absolute) == StageMotionResult.Success)
+                        //                    {
+                        //                        _currentDispenseController.Set(MUSASHICommandenum.吐出要求);
+                        //                        //回归原点
+                        //                        if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -3, EnumCoordSetType.Relative) == StageMotionResult.Success)
+                        //                        {
+                        //                            //_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondY, -height / 2, EnumCoordSetType.Relative);
+                        //                            _positioningSystem.BondXYUnionMovetoStageCoor(curStageCoorX, curStageCoorY, EnumCoordSetType.Absolute);
+                        //                            ret = true;
+                        //                        }
+                        //                    }
+                        //                }
+                        //            }
+                        //        }
+                        //    }
                     }
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                    _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
                 }
+                
                 return ret;
             }
             catch (Exception ex)
@@ -262,7 +349,7 @@ namespace JobClsLib
                 if (upBondZAfterDispense)
                 {
                     //Z抬升
-                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -2, EnumCoordSetType.Relative);
+                    _positioningSystem.MoveAixsToStageCoord(EnumStageAxis.BondZ, -5, EnumCoordSetType.Relative);
                 }
             }
 

@@ -37,8 +37,9 @@ namespace RecipeEditPanelClsLib
         ProgramComponentSettings curStepSubmonut;
         ProgramComponentSettings curStepComp;
         BondingPositionSettings curStepBondingPos;
+        EpoxyApplication curStepepoxyApplication;
         //EutecticParameters curStepEutectic;
-        private static string SystemDefaultDirectory = SystemConfiguration.Instance.SystemDefaultDirectory;
+        private static string SystemDefaultDirectory = SystemConfiguration.Instance.JobConfig.RecipeSavingPath;
         private static string _substrateSavePath = string.Format(@"{0}Recipes\Substrate\", SystemDefaultDirectory);
         private static string _componentsSavePath = string.Format(@"{0}Recipes\Components\", SystemDefaultDirectory);
         private static string _bondPositionSavePath = string.Format(@"{0}Recipes\BondPositions\", SystemDefaultDirectory);
@@ -61,6 +62,7 @@ namespace RecipeEditPanelClsLib
             curStep = null;
             curStepComp = null;
             curStepBondingPos = null;
+            curStepepoxyApplication = null;
             //curStepEutectic = null;
             productSteps = new List<ProductStep>();
             bondPosList = new List<BondingPositionSettings>();
@@ -77,6 +79,16 @@ namespace RecipeEditPanelClsLib
             cbComponentList.Enabled = true;
 
             //teProductName.Text = curProdConfig.ProductName;
+
+            cmbDispensePattern.Items.Clear();
+            cmbDispensePattern.BindToEnum<EnumDispensePattern>();
+            cmbPredispensingMode.Items.Clear();
+            foreach (var item in Enum.GetValues(typeof(EnumPredispensingMode)))
+            {
+                cmbPredispensingMode.Items.Add(item);
+            }
+
+
         }
 
         private void LoadSubstrateList()
@@ -174,6 +186,14 @@ namespace RecipeEditPanelClsLib
             try
             {
                 base.LoadEditedRecipe(recipe);
+
+                cmbSelRecipe.Items.Clear();
+
+                foreach (var dispenser in _systemConfig.DispenserSettings)
+                {
+                    cmbSelRecipe.Items.Add(dispenser.Name);
+                }
+
                 LoadSubstrateList();
                 LoadSubmonutList();
                 LoadComponentList();
@@ -243,11 +263,7 @@ namespace RecipeEditPanelClsLib
                     curStepSubmonut = submonutList.Find(t => t.Name == curStep.SubmonutName);
                     //cursubmonutDetail.FillComponentDetail(curStepSubmonut, _editRecipe.SubstrateInfos);
                     curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
-<<<<<<< HEAD
-                    cursubmonutDetail.FillComponentDetail(curStepSubmonut, curStepSubstrate);
-=======
                     curComponentDetail.FillComponentDetail(curStepSubmonut, curStepSubstrate);
->>>>>>> ca403a28d84036bad69c2fad53093514a582a09b
                 }
                 else
                 {
@@ -258,10 +274,7 @@ namespace RecipeEditPanelClsLib
                 {
                     //curStepComp = configService.loadComponentConfig(curStep.ComponentName);
                     curStepComp = componentsList.Find(t => t.Name == curStep.ComponentName);
-<<<<<<< HEAD
-=======
                     //curComponentDetail.FillComponentDetail(curStepComp,_editRecipe.SubstrateInfos);
->>>>>>> ca403a28d84036bad69c2fad53093514a582a09b
                     curStepSubstrate = substrateList.Find(t => t.Name == curStep.SubstrateName);
                     curComponentDetail.FillComponentDetail(curStepComp, curStepSubstrate);
                 }
@@ -275,6 +288,41 @@ namespace RecipeEditPanelClsLib
                     //curStepBondingPos = configService.loadBondingPositionConfig(curStep.BondingPositionName);
                     curStepBondingPos = bondPosList.Find(t => t.Name == curStep.BondingPositionName);
                     positionDetail1.fillPositionDetail(curStepBondingPos);
+                }
+                else
+                {
+                    //curPosDetail.fillPositionDetail(null);
+                }
+
+                if (!string.IsNullOrWhiteSpace(curStep.EpoxyApplicationName))
+                {
+                    //curStepBondingPos = configService.loadBondingPositionConfig(curStep.BondingPositionName);
+                    curStepepoxyApplication = _epoxyApplicationList.Find(t => t.Name == curStep.EpoxyApplicationName);
+
+                    cmbSelRecipe.Text = curStepepoxyApplication.DispenserName;
+                    _editRecipe.DispenserSettings = _systemConfig.DispenserSettings?.FirstOrDefault(tool => tool.Name == cmbSelRecipe.Text);
+                    if(_editRecipe.DispenserSettings != null)
+                    {
+                        cmbPredispensingMode.Text = _editRecipe.DispenserSettings.PredispensingMode.ToString();
+                        seDispensingCount.Text = _editRecipe.DispenserSettings.DispensingCount.ToString();
+                        //cmbPredispensingMode.SelectedIndex = (int)_editRecipe.DispenserSettings.PredispensingMode;
+                        sePredispensingTimes.Text = _editRecipe.DispenserSettings.PredispensingCount.ToString();
+                        sePredispensingIntervelMinutes.Text = _editRecipe.DispenserSettings.PredispensingIntervalMinute.ToString();
+                        sePredispensingIntervelSeconds.Text = _editRecipe.DispenserSettings.PredispensingIntervalSecond.ToString();
+                        sesePredispensingOffsetX.Text = _editRecipe.DispenserSettings.PredispensingOffsetXMM.ToString();
+                        sesePredispensingOffsetY.Text = _editRecipe.DispenserSettings.PredispensingOffsetYMM.ToString();
+                    }
+                    cmbDispensePattern.SetSelectedEnum(curStepepoxyApplication.DispensePattern);
+                    cmbSelDispenserRecipe.Text = curStepepoxyApplication.DispenserRecipeName;
+                    //cmbDispensePattern.Text = _editRecipe.CurrentEpoxyApplication.DispensePattern.ToString();
+                    //cmbDispensePattern.SelectedValue = _editRecipe.CurrentEpoxyApplication.DispensePattern;
+                    cmbDispensePattern.SetSelectedEnum(curStepepoxyApplication.DispensePattern);
+
+                    seDispensePatternWidth.Text = curStepepoxyApplication.DispensePatternWidthMM.ToString();
+                    seDispensePatternHeight.Text = curStepepoxyApplication.DispensePatternHeightMM.ToString();
+                    seDispenserSystemPosZMM.Text = curStepepoxyApplication.DispenserSystemPosZMM.ToString();
+                    seDispenseSpeed.Text = curStepepoxyApplication.DispenserSpeed.ToString();
+                    cmbSelDispenserRecipe.Text = curStepepoxyApplication.DispenserRecipeName;
                 }
                 else
                 {
@@ -368,18 +416,32 @@ namespace RecipeEditPanelClsLib
 
             ProductStep step = new ProductStep();
             step.StepName = teStepName.Text.Trim();
-            if (rbStepTypeDispense.Checked)
+            //if (rbStepTypeDispense.Checked)
+            //{
+            //    step.productStepType = EnumProductStepType.Dispense;
+            //}
+            //else if (rbStepTypeBondDie.Checked)
+            //{
+            //    step.productStepType = EnumProductStepType.BondDie;
+            //}
+            //else if(rbTypeEutectic.Checked)
+            //{
+            //    step.productStepType = EnumProductStepType.Eutectic;
+            //}
+            //else if (rbStepTypeCalibrationAfterPP.Checked)
+            //{
+            //    step.productStepType = EnumProductStepType.CalibrationAfterPP;
+            //}
+            if(chStepTypeDispense.Checked)
             {
-                step.productStepType = EnumProductStepType.Dispense;
+                step.IsDispense = true;
             }
-            else if (rbStepTypeBondDie.Checked)
+            if(chStepTypeBondDie.Checked)
             {
-                step.productStepType = EnumProductStepType.BondDie;
+                step.IsBondDie = true;
             }
-            else if(rbTypeEutectic.Checked)
-            {
-                step.productStepType = EnumProductStepType.Eutectic;
-            }
+
+            step.productStepType = EnumProductStepType.BondDie;
 
             if (cbSubstrateList.SelectedItem != null)
             {
@@ -480,6 +542,7 @@ namespace RecipeEditPanelClsLib
                 SaveCurrentSubmonut();
                 SaveCurrentComponent();
                 SaveBondPositionInfo();
+                SaveEpoxyApplication();
                 //_editRecipe.EutecticParameters.ParameterIndex = int.Parse(cmbEutecticParamIndex.Text);
                 WarningBox.FormShow("成功。", "参数保存完成。");
             }
@@ -502,6 +565,13 @@ namespace RecipeEditPanelClsLib
                 curStepComp.PPSettings.DelayMSForPlace = curComponentDetail.CurrentDelayMSForPlace;
                 curStepComp.PPSettings.BreakVaccumTimespanMS = curComponentDetail.CurrentBreakVaccumTimespanMS;
 
+                curStepComp.PPSettings.SlowTravelBeforePickupMM = curComponentDetail.CurrentSlowTravelBeforePickupMM;
+                curStepComp.PPSettings.SlowSpeedBeforePickup = curComponentDetail.CurrentSlowSpeedBeforePickup;
+                curStepComp.PPSettings.SlowTravelAfterPickupMM = curComponentDetail.CurrentSlowTravelAfterPickupMM;
+                curStepComp.PPSettings.SlowSpeedAfterPickup = curComponentDetail.CurrentSlowSpeedAfterPickup;
+
+                curStepSubstrate.IsPositionModules = curComponentDetail.CurrentIsPositionModules;
+
                 //_editRecipe.SubstrateInfos.SubmountPPPickPos = curComponentDetail.CurrentSubmountPPPickPos;
                 //_editRecipe.SubstrateInfos.SubmountPPPlacePos = curComponentDetail.CurrentSubmountPPPlacePos;
                 //_editRecipe.SubstrateInfos.PPSettings.PickupStress = curComponentDetail.CurrentSubmountPPPress;
@@ -511,6 +581,8 @@ namespace RecipeEditPanelClsLib
 
                 var xmlFile = $@"{_componentsSavePath}\{curStepComp.Name}\{curStepComp.Name}.xml";
                 XmlSerializeHelper.XmlSerializeToFile(curStepComp, xmlFile, Encoding.UTF8);
+                var xmlFile2 = $@"{_substrateSavePath}\{curStepSubstrate.Name}\{curStepSubstrate.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(curStepSubstrate, xmlFile2, Encoding.UTF8);
                 _editRecipe.SaveRecipe();
             }
             catch (Exception ex)
@@ -529,26 +601,30 @@ namespace RecipeEditPanelClsLib
 
             try
             {
-                curStepSubmonut.ChipPPPickSystemPos = cursubmonutDetail.CurrentChipPPPickPos;
-                //curStepComp.ChipPPPlacePos = cursubmonutDetail.CurrentChipPPPlacePos;
-                curStepSubmonut.PPSettings.PickupStress = cursubmonutDetail.CurrentChipPPPress;
-                curStepSubmonut.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
-                curStepSubmonut.PPSettings.NeedleUpHeight = cursubmonutDetail.CurrentNeedleUpHeight;
+                if(curStepSubmonut != null)
+                {
+                    curStepSubmonut.ChipPPPickSystemPos = cursubmonutDetail.CurrentChipPPPickPos;
+                    //curStepComp.ChipPPPlacePos = cursubmonutDetail.CurrentChipPPPlacePos;
+                    curStepSubmonut.PPSettings.PickupStress = cursubmonutDetail.CurrentChipPPPress;
+                    curStepSubmonut.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
+                    curStepSubmonut.PPSettings.NeedleUpHeight = cursubmonutDetail.CurrentNeedleUpHeight;
 
-                curStepSubmonut.PPSettings.PlaceStress = cursubmonutDetail.CurrentPlaceStress;
-                curStepSubmonut.PPSettings.DelayMSForPlace = cursubmonutDetail.CurrentDelayMSForPlace;
-                curStepSubmonut.PPSettings.BreakVaccumTimespanMS = cursubmonutDetail.CurrentBreakVaccumTimespanMS;
+                    curStepSubmonut.PPSettings.PlaceStress = cursubmonutDetail.CurrentPlaceStress;
+                    curStepSubmonut.PPSettings.DelayMSForPlace = cursubmonutDetail.CurrentDelayMSForPlace;
+                    curStepSubmonut.PPSettings.BreakVaccumTimespanMS = cursubmonutDetail.CurrentBreakVaccumTimespanMS;
 
-                //_editRecipe.SubstrateInfos.SubmountPPPickPos = cursubmonutDetail.CurrentSubmountPPPickPos;
-                //_editRecipe.SubstrateInfos.SubmountPPPlacePos = cursubmonutDetail.CurrentSubmountPPPlacePos;
-                //_editRecipe.SubstrateInfos.PPSettings.PickupStress = cursubmonutDetail.CurrentSubmountPPPress;
+                    //_editRecipe.SubstrateInfos.SubmountPPPickPos = cursubmonutDetail.CurrentSubmountPPPickPos;
+                    //_editRecipe.SubstrateInfos.SubmountPPPlacePos = cursubmonutDetail.CurrentSubmountPPPlacePos;
+                    //_editRecipe.SubstrateInfos.PPSettings.PickupStress = cursubmonutDetail.CurrentSubmountPPPress;
 
-                //_editRecipe.SubstrateInfos.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
+                    //_editRecipe.SubstrateInfos.PPSettings.DelayMSForVaccum = cursubmonutDetail.CurrentVaccumDelayMS;
 
 
-                var xmlFile = $@"{_componentsSavePath}\{curStepSubmonut.Name}\{curStepSubmonut.Name}.xml";
-                XmlSerializeHelper.XmlSerializeToFile(curStepSubmonut, xmlFile, Encoding.UTF8);
-                _editRecipe.SaveRecipe();
+                    var xmlFile = $@"{_componentsSavePath}\{curStepSubmonut.Name}\{curStepSubmonut.Name}.xml";
+                    XmlSerializeHelper.XmlSerializeToFile(curStepSubmonut, xmlFile, Encoding.UTF8);
+                    _editRecipe.SaveRecipe();
+                }
+                
             }
             catch (Exception ex)
             {
@@ -590,5 +666,42 @@ namespace RecipeEditPanelClsLib
             }
 
         }
+
+        /// <summary>
+        /// 保存贴装位置的修改
+        /// </summary>
+        private void SaveEpoxyApplication()
+        {
+
+            try
+            {
+                _editRecipe.DispenserName = cmbSelRecipe.Text;
+                _editRecipe.DispenserSettings.DispensingCount = int.Parse(seDispensingCount.Text);
+                _editRecipe.DispenserSettings.PredispensingMode = (EnumPredispensingMode)cmbPredispensingMode.SelectedIndex;
+                _editRecipe.DispenserSettings.PredispensingCount = int.Parse(sePredispensingTimes.Text);
+                _editRecipe.DispenserSettings.PredispensingIntervalMinute = int.Parse(sePredispensingIntervelMinutes.Text);
+                _editRecipe.DispenserSettings.PredispensingIntervalSecond = int.Parse(sePredispensingIntervelSeconds.Text);
+                //_editRecipe.DispenserSettings.PredispensingOffsetXMM = int.Parse(sesePredispensingOffsetX.Text);
+                //_editRecipe.DispenserSettings.PredispensingOffsetYMM = int.Parse(sesePredispensingOffsetY.Text);
+
+                curStepepoxyApplication.DispenserRecipeName = cmbSelDispenserRecipe.Text;
+                curStepepoxyApplication.DispensePattern = cmbDispensePattern.GetSelectedEnum<EnumDispensePattern>();
+                curStepepoxyApplication.DispenserName = cmbSelRecipe.Text;
+                curStepepoxyApplication.DispensePatternWidthMM = float.Parse(seDispensePatternWidth.Text.Trim());
+                curStepepoxyApplication.DispensePatternHeightMM = float.Parse(seDispensePatternHeight.Text.Trim());
+                curStepepoxyApplication.DispenserSystemPosZMM = float.Parse(seDispenserSystemPosZMM.Text.Trim());
+                curStepepoxyApplication.DispenserSpeed = float.Parse(seDispenseSpeed.Text.Trim());
+
+
+                var xmlFile = $@"{_epoxyApplicationSavePath}\{curStepepoxyApplication.Name}\{curStepepoxyApplication.Name}.xml";
+                XmlSerializeHelper.XmlSerializeToFile(curStepepoxyApplication, xmlFile, Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, "RecipeStep_ProductStep-SaveBPCompensation,Error.", ex);
+            }
+
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommonPanelClsLib;
 using DevExpress.XtraEditors;
 using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,6 +60,7 @@ namespace SystemGUILib.UserMangement
                 this.txtDescription.Text = "";
                 this.tableLayoutPanel2.Controls.Add(this.btn_Add, 0, 0);
                 this.btn_Add.Visible = true;
+                this.btn_Add.Click += new System.EventHandler(this.btn_Add_Click);
                 this.btn_Edit.Visible = false;
                 this.Text = "Add User";
             }
@@ -83,6 +85,7 @@ namespace SystemGUILib.UserMangement
                 this.tableLayoutPanel2.Controls.Add(this.btn_Edit, 0, 0);
                 this.btn_Add.Visible = false;
                 this.btn_Edit.Visible = true;
+                this.btn_Edit.Click += new System.EventHandler(this.btn_Edit_Click);
                 this.Text = "Edit User";
             }
         }
@@ -109,6 +112,7 @@ namespace SystemGUILib.UserMangement
                 WarningBox.FormShow("失败!", "添加账户失败!", "Tips");
                 return;
             }
+            LogRecorder.RecordUserOperationLog($"添加用户:{Name} 权限:{userTypeID}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
             this.DialogResult = DialogResult.OK;
         }
 
@@ -135,6 +139,7 @@ namespace SystemGUILib.UserMangement
                 WarningBox.FormShow("失败!", "账户信息修改失败!", "Tips");
                 return;
             }
+            LogRecorder.RecordUserOperationLog($"修改用户:{Name} 权限:{userTypeID}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
             this.DialogResult = DialogResult.OK;
         }
     }

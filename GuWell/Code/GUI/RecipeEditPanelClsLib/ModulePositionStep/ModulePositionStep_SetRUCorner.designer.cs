@@ -57,7 +57,7 @@ namespace RecipeEditPanelClsLib
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(275, 317);
             this.stageQuickMove1.TabIndex = 5;
             // 
@@ -77,7 +77,7 @@ namespace RecipeEditPanelClsLib
             this.labelStepInfo.Name = "labelStepInfo";
             this.labelStepInfo.Size = new System.Drawing.Size(221, 19);
             this.labelStepInfo.TabIndex = 4;
-            this.labelStepInfo.Text = "步骤 3/6：定位衬底的右上角";
+            this.labelStepInfo.Text = "步骤 3/7：定位模块的右上角";
             // 
             // ctrlLight1
             // 
@@ -149,7 +149,7 @@ namespace RecipeEditPanelClsLib
             this.btnESUpDown.Text = "顶针座上/下";
             this.btnESUpDown.UseVisualStyleBackColor = true;
             // 
-            // SubmountPositionStep_SetRUCorner
+            // ModulePositionStep_SetRUCorner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -158,7 +158,7 @@ namespace RecipeEditPanelClsLib
             this.Controls.Add(this.panelControl2);
             this.Controls.Add(this.btnESUpDown);
             this.Controls.Add(this.btnAutoFocus);
-            this.Name = "SubmountPositionStep_SetRUCorner";
+            this.Name = "ModulePositionStep_SetRUCorner";
             this.Size = new System.Drawing.Size(359, 647);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);

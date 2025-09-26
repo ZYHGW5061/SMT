@@ -58,6 +58,7 @@ namespace RecipeEditPanelClsLib
         public override void LoadEditedRecipe(BondRecipe recipe) 
         { 
             _editRecipe = recipe;
+            _editRecipe.CurrentBondPosition.VisionParametersForFindBondPosition.VisionPositionUsedCamera = EnumCameraType.BondCamera;
             LoadNextStepPage();
             UpdateStepSignStatus();
             InitialCameraControl();
@@ -72,7 +73,11 @@ namespace RecipeEditPanelClsLib
             currengStep = EnumRecipeStep.BondPosition;
 
             _editRecipe.CurrentBondPosition.IsComplete = true;
-            _editRecipe.CurrentBondPosition.BondPositionCompensation = _bondPositionCompensation;
+            
+            //_editRecipe.CurrentBondPosition.BondPositionCompensation = _bondPositionCompensation;
+            //_editRecipe.CurrentBondPosition.BondPositionCompensation.X = _bondPositionCompensation.X - _centerCoor.X;
+            
+            //_bondPositionOffset.X = 
             //精准模式即需要视觉识别
             if (_editRecipe.CurrentBondPosition.FindBondPositionMethod==EnumFindBondPositionMethod.Accuracy)
             {
@@ -291,6 +296,14 @@ namespace RecipeEditPanelClsLib
                 case EnumDefineSetupRecipeBondPositionStep.SetBondPosition:
                     _bondPositionOffset = currentStepPage.BondPositionOffset;
                     _bondPositionCompensation = currentStepPage.BondPositionCompensation;
+                    var shapeMatchParam2 = _editRecipe.CurrentBondPosition.VisionParametersForFindBondPosition.ShapeMatchParameters.FirstOrDefault();
+                    if (shapeMatchParam2 != null)
+                    {
+                        _editRecipe.CurrentBondPosition.BondPositionCompensation.X = _bondPositionCompensation.X - (_centerCoor.X - shapeMatchParam2.PatternOffsetWithMaterialCenter.X);
+                        _editRecipe.CurrentBondPosition.BondPositionCompensation.Y = _bondPositionCompensation.Y - (_centerCoor.Y - shapeMatchParam2.PatternOffsetWithMaterialCenter.Y);
+
+                    }
+
                     break;
                 default:
                     break;

@@ -52,6 +52,7 @@ namespace RecipeEditPanelClsLib
             this.seBPCompensationT = new DevExpress.XtraEditors.SpinEdit();
             this.seBPCompensationX = new DevExpress.XtraEditors.SpinEdit();
             this.stageQuickMove1 = new StageCtrlPanelLib.StageQuickMove();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
             this.panelControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
@@ -126,6 +127,7 @@ namespace RecipeEditPanelClsLib
             // 
             // panelControl2
             // 
+            this.panelControl2.Controls.Add(this.button1);
             this.panelControl2.Controls.Add(this.labelControl4);
             this.panelControl2.Controls.Add(this.labelControl2);
             this.panelControl2.Controls.Add(this.labelControl1);
@@ -347,9 +349,19 @@ namespace RecipeEditPanelClsLib
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(269, 317);
             this.stageQuickMove1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(207, 551);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(61, 30);
+            this.button1.TabIndex = 42;
+            this.button1.Text = "读取";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // BondPositionStep_SetBondPosition
             // 
@@ -399,5 +411,6 @@ namespace RecipeEditPanelClsLib
         private LabelControl labelControl4;
         private LabelControl labelControl2;
         private LabelControl labelControl1;
+        private System.Windows.Forms.Button button1;
     }
 }

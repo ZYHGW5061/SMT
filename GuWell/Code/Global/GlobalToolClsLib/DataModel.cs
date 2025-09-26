@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalDataDefineClsLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -112,6 +113,7 @@ namespace GlobalToolClsLib
 
         #region OutputIO
 
+        private bool chipPPtoolVaccumSwitch = false;
         private bool chipPPVaccumSwitch = false;
         private bool chipPPBlowSwitch = false;
         private bool epoxtliftCylinder = false;
@@ -156,7 +158,7 @@ namespace GlobalToolClsLib
 
         #region InputIO
 
-
+        private bool chipPPtoolVaccumNormally = false;
         private bool chipPPVaccumNormally = false;
         private bool submountPPVaccumNormally = false;
         private bool epoxtPON = false;
@@ -262,6 +264,73 @@ namespace GlobalToolClsLib
             }
         }
 
+        private int curChipNum = 0;
+        /// <summary>
+        /// 当前芯片序号
+        /// </summary>
+        public int CurChipNum
+        {
+            get { return curChipNum; }
+            set
+            {
+                if (curChipNum != value)
+                {
+                    curChipNum = value;
+                    OnPropertyChanged(nameof(CurChipNum));
+                }
+            }
+        }
+
+        private int curModuleNum = 0;
+        /// <summary>
+        /// 当前模块序号
+        /// </summary>
+        public int CurModuleNum
+        {
+            get { return curModuleNum; }
+            set
+            {
+                if (curModuleNum != value)
+                {
+                    curModuleNum = value;
+                    OnPropertyChanged(nameof(CurModuleNum));
+                }
+            }
+        }
+
+        private int curBondingPositionNum = 0;
+        /// <summary>
+        /// 当前贴片位置序号
+        /// </summary>
+        public int CurBondingPositionNum
+        {
+            get { return curBondingPositionNum; }
+            set
+            {
+                if (curBondingPositionNum != value)
+                {
+                    curBondingPositionNum = value;
+                    OnPropertyChanged(nameof(CurBondingPositionNum));
+                }
+            }
+        }
+
+        private int curSubstrateNum = 0;
+        /// <summary>
+        /// 当前基板序号
+        /// </summary>
+        public int CurSubstrateNum
+        {
+            get { return curSubstrateNum; }
+            set
+            {
+                if (curSubstrateNum != value)
+                {
+                    curSubstrateNum = value;
+                    OnPropertyChanged(nameof(CurSubstrateNum));
+                }
+            }
+        }
 
 
 
@@ -304,6 +373,59 @@ namespace GlobalToolClsLib
 
         }
 
+        private EnumProductRunStat sysRunSta = EnumProductRunStat.Stop;
+        /// <summary>
+        /// 系统状态
+        /// </summary>
+        public EnumProductRunStat SysRunSta
+        {
+            get { return sysRunSta; }
+            set
+            {
+                if (sysRunSta != value)
+                {
+                    sysRunSta = value;
+                    OnPropertyChanged(nameof(SysRunSta));
+                }
+            }
+
+        }
+
+        private bool sysAlarmSta = false;
+        /// <summary>
+        /// 系统错误状态
+        /// </summary>
+        public bool SysAlarmSta
+        {
+            get { return sysAlarmSta; }
+            set
+            {
+                if (sysAlarmSta != value)
+                {
+                    sysAlarmSta = value;
+                    OnPropertyChanged(nameof(SysAlarmSta));
+                }
+            }
+
+        }
+        private string sysAlarmStalog = null;
+        /// <summary>
+        /// 系统错误码
+        /// </summary>
+        public string SysAlarmStalog
+        {
+            get { return sysAlarmStalog; }
+            set
+            {
+                if (sysAlarmStalog != value)
+                {
+                    sysAlarmStalog = value;
+                    OnPropertyChanged(nameof(SysAlarmStalog));
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// IO互锁开关
@@ -316,6 +438,23 @@ namespace GlobalToolClsLib
                 if (iolocken != value)
                 {
                     iolocken = value;
+                }
+            }
+        }
+
+
+        private bool stageRead;
+        /// <summary>
+        /// 电机读取
+        /// </summary>
+        public bool StageRead
+        {
+            get { return stageRead; }
+            set
+            {
+                if (stageRead != value)
+                {
+                    stageRead = value;
                 }
             }
         }
@@ -1435,6 +1574,8 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+
         /// <summary>
         /// 胶针升降气缸
         /// </summary>
@@ -1447,6 +1588,21 @@ namespace GlobalToolClsLib
                 {
                     epoxtliftCylinder = value;
                     OnPropertyChanged(nameof(EpoxtliftCylinder));
+                }
+            }
+        }
+        /// <summary>
+        /// 吸嘴工具真空
+        /// </summary>
+        public bool ChipPPtoolVaccumSwitch
+        {
+            get { return chipPPtoolVaccumSwitch; }
+            set
+            {
+                if (chipPPtoolVaccumSwitch != value)
+                {
+                    chipPPtoolVaccumSwitch = value;
+                    OnPropertyChanged(nameof(ChipPPtoolVaccumSwitch));
                 }
             }
         }
@@ -1916,6 +2072,23 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+        /// <summary>
+        /// 芯片吸嘴真空到位
+        /// </summary>
+        public bool ChipPPtoolVaccumNormally
+        {
+            get { return chipPPtoolVaccumNormally; }
+            set
+            {
+                if (chipPPtoolVaccumNormally != value)
+                {
+                    chipPPtoolVaccumNormally = value;
+                    OnPropertyChanged(nameof(ChipPPtoolVaccumNormally));
+                }
+            }
+        }
+
         /// <summary>
         /// 衬底吸嘴真空到位
         /// </summary>
@@ -1931,6 +2104,41 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+        private bool epoxtUp;
+        /// <summary>
+        /// 点胶升到位信号
+        /// </summary>
+        public bool EpoxtUp
+        {
+            get { return epoxtUp; }
+            set
+            {
+                if (epoxtUp != value)
+                {
+                    epoxtUp = value;
+                    OnPropertyChanged(nameof(EpoxtUp));
+                }
+            }
+        }
+
+        private bool epoxtDown;
+        /// <summary>
+        /// 点胶降到位信号
+        /// </summary>
+        public bool EpoxtDown
+        {
+            get { return epoxtDown; }
+            set
+            {
+                if (epoxtDown != value)
+                {
+                    epoxtDown = value;
+                    OnPropertyChanged(nameof(EpoxtDown));
+                }
+            }
+        }
+
 
         /// <summary>
         /// 胶针通电中
@@ -2107,6 +2315,42 @@ namespace GlobalToolClsLib
                 }
             }
         }
+
+        private bool transportUp;
+        /// <summary>
+        /// 传送轨道升到位信号
+        /// </summary>
+        public bool TransportUp
+        {
+            get { return transportUp; }
+            set
+            {
+                if (transportUp != value)
+                {
+                    transportUp = value;
+                    OnPropertyChanged(nameof(TransportUp));
+                }
+            }
+        }
+
+        private bool transportDown;
+        /// <summary>
+        /// 传送轨道降到位信号
+        /// </summary>
+        public bool TransportDown
+        {
+            get { return transportDown; }
+            set
+            {
+                if (transportDown != value)
+                {
+                    transportDown = value;
+                    OnPropertyChanged(nameof(TransportDown));
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// 晶圆盘到位信号
@@ -2612,7 +2856,23 @@ namespace GlobalToolClsLib
         #endregion
 
 
-        
+        private string curPPtoolName;
+        /// <summary>
+        /// 当前吸嘴名称
+        /// </summary>
+        public string CurPPtoolName
+        {
+            get { return curPPtoolName; }
+            set
+            {
+                if (curPPtoolName != value)
+                {
+                    curPPtoolName = value;
+                    OnPropertyChanged(nameof(CurPPtoolName));
+                }
+            }
+        }
+
 
         #endregion
 

@@ -42,6 +42,7 @@ namespace StageCtrlPanelLib
             InitializeComponent();
             InitialControl();
             InitializeTool();
+            cmbSelectStageSystem.SetSelectedEnum(EnumStageSystem2.BondTable);
             cmbSelectStageSystem.SelectedIndex = 0;
             cmbSelectAxis.SelectedIndex = 0;
             //var joyStickController = JoyStickManager.Instance.GetCurrentController();
@@ -61,10 +62,21 @@ namespace StageCtrlPanelLib
             _readPosTimer.Stop();
         }
 
+        ~StageQuickMove()
+        {
+            if (DataModel.Instance.StageRead)
+            {
+                DataModel.Instance.StageRead = false;
+
+            }
+        }
+
         private void InitializeTool()
         {
             DataModel.Instance.PropertyChanged += DataModel_PropertyChanged;
             _syncContext = SynchronizationContext.Current;
+
+            DataModel.Instance.StageRead = true;
         }
 
 
@@ -83,17 +95,19 @@ namespace StageCtrlPanelLib
         }
         private bool _positiveFlag = false;
         public Action<bool> PositiveQucikMoveAct { get; set; }
-        public EnumStageSystem SelectedStageSystem { get; set; }
+        public EnumStageSystem2 SelectedStageSystem { get; set; } = EnumStageSystem2.BondTable;
         public EnumSystemAxis SelectedAxisSystem { get; set; }
         EnumStageAxis yAxis = EnumStageAxis.BondY;
         EnumStageAxis xAxis = EnumStageAxis.BondX;
         private void InitialControl()
         {
-            
-            foreach (var item in Enum.GetValues(typeof(EnumStageSystem)))
-            {
-                cmbSelectStageSystem.Items.Add(item);
-            }
+
+            //foreach (var item in Enum.GetValues(typeof(EnumStageSystem)))
+            //{
+            //    cmbSelectStageSystem.Items.Add(item);
+            //}
+            cmbSelectStageSystem.Items.Clear();
+            cmbSelectStageSystem.BindToEnum<EnumStageSystem2>();
             foreach (var item in Enum.GetValues(typeof(EnumSystemAxis)))
             {
                 cmbSelectAxis.Items.Add(item);
@@ -454,47 +468,49 @@ namespace StageCtrlPanelLib
 
         private void cmbSelectStageSystem_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectedStageSystem = (EnumStageSystem)this.cmbSelectStageSystem.SelectedIndex;
+
+            //SelectedStageSystem = (EnumStageSystem2)this.cmbSelectStageSystem.SelectedIndex;
+            SelectedStageSystem = cmbSelectStageSystem.GetSelectedEnum<EnumStageSystem2>();
             RefreshCmbSelectAxisItems(SelectedStageSystem);
         }
-        private void RefreshCmbSelectAxisItems(EnumStageSystem stageSystem)
+        private void RefreshCmbSelectAxisItems(EnumStageSystem2 stageSystem)
         {          
             cmbSelectAxis.Items.Clear();
             switch (stageSystem)
             {
-                case EnumStageSystem.BondTable:
+                case EnumStageSystem2.BondTable:
                     cmbSelectAxis.Items.Add("XY");
                     cmbSelectAxis.Items.Add("Focus");
                     break;
-                case EnumStageSystem.WaferTable:
+                case EnumStageSystem2.WaferTable:
                     cmbSelectAxis.Items.Add("XY");
                     cmbSelectAxis.Items.Add("Focus");
-                    cmbSelectAxis.Items.Add("WaferFilm");
+                    //cmbSelectAxis.Items.Add("WaferFilm");
                     break;
-                case EnumStageSystem.ChipPP:
+                case EnumStageSystem2.ChipPP:
                     //cmbSelectAxis.Items.Add("Z");
                     cmbSelectAxis.Items.Add("Focus");
                     cmbSelectAxis.Items.Add("Theta");
                     break;
-                case EnumStageSystem.Transport:
+                case EnumStageSystem2.Transport:
                     //cmbSelectAxis.Items.Add("Z");
                     cmbSelectAxis.Items.Add("Stage1");
                     cmbSelectAxis.Items.Add("Stage2");
                     cmbSelectAxis.Items.Add("Stage3");
                     break;
-                case EnumStageSystem.WaferCassette:
-                    cmbSelectAxis.Items.Add("X");
-                    cmbSelectAxis.Items.Add("Z");
+                //case EnumStageSystem2.WaferCassette:
+                //    cmbSelectAxis.Items.Add("X");
+                //    cmbSelectAxis.Items.Add("Z");
                     break;
-                case EnumStageSystem.ES:
+                case EnumStageSystem2.ES:
                     cmbSelectAxis.Items.Add("Z");
                     cmbSelectAxis.Items.Add("NeedleZ");
                     break;
-                case EnumStageSystem.SubmountPP:
-                    //cmbSelectAxis.Items.Add("Z");
-                    cmbSelectAxis.Items.Add("Focus");
-                    cmbSelectAxis.Items.Add("Theta");
-                    break;
+                //case EnumStageSystem2.SubmountPP:
+                //    //cmbSelectAxis.Items.Add("Z");
+                //    cmbSelectAxis.Items.Add("Focus");
+                //    cmbSelectAxis.Items.Add("Theta");
+                //    break;
                 default:
                     break;
             }
@@ -514,7 +530,7 @@ namespace StageCtrlPanelLib
         {
             switch (SelectedStageSystem)
             {
-                case EnumStageSystem.BondTable:
+                case EnumStageSystem2.BondTable:
                     switch (SelectedAxisSystem)
                     {
                         case EnumSystemAxis.XY:
@@ -531,7 +547,7 @@ namespace StageCtrlPanelLib
                             break;
                     }
                     break;
-                case EnumStageSystem.WaferTable:
+                case EnumStageSystem2.WaferTable:
                     switch (SelectedAxisSystem)
                     {
                         case EnumSystemAxis.XY:
@@ -542,29 +558,37 @@ namespace StageCtrlPanelLib
                             xAxis = EnumStageAxis.None;
                             yAxis = EnumStageAxis.WaferTableZ;
                             break;
-                        case EnumSystemAxis.WaferFilm:
-                            xAxis = EnumStageAxis.WaferFilm;
-                            yAxis = EnumStageAxis.None;
-                            break;
+                        //case EnumSystemAxis.WaferFilm:
+                        //    xAxis = EnumStageAxis.WaferFilm;
+                        //    yAxis = EnumStageAxis.None;
+                        //    break;
                         default:
                             xAxis = EnumStageAxis.None;
                             yAxis = EnumStageAxis.None;
                             break;
                     }
                     break;
-                case EnumStageSystem.ChipPP:
+                case EnumStageSystem2.ChipPP:
                     switch (SelectedAxisSystem)
                     {
                         //case EnumSystemAxis.Z:
                         //    xAxis = EnumStageAxis.None;
                         //    yAxis = EnumStageAxis.ChipPPZ;
                         //    break;
+                        //case EnumSystemAxis.Focus:
+                        //    xAxis = EnumStageAxis.None;
+                        //    yAxis = EnumStageAxis.BondZ;
+                        //    break;
+                        //case EnumSystemAxis.Theta:
+                        //    xAxis = EnumStageAxis.ChipPPT;
+                        //    yAxis = EnumStageAxis.None;
+                        //    break;
                         case EnumSystemAxis.Focus:
                             xAxis = EnumStageAxis.None;
-                            yAxis = EnumStageAxis.BondZ;
+                            yAxis = EnumStageAxis.SubmountPPZ;
                             break;
                         case EnumSystemAxis.Theta:
-                            xAxis = EnumStageAxis.ChipPPT;
+                            xAxis = EnumStageAxis.SubmountPPT;
                             yAxis = EnumStageAxis.None;
                             break;
                         default:
@@ -573,7 +597,7 @@ namespace StageCtrlPanelLib
                             break;
                     }
                     break;
-                case EnumStageSystem.Transport:
+                case EnumStageSystem2.Transport:
                     switch (SelectedAxisSystem)
                     {
                         case EnumSystemAxis.Stage1:
@@ -594,24 +618,24 @@ namespace StageCtrlPanelLib
                             break;
                     }
                     break;
-                case EnumStageSystem.WaferCassette:
-                    switch (SelectedAxisSystem)
-                    {
-                        case EnumSystemAxis.X:
-                            xAxis = EnumStageAxis.WaferFinger;
-                            yAxis = EnumStageAxis.None;
-                            break;
-                        case EnumSystemAxis.Z:
-                            xAxis = EnumStageAxis.None;
-                            yAxis = EnumStageAxis.WaferCassetteLift;
-                            break;
-                        default:
-                            xAxis = EnumStageAxis.None;
-                            yAxis = EnumStageAxis.None;
-                            break;
-                    }
-                    break;
-                case EnumStageSystem.ES:
+                //case EnumStageSystem2.WaferCassette:
+                //    switch (SelectedAxisSystem)
+                //    {
+                //        case EnumSystemAxis.X:
+                //            xAxis = EnumStageAxis.WaferFinger;
+                //            yAxis = EnumStageAxis.None;
+                //            break;
+                //        case EnumSystemAxis.Z:
+                //            xAxis = EnumStageAxis.None;
+                //            yAxis = EnumStageAxis.WaferCassetteLift;
+                //            break;
+                //        default:
+                //            xAxis = EnumStageAxis.None;
+                //            yAxis = EnumStageAxis.None;
+                //            break;
+                //    }
+                //    break;
+                case EnumStageSystem2.ES:
                     switch (SelectedAxisSystem)
                     {
                         case EnumSystemAxis.Z:
@@ -628,27 +652,27 @@ namespace StageCtrlPanelLib
                             break;
                     }
                     break;
-                case EnumStageSystem.SubmountPP:
-                    switch (SelectedAxisSystem)
-                    {
-                        //case EnumSystemAxis.Z:
-                        //    xAxis = EnumStageAxis.None;
-                        //    yAxis = EnumStageAxis.ChipPPZ;
-                        //    break;
-                        case EnumSystemAxis.Focus:
-                            xAxis = EnumStageAxis.None;
-                            yAxis = EnumStageAxis.SubmountPPZ;
-                            break;
-                        case EnumSystemAxis.Theta:
-                            xAxis = EnumStageAxis.SubmountPPT;
-                            yAxis = EnumStageAxis.None;
-                            break;
-                        default:
-                            xAxis = EnumStageAxis.None;
-                            yAxis = EnumStageAxis.None;
-                            break;
-                    }
-                    break;
+                //case EnumStageSystem2.SubmountPP:
+                //    switch (SelectedAxisSystem)
+                //    {
+                //        //case EnumSystemAxis.Z:
+                //        //    xAxis = EnumStageAxis.None;
+                //        //    yAxis = EnumStageAxis.ChipPPZ;
+                //        //    break;
+                //        case EnumSystemAxis.Focus:
+                //            xAxis = EnumStageAxis.None;
+                //            yAxis = EnumStageAxis.SubmountPPZ;
+                //            break;
+                //        case EnumSystemAxis.Theta:
+                //            xAxis = EnumStageAxis.SubmountPPT;
+                //            yAxis = EnumStageAxis.None;
+                //            break;
+                //        default:
+                //            xAxis = EnumStageAxis.None;
+                //            yAxis = EnumStageAxis.None;
+                //            break;
+                //    }
+                //    break;
                 default:
                     xAxis = EnumStageAxis.None;
                     yAxis = EnumStageAxis.None;

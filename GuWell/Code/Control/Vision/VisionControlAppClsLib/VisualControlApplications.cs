@@ -333,47 +333,47 @@ namespace VisionControlAppClsLib
             ImageHeight = RunImage.Height;
             RectangleF rectangle = new RectangleF(ROI.X, ROI.Y, ROI.Width, ROI.Height);
             var ret = Algorithm.MatchRun(RunImage, Score, ref Result, rectangle);
-            try
-            {
-                if (!ret)
-                {
-                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveNG
-                    || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
-                    {
-                        if (RunImage != null)
-                        {
-                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
-                            //string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-                            string failPath = string.Format("{0}RecognizeFail\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeFailSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
-                            capturedImageSaved.Dispose();
-                            capturedImageSaved = null;
-                        }
-                    }
-                }
-                else
-                {
-                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveOK
-                        || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
-                    {
+            //try
+            //{
+            //    if (!ret)
+            //    {
+            //        if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveNG
+            //        || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+            //        {
+            //            if (RunImage != null)
+            //            {
+            //                Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+            //                //string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            //                string failPath = string.Format("{0}RecognizeFail\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeFailSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            //                capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+            //                capturedImageSaved.Dispose();
+            //                capturedImageSaved = null;
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveOK
+            //            || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+            //        {
 
-                        if (RunImage != null)
-                        {
-                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
-                            //string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-                            string failPath = string.Format("{0}RecognizeSuccess\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeSuccessSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
-                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
-                            capturedImageSaved.Dispose();
-                            capturedImageSaved = null;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
+            //            if (RunImage != null)
+            //            {
+            //                Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+            //                //string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            //                string failPath = string.Format("{0}RecognizeSuccess\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeSuccessSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            //                capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+            //                capturedImageSaved.Dispose();
+            //                capturedImageSaved = null;
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-                LogRecorder.RecordLog(EnumLogContentType.Error, "Save Recognise Image Error.", ex);
-            }
+            //    LogRecorder.RecordLog(EnumLogContentType.Error, "Save Recognise Image Error.", ex);
+            //}
 
             return ret;
         }
@@ -438,7 +438,49 @@ namespace VisionControlAppClsLib
         {
             ImageWidth = RunImage.Width;
             ImageHeight = RunImage.Height;
-            return Algorithm.LineFindRun(RunImage, Score, ref Result, ROI, ScanDirection);
+            bool ret = Algorithm.LineFindRun(RunImage, Score, ref Result, ROI, ScanDirection);
+            try
+            {
+                if (!ret)
+                {
+                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveNG
+                    || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+                    {
+                        if (RunImage != null)
+                        {
+                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+                            //string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeFail\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeFailSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+                            capturedImageSaved.Dispose();
+                            capturedImageSaved = null;
+                        }
+                    }
+                }
+                else
+                {
+                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveOK
+                        || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+                    {
+
+                        if (RunImage != null)
+                        {
+                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+                            //string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeSuccess\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeSuccessSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+                            capturedImageSaved.Dispose();
+                            capturedImageSaved = null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                LogRecorder.RecordLog(EnumLogContentType.Error, "Save Recognise Image Error.", ex);
+            }
+            return ret;
         }
 
 
@@ -500,16 +542,59 @@ namespace VisionControlAppClsLib
         /// <param name="MinRadius">最小半径</param>
         /// <param name="MaxRadius">最大半径</param>
         /// <returns></returns>
-        public bool CircleFindRun(Bitmap RunImage, int Score, ref CircleResult Result, RectangleF ROI = new RectangleF(), int MinRadius = -1, int MaxRadius = -1)
+        public bool CircleFindRun(Bitmap RunImage, int Score, ref CircleResult Result, RectangleFV ROI, int MinRadius = -1, int MaxRadius = -1)
         {
             ImageWidth = RunImage.Width;
             ImageHeight = RunImage.Height;
-            return Algorithm.CircleFindRun(RunImage, Score, ref Result, ROI, MinRadius, MaxRadius);
+            RectangleF rectangle = new RectangleF(ROI.X, ROI.Y, ROI.Width, ROI.Height);
+            bool ret = Algorithm.CircleFindRun(RunImage, Score, ref Result, rectangle, MinRadius, MaxRadius);
+            try
+            {
+                if (!ret)
+                {
+                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveNG
+                    || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+                    {
+                        if (RunImage != null)
+                        {
+                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+                            //string failPath = string.Format("D:\\RecognizeFail\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeFail\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeFailSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+                            capturedImageSaved.Dispose();
+                            capturedImageSaved = null;
+                        }
+                    }
+                }
+                else
+                {
+                    if (_systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.SaveOK
+                        || _systemConfig.JobConfig.RecogniseResulSaveOption == EnumRecogniseResulSaveOption.AllSave)
+                    {
+
+                        if (RunImage != null)
+                        {
+                            Bitmap capturedImageSaved = VisualAlgorithms.DeepClone(RunImage);
+                            //string failPath = string.Format("D:\\RecognizeSuccess\\Detect_{0}.bmp", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            string failPath = string.Format("{0}RecognizeSuccess\\Detect_{1}.bmp", _systemConfig.JobConfig.RecognizeSuccessSavingPath, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                            capturedImageSaved.Save(failPath, ImageFormat.Bmp);
+                            capturedImageSaved.Dispose();
+                            capturedImageSaved = null;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                LogRecorder.RecordLog(EnumLogContentType.Error, "Save Recognise Image Error.", ex);
+            }
+            return ret;
         }
 
         #endregion
 
-        
+
 
 
         /// <summary>
@@ -637,6 +722,7 @@ namespace VisionControlAppClsLib
             }
             var folderPath = Templatexml.Substring(0, Templatexml.LastIndexOf("\\"));
             var templateFullFileName = Path.Combine(folderPath, $"TrainImage_{Guid.NewGuid()}.bmp");
+            var templateFullFileName2 = Path.Combine(folderPath, $"TrainFillImage_{Guid.NewGuid()}.bmp");
             //if (File.Exists(templateFullFileName))
             //{
             //    templateFullFileName = Path.Combine(folderPath, "TrainImage1.bmp");
@@ -644,7 +730,8 @@ namespace VisionControlAppClsLib
             //}
             //else
             //{
-                Algorithm.CroppingAndSaveImage(VisualAlgorithms.DeepClone(TemplateImage), templateFullFileName, ROI);
+            Algorithm.CroppingAndSaveImage(VisualAlgorithms.DeepClone(TemplateImage), templateFullFileName, ROI);
+            Algorithm.CroppingAndSaveImage(VisualAlgorithms.DeepClone(TemplateImage), templateFullFileName2, new RectangleF(0, 0, TemplateImage.Width, TemplateImage.Height));
             //}
             Done = Algorithm.MatchTrain(TemplateImage, ref Result, Benchmark,ROI, MaskROI);
 
@@ -731,8 +818,16 @@ namespace VisionControlAppClsLib
             ImageWidth = SeachImage.Width;
             ImageHeight = SeachImage.Height;
 
+            
+
             if (LineFindxmls.Count>0)
             {
+                var folderPath = LineFindxmls[0].Substring(0, LineFindxmls[0].LastIndexOf("\\"));
+
+                var templateFullFileName2 = Path.Combine(folderPath, $"lineTrainFillImage_{Guid.NewGuid()}.bmp");
+                Algorithm.CroppingAndSaveImage(VisualAlgorithms.DeepClone(SeachImage), templateFullFileName2, new RectangleF(0, 0, SeachImage.Width, SeachImage.Height));
+
+
                 int i = 0;
                 foreach(string LineFindxml in LineFindxmls)
                 {
@@ -842,6 +937,29 @@ namespace VisionControlAppClsLib
             return CircleFindInited;
         }
 
+        public CircleResult CircleFindAsync(Bitmap RunImage, int Score, RectangleF ROI, int MinRadius = -1, int MaxRadius = -1)
+        {
+            CircleResult results = new CircleResult();
+
+            if (CircleFindInited)
+            {
+                ImageWidth = RunImage.Width;
+                ImageHeight = RunImage.Height;
+
+                bool En1 = Algorithm.CircleFindSetRunPara<int>(CircleFindParas.CircleRate, Score);
+
+                //if (!En1)
+                //{
+                //    return null;
+                //}
+
+                bool Done = Algorithm.CircleFindRun(RunImage, Score, ref results, ROI, MinRadius, MaxRadius);
+            }
+
+
+            return results;
+        }
+
         public CircleResult CircleFindAsync(int Score, RectangleF ROI, int MinRadius = -1, int MaxRadius = -1)
         {
             CircleResult results = new CircleResult();
@@ -885,6 +1003,11 @@ namespace VisionControlAppClsLib
                     ImageWidth = SeachImage.Width;
                     ImageHeight = SeachImage.Height;
 
+                    var folderPath = CircleFindxml.Substring(0, CircleFindxml.LastIndexOf("\\"));
+
+                    var templateFullFileName2 = Path.Combine(folderPath, $"circleTrainFillImage_{Guid.NewGuid()}.bmp");
+                    Algorithm.CroppingAndSaveImage(VisualAlgorithms.DeepClone(SeachImage), templateFullFileName2, new RectangleF(0, 0, SeachImage.Width, SeachImage.Height));
+
                     bool Done = Algorithm.CircleFindRun(SeachImage, Score, ref results, ROI, MinRadius, MaxRadius);
                 }
 
@@ -899,6 +1022,324 @@ namespace VisionControlAppClsLib
         #endregion
 
         #region 光源
+
+        public bool LightintensityReset(MatchIdentificationParam param)
+        {
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+
+
+
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                }
+
+            }
+
+            if (type == EnumCameraType.BondCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.WaferCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.UplookingCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+
+            return true;
+        }
+
+        public bool LightintensityReset(LineFindIdentificationParam param)
+        {
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+
+
+
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                }
+
+            }
+
+            if (type == EnumCameraType.BondCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.WaferCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.UplookingCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+
+            return true;
+        }
+
+        public bool LightintensityReset(CircleFindIdentificationParam param)
+        {
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(0, (int)direct);
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+
+
+
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(0, (int)directBlue);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                }
+
+            }
+
+            if (type == EnumCameraType.BondCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.WaferCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.UplookingCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(0, (int)ring);
+                }
+            }
+
+            return true;
+        }
 
         public bool SetLightintensity(MatchIdentificationParam param)
         {
@@ -1005,6 +1446,218 @@ namespace VisionControlAppClsLib
 
             return true;
         }
+        public bool SetLightintensity(LineFindIdentificationParam param)
+        {
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectRedLightintensity, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectGreenLightintensity, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectBlueLightintensity, (int)directBlue);
+                    }
+
+
+
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectRedLightintensity, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectGreenLightintensity, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectBlueLightintensity, (int)directBlue);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                }
+
+            }
+
+            if (type == EnumCameraType.BondCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.WaferCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.UplookingCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+
+            return true;
+        }
+
+        public bool SetLightintensity(CircleFindIdentificationParam param)
+        {
+            if (param.DirectLightType == EnumDirectLightSourceType.SingleR)
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupDirectField);
+                    if (light != null && (int)direct > -1)
+                    {
+                        light.SetIntensity(param.DirectLightintensity, (int)direct);
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (type == EnumCameraType.BondCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectRedLightintensity, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectGreenLightintensity, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectBlueLightintensity, (int)directBlue);
+                    }
+
+
+
+                }
+                else if (type == EnumCameraType.WaferCamera)
+                {
+                    ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectRedField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectRedLightintensity, (int)directRed);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectGreenField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectGreenLightintensity, (int)directGreen);
+                    }
+                    light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferDirectBlueField);
+                    if (light != null && (int)directRed > -1)
+                    {
+                        light.SetIntensity(param.DirectBlueLightintensity, (int)directBlue);
+                    }
+                }
+                else if (type == EnumCameraType.UplookingCamera)
+                {
+                }
+
+            }
+
+            if (type == EnumCameraType.BondCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.BondRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.WaferCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.WaferRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+            else if (type == EnumCameraType.UplookingCamera)
+            {
+                ILightSourceController light = LightControllerManager.Instance.GetLightController(EnumLightSourceType.LookupRingField);
+                if (light != null && (int)ring > -1)
+                {
+                    light.SetIntensity(param.RingLightintensity, (int)ring);
+                }
+            }
+
+            return true;
+        }
+
 
         public int GetRingLightintensity()
         {

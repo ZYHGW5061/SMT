@@ -80,6 +80,12 @@
     <Compile Include="FrmStageAxisMoveControl.Designer.cs">
       <DependentUpon>FrmStageAxisMoveControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmStageControl2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmStageControl2.Designer.cs">
+      <DependentUpon>FrmStageControl2.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmStageMaintain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,12 +117,6 @@
     <Compile Include="StageAxisParameterPanel.Designer.cs">
       <DependentUpon>StageAxisParameterPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="StageAxisParamGUI.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StageAxisParamGUI.Designer.cs">
-      <DependentUpon>StageAxisParamGUI.cs</DependentUpon>
-    </Compile>
     <Compile Include="StageQuickMove.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -125,6 +125,9 @@
     </Compile>
     <EmbeddedResource Include="FrmStageAxisMoveControl.resx">
       <DependentUpon>FrmStageAxisMoveControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmStageControl2.resx">
+      <DependentUpon>FrmStageControl2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmStageMaintain.resx">
       <DependentUpon>FrmStageMaintain.cs</DependentUpon>
@@ -152,9 +155,6 @@
     <EmbeddedResource Include="StageAxisParameterPanel.resx">
       <DependentUpon>StageAxisParameterPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StageAxisParamGUI.resx">
-      <DependentUpon>StageAxisParamGUI.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="StageQuickMove.resx">
       <DependentUpon>StageQuickMove.cs</DependentUpon>
     </EmbeddedResource>
@@ -177,6 +177,10 @@
     <ProjectReference Include="..\..\Control\Process\JobClsLib\JobClsLib.csproj">
       <Project>{51aff9bf-777e-4f50-8406-c4c334f3710f}</Project>
       <Name>JobClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Control\UserManagement\UserManagerClsLib\UserManagerClsLib.csproj">
+      <Project>{C8603800-C34D-4A21-9047-DBB78750CBBA}</Project>
+      <Name>UserManagerClsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
       <Project>{6cbe338a-1abb-4397-bba8-bc8477b1a21d}</Project>

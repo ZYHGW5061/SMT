@@ -19,8 +19,13 @@ namespace RecipeEditPanelClsLib
     {
         private int _numbersofColumns;
         private int _numbersofRows;
-        public float _rowPitchMM;
-        public float _columnPitchMM;
+        public float _rowPitchMMX;
+        public float _columnPitchMMX;
+        public float _rowPitchMMY;
+        public float _columnPitchMMY;
+        /// <summary>
+        /// 第一个模块坐标
+        /// </summary>
         public PointF FirstMaterialPosition { get; set; }
         public PointF LastColumnMaterialPosition { get; set; }
         public PointF LastRowMaterialPosition { get; set; }
@@ -56,10 +61,12 @@ namespace RecipeEditPanelClsLib
             //    step6Sign.Visible = false;
             //}
 
-            _numbersofRows = _editRecipe.CurrentSubstrate.RowCount;
-            _numbersofColumns = _editRecipe.CurrentSubstrate.ColumnCount;
-            _columnPitchMM = _editRecipe.CurrentSubstrate.PitchColumnMM;
-            _rowPitchMM = _editRecipe.CurrentSubstrate.PitchRowMM;
+            _numbersofRows = _editRecipe.CurrentSubstrate.ModuleRowCount;
+            _numbersofColumns = _editRecipe.CurrentSubstrate.ModuleColumnCount;
+            _columnPitchMMX = _editRecipe.CurrentSubstrate.ModulePitchColumnMMX;
+            _rowPitchMMX = _editRecipe.CurrentSubstrate.ModulePitchRowMMX;
+            _columnPitchMMY = _editRecipe.CurrentSubstrate.ModulePitchColumnMMY;
+            _rowPitchMMY = _editRecipe.CurrentSubstrate.ModulePitchRowMMY;
 
             FirstMaterialPosition = new PointF((float)_editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.X, (float)_editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.Y);
             if (_editRecipe.CurrentSubstrate.CarrierType != EnumCarrierType.Wafer)
@@ -89,8 +96,10 @@ namespace RecipeEditPanelClsLib
 
             _editRecipe.CurrentSubstrate.ModuleRowCount = _numbersofRows;
             _editRecipe.CurrentSubstrate.ModuleColumnCount = _numbersofColumns;
-            _editRecipe.CurrentSubstrate.ModulePitchColumnMM = _columnPitchMM;
-            _editRecipe.CurrentSubstrate.ModulePitchRowMM = _rowPitchMM;
+            _editRecipe.CurrentSubstrate.ModulePitchColumnMMX = _columnPitchMMX;
+            _editRecipe.CurrentSubstrate.ModulePitchRowMMX = _rowPitchMMX;
+            _editRecipe.CurrentSubstrate.ModulePitchColumnMMY = _columnPitchMMY;
+            _editRecipe.CurrentSubstrate.ModulePitchRowMMY = _rowPitchMMY;
 
             _editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.X = FirstMaterialPosition.X;
             _editRecipe.CurrentSubstrate.FirstModuleHomeSystemLocation.Y = FirstMaterialPosition.Y;
@@ -594,8 +603,10 @@ namespace RecipeEditPanelClsLib
 
                 var mapAngle = Math.Atan((LastColumnMaterialPosition.Y - FirstMaterialPosition.Y) / (LastColumnMaterialPosition.X - FirstMaterialPosition.X));
 
-                _rowPitchMM = (float)(Math.Abs((LastRowMaterialPosition.Y - LastColumnMaterialPosition.Y) * Math.Cos(mapAngle)) / (_numbersofRows - 1));
-                _columnPitchMM = (float)(Math.Abs((LastColumnMaterialPosition.X - FirstMaterialPosition.X) * Math.Cos(mapAngle)) / (_numbersofColumns - 1));
+                _rowPitchMMX = (float)(Math.Abs((LastRowMaterialPosition.X - LastColumnMaterialPosition.X)) / (_numbersofRows - 1));
+                _rowPitchMMY = (float)(Math.Abs((LastRowMaterialPosition.Y - LastColumnMaterialPosition.Y)) / (_numbersofRows - 1));
+                _columnPitchMMX = (float)(Math.Abs((LastColumnMaterialPosition.X - FirstMaterialPosition.X)) / (_numbersofColumns - 1));
+                _columnPitchMMY = (float)(Math.Abs((LastColumnMaterialPosition.Y - FirstMaterialPosition.Y)) / (_numbersofColumns - 1));
                 //var columnSpace = Math.Abs(LastRowComponentPosition.X - FirstComponentPosition.X) / (_numbersofColumns - 1);
                 //var rowSpace = Math.Abs(LastColumnComponentPosition.Y - LastRowComponentPosition.Y) / (_numbersofRows - 1);
                 //var componentWidth = _editRecipe.CurrentComponent.WidthMM;
@@ -611,29 +622,32 @@ namespace RecipeEditPanelClsLib
 
                 var firstModuleRelativeCoorX = FirstMaterialPosition.X - substrateCoorHomeX;
                 var firstModuleRelativeCoorY = FirstMaterialPosition.Y - substrateCoorHomeY;
-
+                _editRecipe.CurrentSubstrate.ModuleMapInfos.Clear();
                 foreach (var item in _editRecipe.CurrentSubstrate.SubstrateMapInfos)
                 {
-                    var rotateCenterX = item.MaterialLocation.X - substrateCoorHomeX;
-                    var rotateCenterY = item.MaterialLocation.Y - substrateCoorHomeY;
+                    
+                    var rotateCenterX = _editRecipe.CurrentSubstrate.SubstrateMapInfos.First().MaterialLocation.X - substrateCoorHomeX;
+                    var rotateCenterY = _editRecipe.CurrentSubstrate.SubstrateMapInfos.First().MaterialLocation.Y - substrateCoorHomeY;
 
                     List<MaterialMapInformation> temp = new List<MaterialMapInformation>();
-                    if (_rowPitchMM != 0 && _columnPitchMM != 0)
+                    if (_rowPitchMMX != 0 && _columnPitchMMX != 0 && _rowPitchMMY != 0 && _columnPitchMMY != 0)
                     {
-                        _editRecipe.CurrentSubstrate.ModuleMapInfos.Clear();
+                        
                         var ID = 0;
                         for (int i = 0; i < _numbersofColumns; i++)
                         {
                             for (int j = 0; j < _numbersofRows; j++)
                             {
                                 MaterialMapInformation material = new MaterialMapInformation();
-                                var xNormanl = i * _columnPitchMM;
-                                var yNormanl = j * _rowPitchMM;
+                                var xNormanl = i * _columnPitchMMX - j * _rowPitchMMX;
+                                var yNormanl = i * _columnPitchMMY + j * _rowPitchMMY;
                                 //var centerX = rotateCenterX + (xNormanl - rotateCenterX) * Math.Cos(mapAngle) - (yNormanl - rotateCenterY) * Math.Sin(mapAngle);
                                 //var centerY = rotateCenterY + (xNormanl - rotateCenterX) * Math.Sin(mapAngle) + (yNormanl - rotateCenterY) * Math.Cos(mapAngle);
                                 //Map记录的是Substrate坐标系下的module中心的系统坐标系；
-                                var centerX = firstModuleRelativeCoorX + rotateCenterX + centerOffsetX + (xNormanl) * Math.Cos(mapAngle) - (yNormanl) * Math.Sin(mapAngle);
-                                var centerY = firstModuleRelativeCoorY + rotateCenterY + centerOffsetY + (xNormanl) * Math.Sin(mapAngle) - (yNormanl) * Math.Cos(mapAngle);
+                                //var centerX = firstModuleRelativeCoorX + rotateCenterX + centerOffsetX + (xNormanl) * Math.Cos(mapAngle) - (yNormanl) * Math.Sin(mapAngle);
+                                //var centerY = firstModuleRelativeCoorY + rotateCenterY + centerOffsetY + (xNormanl) * Math.Sin(mapAngle) - (yNormanl) * Math.Cos(mapAngle);
+                                var centerX = firstModuleRelativeCoorX + rotateCenterX + centerOffsetX + xNormanl;
+                                var centerY = firstModuleRelativeCoorY + rotateCenterY + centerOffsetY - yNormanl;
                                 material.MaterialLocation = new PointF() { X = (float)centerX, Y = (float)centerY };
                                 material.MaterialCoordIndex = new Point(j, i);
                                 material.MaterialNumber = ID++;

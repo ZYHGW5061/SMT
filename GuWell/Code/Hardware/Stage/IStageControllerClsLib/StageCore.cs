@@ -52,10 +52,103 @@ namespace StageControllerClsLib
         IBoardCardController _boardCardController;
         public void AbloluteMoveSync(EnumStageAxis axis, double target)
         {
+            
             if(_boardCardController != null)
             {
                 _boardCardController.MoveAbsoluteSync(axis, target,10);
                 WaitAbsoluteMoveDone(axis);
+                int sta = 0;
+                if (axis == EnumStageAxis.BondX)
+                {
+                    sta = DataModel.Instance.BondXSta;
+                }
+                else if (axis == EnumStageAxis.BondY)
+                {
+                    sta = DataModel.Instance.BondYSta;
+                }
+                else if (axis == EnumStageAxis.BondZ)
+                {
+                    sta = DataModel.Instance.BondZSta;
+                }
+                else if (axis == EnumStageAxis.ChipPPT)
+                {
+                    sta = DataModel.Instance.ChipPPTSta;
+                }
+                else if (axis == EnumStageAxis.PPtoolBankTheta)
+                {
+                    sta = DataModel.Instance.PPtoolBankThetaSta;
+                }
+                else if (axis == EnumStageAxis.DippingGlue)
+                {
+                    sta = DataModel.Instance.DippingGlueSta;
+                }
+                else if (axis == EnumStageAxis.TransportTrack1)
+                {
+                    sta = DataModel.Instance.TransportTrack1Sta;
+                }
+                else if (axis == EnumStageAxis.TransportTrack2)
+                {
+                    sta = DataModel.Instance.TransportTrack2Sta;
+                }
+                else if (axis == EnumStageAxis.TransportTrack3)
+                {
+                    sta = DataModel.Instance.TransportTrack3Sta;
+                }
+                else if (axis == EnumStageAxis.WaferTableX)
+                {
+                    sta = DataModel.Instance.WaferTableXSta;
+                }
+                else if (axis == EnumStageAxis.WaferTableY)
+                {
+                    sta = DataModel.Instance.WaferTableYSta;
+                }
+                else if (axis == EnumStageAxis.WaferTableZ)
+                {
+                    sta = DataModel.Instance.WaferTableZSta;
+                }
+                else if (axis == EnumStageAxis.WaferFilm)
+                {
+                    sta = DataModel.Instance.WaferFilmSta;
+                }
+                else if (axis == EnumStageAxis.WaferFinger)
+                {
+                    sta = DataModel.Instance.WaferFingerSta;
+                }
+                else if (axis == EnumStageAxis.WaferCassetteLift)
+                {
+                    sta = DataModel.Instance.WaferCassetteLiftSta;
+                }
+                else if (axis == EnumStageAxis.ESZ)
+                {
+                    sta = DataModel.Instance.ESZSta;
+                }
+                else if (axis == EnumStageAxis.NeedleZ)
+                {
+                    sta = DataModel.Instance.NeedleZSta;
+                }
+                else if (axis == EnumStageAxis.NeedleSwitch)
+                {
+                    sta = DataModel.Instance.NeedleSwitchSta;
+                }
+                else if (axis == EnumStageAxis.FilpToolTheta)
+                {
+                    sta = DataModel.Instance.FilpToolThetaSta;
+                }
+                else if (axis == EnumStageAxis.SubmountPPT)
+                {
+                    sta = DataModel.Instance.SubmountPPTSta;
+                }
+                else if (axis == EnumStageAxis.SubmountPPZ)
+                {
+                    sta = DataModel.Instance.SubmountPPZSta;
+
+                }
+                short bit = 1;
+                if ((sta & (1 << bit)) != 0)
+                {
+                    LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴报警.");
+                    throw new Exception($"{axis}轴运动错误：{axis}轴报警.");
+                }
             }
         }
 
@@ -70,6 +163,98 @@ namespace StageControllerClsLib
                 for (int i = 0; i < axises.Length; i++)
                 {
                     WaitAbsoluteMoveDone(axises[i]);
+                    int sta = 0;
+                    if (axises[i] == EnumStageAxis.BondX)
+                    {
+                        sta = DataModel.Instance.BondXSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.BondY)
+                    {
+                        sta = DataModel.Instance.BondYSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.BondZ)
+                    {
+                        sta = DataModel.Instance.BondZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.ChipPPT)
+                    {
+                        sta = DataModel.Instance.ChipPPTSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.PPtoolBankTheta)
+                    {
+                        sta = DataModel.Instance.PPtoolBankThetaSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.DippingGlue)
+                    {
+                        sta = DataModel.Instance.DippingGlueSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack1)
+                    {
+                        sta = DataModel.Instance.TransportTrack1Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack2)
+                    {
+                        sta = DataModel.Instance.TransportTrack2Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack3)
+                    {
+                        sta = DataModel.Instance.TransportTrack3Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableX)
+                    {
+                        sta = DataModel.Instance.WaferTableXSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableY)
+                    {
+                        sta = DataModel.Instance.WaferTableYSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableZ)
+                    {
+                        sta = DataModel.Instance.WaferTableZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferFilm)
+                    {
+                        sta = DataModel.Instance.WaferFilmSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferFinger)
+                    {
+                        sta = DataModel.Instance.WaferFingerSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferCassetteLift)
+                    {
+                        sta = DataModel.Instance.WaferCassetteLiftSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.ESZ)
+                    {
+                        sta = DataModel.Instance.ESZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.NeedleZ)
+                    {
+                        sta = DataModel.Instance.NeedleZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.NeedleSwitch)
+                    {
+                        sta = DataModel.Instance.NeedleSwitchSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.FilpToolTheta)
+                    {
+                        sta = DataModel.Instance.FilpToolThetaSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.SubmountPPT)
+                    {
+                        sta = DataModel.Instance.SubmountPPTSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.SubmountPPZ)
+                    {
+                        sta = DataModel.Instance.SubmountPPZSta;
+
+                    }
+                    short bit = 1;
+                    if ((sta & (1 << bit)) != 0)
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Error, $"{axises[i]}轴运动错误：{axises[i]}轴报警.");
+                        throw new Exception($"{axises[i]}轴运动错误：{axises[i]}轴报警.");
+                    }
                 }
             }
         }
@@ -177,6 +362,98 @@ namespace StageControllerClsLib
                 for (int i = 0; i < axises.Length; i++)
                 {
                     WaitRelativeMoveDone(axises[i]);
+                    int sta = 0;
+                    if (axises[i] == EnumStageAxis.BondX)
+                    {
+                        sta = DataModel.Instance.BondXSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.BondY)
+                    {
+                        sta = DataModel.Instance.BondYSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.BondZ)
+                    {
+                        sta = DataModel.Instance.BondZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.ChipPPT)
+                    {
+                        sta = DataModel.Instance.ChipPPTSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.PPtoolBankTheta)
+                    {
+                        sta = DataModel.Instance.PPtoolBankThetaSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.DippingGlue)
+                    {
+                        sta = DataModel.Instance.DippingGlueSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack1)
+                    {
+                        sta = DataModel.Instance.TransportTrack1Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack2)
+                    {
+                        sta = DataModel.Instance.TransportTrack2Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.TransportTrack3)
+                    {
+                        sta = DataModel.Instance.TransportTrack3Sta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableX)
+                    {
+                        sta = DataModel.Instance.WaferTableXSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableY)
+                    {
+                        sta = DataModel.Instance.WaferTableYSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferTableZ)
+                    {
+                        sta = DataModel.Instance.WaferTableZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferFilm)
+                    {
+                        sta = DataModel.Instance.WaferFilmSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferFinger)
+                    {
+                        sta = DataModel.Instance.WaferFingerSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.WaferCassetteLift)
+                    {
+                        sta = DataModel.Instance.WaferCassetteLiftSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.ESZ)
+                    {
+                        sta = DataModel.Instance.ESZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.NeedleZ)
+                    {
+                        sta = DataModel.Instance.NeedleZSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.NeedleSwitch)
+                    {
+                        sta = DataModel.Instance.NeedleSwitchSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.FilpToolTheta)
+                    {
+                        sta = DataModel.Instance.FilpToolThetaSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.SubmountPPT)
+                    {
+                        sta = DataModel.Instance.SubmountPPTSta;
+                    }
+                    else if (axises[i] == EnumStageAxis.SubmountPPZ)
+                    {
+                        sta = DataModel.Instance.SubmountPPZSta;
+
+                    }
+                    short bit = 1;
+                    if ((sta & (1 << bit)) != 0)
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Error, $"{axises[i]}轴运动错误：{axises[i]}轴报警.");
+                        throw new Exception($"{axises[i]}轴运动错误：{axises[i]}轴报警.");
+                    }
                 }
             }
         }
@@ -199,28 +476,41 @@ namespace StageControllerClsLib
 
         public void WaitAbsoluteMoveDone(EnumStageAxis axis, int timeout = 60000)
         {
-            if (_boardCardController != null)
+            try
             {
-                bool isEnd = false;
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (!isEnd)
+                
+                if (_boardCardController != null)
                 {
-                    var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
-                    if (ret)
+                    bool isEnd = false;
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    while (!isEnd)
                     {
-                        isEnd = true;
-                        break;
+                        var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
+                        if (ret)
+                        {
+                            short bit = 0;
+                            
+                            isEnd = true;
+                            break;
+                        }
+                        if (sw.ElapsedMilliseconds > timeout)
+                        {
+                            sw.Stop();
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待绝对移动结束超时.");
+                            throw new Exception($"{axis}轴运动错误：{axis}轴等待绝对移动结束超时.");
+                            isEnd = true;
+                            break;
+                        }
+                         Thread.Sleep(10);
                     }
-                    if (sw.ElapsedMilliseconds > timeout)
-                    {
-                        sw.Stop();
-                        throw new Exception("WaitAbsoluteMoveDone-Timeout.");
-                        isEnd = true;
-                        break;
-                    }
-                    Thread.Sleep(50);
                 }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待绝对移动结束错误.", ex);
+                throw new Exception($"{axis}轴运动错误：{axis}轴等待绝对移动结束错误.");
             }
         }
 
@@ -231,28 +521,37 @@ namespace StageControllerClsLib
 
         public void WaitRelativeMoveDone(EnumStageAxis axis, int timeout = 60000)
         {
-            if (_boardCardController != null)
+            try
             {
-                bool isEnd = false;
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                while (!isEnd)
+                if (_boardCardController != null)
                 {
-                    var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
-                    if (ret)
+                    bool isEnd = false;
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    while (!isEnd)
                     {
-                        isEnd = true;
-                        break;
+                        var ret = _boardCardController.Get_AxisSts_PosDone(axis);//true-Done
+                        if (ret)
+                        {
+                            isEnd = true;
+                            break;
+                        }
+                        if (sw.ElapsedMilliseconds > timeout)
+                        {
+                            sw.Stop();
+                            //throw new Exception("WaitAbsoluteMoveDone-Timeout.");
+                            LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待相对移动结束超时.");
+                            isEnd = true;
+                            break;
+                        }
+                        Thread.Sleep(10);
                     }
-                    if (sw.ElapsedMilliseconds > timeout)
-                    {
-                        sw.Stop();
-                        throw new Exception("WaitAbsoluteMoveDone-Timeout.");
-                        isEnd = true;
-                        break;
-                    }
-                    Thread.Sleep(50);
                 }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴等待相对移动结束错误.", ex);
             }
         }
 
@@ -319,33 +618,55 @@ namespace StageControllerClsLib
         /// </summary>
         public void Home(EnumStageAxis axis)
         {
-            if (_boardCardController != null)
+            try
             {
-                if ( axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ)
+                if (_boardCardController != null)
                 {
-                    _boardCardController.Home(axis, 18);
+                    if (axis == EnumStageAxis.WaferTableZ)
+                    {
+                        _boardCardController.Home(axis, 18);
+                    }
+                    //else if (axis == EnumStageAxis.WaferTableX||axis==EnumStageAxis.NeedleZ)
+                    else if (axis == EnumStageAxis.NeedleZ)
+                    {
+                        _boardCardController.Home(axis, 17);
+                    }
+
+                    //if (axis == EnumStageAxis.WaferTableZ || axis == EnumStageAxis.ESZ)
+                    //{
+                    //    _boardCardController.Home(axis, 18);
+                    //}
+                    ////else if (axis == EnumStageAxis.WaferTableX||axis==EnumStageAxis.NeedleZ)
+                    //else if (axis == EnumStageAxis.NeedleZ)
+                    //{
+                    //    _boardCardController.Home(axis, 17);
+                    //}
+                    //else if (axis == EnumStageAxis.WaferTableY)
+                    //{
+                    //    _boardCardController.Home(axis, 18);
+                    //}
+                    //else if (axis == EnumStageAxis.WaferTableX)
+                    //{
+                    //    _boardCardController.Home(axis, 17);
+                    //}
+                    //else if (axis == EnumStageAxis.SubmountPPZ)
+                    //{
+                    //    _boardCardController.Home(axis, 101);
+                    //}
+                    //else if (axis == EnumStageAxis.SubmountPPT)
+                    //{
+                    //    _boardCardController.Home(axis, 33);
+                    //}
+                    else
+                    {
+                        LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴没有回零方式.");
+                    }
                 }
-                //else if (axis == EnumStageAxis.WaferTableX||axis==EnumStageAxis.NeedleZ)
-                else if (axis==EnumStageAxis.NeedleZ)
-                {
-                    _boardCardController.Home(axis, 17);
-                }
-                else if(axis == EnumStageAxis.WaferTableY)
-                {
-                    _boardCardController.Home(axis, 18);
-                }
-                else if(axis == EnumStageAxis.WaferTableX)
-                {
-                    _boardCardController.Home(axis, 17);
-                }
-                else if (axis == EnumStageAxis.SubmountPPZ)
-                {
-                    _boardCardController.Home(axis, 101);
-                }
-                else if (axis == EnumStageAxis.SubmountPPT)
-                {
-                    _boardCardController.Home(axis, 33);
-                }
+
+            }
+            catch (Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴回零错误.", ex);
             }
         }
 
@@ -362,31 +683,48 @@ namespace StageControllerClsLib
         /// </summary>
         public int GetAxisState(EnumStageAxis axis)
         {
-            if (_boardCardController != null)
+            try
             {
-                return _boardCardController.GetAxisState(axis);
+                if (_boardCardController != null)
+                {
+                    return _boardCardController.GetAxisState(axis);
+                }
+                return 0;
             }
-            return 0;
+            catch(Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴读取状态失败.", ex);
+                return 0;
+            }
+           
         }
 
         public void SetAxisErrPosBind(EnumStageAxis axis, int band = 50, int time = 50)
         {
-            int err = 0;
-            if (axis == EnumStageAxis.BondX || axis == EnumStageAxis.BondY || axis == EnumStageAxis.BondZ)
+            try
             {
-                _boardCardController.SetAxisErrPosBind(axis, out err, 50, time);
+                int err = 0;
+                if (axis == EnumStageAxis.BondX || axis == EnumStageAxis.BondY || axis == EnumStageAxis.BondZ)
+                {
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 50, time);
 
-            }
-            else if (axis == EnumStageAxis.ChipPPT)
-            {
-                _boardCardController.SetAxisErrPosBind(axis, out err, 50, 50);
-            }
-            else
-            {
+                }
+                else if (axis == EnumStageAxis.ChipPPT)
+                {
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 50, 50);
+                }
+                else
+                {
 
-                _boardCardController.SetAxisErrPosBind(axis, out err, 100, 100);
+                    _boardCardController.SetAxisErrPosBind(axis, out err, 100, 100);
+                }
+                _boardCardController.ClrAlarm(axis);
             }
-            _boardCardController.ClrAlarm(axis);
+            catch(Exception ex)
+            {
+                LogRecorder.RecordLog(EnumLogContentType.Error, $"{axis}轴运动错误：{axis}轴设置误差带错误.", ex);
+            }
+            
         }
 
         /// <summary>

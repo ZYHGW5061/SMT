@@ -349,6 +349,22 @@ namespace HardwareManagerClsLib
         }
         public bool CheckStageEngineValid()
         {
+            if(_boardCardManager.GetCurrentController() != null)
+            {
+                return _boardCardManager.GetCurrentController().IsConnect;
+            }
+            return true;
+        }
+        public bool CheckLightEngineValid()
+        {
+            if (WaferDirectLightController != null && BondRingLightController != null 
+                && BondDirectRedLightController != null && BondDirectGreenLightController != null && BondDirectBlueLightController != null
+                && LookupRingLightController != null && LookupDirectLightController != null)
+            {
+                return WaferDirectLightController.IsConnected && BondRingLightController.IsConnected
+                    && BondDirectRedLightController.IsConnected && BondDirectGreenLightController.IsConnected && BondDirectBlueLightController.IsConnected
+                    && LookupRingLightController.IsConnected && LookupDirectLightController.IsConnected;
+            }
             return true;
         }
         public bool CheckPowerControllerValid()
@@ -361,27 +377,27 @@ namespace HardwareManagerClsLib
         }
         public bool CheckLaserSensorControllerValid()
         {
-            //if (LaserSensorManager.Instance != null)
-            //{
-            //    return LaserSensorManager.Instance.IsConnect;
-            //}
+            if (LaserSensorManager.Instance != null)
+            {
+                return LaserSensorManager.Instance.GetCurrentHardware().IsConnect;
+            }
             return true;
         }
 
         public bool CheckDynamometerControllerValid()
         {
-            //if (LaserSensorManager.Instance != null)
-            //{
-            //    return LaserSensorManager.Instance.IsConnect;
-            //}
+            if (DynamometerManager.Instance != null)
+            {
+                return DynamometerManager.Instance.GetCurrentHardware().IsConnect;
+            }
             return true;
         }
         public bool CheckDispensingMachineControllerValid()
         {
-            //if (LaserSensorManager.Instance != null)
-            //{
-            //    return LaserSensorManager.Instance.IsConnect;
-            //}
+            if(DispensingMachineManager.Instance.GetCurrentHardware() != null)
+            {
+                return DispensingMachineManager.Instance.GetCurrentHardware().IsConnect;
+            }
             return true;
         }
     }

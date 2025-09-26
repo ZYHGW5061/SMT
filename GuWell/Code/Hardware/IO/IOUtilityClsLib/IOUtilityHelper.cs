@@ -110,6 +110,9 @@ namespace IOUtilityClsLib
         }
         public void Start()
         {
+            DataModel.Instance.CurPPtoolName = SystemConfiguration.Instance.JobConfig.CurPPtoolName;
+
+
             _enablePollingIO = true;
             Task.Run(new Action(ReadIOTask));
 
@@ -119,8 +122,8 @@ namespace IOUtilityClsLib
             //_enablePollingIO2 = true;
             //Task.Run(new Action(ReadSerialPortTask2));
 
-            _enablePollingIO3 = true;
-            Task.Run(new Action(ReadSerialPortTask3));
+            //_enablePollingIO3 = true;
+            //Task.Run(new Action(ReadSerialPortTask3));
 
             //_enablePollingIO4 = true;
             //Task.Run(new Action(ReadSerialPortTask4));
@@ -128,7 +131,7 @@ namespace IOUtilityClsLib
             //_enablePollingIO5 = true;
             //Task.Run(new Action(ReadSerialPortTask5));
 
-            SQLiteProgram.Instance.Init();
+            SQLiteProgram.Instance.Init(SystemConfiguration.Instance.JobConfig.SQliteDataSavingPath);
         }
         public bool IsChipPPVaccumOpened()
         {
@@ -205,6 +208,73 @@ namespace IOUtilityClsLib
                 return false;
             }
         }
+
+        /// <summary>
+        /// 打开芯片吸嘴工具真空
+        /// </summary>
+        public bool OpenChipPPtoolVaccum()
+        {
+            _retryMechanismOperation = new RetryMechanismOperation()
+            {
+                MaxRetryCount = 10,
+                ProcessFunc = () =>
+                {
+                    if (GetChipPPtoolVaccumStatus() == 0)
+                    {
+                        Thread.Sleep(300);
+                        return false;
+                    }
+                    return true;
+                }
+            };
+            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.ChipPPtoolVaccumSwitch, 1);
+            if (SystemConfiguration.Instance.JobConfig.EnableVaccumConfirm)
+            {
+                _retryMechanismOperation.Run();
+                if (_retryMechanismOperation.IsSuccess)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// 关闭芯片吸嘴工具真空
+        /// </summary>
+        public bool CloseChipPPtoolVaccum()
+        {
+            _retryMechanismOperation = new RetryMechanismOperation()
+            {
+                MaxRetryCount = 10,
+                ProcessFunc = () =>
+                {
+                    //if (GetChipPPtoolVaccumStatus() == 1)
+                    //{
+                    //    Thread.Sleep(300);
+                    //    return false;
+                    //}
+                    return true;
+                }
+            };
+            _boardCardController.IO_WriteOutPut_2(11, (int)EnumBoardcardDefineOutputIO.ChipPPtoolVaccumSwitch, 0);
+            _retryMechanismOperation.Run();
+            if (_retryMechanismOperation.IsSuccess)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// 打开芯片吸嘴真空
@@ -479,6 +549,18 @@ namespace IOUtilityClsLib
         }
 
         /// <summary>
+        /// 获取芯片工具真空状态
+        /// </summary>
+        /// <returns>0：关闭，1：打开</returns>
+        public int GetChipPPtoolVaccumStatus()
+        {
+            int isOpen = 0;
+            _boardCardController.IO_ReadInput_2(11, (int)EnumBoardcardDefineInputIO.ChipPPExists, out isOpen);
+            return isOpen;
+        }
+
+
+        /// <summary>
         /// 获取PPtool真空状态
         /// </summary>
         /// <returns>0：关闭，1：打开</returns>
@@ -496,7 +578,7 @@ namespace IOUtilityClsLib
         public int GetSubmountPPVaccumStatus()
         {
             int isOpen = 0;
-            _boardCardController.IO_ReadInput_2(11, (int)EnumBoardcardDefineInputIO.SubmountPPVaccumNormally, out isOpen);
+            //_boardCardController.IO_ReadInput_2(11, (int)EnumBoardcardDefineInputIO.SubmountPPVaccumNormally, out isOpen);
             return isOpen;
         }
         public bool IsChipPPBlowOpened()
@@ -749,14 +831,14 @@ namespace IOUtilityClsLib
 
             DataModel.Instance.ChipPPVaccumNormally = msg[(int)EnumBoardcardDefineInputIO.ChipPPVaccumNormally] == 1 ? true : false;
             //DataModel.Instance.SubmountPPVaccumNormally = msg[(int)EnumBoardcardDefineInputIO.SubmountPPVaccumNormally - 1] == 1 ? true : false;
-            DataModel.Instance.EpoxtPON = msg[(int)EnumBoardcardDefineInputIO.EpoxtPON] == 1 ? true : false;
-            DataModel.Instance.EpoxtDSO = msg[(int)EnumBoardcardDefineInputIO.EpoxtDSO] == 1 ? true : false;
-            DataModel.Instance.EpoxtEND = msg[(int)EnumBoardcardDefineInputIO.EpoxtEND] == 1 ? true : false;
-            DataModel.Instance.EpoxtERROR = msg[(int)EnumBoardcardDefineInputIO.EpoxtERROR] == 1 ? true : false;
-            DataModel.Instance.EpoxtALARM = msg[(int)EnumBoardcardDefineInputIO.EpoxtALARM] == 1 ? true : false;
-            DataModel.Instance.EpoxtALARM2 = msg[(int)EnumBoardcardDefineInputIO.EpoxtALARM2] == 1 ? true : false;
-            DataModel.Instance.EpoxtRSM = msg[(int)EnumBoardcardDefineInputIO.EpoxtRSM] == 1 ? true : false;
-            DataModel.Instance.EpoxtREADY = msg[(int)EnumBoardcardDefineInputIO.EpoxtREADY] == 1 ? true : false;
+            //DataModel.Instance.EpoxtPON = msg[(int)EnumBoardcardDefineInputIO.EpoxtPON] == 1 ? true : false;
+            //DataModel.Instance.EpoxtDSO = msg[(int)EnumBoardcardDefineInputIO.EpoxtDSO] == 1 ? true : false;
+            //DataModel.Instance.EpoxtEND = msg[(int)EnumBoardcardDefineInputIO.EpoxtEND] == 1 ? true : false;
+            //DataModel.Instance.EpoxtERROR = msg[(int)EnumBoardcardDefineInputIO.EpoxtERROR] == 1 ? true : false;
+            //DataModel.Instance.EpoxtALARM = msg[(int)EnumBoardcardDefineInputIO.EpoxtALARM] == 1 ? true : false;
+            //DataModel.Instance.EpoxtALARM2 = msg[(int)EnumBoardcardDefineInputIO.EpoxtALARM2] == 1 ? true : false;
+            //DataModel.Instance.EpoxtRSM = msg[(int)EnumBoardcardDefineInputIO.EpoxtRSM] == 1 ? true : false;
+            //DataModel.Instance.EpoxtREADY = msg[(int)EnumBoardcardDefineInputIO.EpoxtREADY] == 1 ? true : false;
 
             DataModel.Instance.TransportInPlaceSignal1 = msg[(int)EnumBoardcardDefineInputIO.TransportInPlaceSignal1] == 1 ? true : false;
             DataModel.Instance.TransportInPlaceSignal2 = msg[(int)EnumBoardcardDefineInputIO.TransportInPlaceSignal2] == 1 ? true : false;
@@ -764,11 +846,22 @@ namespace IOUtilityClsLib
             //DataModel.Instance.EutecticError = msg[(int)EnumBoardcardDefineInputIO.EutecticError - 1] == 1 ? true : false;
             //DataModel.Instance.EutecticComplete = msg[(int)EnumBoardcardDefineInputIO.EutecticComplete - 1] == 1 ? true : false;
 
-            DataModel.Instance.WaferInPlaceSignal1 = msg[(int)EnumBoardcardDefineInputIO.WaferInPlaceSignal1] == 1 ? true : false;
+            //DataModel.Instance.WaferInPlaceSignal1 = msg[(int)EnumBoardcardDefineInputIO.WaferInPlaceSignal1] == 1 ? true : false;
 
-            DataModel.Instance.SafeDoorSensor1 = msg[(int)EnumBoardcardDefineInputIO.SafeDoorSensor1] == 1 ? true : false;
-            DataModel.Instance.SafeDoorSensor2 = msg[(int)EnumBoardcardDefineInputIO.SafeDoorSensor2] == 1 ? true : false;
+            //DataModel.Instance.SafeDoorSensor1 = msg[(int)EnumBoardcardDefineInputIO.SafeDoorSensor1] == 1 ? true : false;
+            //DataModel.Instance.SafeDoorSensor2 = msg[(int)EnumBoardcardDefineInputIO.SafeDoorSensor2] == 1 ? true : false;
 
+
+            DataModel.Instance.ChipPPtoolVaccumNormally = msg[(int)EnumBoardcardDefineInputIO.ChipPPExists] == 1 ? true : false;
+            if(!DataModel.Instance.ChipPPtoolVaccumNormally)
+            {
+                DataModel.Instance.CurPPtoolName = "";
+            }
+
+            DataModel.Instance.TransportUp = msg[(int)EnumBoardcardDefineInputIO.TransportUp] == 1 ? true : false;
+            DataModel.Instance.TransportDown = msg[(int)EnumBoardcardDefineInputIO.TransportDown] == 1 ? true : false;
+            DataModel.Instance.EpoxtUp = msg[(int)EnumBoardcardDefineInputIO.EpoxtUp] == 1 ? true : false;
+            DataModel.Instance.EpoxtDown = msg[(int)EnumBoardcardDefineInputIO.EpoxtDown] == 1 ? true : false;
 
         }
         internal void ParseDataAndUpdateOutputIOValue(List<int> msg)
@@ -792,6 +885,7 @@ namespace IOUtilityClsLib
             DataModel.Instance.ChipPPVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.ChipPPVaccumSwitch] == 1 ? true : false;
             DataModel.Instance.ChipPPBlowSwitch = msg[(int)EnumBoardcardDefineOutputIO.ChipPPBlowSwitch] == 1 ? true : false;
             DataModel.Instance.EpoxtliftCylinder = msg[(int)EnumBoardcardDefineOutputIO.EpoxtliftCylinder ] == 1 ? true : false;
+            DataModel.Instance.ChipPPtoolVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.ChipPPtoolVaccumSwitch] == 1 ? true : false;
             DataModel.Instance.EpoxtDIS = msg[(int)EnumBoardcardDefineOutputIO.EpoxtDIS ] == 1 ? true : false;
             DataModel.Instance.EpoxtENABLE = msg[(int)EnumBoardcardDefineOutputIO.EpoxtENABLE ] == 1 ? true : false;
             DataModel.Instance.EpoxtTMD = msg[(int)EnumBoardcardDefineOutputIO.EpoxtTMD ] == 1 ? true : false;
@@ -802,7 +896,7 @@ namespace IOUtilityClsLib
             //DataModel.Instance.SubmountPPBlowSwitch = msg[(int)EnumBoardcardDefineOutputIO.SubmountPPBlowSwitch ] == 1 ? true : false;
 
             DataModel.Instance.TransportCylinder1 = msg[(int)EnumBoardcardDefineOutputIO.TransportCylinder1 ] == 1 ? true : false;
-            DataModel.Instance.TransportCylinder2 = msg[(int)EnumBoardcardDefineOutputIO.TransportCylinder2 ] == 1 ? true : false;
+            //DataModel.Instance.TransportCylinder2 = msg[(int)EnumBoardcardDefineOutputIO.TransportCylinder2 ] == 1 ? true : false;
             DataModel.Instance.TransportVaccumSwitch1 = msg[(int)EnumBoardcardDefineOutputIO.TransportVaccumSwitch1 ] == 1 ? true : false;
             DataModel.Instance.TransportVaccumSwitch2 = msg[(int)EnumBoardcardDefineOutputIO.TransportVaccumSwitch2 ] == 1 ? true : false;
             //DataModel.Instance.EutecticPlatformVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.EutecticPlatformVaccumSwitch ] == 1 ? true : false;
@@ -813,10 +907,11 @@ namespace IOUtilityClsLib
             
             DataModel.Instance.EjectionSystemVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.EjectionSystemVaccumSwitch ] == 1 ? true : false;
             DataModel.Instance.EjectionSystemBlowSwitch = msg[(int)EnumBoardcardDefineOutputIO.EjectionSystemBlowSwitch ] == 1 ? true : false;
-            DataModel.Instance.WaferFingerCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferFingerCylinder ] == 1 ? true : false;
-            DataModel.Instance.WaferClampCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferClampCylinder ] == 1 ? true : false;
-            DataModel.Instance.WaferCassetteCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferCassetteCylinder ] == 1 ? true : false;
-            DataModel.Instance.WaferTableVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.StatisticWaffleVaccumSwitch ] == 1 ? true : false;
+            //DataModel.Instance.WaferFingerCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferFingerCylinder ] == 1 ? true : false;
+            //DataModel.Instance.WaferClampCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferClampCylinder ] == 1 ? true : false;
+            //DataModel.Instance.WaferCassetteCylinder = msg[(int)EnumBoardcardDefineOutputIO.WaferCassetteCylinder ] == 1 ? true : false;
+            DataModel.Instance.WaferTableVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.WaferVaccumSwitch ] == 1 ? true : false;
+            DataModel.Instance.MaterialPlatformVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.StatisticWaffleVaccumSwitch] == 1 ? true : false;
             //DataModel.Instance.MaterialPlatformVaccumSwitch = msg[(int)EnumBoardcardDefineOutputIO.TowerYellowLight ] == 1 ? true : false;
 
             DataModel.Instance.TowerRedLight = msg[(int)EnumBoardcardDefineOutputIO.TowerRedLight ] == 1 ? true : false;
@@ -837,12 +932,18 @@ namespace IOUtilityClsLib
                 }
                 AxisConfig _axisConfig = _hardwareConfig.StageConfig.GetAixsConfigByType(axis);
 
-                if (_axisConfig?.RunningType == EnumRunningType.Actual)
+                if (_axisConfig?.RunningType == EnumRunningType.Actual && DataModel.Instance.StageRead)
                 {
                     var pos = (float)_boardCardController.GetCurrentPosition(axis);
                     var sta = (int)_boardCardController.GetAxisState(axis);
                     //IOManager.Instance.ChangeIOValue("Stage.BondXSta", sta);
-                    
+
+                    short bit = 1;
+                    if((sta & (1 << bit)) != 0)
+                    {
+                        DataModel.Instance.SysAlarmSta = true;
+                        DataModel.Instance.SysAlarmStalog = "100002";
+                    }
 
                     if (axis == EnumStageAxis.BondX)
                     {

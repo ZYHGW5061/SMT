@@ -1,4 +1,5 @@
-﻿using ConfigurationClsLib;
+﻿using CommonPanelClsLib;
+using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
 using GlobalToolClsLib;
 using IOUtilityClsLib;
@@ -165,7 +166,7 @@ namespace JobClsLib
                 }
 
                 sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"吸嘴缓降吸取芯片{sw.ElapsedMilliseconds}ms \n");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, $"吸嘴缓降吸取芯片{sw.ElapsedMilliseconds}ms \n");
 
                 sw.Reset();
                 sw.Start();
@@ -227,7 +228,7 @@ namespace JobClsLib
                 }
 
                 sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"吸嘴缓升{sw.ElapsedMilliseconds}ms \n");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, $"吸嘴缓升{sw.ElapsedMilliseconds}ms \n");
 
                 ret = true;
             }
@@ -330,7 +331,7 @@ namespace JobClsLib
                 }
 
                 sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"吸嘴缓降放下芯片{sw.ElapsedMilliseconds}ms \n");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, $"吸嘴缓降放下芯片{sw.ElapsedMilliseconds}ms \n");
 
                 sw.Reset();
                 sw.Start();
@@ -377,7 +378,7 @@ namespace JobClsLib
                 }
 
                 sw.Stop();
-                LogRecorder.RecordLog(EnumLogContentType.Info, $"吸嘴缓升{sw.ElapsedMilliseconds}ms \n");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, $"吸嘴缓升{sw.ElapsedMilliseconds}ms \n");
 
                 ret = true;
             }
@@ -439,12 +440,13 @@ namespace JobClsLib
                 //        return false;
                 //    }
                 //}
-
+                
                 if (param.PPtoolName != null)
                 {
                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                     if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                         {
                             if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
@@ -469,7 +471,7 @@ namespace JobClsLib
                 //    return false;
                 //}
 
-               
+
                 //if (param.IsUseNeedle)
                 //{
                 //    if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
@@ -487,17 +489,25 @@ namespace JobClsLib
                 //        return false;
                 //    }
                 //}
+
                 var terminal = param.WorkHeight - param.PickupStress;
+                if (param.ZRmode)
+                {
+                    terminal = param.WorkHeight;
+                }
+                
                 //var terminal = param.WorkHeight;
-                var quickTravelTarget = terminal + param.SlowTravelAfterPickupMM;
+                var quickTravelTarget = terminal - param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-下降-Start.");
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-下降-Start.");
+                     ExecutionController.Instance.WaitIfPaused();
                      //快速下降
                      if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, quickTravelTarget, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
                      {
                          return false;
                      }
+                     ExecutionController.Instance.WaitIfPaused();
                      //慢速下降
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedBeforePickup);
                      //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, terminal, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -509,8 +519,19 @@ namespace JobClsLib
                      {
                          return false;
                      }
+                     if (param.ZRmode)
+                     {
+                         var pptoolZR = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                         var axisConfigZR = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == pptoolZR.StageAxisZ);
 
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-下降-End.");
+                         if (axisConfigZR.StageType == EnumStageType.ZR)
+                         {
+                             
+                         }
+                     }
+
+
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-下降-End.");
                      return true;
                  })))
                 {
@@ -519,7 +540,7 @@ namespace JobClsLib
                 //下压之后，再开吸嘴真空，再顶针顶起
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-开真空-Start.");
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-开真空-Start.");
                      //if (param.UsedPP == EnumUsedPP.ChipPP)
                      //{
                      //    //开真空
@@ -536,7 +557,7 @@ namespace JobClsLib
                      //        return false;
                      //    }
                      //}
-
+                     ExecutionController.Instance.WaitIfPaused();
                      var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                      //开真空
                      if (!IOUtilityHelper.Instance.OpenPPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally) && _systemConfig.JobConfig.EnableVaccumConfirm)
@@ -545,7 +566,7 @@ namespace JobClsLib
                      }
 
 
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-开真空-End.");
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-开真空-End.");
                      return true;
                  })))
                 {
@@ -557,6 +578,7 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.NeedleZ, param.NeedleSpeed);
                         //NeedleZ上升时绝对坐标变小
                         var actualAngle = param.NeedleUpHeight / (8f / 360f);
@@ -583,7 +605,8 @@ namespace JobClsLib
                 var slowTravelTargetAfterPickup = terminal + param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                  {
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-上升-Start.");
+                     ExecutionController.Instance.WaitIfPaused();
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-上升-Start.");
                      //慢速上升
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedAfterPickup);
                      //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, slowTravelTargetAfterPickup, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -596,6 +619,8 @@ namespace JobClsLib
                      {
                          return false;
                      }
+
+                     ExecutionController.Instance.WaitIfPaused();
                      //快速抬升
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                      //if (param.UsedPP == EnumUsedPP.SubmountPP)
@@ -618,7 +643,7 @@ namespace JobClsLib
                          return false;
                      }
 
-                     LogRecorder.RecordLog(EnumLogContentType.Info, "PickViaSystemCoor-上升-End.");
+                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PickViaSystemCoor-上升-End.");
                      return true;
                  })))
                 {
@@ -628,6 +653,7 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         var actualAngle = param.NeedleUpHeight / (8f / 360f);
                         if (_positioningSystem.MoveAixsToStageCoord(EnumStageAxis.NeedleZ, -actualAngle, EnumCoordSetType.Relative) == StageMotionResult.Fail)
                         {
@@ -690,7 +716,7 @@ namespace JobClsLib
                 {
                     actBefore();
                 }
-                LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-Start.");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-Start.");
                 var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
                 float speed_init = (float)axisConfig.AxisSpeed;
 
@@ -735,6 +761,7 @@ namespace JobClsLib
                     var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                     if (pptool.EnumPPtool == EnumPPtool.PPtool2)
                     {
+                        ExecutionController.Instance.WaitIfPaused();
                         if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                         {
                             if (_systemConfig.SystemMode == EnumSystemMode.Eutectic)
@@ -761,15 +788,17 @@ namespace JobClsLib
 
 
                 var terminal = param.WorkHeight - param.PickupStress; ;
-                var quickTravelTarget = terminal + param.SlowTravelAfterPickupMM;
+                var quickTravelTarget = terminal - param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                 {
-                    LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-下降-Start.");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-下降-Start.");
+                    ExecutionController.Instance.WaitIfPaused();
                     //快速下降
                     if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, quickTravelTarget, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
                     {
                         return false;
                     }
+                    ExecutionController.Instance.WaitIfPaused();
                     //慢速下降
                     _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedBeforePickup);
                     //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, terminal, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -780,7 +809,7 @@ namespace JobClsLib
                     {
                         return false;
                     }
-                    LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-下降-End.");
+                    LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-下降-End.");
                     return true;
                 })))
                 {
@@ -791,7 +820,7 @@ namespace JobClsLib
                 {
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                      {
-                         LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-VuccumOperate-Start.");
+                         LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-VuccumOperate-Start.");
                          Thread.Sleep((int)param.DelayMSForPlace);
                          //if (param.UsedPP == EnumUsedPP.ChipPP)
                          //{
@@ -815,14 +844,17 @@ namespace JobClsLib
 
                          var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                          //关真空
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.ClosePPtoolVaccum(pptool.PPVaccumSwitch, pptool.PPVaccumNormally);
                          Thread.Sleep(10);
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.OpenPPtoolBlow(pptool.PPBlowSwitch);
                          Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.ClosePPtoolBlow(pptool.PPBlowSwitch);
 
                          //Thread.Sleep((int)param.DelayMSForVaccum);
-                         LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-VuccumOperate-End.");
+                         LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-VuccumOperate-End.");
                          return true;
                      })))
                     {
@@ -836,7 +868,8 @@ namespace JobClsLib
                     var slowTravelTargetAfterPickup = terminal + param.SlowTravelAfterPickupMM;
                     if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                     {
-                        LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-上升-Start.");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-上升-Start.");
+                        ExecutionController.Instance.WaitIfPaused();
                         //慢速上升
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedAfterPickup);
                         //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, slowTravelTargetAfterPickup, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
@@ -847,6 +880,7 @@ namespace JobClsLib
                         {
                             return false;
                         }
+                        ExecutionController.Instance.WaitIfPaused();
                         //快速上升
                         _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, (float)speed_init);
                         //if (param.UsedPP == EnumUsedPP.SubmountPP)
@@ -869,7 +903,7 @@ namespace JobClsLib
                             return false;
                         }
 
-                        LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-上升-End.");
+                        LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-上升-End.");
                         return true;
                     })))
                     {
@@ -891,7 +925,7 @@ namespace JobClsLib
                     //    }
                     //}
                 }
-                LogRecorder.RecordLog(EnumLogContentType.Info, "PlaceViaSystemCoor-End.");
+                LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-End.");
                 ret = true;
             }
             catch (Exception ex)
@@ -908,36 +942,190 @@ namespace JobClsLib
         }
 
 
-
-
-        public void LoadPPTool(string ppToolName)
+        public bool UnloadPPTool(string ppToolName)
         {
+            bool res = false;
             PPToolSettings currentTool = null;
             if (!string.IsNullOrEmpty(ppToolName))
             {
                 currentTool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppToolName);
+
+                if(_systemConfig.PositioningConfig.ChipPPPosBracket != null && _systemConfig.PositioningConfig.ChipPPPosBracket.Count > 5)
+                {
+                    if (_systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].X == 0 || 
+                        _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].Y == 0 ||
+                        _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].Z == 0)
+                    {
+                        WarningBox.FormShow("动作确认", $"吸嘴架位置{currentTool.BracketIndex}不存在", "警告");
+                        return res;
+                    }
+                }
+                else
+                {
+                    WarningBox.FormShow("动作确认", "吸嘴架位置不存在", "警告");
+                    return res;
+                }
+                currentTool.ChipPPPosBracket = _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex];
+            }
+            else
+            {
+                return res;
             }
             if (currentTool != null)
             {
-                //旋转PPTool转台
-                PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.PPtoolBankTheta, currentTool.RotationTablePos4LoadPP, EnumCoordSetType.Absolute);
-                //
+                var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                float Zspeed_init = (float)axisConfig.AxisSpeed;
+                float Zspeed_slow = (float)axisConfig.LowAxisSpeed;
+                axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondX);
+                float Xspeed_init = (float)axisConfig.AxisSpeed;
+                float Xspeed_slow = (float)axisConfig.LowAxisSpeed;
+                axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondY);
+                float Yspeed_init = (float)axisConfig.AxisSpeed;
+                float Yspeed_slow = (float)axisConfig.LowAxisSpeed;
+
+                var result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                if (result == StageMotionResult.Success)
+                {
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    multiAxis[2] = EnumStageAxis.ChipPPT;
+
+                    double[] target1 = new double[3];
+                    target1[0] = currentTool.ChipPPPosBracket.X;
+                    target1[1] = currentTool.ChipPPPosBracket.Y - 23;
+                    target1[2] = currentTool.ChipPPPosBracket.Theta;
+
+                    result = _positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Absolute);
+                    if (result == StageMotionResult.Success)
+                    {
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_slow);
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_slow);
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_slow);
+                        result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentTool.ChipPPPosBracket.Z, EnumCoordSetType.Absolute);
+                        if (result == StageMotionResult.Success)
+                        {
+                            IOUtilityHelper.Instance.CloseChipPPtoolVaccum();
+                            Thread.Sleep(500);
+                            result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondY, currentTool.ChipPPPosBracket.Y, EnumCoordSetType.Absolute);
+
+                            if (result == StageMotionResult.Success)
+                            {
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
+                                result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                                if (result == StageMotionResult.Success)
+                                {
+                                    result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                    res = true;
+                                    DataModel.Instance.CurPPtoolName = "";
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
             }
 
+            
+
+            return res;
         }
-        public void UnloadPPTool(string ppToolName)
+
+
+        public bool LoadPPTool(string ppToolName)
         {
+            bool res = false;
             PPToolSettings currentTool = null;
             if (!string.IsNullOrEmpty(ppToolName))
             {
                 currentTool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == ppToolName);
+                if (_systemConfig.PositioningConfig.ChipPPPosBracket != null && _systemConfig.PositioningConfig.ChipPPPosBracket.Count > 5)
+                {
+                    if (_systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].X == 0 ||
+                        _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].Y == 0 ||
+                        _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex].Z == 0)
+                    {
+                        WarningBox.FormShow("动作确认", $"吸嘴架位置{currentTool.BracketIndex}不存在", "警告");
+                        return res;
+                    }
+                }
+                else
+                {
+                    WarningBox.FormShow("动作确认", "吸嘴架位置不存在", "警告");
+                    return res;
+                }
+                currentTool.ChipPPPosBracket = _systemConfig.PositioningConfig.ChipPPPosBracket[currentTool.BracketIndex];
+            }
+            else
+            {
+                return res;
             }
             if (currentTool != null)
             {
-                //旋转PPTool转台
-                PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.PPtoolBankTheta, currentTool.RotationTablePos4LoadPP, EnumCoordSetType.Absolute);
-                //
+                var axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondZ);
+                float Zspeed_init = (float)axisConfig.AxisSpeed;
+                float Zspeed_slow = (float)axisConfig.LowAxisSpeed;
+                axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondX);
+                float Xspeed_init = (float)axisConfig.AxisSpeed;
+                float Xspeed_slow = (float)axisConfig.LowAxisSpeed;
+                axisConfig = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == EnumStageAxis.BondY);
+                float Yspeed_init = (float)axisConfig.AxisSpeed;
+                float Yspeed_slow = (float)axisConfig.LowAxisSpeed;
+
+                var result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                if (result == StageMotionResult.Success)
+                {
+                    EnumStageAxis[] multiAxis = new EnumStageAxis[3];
+                    multiAxis[0] = EnumStageAxis.BondX;
+                    multiAxis[1] = EnumStageAxis.BondY;
+                    multiAxis[2] = EnumStageAxis.ChipPPT;
+                    double[] target1 = new double[3];
+                    target1[0] = currentTool.ChipPPPosBracket.X;
+                    target1[1] = currentTool.ChipPPPosBracket.Y;
+                    target1[2] = currentTool.ChipPPPosBracket.Theta;
+                    result = _positioningSystem.MoveAixsToStageCoord(multiAxis, target1, EnumCoordSetType.Absolute);
+                    if (result == StageMotionResult.Success)
+                    {
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_slow);
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_slow);
+                        _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_slow);
+                        result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, currentTool.ChipPPPosBracket.Z, EnumCoordSetType.Absolute);
+                        if (result == StageMotionResult.Success)
+                        {
+                            Thread.Sleep(500);
+                            IOUtilityHelper.Instance.OpenChipPPtoolVaccum();
+                            result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondY, currentTool.ChipPPPosBracket.Y - 23, EnumCoordSetType.Absolute);
+
+                            if (result == StageMotionResult.Success)
+                            {
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
+                                Thread.Sleep(500);
+                                result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.BondZ, _systemConfig.PositioningConfig.BondSafeLocation.Z, EnumCoordSetType.Absolute);
+                                if (result == StageMotionResult.Success)
+                                {
+                                    result = PositioningSystem.Instance.MoveAixsToStageCoord(EnumStageAxis.ChipPPT, 0, EnumCoordSetType.Absolute);
+                                    res = true;
+                                    DataModel.Instance.CurPPtoolName = ppToolName;
+                                }
+                            }
+                        }
+                    }
+                }
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondX, Xspeed_init);
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondY, Yspeed_init);
+                _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, Zspeed_init);
             }
+            return res;
         }
+
+
     }
 }

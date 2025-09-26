@@ -81,7 +81,7 @@ namespace BondTerminal
                     ////初始化硬件环境
                     ConnectingStage();
                     ConnectingLightController();
-                    ConnectingPowerController();
+                    //ConnectingPowerController();
                     ConnectingDispensingMachineController();
                     ConnectingCameras();
                     ConnectingLaserSensorController();
@@ -92,7 +92,7 @@ namespace BondTerminal
 
                     //_ConnectStageSuccess = true;
                     //_ConnectLightControllerSuccess = true;
-                    //_ConnectPowerControllerSuccess = true;
+                    _ConnectPowerControllerSuccess = true;
                     //_ConnectDispensingMachineControllerSuccess = true;
                     //_ConnectCameraSuccess = true;
                     //_ConnectLaserSensorSuccess = true;
@@ -113,7 +113,7 @@ namespace BondTerminal
                         }
                         Thread.Sleep(100);
                         _timeOut += 100;
-                        if (_timeOut >= 180000)
+                        if (_timeOut >= 60000)
                         {
                             this.Invoke(new Action(() => { this.btnExit.Visible = true; XtraMessageBox.Show("初始化超时!"); this.DialogResult = DialogResult.No; }));
                             break;
@@ -168,17 +168,20 @@ namespace BondTerminal
                     _systemInitializeSuccess = true;
                     this.Invoke((MethodInvoker)delegate
                     {
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "系统初始化完成.");
                         SetProgressCaption("系统配置初始化完成。", labelRunningType);
                     });
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "InitializeSystem Error.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "系统初始化错误.", ex);
                     successful = false;
                 }
                 if (!successful)
                 {
-                    this.Invoke(new Action(() => { SetProgressCaption("系统配置初始化失败!", labelFailInfo); this.labelFailInfo.Visible = true; this.btnExit.Visible = true; }));
+                    this.Invoke(new Action(() => {
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "系统初始化失败.");
+                        SetProgressCaption("系统配置初始化失败!", labelFailInfo); this.labelFailInfo.Visible = true; this.btnExit.Visible = true; }));
                 }
             });
         }
@@ -213,6 +216,7 @@ namespace BondTerminal
                     
                     if (success)
                     {
+                        LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "视觉初始化完成.");
                         VisualControlGuiManger.Instance.Initialize();
                         //this.Invoke((MethodInvoker)delegate
                         //{
@@ -233,7 +237,7 @@ namespace BondTerminal
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect Cameras.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "视觉初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -241,6 +245,7 @@ namespace BondTerminal
                     if (!success)
                     {
                         this.Invoke(new Action(() => {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "视觉初始化失败.");
                             SetProgressCaption("视觉初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true;
                         }));
@@ -265,19 +270,21 @@ namespace BondTerminal
                     {
                         HardwareManager.Instance.ConnectHardware(EnumHardwareType.Stage);
                     }
-                    _ConnectStageSuccess = success;
-                    if (success)
+                    _ConnectStageSuccess = HardwareManager.Instance.CheckStageEngineValid();
+                    success = _ConnectStageSuccess;
+                    if (_ConnectStageSuccess)
                     {
                         this.Invoke((MethodInvoker)delegate
                         {
-                            SetProgressCaption("Stage初始化完成。", labelRunningType);
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "板卡初始化完成.");
+                            SetProgressCaption("板卡初始化完成.", labelRunningType);
                         });
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect Stage.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "板卡初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -286,7 +293,8 @@ namespace BondTerminal
                     {
                         if (!success)
                         {
-                            SetProgressCaption("Stage初始化失败!", labelFailInfo);
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "板卡初始化失败.");
+                            SetProgressCaption("板卡初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true;
                             this.btnExit.Visible = true;
                             return;
@@ -311,19 +319,21 @@ namespace BondTerminal
                     {
                         HardwareManager.Instance.ConnectHardware(EnumHardwareType.Light);
                     }
-                    _ConnectLightControllerSuccess = success;
+                    _ConnectLightControllerSuccess = HardwareManager.Instance.CheckLightEngineValid();
+                    success = _ConnectLightControllerSuccess;
                     if (_ConnectLightControllerSuccess)
                     {
                         this.Invoke((MethodInvoker)delegate
                         {
                             //SetProgressCaption("Connect DarkField Success.", labelRunningType);
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "光源初始化完成.");
                             SetProgressCaption("光源初始化完成。", labelRunningType);
                         });
                     }
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect Darkfield.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "光源初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -331,6 +341,7 @@ namespace BondTerminal
                     this.Invoke(new Action(() => {
                         if (!success)
                         {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "光源初始化失败.");
                             SetProgressCaption("光源初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true; return;
                         }
@@ -361,6 +372,7 @@ namespace BondTerminal
                     {
                         this.Invoke((MethodInvoker)delegate
                         {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "相机初始化完成.");
                             SetProgressCaption("相机初始化完成。", labelRunningType);
                         });
                     }
@@ -381,7 +393,7 @@ namespace BondTerminal
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect Cameras.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "相机初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -389,6 +401,7 @@ namespace BondTerminal
                     if (!success)
                     {
                         this.Invoke(new Action(() => {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "相机初始化失败.");
                             SetProgressCaption("相机初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true;
                         }));
@@ -472,6 +485,7 @@ namespace BondTerminal
                             this.Invoke((MethodInvoker)delegate
                             {
                                 //SetProgressCaption("Connect DispensingMachine Controller Success.", labelRunningType);
+                                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "点胶机初始化完成.");
                                 SetProgressCaption("点胶机初始化完成。", labelRunningType);
                             });
                         }
@@ -487,7 +501,7 @@ namespace BondTerminal
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect DispensingMachineController.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "点胶机初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -495,6 +509,7 @@ namespace BondTerminal
                     if (!success)
                     {
                         this.Invoke(new Action(() => {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "点胶机初始化失败.");
                             SetProgressCaption("点胶机初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true;
                         }));
@@ -525,7 +540,7 @@ namespace BondTerminal
                         {
                             this.Invoke((MethodInvoker)delegate
                             {
-                                //SetProgressCaption("Connect Power Controller Success.", labelRunningType);
+                                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "激光传感器初始化完成.");
                                 SetProgressCaption("激光传感器初始化完成。", labelRunningType);
                             });
                         }
@@ -541,7 +556,7 @@ namespace BondTerminal
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect PowerController.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "激光传感器初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -549,6 +564,7 @@ namespace BondTerminal
                     if (!success)
                     {
                         this.Invoke(new Action(() => {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "激光传感器初始化失败.");
                             SetProgressCaption("激光传感器初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true;
                         }));
@@ -589,7 +605,7 @@ namespace BondTerminal
                         {
                             this.Invoke((MethodInvoker)delegate
                             {
-                                //SetProgressCaption("Connect Power Controller Success.", labelRunningType);
+                                LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, "测力传感器初始化完成.");
                                 SetProgressCaption("测力传感器初始化完成。", labelRunningType);
                             });
                         }
@@ -605,7 +621,7 @@ namespace BondTerminal
                 }
                 catch (Exception ex)
                 {
-                    //LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "Failed to connect PowerController.", ex);
+                    LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "测力传感器初始化失败.", ex);
                     success = false;
                 }
                 finally
@@ -613,6 +629,7 @@ namespace BondTerminal
                     if (!success)
                     {
                         this.Invoke(new Action(() => {
+                            LogRecorder.RecordLog(WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Error, "测力传感器初始化失败.");
                             SetProgressCaption("测力传感器初始化失败!", labelFailInfo);
                             this.labelFailInfo.Visible = true; this.btnExit.Visible = true;
                         }));

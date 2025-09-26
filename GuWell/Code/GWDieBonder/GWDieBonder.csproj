@@ -163,6 +163,10 @@
       <Project>{8A97DB83-A47B-4BD8-A22D-7D9CD3A2273B}</Project>
       <Name>SystemCalibrationClsLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\Process\RecipeClsLib\RecipeClsLib.csproj">
+      <Project>{633B7024-D607-496E-9800-84284C801D06}</Project>
+      <Name>RecipeClsLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\UserManagement\UserManagerClsLib\UserManagerClsLib.csproj">
       <Project>{c8603800-c34d-4a21-9047-dbb78750cbba}</Project>
       <Name>UserManagerClsLib</Name>
@@ -207,6 +211,10 @@
       <Project>{f0d61c4f-2bbc-4af2-bc39-a79ad118758d}</Project>
       <Name>StageCtrlPanelLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GUI\SystemGUILib\SystemGUILib.csproj">
+      <Project>{64E4FE8B-5EF8-4819-A251-818941D7E581}</Project>
+      <Name>SystemGUILib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GUI\VisionGUI\VisionGUI.csproj">
       <Project>{5A415076-754D-4525-B9B6-808AF1B3E6FB}</Project>
       <Name>VisionGUI</Name>
@@ -222,6 +230,10 @@
     <ProjectReference Include="..\Hardware\Stage\StageManagerClsLib\StageManagerClsLib.csproj">
       <Project>{8f2593f4-ddd8-4790-8182-2ede2a7e21bd}</Project>
       <Name>StageManagerClsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Product\ProductRunClsLib\ProductRunClsLib.csproj">
+      <Project>{1AEB9A48-A62E-4957-9EE2-163617631EDA}</Project>
+      <Name>ProductRunClsLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

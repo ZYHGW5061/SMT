@@ -97,11 +97,11 @@ namespace RecipeEditPanelClsLib
             ParentRootNode.Nodes.Clear();
             this.Invoke(new Action(() =>
             {
-                string recipeDir = _systemConfig.SystemDefaultDirectory + @"Recipes\Bonder";
+                string recipeDir = _systemConfig.JobConfig.RecipeSavingPath + @"Recipes\Bonder";
                 CommonProcess.EnsureFolderExist(recipeDir);
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\Components\", _systemConfig.SystemDefaultDirectory));
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\BondPositions\", _systemConfig.SystemDefaultDirectory));
-                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\EpoxyApplication\", _systemConfig.SystemDefaultDirectory));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\Components\", _systemConfig.JobConfig.RecipeSavingPath));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\BondPositions\", _systemConfig.JobConfig.RecipeSavingPath));
+                CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\EpoxyApplication\", _systemConfig.JobConfig.RecipeSavingPath));
                 var recipeFiles = Directory.GetDirectories(recipeDir);
                 for (int recipeIndex = 0; recipeIndex < recipeFiles.Length; recipeIndex++)
                 {
@@ -216,6 +216,13 @@ namespace RecipeEditPanelClsLib
             if (addProductDialog.ShowDialog(this.FindForm()) == DialogResult.OK)
             {
                 string newRecipeName = addProductDialog.RecipeName;
+                string _currentToolName = addProductDialog.ESToolName;
+                ESToolSettings currentTool = null;
+                if (!string.IsNullOrEmpty(_currentToolName))
+                {
+                    currentTool = _systemConfig.ESToolSettings.FirstOrDefault(i => i.Name == _currentToolName);
+                    
+                }
                 TreeListNode recipeNodes = ParentRootNode;
 
                 if (!IsExistRecipeName(newRecipeName, EnumRecipeType.Bonder))
@@ -224,15 +231,21 @@ namespace RecipeEditPanelClsLib
                     recipeNode.SetValue(0, newRecipeName);
                     BondRecipe recipeAdded = new BondRecipe()
                     {
-                        RecipeName = newRecipeName
+                        RecipeName = newRecipeName,
+
                     };
+                    if (currentTool != null)
+                    {
+                        recipeAdded.DispenserName = currentTool.Name;
+                    }
+                    
                     recipeNode.StateImageIndex = 1;
                     recipeNode.ImageIndex = 1;
                     recipeNode.SelectImageIndex = 1;
                     recipeNode.Tag = recipeAdded;
-                    string fullRecipeName = string.Format(@"{0}Recipes\{1}\{2}\{3}.xml", _systemConfig.SystemDefaultDirectory, EnumRecipeType.Bonder.ToString(), newRecipeName, newRecipeName);
-                    string fullRecipeFolder = string.Format(@"{0}Recipes\{1}\{2}\", _systemConfig.SystemDefaultDirectory, EnumRecipeType.Bonder.ToString(), newRecipeName);
-                    string templateFolderName = $@"{_systemConfig.SystemDefaultDirectory}Recipes\{EnumRecipeType.Bonder.ToString()}\{newRecipeName}\TemplateConfig\";
+                    string fullRecipeName = string.Format(@"{0}Recipes\{1}\{2}\{3}.xml", _systemConfig.JobConfig.RecipeSavingPath, EnumRecipeType.Bonder.ToString(), newRecipeName, newRecipeName);
+                    string fullRecipeFolder = string.Format(@"{0}Recipes\{1}\{2}\", _systemConfig.JobConfig.RecipeSavingPath, EnumRecipeType.Bonder.ToString(), newRecipeName);
+                    string templateFolderName = $@"{_systemConfig.JobConfig.RecipeSavingPath}Recipes\{EnumRecipeType.Bonder.ToString()}\{newRecipeName}\TemplateConfig\";
                     CommonProcess.EnsureFolderExist(templateFolderName);
                     recipeAdded.NewRecipe(fullRecipeName,EnumRecipeStep.Create);
                     treeList1.ExpandAll();
@@ -570,7 +583,7 @@ namespace RecipeEditPanelClsLib
         /// <returns></returns>
         private bool IsExistRecipeName(string newRecipeName, EnumRecipeType type)
         {
-            string recipeDir = string.Format(@"{0}Recipes\{1}", _systemConfig.SystemDefaultDirectory, type.ToString());
+            string recipeDir = string.Format(@"{0}Recipes\{1}", _systemConfig.JobConfig.RecipeSavingPath, type.ToString());
             string[] recipeFiles = Directory.GetDirectories(recipeDir);
             foreach (string filePath in recipeFiles)
             {

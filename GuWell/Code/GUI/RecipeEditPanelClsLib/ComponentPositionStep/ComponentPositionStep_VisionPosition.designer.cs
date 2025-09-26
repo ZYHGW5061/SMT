@@ -42,7 +42,6 @@ namespace RecipeEditPanelClsLib
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.visualMatchControlGUI1 = new VisionGUI.VisualMatchControlGUI();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.stageQuickMove1 = new StageCtrlPanelLib.StageQuickMove();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
@@ -126,32 +125,12 @@ namespace RecipeEditPanelClsLib
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.visualMatchControlGUI1);
             this.tabPage1.Location = new System.Drawing.Point(4, 23);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(345, 566);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "设置模板";
-            // 
-            // visualMatchControlGUI1
-            // 
-            this.visualMatchControlGUI1.AngleRange = 15;
-            this.visualMatchControlGUI1.DirectLightintensity = 0;
-            this.visualMatchControlGUI1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.visualMatchControlGUI1.Location = new System.Drawing.Point(3, 3);
-            this.visualMatchControlGUI1.MatchRunfilepath = "D:\\00-Work\\10-SVN\\01-贴片机\\00-Dev\\trunk\\BondTerminal\\MatchRun.contourmxml";
-            this.visualMatchControlGUI1.MatchTemplatefilepath = "D:\\00-Work\\10-SVN\\01-贴片机\\00-Dev\\trunk\\BondTerminal\\MatchTemplate.contourmxml";
-            this.visualMatchControlGUI1.Name = "visualMatchControlGUI1";
-            this.visualMatchControlGUI1.OutlineAngle = 0F;
-            this.visualMatchControlGUI1.OutlineDeviation = ((System.Drawing.PointF)(resources.GetObject("visualMatchControlGUI1.OutlineDeviation")));
-            this.visualMatchControlGUI1.RingLightintensity = 0;
-            this.visualMatchControlGUI1.Score = 0.5F;
-            //this.visualMatchControlGUI1.SearchRoi = ((RectangleFV)(resources.GetObject("visualMatchControlGUI1.SearchRoi")));
-            this.visualMatchControlGUI1.Size = new System.Drawing.Size(339, 560);
-            this.visualMatchControlGUI1.TabIndex = 0;
-            this.visualMatchControlGUI1.Templateresult = matchTemplateResult1;
-            //this.visualMatchControlGUI1.TemplateRoi = ((RectangleFV)(resources.GetObject("visualMatchControlGUI1.TemplateRoi")));
             // 
             // tabPage2
             // 
@@ -170,7 +149,7 @@ namespace RecipeEditPanelClsLib
             this.stageQuickMove1.Name = "stageQuickMove1";
             this.stageQuickMove1.PositiveQucikMoveAct = null;
             this.stageQuickMove1.SelectedAxisSystem = GlobalDataDefineClsLib.EnumSystemAxis.XY;
-            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem.BondTable;
+            this.stageQuickMove1.SelectedStageSystem = GlobalDataDefineClsLib.EnumStageSystem2.BondTable;
             this.stageQuickMove1.Size = new System.Drawing.Size(269, 317);
             this.stageQuickMove1.TabIndex = 0;
             // 
@@ -206,6 +185,5 @@ namespace RecipeEditPanelClsLib
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private StageCtrlPanelLib.StageQuickMove stageQuickMove1;
-        private VisionGUI.VisualMatchControlGUI visualMatchControlGUI1;
     }
 }

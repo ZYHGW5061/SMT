@@ -12,7 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using UserManagerClsLib;
 using WestDragon.Framework.UtilityHelper;
 using static GlobalToolClsLib.GlobalCommFunc;
 
@@ -33,6 +35,8 @@ namespace MainGUI.Forms.ProductMenu
         public List<string> ProdRecipeNameList;
         public BondRecipe curRecipe = null;
 
+        SynchronizationContext _syncContext;
+
         private SystemConfiguration _systemConfig
         {
             get { return SystemConfiguration.Instance; }
@@ -47,7 +51,36 @@ namespace MainGUI.Forms.ProductMenu
             fillProductList();
             _hookID = SetHook(_proc);
 
+            _syncContext = SynchronizationContext.Current;
+
+            DataModel.Instance.PropertyChanged += DataModel_PropertyChanged;
+
         }
+
+        private void DataModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_syncContext == null)
+            {
+                return;
+            }
+
+            if (e.PropertyName == nameof(DataModel.CurChipNum))
+            {
+                _syncContext.Post(_ => seCurChipNum.Value = DataModel.Instance.CurChipNum, null);
+            }
+            if (e.PropertyName == nameof(DataModel.CurModuleNum))
+            {
+                _syncContext.Post(_ => seCurModuleNum.Value = DataModel.Instance.CurModuleNum, null);
+            }
+            if (e.PropertyName == nameof(DataModel.CurSubstrateNum))
+            {
+                _syncContext.Post(_ => seCurSubstrateNum.Value = DataModel.Instance.CurSubstrateNum, null);
+            }
+
+
+        }
+
+
         private void ProductRunForm_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
         {
             UnhookWindowsHookEx(_hookID);
@@ -99,6 +132,42 @@ namespace MainGUI.Forms.ProductMenu
             //lbMaxSubNum.Text = productExecutor.MaxSubNum.ToString();
         }
 
+
+        private void UpdateParam()
+        {
+            if(curRecipe != null)
+            {
+                if(curRecipe.ProductSteps.Count > 0)
+                {
+                    curRecipe.CurrentSubstrateInfosName = curRecipe.ProductSteps[0].SubstrateName;
+                    curRecipe.CurrentComponentInfosName = curRecipe.ProductSteps[0].ComponentName;
+                    curRecipe.CurrentBondPositionSettingsName = curRecipe.ProductSteps[0].BondingPositionName;
+                    curRecipe.CurrentEpoxyApplicationName = curRecipe.ProductSteps[0].EpoxyApplicationName;
+                    curRecipe.DispenserName = curRecipe.CurrentEpoxyApplication?.DispenserName;
+
+                    seStartIndex.Value = 1;
+                    seEndIndex.Value = curRecipe.CurrentSubstrate.SubstrateMapInfos.Count;
+                    seStartModule.Value = 1;
+                    if(curRecipe.CurrentSubstrate.ModuleMapInfos != null && curRecipe.CurrentSubstrate.ModuleMapInfos.Count > 0)
+                    {
+                        seEndModule.Value = curRecipe.CurrentSubstrate.ModuleMapInfos[0].Count;
+                    }
+                    
+                    seStartBondingPosition.Value = 1;
+                    seEndBondingPosition.Value = curRecipe.StepBondingPositionList_2.Count;
+
+
+                }
+                
+
+
+
+            }
+
+            
+
+        }
+
         public void chgRunStat(object sender, PropertyChangedEventArgs e)
         {
             if (this.InvokeRequired)
@@ -106,113 +175,127 @@ namespace MainGUI.Forms.ProductMenu
                 this.Invoke(new Action<object, PropertyChangedEventArgs>(chgRunStat), sender,e);
                 return;
             }
-
-            if (e.PropertyName == "ActionStat")
+            string recipeName = cbProductList.SelectedItem.ToString();
+            curRecipe = BondRecipe.LoadRecipe(recipeName);
+            if(curRecipe != null)
             {
-                //treeActionStat.Refresh();
-            }
-            if (e.PropertyName == "BondCounter")
-            {
-                if (!ckeIsProcessPart.Checked)
+                if (e.PropertyName == "ActionStat")
                 {
-                    var bpCountInOneModule = curRecipe.StepBondingPositionList.Count;
-                    if(curRecipe.SubstrateInfos.ModuleMapInfos.Count>0)
+                    //treeActionStat.Refresh();
+                }
+                if (e.PropertyName == "BondCounter")
+                {
+                    if (!ckeIsProcessPart.Checked)
                     {
-                        var allMoudleCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count;
-                        var allBPCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
-                        labelCounter.Text = $"{productExecutor.BondDieCounter}/{allBPCounts}";
+                        var bpCountInOneModule = curRecipe.StepBondingPositionList.Count;
+                        if (curRecipe.SubstrateInfos.ModuleMapInfos.Count > 0)
+                        {
+                            var allMoudleCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count;
+                            var allBPCounts = curRecipe.SubstrateInfos.ModuleMapInfos.FirstOrDefault().Count * curRecipe.SubstrateInfos.SubstrateMapInfos.Count * bpCountInOneModule;
+                            labelCounter.Text = $"{productExecutor.BondDieCounter}/{allBPCounts}";
+                            seBondCounter.Value = productExecutor.BondDieCounter;
+                        }
+
                     }
-                    
+                    else
+                    {
+                        labelCounter.Text = $"{productExecutor.BondDieCounter}/{Int32.Parse(seProcessCount.Text)}";
+                        seBondCounter.Value = productExecutor.BondDieCounter;
+                    }
                 }
-                else
+                if (e.PropertyName == "CurSubNum")
                 {
-                    labelCounter.Text = $"{productExecutor.BondDieCounter}/{Int32.Parse(seProcessCount.Text)}";
-                }
-            }
-            if (e.PropertyName == "CurSubNum")
-            {
-                //lbCurSubNum.Text = productExecutor.CurSubstrateNum.ToString();
-                //if (productExecutor.RunStat == EnumProductRunStat.AutoRun)
-                //{
+                    //lbCurSubNum.Text = productExecutor.CurSubstrateNum.ToString();
+                    //if (productExecutor.RunStat == EnumProductRunStat.AutoRun)
+                    //{
                     fillTreeAction();
-                //}
-                //treeActionStat.Refresh();
+                    //}
+                    //treeActionStat.Refresh();
+
+                }
+
+                if (e.PropertyName == "RunStat")
+                {
+                    if (productExecutor.RunStat == EnumProductRunStat.Stop || productExecutor.RunStat == EnumProductRunStat.Completed || productExecutor.RunStat == EnumProductRunStat.UserAbort)
+                    {
+                        btnAutoStart.Enabled = true;
+                        btnAutoPause.Enabled = false;
+                        btnStep.Enabled = false;
+                        btnAutoContinue.Enabled = false;
+
+                        btnStop.Enabled = false;
+
+                        cbProductList.Enabled = true;
+                    }
+                    else if (productExecutor.RunStat == EnumProductRunStat.AutoRun)
+                    {
+                        btnAutoStart.Enabled = false;
+                        btnAutoPause.Enabled = true;
+                        btnStep.Enabled = false;
+                        btnAutoContinue.Enabled = false;
+
+                        btnStop.Enabled = true;
+
+                        cbProductList.Enabled = false;
+                    }
+                    else if (productExecutor.RunStat == EnumProductRunStat.AutoPause)
+                    {
+                        btnAutoStart.Enabled = false;
+                        btnAutoPause.Enabled = false;
+                        btnStep.Enabled = true;
+                        btnAutoContinue.Enabled = true;
+
+                        btnStop.Enabled = true;
+
+                        cbProductList.Enabled = false;
+                    }
+                    else if (productExecutor.RunStat == EnumProductRunStat.StepRun)
+                    {
+                        btnAutoStart.Enabled = false;
+                        btnAutoPause.Enabled = false;
+                        btnStep.Enabled = true;
+                        btnAutoContinue.Enabled = true;
+
+                        btnStop.Enabled = true;
+
+                        cbProductList.Enabled = false;
+                    }
+                    else if (productExecutor.RunStat == EnumProductRunStat.StepPause)
+                    {
+                        btnAutoStart.Enabled = false;
+                        btnAutoPause.Enabled = false;
+                        btnStep.Enabled = true;
+                        btnAutoContinue.Enabled = true;
+
+                        btnStop.Enabled = true;
+
+                        cbProductList.Enabled = false;
+                    }
+                    else if (productExecutor.RunStat == EnumProductRunStat.NoProd)
+                    {
+                        btnAutoStart.Enabled = false;
+                        btnAutoPause.Enabled = false;
+                        btnStep.Enabled = false;
+                        btnAutoContinue.Enabled = false;
+
+                        btnStop.Enabled = false;
+
+                        cbProductList.Enabled = true;
+                    }
+                }
 
             }
 
-            if (e.PropertyName == "RunStat")
-            {
-                if (productExecutor.RunStat == EnumProductRunStat.Stop || productExecutor.RunStat == EnumProductRunStat.Completed || productExecutor.RunStat == EnumProductRunStat.UserAbort)
-                {
-                    btnAutoStart.Enabled = true;
-                    btnAutoPause.Enabled = false;
-                    btnAutoContinue.Enabled = false;
-
-                    btnStop.Enabled = false;
-
-                    cbProductList.Enabled = true;
-                }
-                else if (productExecutor.RunStat == EnumProductRunStat.AutoRun)
-                {
-                    btnAutoStart.Enabled = false;
-                    btnAutoPause.Enabled = true;
-                    btnAutoContinue.Enabled = false;
-
-                    btnStop.Enabled = true;
-
-                    cbProductList.Enabled = false;
-                }
-                else if (productExecutor.RunStat == EnumProductRunStat.AutoPause)
-                {
-                    btnAutoStart.Enabled = false;
-                    btnAutoPause.Enabled = false;
-                    btnAutoContinue.Enabled = true;
-
-                    btnStop.Enabled = true;
-
-                    cbProductList.Enabled = false;
-                }
-                else if (productExecutor.RunStat == EnumProductRunStat.StepRun)
-                {
-                    btnAutoStart.Enabled = false;
-                    btnAutoPause.Enabled = false;
-                    btnAutoContinue.Enabled = false;
-
-                    btnStop.Enabled = true;
-
-                    cbProductList.Enabled = false;
-                }
-                else if (productExecutor.RunStat == EnumProductRunStat.StepPause)
-                {
-                    btnAutoStart.Enabled = false;
-                    btnAutoPause.Enabled = false;
-                    btnAutoContinue.Enabled = false;
-
-                    btnStop.Enabled = true;
-
-                    cbProductList.Enabled = false;
-                }
-                else if (productExecutor.RunStat == EnumProductRunStat.NoProd)
-                {
-                    btnAutoStart.Enabled = false;
-                    btnAutoPause.Enabled = false;
-                    btnAutoContinue.Enabled = false;
-
-                    btnStop.Enabled = false;
-
-                    cbProductList.Enabled = true;
-                }
-            }
         }
 
         //获取生产配方列表
         private List<string> getRecipeNameList()
         {
             List<string> list = new List<string>();
-            string recipeDir = _systemConfig.SystemDefaultDirectory + @"Recipes\Bonder";
+            string recipeDir = _systemConfig.JobConfig.RecipeSavingPath + @"Recipes\Bonder";
             CommonProcess.EnsureFolderExist(recipeDir);
-            CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\Components\", _systemConfig.SystemDefaultDirectory));
-            CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\BondPositions\", _systemConfig.SystemDefaultDirectory));
+            CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\Components\", _systemConfig.JobConfig.RecipeSavingPath));
+            CommonProcess.EnsureFolderExist(string.Format(@"{0}Recipes\BondPositions\", _systemConfig.JobConfig.RecipeSavingPath));
             var recipeFiles = Directory.GetDirectories(recipeDir);
             for (int recipeIndex = 0; recipeIndex < recipeFiles.Length; recipeIndex++)
             {
@@ -276,19 +359,25 @@ namespace MainGUI.Forms.ProductMenu
                     int vkCode = Marshal.ReadInt32(lParam);
                     if (vkCode == 120)  //F9开启单步
                     {
-                        ProductExecutor.Instance.SingleStepRun = true;
-                        SingleStepRunUtility.Instance.EnableSingleStep = true;
+                        //ProductExecutor.Instance.SingleStepRun = true;
+                        //SingleStepRunUtility.Instance.EnableSingleStep = true;
+                        ExecutionController.Instance.Pause();
+                        LogRecorder.RecordUserOperationLog($"暂停自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                     }
                     else if(vkCode == 121)   //F10下一步
                     {
-                        ProductExecutor.Instance.SetEventWaitForNext();
-                        SingleStepRunUtility.Instance.Continue();
+                        //ProductExecutor.Instance.SetEventWaitForNext();
+                        //SingleStepRunUtility.Instance.Continue();
+                        ExecutionController.Instance.Step();
+                        LogRecorder.RecordUserOperationLog($"单步生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                     }
                     else if (vkCode == 119)   //F8取消单步
                     {
-                        ProductExecutor.Instance.SingleStepRun = false;
-                        SingleStepRunUtility.Instance.EnableSingleStep = false;
-                        ProductExecutor.Instance.SetEventWaitForNext();
+                        //ProductExecutor.Instance.SingleStepRun = false;
+                        //SingleStepRunUtility.Instance.EnableSingleStep = false;
+                        //ProductExecutor.Instance.SetEventWaitForNext();
+                        ExecutionController.Instance.Continue();
+                        LogRecorder.RecordUserOperationLog($"继续自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                     }
                 }
                 else if (wParam == (IntPtr)WM_KEYUP)
@@ -370,20 +459,6 @@ namespace MainGUI.Forms.ProductMenu
             var ret = stepAction_BondChip.Run();
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbCurSubNum_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void btnAutoStart_Click(object sender, EventArgs e)
         {
@@ -398,6 +473,7 @@ namespace MainGUI.Forms.ProductMenu
             productExecutor.LoadProductRecipe(curRecipe);
             if (ProductExecutor.Instance.ProductRecipe == null)
             {
+                productExecutor.RunStat = EnumProductRunStat.NoProd;
                 WarningBox.FormShow("警告", "配方为空，请先选择配方！");
                 return;
             }
@@ -411,8 +487,19 @@ namespace MainGUI.Forms.ProductMenu
                 //PositioningSystemClsLib.PositioningSystem.Instance.SetAxisSpeedForProduct();
                 productExecutor.RunStat = EnumProductRunStat.AutoRun;
                 ProductExecutor.Instance.ManualSettedProcessCount = Int32.Parse(seProcessCount.Text);
+
+                ProductExecutor.Instance.StartSubstrateNum = Int32.Parse(seStartIndex.Text);
+                ProductExecutor.Instance.EndSubstrateNum = Int32.Parse(seEndIndex.Text);
+                ProductExecutor.Instance.StartModuleNum = Int32.Parse(seStartModule.Text);
+                ProductExecutor.Instance.EndModuleNum = Int32.Parse(seEndModule.Text);
+                ProductExecutor.Instance.StartBondingPositionNum = Int32.Parse(seStartBondingPosition.Text);
+                ProductExecutor.Instance.EndBondingPositionNum = Int32.Parse(seEndBondingPosition.Text);
+
                 ProductExecutor.Instance.CurChipNum = Int32.Parse(seStartChipIndex.Text);
+                ProductExecutor.Instance.CurSubstrateNum = Int32.Parse(seStartIndex.Text);
+                ProductExecutor.Instance.CurModuleNum = Int32.Parse(seStartModule.Text);
                 ProductExecutor.Instance.IsProcessPart = ckeIsProcessPart.Checked;
+                LogRecorder.RecordUserOperationLog($"开始自动生产:{recipeName}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
                 Task.Factory.StartNew(new Action(() =>
                 {
                     //productExecutor.MoveToSafePos();
@@ -425,8 +512,37 @@ namespace MainGUI.Forms.ProductMenu
         private void btnStop_Click(object sender, EventArgs e)
         {
             productExecutor.RunStat = EnumProductRunStat.UserAbort;
+            ExecutionController.Instance.Continue();
             productExecutor.RunningActionIndex = 0;
             productExecutor.ResetActionStat();
+            LogRecorder.RecordUserOperationLog($"停止自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void cbProductList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string recipeName = cbProductList.Text.ToString();
+            LogRecorder.RecordUserOperationLog($"用户选择配方:{recipeName}", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+            UpdateParam();
+        }
+
+        private void btnAutoPause_Click(object sender, EventArgs e)
+        {
+            //productExecutor.RunStat = EnumProductRunStat.AutoPause;
+            ExecutionController.Instance.Pause();
+            LogRecorder.RecordUserOperationLog($"暂停自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void btnAutoContinue_Click(object sender, EventArgs e)
+        {
+            //productExecutor.RunStat = EnumProductRunStat.AutoRun;
+            ExecutionController.Instance.Continue();
+            LogRecorder.RecordUserOperationLog($"继续自动生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
+        }
+
+        private void btnStep_Click(object sender, EventArgs e)
+        {
+            ExecutionController.Instance.Step();
+            LogRecorder.RecordUserOperationLog($"单步生产", WestDragon.Framework.BaseLoggerClsLib.EnumLogContentType.Info, UserManager.Instance.CurrentUserName);
         }
     }
 }

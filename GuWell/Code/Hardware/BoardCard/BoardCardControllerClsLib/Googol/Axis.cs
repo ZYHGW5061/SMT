@@ -1,4 +1,5 @@
-﻿using GlobalToolClsLib;
+﻿using GlobalDataDefineClsLib;
+using GlobalToolClsLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -364,7 +365,14 @@ namespace AxisControl
 
             GTN.mc.GTN_ClrSts(AxisCrd, Axis, 1);//清除当前错误
             rtn = GTN.mc.GTN_SetHomingMode(AxisCrd, Axis, 6);  //切换到回零模式
-            rtn = GTN.mc.GTN_SetEcatHomingPrm(AxisCrd, Axis, mode, 10000, 500, 20000, 0, 0);  //速度加速度参数填入
+            if(Axis == (int)EnumStageAxis.NeedleZ)
+            {
+                rtn = GTN.mc.GTN_SetEcatHomingPrm(AxisCrd, Axis, mode, 2000, 500, 4000, 0, 0);  //速度加速度参数填入
+            }
+            else
+            {
+                rtn = GTN.mc.GTN_SetEcatHomingPrm(AxisCrd, Axis, mode, 10000, 500, 20000, 0, 0);  //速度加速度参数填入
+            }
 
             rtn = GTN.mc.GTN_StartEcatHoming(AxisCrd, Axis);//启动回零
 

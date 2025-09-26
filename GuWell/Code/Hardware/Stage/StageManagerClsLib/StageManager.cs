@@ -64,21 +64,21 @@ namespace StageManagerClsLib
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.BondY, new BondYSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.BondZ, new BondZSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.ChipPPT, new ChipPPTSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.PPtoolBankTheta, new PPtoolBankThetaSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.DippingGlue, new DippingGlueSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.PPtoolBankTheta, new PPtoolBankThetaSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.DippingGlue, new DippingGlueSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.TransportTrack1, new TransportTrack1SingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.TransportTrack2, new TransportTrack2SingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.TransportTrack3, new TransportTrack3SingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferTableX, new WaferTableXSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferTableY, new WaferTableYSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferTableZ, new WaferTableZSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferFilm, new WaferFilmSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferFinger, new WaferFingerSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferCassetteLift, new WaferCassetteLiftSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferFilm, new WaferFilmSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferFinger, new WaferFingerSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.WaferCassetteLift, new WaferCassetteLiftSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.ESZ, new ESZSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.NeedleZ, new NeedleZSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.NeedleSwitch, new NeedleSwitchSingleAxisController());
-                stageInfo.AxisControllerDic.Add(EnumStageAxis.FilpToolTheta, new FilpToolThetaSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.NeedleSwitch, new NeedleSwitchSingleAxisController());
+                //stageInfo.AxisControllerDic.Add(EnumStageAxis.FilpToolTheta, new FilpToolThetaSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.SubmountPPT, new SubmountPPTSingleAxisController());
                 stageInfo.AxisControllerDic.Add(EnumStageAxis.SubmountPPZ, new SubmountPPZSingleAxisController());
                 //添加其他轴
