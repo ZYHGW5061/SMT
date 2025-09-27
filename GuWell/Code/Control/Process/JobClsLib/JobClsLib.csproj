@@ -84,6 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulatedBondJob.cs" />
     <Compile Include="WaferTransferPlanner.cs" />
+    <Compile Include="ZRProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Global\ConfigurationClsLib\ConfigurationClsLib.csproj">
@@ -105,6 +106,10 @@
     <ProjectReference Include="..\..\..\GUI\PowerControlGUI\PowerControlGUI.csproj">
       <Project>{cdbd148b-bc3d-47d0-84b9-6ef3d8718718}</Project>
       <Name>PowerControlGUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Hardware\BoardCard\BoardCardControllerClsLib\BoardCardControllerClsLib.csproj">
+      <Project>{BEC297A8-3688-414C-92DE-60B7E3355E4A}</Project>
+      <Name>BoardCardControllerClsLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Hardware\Camera\CameraControllerClsLib\CameraControllerClsLib.csproj">
       <Project>{0bbd2b51-74d3-44e3-a73b-eb5b6c711cc7}</Project>

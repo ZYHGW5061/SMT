@@ -1667,6 +1667,7 @@ namespace GlobalDataDefineClsLib
         [XmlArray("MaskSetting"), XmlArrayItem(typeof(RecogniseMaskSetting))]
         public List<RecogniseMaskSetting> MaskSetting { get; set; }
     }
+
     [Serializable]
     public enum EnumBoardcardDefineOutputIO
     {
@@ -2119,42 +2120,42 @@ namespace GlobalDataDefineClsLib
         /// 快进位置
         /// </summary>
         [XmlElement("speedPos")]
-        double speedPos { get; set; }
+        public double speedPos { get; set; }
         /// <summary>
         /// 保压时间
         /// </summary>
         [XmlElement("keepTime")]
-        double keepTime { get; set; }
+        public double keepTime { get; set; }
         /// <summary>
         /// 速度切换位置
         /// </summary>
         [XmlElement("switchPos")]
-        double switchPos { get; set; }
+        public double switchPos { get; set; }
         /// <summary>
         /// 回退位置
         /// </summary>
         [XmlElement("backPos")]
-        double backPos { get; set; }
+        public double backPos { get; set; }
         /// <summary>
         /// 快进速度
         /// </summary>
         [XmlElement("speed")]
-        double speed { get; set; }
+        public double speed { get; set; }
         /// <summary>
         /// 一段速度
         /// </summary>
         [XmlElement("firstSpeed")]
-        double firstSpeed { get; set; }
+        public double firstSpeed { get; set; }
         /// <summary>
         /// 二段速度
         /// </summary>
         [XmlElement("secondSpeed")]
-        double secondSpeed { get; set; }
+        public double secondSpeed { get; set; }
         /// <summary>
         /// 扭矩限制
         /// </summary>
         [XmlElement("currentLimit")]
-        double currentLimit { get; set; }
+        public double currentLimit { get; set; }
 
 
         public ZRWorkParameters()

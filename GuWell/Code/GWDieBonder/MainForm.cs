@@ -1270,17 +1270,17 @@ namespace BondTerminal
 
         private void 运行ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            ZRProcess.Instance.Run(10, 2000);
+            //ZRProcess.Instance.Run(10, 2000);
         }
 
         private void 到安全位置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ZRProcess.Instance.BondToSafeAsync();
+            //ZRProcess.Instance.BondToSafeAsync();
         }
 
         private void 到测力位置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ZRProcess.Instance.BondToPressureTableAsync();
+            //ZRProcess.Instance.BondToPressureTableAsync();
         }
 
         private void 校准台校准ToolStripMenuItem_Click(object sender, EventArgs e)

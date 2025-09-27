@@ -1,4 +1,5 @@
-﻿using CommonPanelClsLib;
+﻿using BoardCardControllerClsLib;
+using CommonPanelClsLib;
 using ConfigurationClsLib;
 using GlobalDataDefineClsLib;
 using GlobalToolClsLib;
@@ -13,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using WestDragon.Framework.BaseLoggerClsLib;
 using WestDragon.Framework.UtilityHelper;
+
+
 
 namespace JobClsLib
 {
@@ -39,6 +42,7 @@ namespace JobClsLib
         }
         private PPUtility()
         {
+            _boardCardController = BoardCardManager.Instance.GetCurrentController();
         }
         /// <summary>
         /// 系统配置
@@ -54,6 +58,7 @@ namespace JobClsLib
         {
             get { return PositioningSystem.Instance; }
         }
+        private IBoardCardController _boardCardController;
         /// <summary>
         /// 硬件配置处理器
         /// </summary>
@@ -510,6 +515,7 @@ namespace JobClsLib
                      ExecutionController.Instance.WaitIfPaused();
                      //慢速下降
                      _positioningSystem.SetAxisSpeed(EnumStageAxis.BondZ, param.SlowSpeedBeforePickup);
+
                      //if (_positioningSystem.MoveChipPPToSystemCoord(param.PPToolZero, terminal, EnumCoordSetType.Absolute) == StageMotionResult.Fail)
                      //{
                      //    return false;
@@ -526,7 +532,18 @@ namespace JobClsLib
 
                          if (axisConfigZR.StageType == EnumStageType.ZR)
                          {
-                             
+                             bool mode = _boardCardController.Get_ZRAxisForceMode(pptoolZR.StageAxisZ);
+                             if (!mode)
+                             {
+                                 _boardCardController.Set_ZRAxisWorkMode(pptoolZR.StageAxisZ, 1);
+                             }
+                             param.ZRWorkParameters.currentLimit = ZRProcess.Instance.PressToZRcurrentLimit(param.PickupStress);
+                             _boardCardController.Set_ZRForceParamters(pptoolZR.StageAxisZ,
+                                 param.ZRWorkParameters.speedPos, param.ZRWorkParameters.keepTime, param.ZRWorkParameters.switchPos,
+                                 param.ZRWorkParameters.backPos, param.ZRWorkParameters.speed, param.ZRWorkParameters.firstSpeed,
+                                 param.ZRWorkParameters.secondSpeed, param.ZRWorkParameters.currentLimit);
+                             _boardCardController.Enable_ZRAxisForeceMode(pptoolZR.StageAxisZ);
+
                          }
                      }
 
@@ -595,6 +612,23 @@ namespace JobClsLib
                 }
 
                 Thread.Sleep((int)param.DelayMSForVaccum);
+
+                if (param.ZRmode)
+                {
+                    var pptoolZR = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                    var axisConfigZR = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == pptoolZR.StageAxisZ);
+
+                    if (axisConfigZR.StageType == EnumStageType.ZR)
+                    {
+                        bool mode = _boardCardController.Get_ZRAxisForceMode(pptoolZR.StageAxisZ);
+                        if (mode)
+                        {
+                            _boardCardController.GoBack_ZRAxisForeceMode(pptoolZR.StageAxisZ);
+                            _boardCardController.Set_ZRAxisWorkMode(pptoolZR.StageAxisZ, 0);
+                        }
+
+                    }
+                }
 
                 if (beforeAct != null)
                 {
@@ -786,8 +820,12 @@ namespace JobClsLib
                     return false;
                 }
 
-
-                var terminal = param.WorkHeight - param.PickupStress; ;
+                var terminal = param.WorkHeight - param.PlaceStress;
+                if (param.ZRmode)
+                {
+                    terminal = param.WorkHeight;
+                }
+                
                 var quickTravelTarget = terminal - param.SlowTravelAfterPickupMM;
                 if (!SingleStepRunUtility.Instance.RunAction(new Func<bool>(() =>
                 {
@@ -809,6 +847,29 @@ namespace JobClsLib
                     {
                         return false;
                     }
+
+                    if (param.ZRmode)
+                    {
+                        var pptoolZR = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                        var axisConfigZR = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == pptoolZR.StageAxisZ);
+
+                        if (axisConfigZR.StageType == EnumStageType.ZR)
+                        {
+                            bool mode = _boardCardController.Get_ZRAxisForceMode(pptoolZR.StageAxisZ);
+                            if (!mode)
+                            {
+                                _boardCardController.Set_ZRAxisWorkMode(pptoolZR.StageAxisZ, 1);
+                            }
+                            param.ZRWorkParameters.currentLimit = ZRProcess.Instance.PressToZRcurrentLimit(param.PlaceStress);
+                            _boardCardController.Set_ZRForceParamters(pptoolZR.StageAxisZ,
+                                param.ZRWorkParameters.speedPos, param.ZRWorkParameters.keepTime, param.ZRWorkParameters.switchPos,
+                                param.ZRWorkParameters.backPos, param.ZRWorkParameters.speed, param.ZRWorkParameters.firstSpeed,
+                                param.ZRWorkParameters.secondSpeed, param.ZRWorkParameters.currentLimit);
+                            _boardCardController.Enable_ZRAxisForeceMode(pptoolZR.StageAxisZ);
+
+                        }
+                    }
+
                     LogRecorder.RecordLog(EnumLogContentType.Debug, "PlaceViaSystemCoor-下降-End.");
                     return true;
                 })))
@@ -841,6 +902,8 @@ namespace JobClsLib
                          //    IOUtilityHelper.Instance.CloseSubmountPPBlow();
                          //}
 
+                         
+
 
                          var pptool = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
                          //关真空
@@ -850,6 +913,22 @@ namespace JobClsLib
                          ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.OpenPPtoolBlow(pptool.PPBlowSwitch);
                          Thread.Sleep((int)param.BreakVaccumTimespanMS);
+                         if (param.ZRmode)
+                         {
+                             var pptoolZR = _systemConfig.PPToolSettings.FirstOrDefault(i => i.Name == param.PPtoolName);
+                             var axisConfigZR = _hardwareConfig.StageConfig.AxisConfigList.FirstOrDefault(i => i.Type == pptoolZR.StageAxisZ);
+
+                             if (axisConfigZR.StageType == EnumStageType.ZR)
+                             {
+                                 bool mode = _boardCardController.Get_ZRAxisForceMode(pptoolZR.StageAxisZ);
+                                 if (mode)
+                                 {
+                                     _boardCardController.GoBack_ZRAxisForeceMode(pptoolZR.StageAxisZ);
+                                     _boardCardController.Set_ZRAxisWorkMode(pptoolZR.StageAxisZ, 0);
+                                 }
+
+                             }
+                         }
                          ExecutionController.Instance.WaitIfPaused();
                          IOUtilityHelper.Instance.ClosePPtoolBlow(pptool.PPBlowSwitch);
 

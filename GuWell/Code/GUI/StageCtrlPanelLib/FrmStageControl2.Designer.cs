@@ -3510,7 +3510,7 @@ namespace StageCtrlPanelLib
             // 
             this.comboBoxSelAxis.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxSelAxis.FormattingEnabled = true;
-            this.comboBoxSelAxis.Location = new System.Drawing.Point(120, 15);
+            this.comboBoxSelAxis.Location = new System.Drawing.Point(120, 14);
             this.comboBoxSelAxis.Name = "comboBoxSelAxis";
             this.comboBoxSelAxis.Size = new System.Drawing.Size(102, 22);
             this.comboBoxSelAxis.TabIndex = 3;
@@ -3771,7 +3771,7 @@ namespace StageCtrlPanelLib
             // 
             this.comboBoxStageType.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxStageType.FormattingEnabled = true;
-            this.comboBoxStageType.Location = new System.Drawing.Point(348, 15);
+            this.comboBoxStageType.Location = new System.Drawing.Point(348, 14);
             this.comboBoxStageType.Name = "comboBoxStageType";
             this.comboBoxStageType.Size = new System.Drawing.Size(102, 22);
             this.comboBoxStageType.TabIndex = 73;
